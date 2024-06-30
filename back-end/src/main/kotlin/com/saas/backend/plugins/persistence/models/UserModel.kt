@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.persistence.models
+package com.stakemetrics.backend.plugins.persistence.models
 
-import com.saas.backend.domain.entities.User
+import com.stakemetrics.backend.domain.entities.User
 import jakarta.persistence.*
 import java.util.UUID
 import org.springframework.security.core.GrantedAuthority

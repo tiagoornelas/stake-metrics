@@ -1,6 +1,6 @@
-package com.saas.backend.domain.ports
+package com.stakemetrics.backend.domain.ports
 
-import com.saas.backend.domain.entities.User
+import com.stakemetrics.backend.domain.entities.User
 import org.springframework.stereotype.Service
 
 @Service

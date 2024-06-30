@@ -1,7 +1,7 @@
-package com.saas.backend.plugins.persistence.models
+package com.stakemetrics.backend.plugins.persistence.models
 
-import com.saas.backend.plugins.subscription.entities.Subscription
-import com.saas.backend.plugins.subscription.enums.SubscriptionStatus
+import com.stakemetrics.backend.plugins.subscription.entities.Subscription
+import com.stakemetrics.backend.plugins.subscription.enums.SubscriptionStatus
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn

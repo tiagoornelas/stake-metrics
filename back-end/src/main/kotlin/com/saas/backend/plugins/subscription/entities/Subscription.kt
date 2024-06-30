@@ -1,7 +1,7 @@
-package com.saas.backend.plugins.subscription.entities
+package com.stakemetrics.backend.plugins.subscription.entities
 
-import com.saas.backend.domain.entities.User
-import com.saas.backend.plugins.subscription.enums.SubscriptionStatus
+import com.stakemetrics.backend.domain.entities.User
+import com.stakemetrics.backend.plugins.subscription.enums.SubscriptionStatus
 import java.util.Date
 import java.util.UUID
 

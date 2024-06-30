@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.persistence.models
+package com.stakemetrics.backend.plugins.persistence.models
 
-import com.saas.backend.domain.entities.RecoveryCode
+import com.stakemetrics.backend.domain.entities.RecoveryCode
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn

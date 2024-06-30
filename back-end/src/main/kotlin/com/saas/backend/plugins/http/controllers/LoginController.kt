@@ -1,7 +1,7 @@
-package com.saas.backend.plugins.http.controllers
+package com.stakemetrics.backend.plugins.http.controllers
 
-import com.saas.backend.plugins.http.dto.UserDTO
-import com.saas.backend.plugins.http.security.CredentialsChecker
+import com.stakemetrics.backend.plugins.http.dto.UserDTO
+import com.stakemetrics.backend.plugins.http.security.CredentialsChecker
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

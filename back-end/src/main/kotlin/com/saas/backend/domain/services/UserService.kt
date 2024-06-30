@@ -1,15 +1,15 @@
-package com.saas.backend.domain.services
+package com.stakemetrics.backend.domain.services
 
-import com.saas.backend.domain.entities.User
-import com.saas.backend.domain.exceptions.AlreadyExistsException
-import com.saas.backend.domain.exceptions.EntityDoesntBelongToUserException
-import com.saas.backend.domain.exceptions.InvalidFieldException
-import com.saas.backend.domain.exceptions.NotFoundException
-import com.saas.backend.domain.exceptions.PasswordConfirmationException
-import com.saas.backend.domain.ports.PasswordEncoderPort
-import com.saas.backend.domain.ports.SubscriptionServicePort
-import com.saas.backend.domain.ports.UserRepositoryPort
-import com.saas.backend.plugins.http.ports.UserServicePort
+import com.stakemetrics.backend.domain.entities.User
+import com.stakemetrics.backend.domain.exceptions.AlreadyExistsException
+import com.stakemetrics.backend.domain.exceptions.EntityDoesntBelongToUserException
+import com.stakemetrics.backend.domain.exceptions.InvalidFieldException
+import com.stakemetrics.backend.domain.exceptions.NotFoundException
+import com.stakemetrics.backend.domain.exceptions.PasswordConfirmationException
+import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
+import com.stakemetrics.backend.domain.ports.SubscriptionServicePort
+import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.plugins.http.ports.UserServicePort
 import java.util.UUID
 import org.springframework.security.authentication.BadCredentialsException
 

@@ -1,9 +1,9 @@
-package com.saas.backend.plugins.persistence.adapters
+package com.stakemetrics.backend.plugins.persistence.adapters
 
-import com.saas.backend.plugins.persistence.models.SubscriptionModel
-import com.saas.backend.plugins.persistence.repositories.SubscriptionRepository
-import com.saas.backend.plugins.subscription.entities.Subscription
-import com.saas.backend.plugins.subscription.ports.SubscriptionRepositoryPort
+import com.stakemetrics.backend.plugins.persistence.models.SubscriptionModel
+import com.stakemetrics.backend.plugins.persistence.repositories.SubscriptionRepository
+import com.stakemetrics.backend.plugins.subscription.entities.Subscription
+import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort
 import java.util.UUID
 import org.springframework.stereotype.Service
 

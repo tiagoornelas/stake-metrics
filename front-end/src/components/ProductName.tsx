@@ -1,3 +1,3 @@
-const ProductName = () => <>Saas Name</>;
+const ProductName = () => <>Stake Metrics</>;
 
 export default ProductName;

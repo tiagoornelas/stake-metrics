@@ -1,14 +1,14 @@
-package com.saas.backend.domain.services
+package com.stakemetrics.backend.domain.services
 
-import com.saas.backend.domain.entities.RecoveryCode
-import com.saas.backend.domain.entities.User
-import com.saas.backend.domain.exceptions.AccountRecoveryException
-import com.saas.backend.domain.exceptions.NotFoundException
-import com.saas.backend.domain.exceptions.PasswordConfirmationException
-import com.saas.backend.domain.ports.PasswordEncoderPort
-import com.saas.backend.domain.ports.RecoveryCodeRepositoryPort
-import com.saas.backend.domain.ports.UserRepositoryPort
-import com.saas.backend.plugins.http.ports.RecoveryCodeServicePort
+import com.stakemetrics.backend.domain.entities.RecoveryCode
+import com.stakemetrics.backend.domain.entities.User
+import com.stakemetrics.backend.domain.exceptions.AccountRecoveryException
+import com.stakemetrics.backend.domain.exceptions.NotFoundException
+import com.stakemetrics.backend.domain.exceptions.PasswordConfirmationException
+import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
+import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
+import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.plugins.http.ports.RecoveryCodeServicePort
 import java.util.Calendar
 import java.util.UUID
 import kotlin.random.Random

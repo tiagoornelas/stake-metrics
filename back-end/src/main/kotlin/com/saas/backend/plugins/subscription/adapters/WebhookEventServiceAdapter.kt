@@ -1,10 +1,10 @@
-package com.saas.backend.plugins.subscription.adapters
+package com.stakemetrics.backend.plugins.subscription.adapters
 
-import com.saas.backend.plugins.http.ports.WebhookEventsServicePort
-import com.saas.backend.plugins.subscription.enums.EventTypes
-import com.saas.backend.plugins.subscription.handlers.CustomerSubscriptionDeletedHandler
-import com.saas.backend.plugins.subscription.handlers.CustomerSubscriptionUpdatedHandler
-import com.saas.backend.plugins.subscription.handlers.EventHandler
+import com.stakemetrics.backend.plugins.http.ports.WebhookEventsServicePort
+import com.stakemetrics.backend.plugins.subscription.enums.EventTypes
+import com.stakemetrics.backend.plugins.subscription.handlers.CustomerSubscriptionDeletedHandler
+import com.stakemetrics.backend.plugins.subscription.handlers.CustomerSubscriptionUpdatedHandler
+import com.stakemetrics.backend.plugins.subscription.handlers.EventHandler
 import com.stripe.model.Event
 import org.springframework.stereotype.Service
 

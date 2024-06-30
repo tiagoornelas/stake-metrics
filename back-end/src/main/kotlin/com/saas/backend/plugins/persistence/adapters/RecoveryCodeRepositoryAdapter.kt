@@ -1,9 +1,9 @@
-package com.saas.backend.plugins.persistence.adapters
+package com.stakemetrics.backend.plugins.persistence.adapters
 
-import com.saas.backend.domain.entities.RecoveryCode
-import com.saas.backend.domain.ports.RecoveryCodeRepositoryPort
-import com.saas.backend.plugins.persistence.models.RecoveryCodeModel
-import com.saas.backend.plugins.persistence.repositories.RecoveryCodeRepository
+import com.stakemetrics.backend.domain.entities.RecoveryCode
+import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
+import com.stakemetrics.backend.plugins.persistence.models.RecoveryCodeModel
+import com.stakemetrics.backend.plugins.persistence.repositories.RecoveryCodeRepository
 import java.util.UUID
 import org.springframework.stereotype.Service
 

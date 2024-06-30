@@ -1,6 +1,6 @@
-package com.saas.backend.domain.ports
+package com.stakemetrics.backend.domain.ports
 
-import com.saas.backend.domain.entities.RecoveryCode
+import com.stakemetrics.backend.domain.entities.RecoveryCode
 import java.util.UUID
 
 interface RecoveryCodeRepositoryPort {

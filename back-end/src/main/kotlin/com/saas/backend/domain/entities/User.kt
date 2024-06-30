@@ -1,4 +1,4 @@
-package com.saas.backend.domain.entities
+package com.stakemetrics.backend.domain.entities
 
 import java.util.UUID
 

@@ -1,8 +1,8 @@
-package com.saas.backend.plugins.http.controllers
+package com.stakemetrics.backend.plugins.http.controllers
 
-import com.saas.backend.plugins.http.dto.SubscriptionDTO
-import com.saas.backend.plugins.http.ports.SubscriptionServicePort
-import com.saas.backend.plugins.http.ports.WebhookEventsServicePort
+import com.stakemetrics.backend.plugins.http.dto.SubscriptionDTO
+import com.stakemetrics.backend.plugins.http.ports.SubscriptionServicePort
+import com.stakemetrics.backend.plugins.http.ports.WebhookEventsServicePort
 import com.stripe.model.Event
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -1,8 +1,8 @@
-package com.saas.backend.plugins.http.ports
+package com.stakemetrics.backend.plugins.http.ports
 
-import com.saas.backend.domain.entities.User
-import com.saas.backend.plugins.http.dto.SubscriptionDTO
-import com.saas.backend.plugins.subscription.entities.Subscription
+import com.stakemetrics.backend.domain.entities.User
+import com.stakemetrics.backend.plugins.http.dto.SubscriptionDTO
+import com.stakemetrics.backend.plugins.subscription.entities.Subscription
 import org.springframework.stereotype.Service
 
 @Service

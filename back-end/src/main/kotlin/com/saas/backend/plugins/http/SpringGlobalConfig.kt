@@ -1,14 +1,14 @@
-package com.saas.backend.plugins.http
+package com.stakemetrics.backend.plugins.http
 
-import com.saas.backend.domain.ports.PasswordEncoderPort
-import com.saas.backend.domain.ports.RecoveryCodeRepositoryPort
-import com.saas.backend.domain.ports.SubscriptionServicePort
-import com.saas.backend.domain.ports.UserRepositoryPort
-import com.saas.backend.domain.services.RecoveryCodeService
-import com.saas.backend.domain.services.UserService
-import com.saas.backend.plugins.encoder.PasswordEncoderAdapter
-import com.saas.backend.plugins.subscription.adapters.SubscriptionServiceAdapter
-import com.saas.backend.plugins.subscription.ports.SubscriptionRepositoryPort
+import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
+import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
+import com.stakemetrics.backend.domain.ports.SubscriptionServicePort
+import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.domain.services.RecoveryCodeService
+import com.stakemetrics.backend.domain.services.UserService
+import com.stakemetrics.backend.plugins.encoder.PasswordEncoderAdapter
+import com.stakemetrics.backend.plugins.subscription.adapters.SubscriptionServiceAdapter
+import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort
 import java.util.Locale
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

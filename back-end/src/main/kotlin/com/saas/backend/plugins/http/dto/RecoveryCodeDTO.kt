@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.http.dto
+package com.stakemetrics.backend.plugins.http.dto
 
-import com.saas.backend.domain.entities.RecoveryCode
+import com.stakemetrics.backend.domain.entities.RecoveryCode
 import org.springframework.stereotype.Component
 
 @Component

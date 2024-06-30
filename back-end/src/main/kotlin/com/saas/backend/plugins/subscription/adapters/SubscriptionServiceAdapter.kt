@@ -1,12 +1,12 @@
-package com.saas.backend.plugins.subscription.adapters
+package com.stakemetrics.backend.plugins.subscription.adapters
 
-import com.saas.backend.domain.entities.User
-import com.saas.backend.domain.exceptions.NotFoundException
-import com.saas.backend.domain.ports.UserRepositoryPort
-import com.saas.backend.plugins.http.dto.SubscriptionDTO
-import com.saas.backend.plugins.subscription.entities.Subscription
-import com.saas.backend.plugins.subscription.enums.EntitlementTypes
-import com.saas.backend.plugins.subscription.ports.SubscriptionRepositoryPort
+import com.stakemetrics.backend.domain.entities.User
+import com.stakemetrics.backend.domain.exceptions.NotFoundException
+import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.plugins.http.dto.SubscriptionDTO
+import com.stakemetrics.backend.plugins.subscription.entities.Subscription
+import com.stakemetrics.backend.plugins.subscription.enums.EntitlementTypes
+import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort
 import com.stripe.Stripe
 import com.stripe.model.Customer
 import com.stripe.model.CustomerSession
@@ -14,8 +14,8 @@ import com.stripe.model.entitlements.ActiveEntitlement
 import com.stripe.param.CustomerCreateParams
 import com.stripe.param.CustomerSessionCreateParams
 import com.stripe.param.entitlements.ActiveEntitlementListParams
-import com.saas.backend.domain.ports.SubscriptionServicePort as DomainSubscriptionServicePort
-import com.saas.backend.plugins.http.ports.SubscriptionServicePort as HttpSubscriptionServicePort
+import com.stakemetrics.backend.domain.ports.SubscriptionServicePort as DomainSubscriptionServicePort
+import com.stakemetrics.backend.plugins.http.ports.SubscriptionServicePort as HttpSubscriptionServicePort
 import com.stripe.model.billingportal.Session as BillingPortalSession
 import com.stripe.model.checkout.Session as CheckoutSession
 import com.stripe.param.billingportal.SessionCreateParams as BillingPortalSessionCreateParams

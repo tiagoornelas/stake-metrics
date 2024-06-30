@@ -1,4 +1,4 @@
-package com.saas.backend.plugins.http.security
+package com.stakemetrics.backend.plugins.http.security
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
