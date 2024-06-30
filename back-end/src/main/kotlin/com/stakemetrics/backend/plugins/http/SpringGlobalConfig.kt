@@ -1,11 +1,13 @@
 package com.stakemetrics.backend.plugins.http
 
+import com.stakemetrics.backend.domain.ports.EmailSenderPort
 import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
 import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
 import com.stakemetrics.backend.domain.ports.SubscriptionServicePort
 import com.stakemetrics.backend.domain.ports.UserRepositoryPort
 import com.stakemetrics.backend.domain.services.RecoveryCodeService
 import com.stakemetrics.backend.domain.services.UserService
+import com.stakemetrics.backend.plugins.email.EmailSender
 import com.stakemetrics.backend.plugins.encoder.PasswordEncoderAdapter
 import com.stakemetrics.backend.plugins.subscription.adapters.SubscriptionServiceAdapter
 import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort
@@ -35,7 +37,7 @@ class SpringGlobalConfig : WebMvcConfigurer {
     @Bean
     fun subscriptionServicePort(
         @Value("\${stripe.api.key}") stripeApiKey: String,
-        @Value("\${stripe.pricing.tabe}") stripePricingTableId: String,
+        @Value("\${stripe.pricing.table}") stripePricingTableId: String,
         @Value("\${stripe.public.key}") stripePublicKey: String,
         @Value("\${app.frontend.base.url}") appBaseUrl: String,
         subscriptionRepositoryPort: SubscriptionRepositoryPort,
@@ -55,14 +57,23 @@ class SpringGlobalConfig : WebMvcConfigurer {
     fun recoveryCodeServicePort(
         recoveryCodeRepositoryPort: RecoveryCodeRepositoryPort,
         userRepositoryPort: UserRepositoryPort,
-        passwordEncoderPort: PasswordEncoderPort
+        passwordEncoderPort: PasswordEncoderPort,
+        emailSenderPort: EmailSenderPort
     ): RecoveryCodeService {
-        return RecoveryCodeService(recoveryCodeRepositoryPort, userRepositoryPort, passwordEncoderPort)
+        return RecoveryCodeService(recoveryCodeRepositoryPort, userRepositoryPort, passwordEncoderPort, emailSenderPort)
     }
 
     @Bean
     fun passwordEncoderPort(bCryptPasswordEncoder: BCryptPasswordEncoder): PasswordEncoderPort {
         return PasswordEncoderAdapter(bCryptPasswordEncoder)
+    }
+
+    @Bean
+    fun emailSenderPort(
+        @Value("\${mailersend.api.key}") mailerSendApiKey: String,
+        @Value("\${mailersend.domain.email}") domainEmail: String
+    ): EmailSenderPort {
+        return EmailSender(mailerSendApiKey, domainEmail)
     }
 
     @Bean
