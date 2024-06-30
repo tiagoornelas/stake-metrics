@@ -1,9 +1,9 @@
-package com.saas.backend.plugins.persistence.adapters
+package com.stakemetrics.backend.plugins.persistence.adapters
 
-import com.saas.backend.domain.entities.User
-import com.saas.backend.domain.ports.UserRepositoryPort
-import com.saas.backend.plugins.persistence.models.UserModel
-import com.saas.backend.plugins.persistence.repositories.UserRepository
+import com.stakemetrics.backend.domain.entities.User
+import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.plugins.persistence.models.UserModel
+import com.stakemetrics.backend.plugins.persistence.repositories.UserRepository
 import java.util.UUID
 import org.springframework.stereotype.Service
 

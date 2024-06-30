@@ -1,4 +1,4 @@
-package com.saas.backend.plugins.subscription.enums
+package com.stakemetrics.backend.plugins.subscription.enums
 
 enum class EventTypes(val identifier: String) {
     CUSTOMER_SUBSCRIPTION_UPDATED("customer.subscription.updated"),

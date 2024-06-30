@@ -1,10 +1,10 @@
-package com.saas.backend.plugins.http.controllers
+package com.stakemetrics.backend.plugins.http.controllers
 
-import com.saas.backend.plugins.http.dto.UserDTO
-import com.saas.backend.plugins.http.dto.toSubscriptionResponse
-import com.saas.backend.plugins.http.dto.toUserResponse
-import com.saas.backend.plugins.http.ports.SubscriptionServicePort
-import com.saas.backend.plugins.http.ports.UserServicePort
+import com.stakemetrics.backend.plugins.http.dto.UserDTO
+import com.stakemetrics.backend.plugins.http.dto.toSubscriptionResponse
+import com.stakemetrics.backend.plugins.http.dto.toUserResponse
+import com.stakemetrics.backend.plugins.http.ports.SubscriptionServicePort
+import com.stakemetrics.backend.plugins.http.ports.UserServicePort
 import java.security.Principal
 import java.util.UUID
 import org.springframework.http.HttpStatus

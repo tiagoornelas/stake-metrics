@@ -1,4 +1,4 @@
-package com.saas.backend.plugins.subscription.enums
+package com.stakemetrics.backend.plugins.subscription.enums
 
 enum class FeatureTypes(val identifier: String) {
     ACTIVE_STRATEGY("active-strategy"),

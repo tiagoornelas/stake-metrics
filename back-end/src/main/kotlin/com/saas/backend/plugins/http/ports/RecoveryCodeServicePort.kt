@@ -1,4 +1,4 @@
-package com.saas.backend.plugins.http.ports
+package com.stakemetrics.backend.plugins.http.ports
 
 import org.springframework.stereotype.Service
 

@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.http.dto
+package com.stakemetrics.backend.plugins.http.dto
 
-import com.saas.backend.domain.entities.User
+import com.stakemetrics.backend.domain.entities.User
 import java.util.UUID
 import org.springframework.stereotype.Component
 

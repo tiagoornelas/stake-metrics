@@ -1,7 +1,7 @@
-package com.saas.backend.plugins.http.security
+package com.stakemetrics.backend.plugins.http.security
 
-import com.saas.backend.plugins.http.dto.UserDTO
-import com.saas.backend.plugins.persistence.models.UserModel
+import com.stakemetrics.backend.plugins.http.dto.UserDTO
+import com.stakemetrics.backend.plugins.persistence.models.UserModel
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication

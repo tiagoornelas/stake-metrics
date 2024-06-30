@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.subscription.ports
+package com.stakemetrics.backend.plugins.subscription.ports
 
-import com.saas.backend.plugins.subscription.entities.Subscription
+import com.stakemetrics.backend.plugins.subscription.entities.Subscription
 import java.util.UUID
 
 interface SubscriptionRepositoryPort {

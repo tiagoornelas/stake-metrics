@@ -1,4 +1,4 @@
-package com.saas.backend
+package com.stakemetrics.backend
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.encoder
+package com.stakemetrics.backend.plugins.encoder
 
-import com.saas.backend.domain.ports.PasswordEncoderPort
+import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 class PasswordEncoderAdapter(private val bCryptPasswordEncoder: BCryptPasswordEncoder) : PasswordEncoderPort {

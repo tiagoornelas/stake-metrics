@@ -1,4 +1,4 @@
-package com.saas.backend.plugins.subscription.handlers
+package com.stakemetrics.backend.plugins.subscription.handlers
 
 import com.stripe.model.Event
 

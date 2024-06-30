@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.persistence.repositories
+package com.stakemetrics.backend.plugins.persistence.repositories
 
-import com.saas.backend.plugins.persistence.models.RecoveryCodeModel
+import com.stakemetrics.backend.plugins.persistence.models.RecoveryCodeModel
 import java.util.Optional
 import java.util.UUID
 import org.springframework.data.jpa.repository.JpaRepository

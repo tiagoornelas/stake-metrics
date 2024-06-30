@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.http.ports
+package com.stakemetrics.backend.plugins.http.ports
 
-import com.saas.backend.domain.entities.User
+import com.stakemetrics.backend.domain.entities.User
 import java.util.UUID
 import org.springframework.stereotype.Service
 

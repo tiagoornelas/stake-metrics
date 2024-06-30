@@ -1,7 +1,7 @@
-package com.saas.backend.plugins.http.controllers
+package com.stakemetrics.backend.plugins.http.controllers
 
-import com.saas.backend.plugins.http.dto.RecoveryCodeDTO
-import com.saas.backend.plugins.http.ports.RecoveryCodeServicePort
+import com.stakemetrics.backend.plugins.http.dto.RecoveryCodeDTO
+import com.stakemetrics.backend.plugins.http.ports.RecoveryCodeServicePort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

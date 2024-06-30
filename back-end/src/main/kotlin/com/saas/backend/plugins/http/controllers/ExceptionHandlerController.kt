@@ -1,6 +1,6 @@
-package com.saas.backend.plugins.http.controllers
+package com.stakemetrics.backend.plugins.http.controllers
 
-import com.saas.backend.domain.exceptions.*
+import com.stakemetrics.backend.domain.exceptions.*
 import com.stripe.exception.AuthenticationException
 import com.stripe.exception.InvalidRequestException
 import org.springframework.http.HttpStatus

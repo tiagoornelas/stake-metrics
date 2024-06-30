@@ -1,8 +1,8 @@
-package com.saas.backend.plugins.subscription.handlers
+package com.stakemetrics.backend.plugins.subscription.handlers
 
-import com.saas.backend.domain.exceptions.NotFoundException
-import com.saas.backend.plugins.subscription.enums.SubscriptionStatus
-import com.saas.backend.plugins.subscription.ports.SubscriptionRepositoryPort
+import com.stakemetrics.backend.domain.exceptions.NotFoundException
+import com.stakemetrics.backend.plugins.subscription.enums.SubscriptionStatus
+import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort
 import com.stripe.model.Event
 import java.util.Date
 import org.springframework.stereotype.Service
