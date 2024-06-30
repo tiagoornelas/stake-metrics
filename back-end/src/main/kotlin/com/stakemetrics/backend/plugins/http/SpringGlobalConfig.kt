@@ -8,9 +8,9 @@ import com.stakemetrics.backend.domain.ports.UserRepositoryPort
 import com.stakemetrics.backend.domain.services.RecoveryCodeService
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.plugins.email.EmailSender
-import com.stakemetrics.backend.plugins.encoder.PasswordEncoderAdapter
-import com.stakemetrics.backend.plugins.subscription.adapters.SubscriptionServiceAdapter
+import com.stakemetrics.backend.plugins.encoder.PasswordEncoder
 import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort
+import com.stakemetrics.backend.plugins.subscription.service.SubscriptionService
 import java.util.Locale
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -43,7 +43,7 @@ class SpringGlobalConfig : WebMvcConfigurer {
         subscriptionRepositoryPort: SubscriptionRepositoryPort,
         userRepositoryPort: UserRepositoryPort
     ): SubscriptionServicePort {
-        return SubscriptionServiceAdapter(
+        return SubscriptionService(
             stripeApiKey,
             stripePricingTableId,
             stripePublicKey,
@@ -65,7 +65,7 @@ class SpringGlobalConfig : WebMvcConfigurer {
 
     @Bean
     fun passwordEncoderPort(bCryptPasswordEncoder: BCryptPasswordEncoder): PasswordEncoderPort {
-        return PasswordEncoderAdapter(bCryptPasswordEncoder)
+        return PasswordEncoder(bCryptPasswordEncoder)
     }
 
     @Bean

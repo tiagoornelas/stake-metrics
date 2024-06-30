@@ -1,4 +1,4 @@
-package com.stakemetrics.backend.plugins.subscription.adapters
+package com.stakemetrics.backend.plugins.subscription.service
 
 import com.stakemetrics.backend.plugins.http.ports.WebhookEventsServicePort
 import com.stakemetrics.backend.plugins.subscription.enums.EventTypes
@@ -9,7 +9,7 @@ import com.stripe.model.Event
 import org.springframework.stereotype.Service
 
 @Service
-class WebhookEventServiceAdapter(
+class WebhookEventService(
     private val customerSubscriptionUpdatedHandler: CustomerSubscriptionUpdatedHandler,
     private val customerSubscriptionDeletedHandler: CustomerSubscriptionDeletedHandler
 ) : WebhookEventsServicePort {

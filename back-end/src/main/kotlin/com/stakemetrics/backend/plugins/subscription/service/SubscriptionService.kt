@@ -1,4 +1,4 @@
-package com.stakemetrics.backend.plugins.subscription.adapters
+package com.stakemetrics.backend.plugins.subscription.service
 
 import com.stakemetrics.backend.domain.entities.User
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
@@ -22,7 +22,7 @@ import com.stripe.param.billingportal.SessionCreateParams as BillingPortalSessio
 import com.stripe.param.checkout.SessionCreateParams as CheckoutSessionCreateParams
 
 
-class SubscriptionServiceAdapter(
+class SubscriptionService(
     stripeApiKey: String,
     private val stripePricingTableId: String,
     private val stripePublicKey: String,

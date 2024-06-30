@@ -1,7 +1,7 @@
 package com.stakemetrics.backend.plugins.http.security
 
 import com.stakemetrics.backend.plugins.http.ports.UserServicePort
-import com.stakemetrics.backend.plugins.persistence.adapters.toModel
+import com.stakemetrics.backend.plugins.persistence.repositories.toModel
 import com.stakemetrics.backend.plugins.persistence.models.UserModel
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
