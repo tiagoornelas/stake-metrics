@@ -5,6 +5,7 @@ import com.stakemetrics.backend.domain.entities.User
 import com.stakemetrics.backend.domain.exceptions.AccountRecoveryException
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
 import com.stakemetrics.backend.domain.exceptions.PasswordConfirmationException
+import com.stakemetrics.backend.domain.ports.EmailSenderPort
 import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
 import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
 import com.stakemetrics.backend.domain.ports.UserRepositoryPort
@@ -16,7 +17,8 @@ import kotlin.random.Random
 class RecoveryCodeService(
     private val recoveryCodeRepository: RecoveryCodeRepositoryPort,
     private val userRepository: UserRepositoryPort,
-    private val passwordEncoder: PasswordEncoderPort
+    private val passwordEncoder: PasswordEncoderPort,
+    private val emailSenderPort: EmailSenderPort
 ) : RecoveryCodeServicePort {
     override fun create(email: String) {
         val code = generateRandomCode()
@@ -25,6 +27,7 @@ class RecoveryCodeService(
         val recoveryCode = RecoveryCode(code = code, expireDate = expireDate, user = user)
         deleteAllPreviousRecoveryCodesForUser(user.id)
         recoveryCodeRepository.save(recoveryCode)
+        emailSenderPort.sendRecoveryCodeEmail(user.name, email, code)
     }
 
     override fun recover(userEmail: String, code: String, password: String, passwordConfirmation: String) {

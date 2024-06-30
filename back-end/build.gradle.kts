@@ -27,6 +27,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.auth0:java-jwt:3.18.2")
     implementation("com.stripe:stripe-java:26.0.0")
+    implementation("com.mailersend:java-sdk:1.0.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 }
