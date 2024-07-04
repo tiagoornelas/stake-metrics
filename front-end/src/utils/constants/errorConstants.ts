@@ -8,5 +8,9 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
     "It was not possible to recover the account with given code.": {
         title: "Falha na recuperação de conta",
         description: "O código de recuperação está incorreto."
+    },
+    "The integration already exists.": {
+        title: "A integração já existe",
+        description: "Essa integração já foi criada para este usuário, tente outra integração."
     }
 }

@@ -2,7 +2,7 @@ package com.stakemetrics.backend.plugins.persistence.repositories
 
 import com.stakemetrics.backend.domain.entities.RecoveryCode
 import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
-import com.stakemetrics.backend.plugins.persistence.jpa.RecoveryCodeJpaRepository
+import com.stakemetrics.backend.plugins.persistence.repositories.jpa.RecoveryCodeJpaRepository
 import com.stakemetrics.backend.plugins.persistence.models.RecoveryCodeModel
 import java.util.UUID
 import org.springframework.stereotype.Repository

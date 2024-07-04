@@ -25,9 +25,11 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.33")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("com.auth0:java-jwt:3.18.2")
     implementation("com.stripe:stripe-java:26.0.0")
     implementation("com.mailersend:java-sdk:1.0.0")
+    implementation("org.telegram:telegrambots-client:7.4.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 }

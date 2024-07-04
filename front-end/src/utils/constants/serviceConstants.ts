@@ -17,5 +17,11 @@ export const ENDPOINTS = {
         BASE: "/subscription",
         PRICING_TABLE: "/plan/pricing-table",
         CREATE_PORTAL_SESSION: "/create-portal-session",
+    },
+    TELEGRAM: {
+        BASE: "/telegram",
+        BEGIN_PRIVATE_CHAT_INTEGRATION: "/private-chat/begin-integration",
+        INTEGRATE_PRIVATE_CHAT: "/private-chat/integrate",
+        TEST_MESSAGE: "/test-message"
     }
 }

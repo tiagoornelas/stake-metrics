@@ -1,3 +1,5 @@
+import {ButtonProps} from "@chakra-ui/react";
+import {ReactElement} from "react";
 import {USER_REDUCER_ACTION_TYPES} from "../constants/contextConstants";
 
 export enum REQUEST_TYPE {
@@ -33,12 +35,17 @@ export interface Plan {
     popular?: boolean;
 }
 
+export interface FeatureMap {
+    [key: string]: number;
+}
+
 export interface Subscription {
     id: string;
     customerId: string;
     status: string;
     expiresAt: string | null;
     subscriptionId: string | null;
+    features: FeatureMap;
 }
 
 export interface UserInfo extends User {
@@ -82,3 +89,21 @@ export type SuccessDictionary = {
     title: string;
     description: string | null;
 };
+
+export interface TelegramChat {
+    id: string;
+    name: string;
+    chatId: string;
+    status: string;
+    delay: number;
+    deliveryProbability: number;
+    extraText: string | null;
+}
+
+export interface ExtraButton extends ButtonProps {
+    callback: () => void;
+    label: string;
+    colorScheme?: string;
+    rightIcon?: ReactElement;
+    closeOnAction?: boolean;
+}

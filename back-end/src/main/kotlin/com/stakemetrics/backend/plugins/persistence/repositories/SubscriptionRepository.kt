@@ -1,6 +1,6 @@
 package com.stakemetrics.backend.plugins.persistence.repositories
 
-import com.stakemetrics.backend.plugins.persistence.jpa.SubscriptionJpaRepository
+import com.stakemetrics.backend.plugins.persistence.repositories.jpa.SubscriptionJpaRepository
 import com.stakemetrics.backend.plugins.persistence.models.SubscriptionModel
 import com.stakemetrics.backend.plugins.subscription.entities.Subscription
 import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort

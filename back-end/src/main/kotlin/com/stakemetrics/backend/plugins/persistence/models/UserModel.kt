@@ -19,8 +19,9 @@ data class UserModel(
     val name: String = "",
     @Column(name = "password_hash") val passwordHash: String = "",
     val phone: String = "",
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL]) val telegramChats: Set<TelegramChatModel> = setOf(),
+    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL]) val subscription: SubscriptionModel? = null,
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL]) val recoveryCodes: Set<RecoveryCodeModel> = setOf(),
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL]) val subscriptions: Set<SubscriptionModel> = setOf(),
 ) : UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {

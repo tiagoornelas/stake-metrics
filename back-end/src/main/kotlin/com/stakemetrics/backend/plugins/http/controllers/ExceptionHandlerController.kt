@@ -67,6 +67,12 @@ class ExceptionHandlerController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
     }
 
+    @ExceptionHandler(AlreadyIntegratedException::class)
+    fun handleAlreadyIntegratedException(e: AlreadyIntegratedException): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(success = false, message = e.message ?: "Already integrated")
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse)
+    }
+
     data class ErrorResponse(
         val success: Boolean, val message: String
     )
