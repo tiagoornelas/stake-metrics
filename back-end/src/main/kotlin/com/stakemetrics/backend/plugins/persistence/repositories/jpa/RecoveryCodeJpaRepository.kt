@@ -1,4 +1,4 @@
-package com.stakemetrics.backend.plugins.persistence.jpa
+package com.stakemetrics.backend.plugins.persistence.repositories.jpa
 
 import com.stakemetrics.backend.plugins.persistence.models.RecoveryCodeModel
 import java.util.Optional

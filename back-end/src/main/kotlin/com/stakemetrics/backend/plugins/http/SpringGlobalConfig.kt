@@ -9,8 +9,12 @@ import com.stakemetrics.backend.domain.services.RecoveryCodeService
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.plugins.email.EmailSender
 import com.stakemetrics.backend.plugins.encoder.PasswordEncoder
+import com.stakemetrics.backend.plugins.http.ports.TelegramServicePort
+import com.stakemetrics.backend.plugins.http.ports.UserServicePort
 import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort
 import com.stakemetrics.backend.plugins.subscription.service.SubscriptionService
+import com.stakemetrics.backend.plugins.telegram.TelegramService
+import com.stakemetrics.backend.plugins.telegram.ports.TelegramChatRepositoryPort
 import java.util.Locale
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -74,6 +78,15 @@ class SpringGlobalConfig : WebMvcConfigurer {
         @Value("\${mailersend.domain.email}") domainEmail: String
     ): EmailSenderPort {
         return EmailSender(mailerSendApiKey, domainEmail)
+    }
+
+    @Bean
+    fun telegramServicePort(
+        @Value("\${telegram.bot.token}") botToken: String,
+        telegramChatRepositoryPort: TelegramChatRepositoryPort,
+        userServicePort: UserServicePort
+    ): TelegramServicePort {
+        return TelegramService(botToken, telegramChatRepositoryPort, userServicePort)
     }
 
     @Bean

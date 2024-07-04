@@ -1,128 +1,59 @@
-import {
-    Badge,
-    Box,
-    Button,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    Input,
-    SimpleGrid,
-    Skeleton,
-    Stack,
-    Text,
-    useBreakpointValue
-} from "@chakra-ui/react";
-import Modal from "components/Modal";
-import PasswordField from "components/PasswordField";
+import {Badge, Box, Button, Flex, Heading, SimpleGrid, Skeleton, Text, useBreakpointValue} from "@chakra-ui/react";
+import ChangePasswordModal from "containers/user/components/ChangePasswordModal";
+import EditUserModal from "containers/user/components/EditUserModal";
+import TelegramChatConnectModal from "containers/user/components/TelegramChatConnectModal";
+import TelegramChatSettingsModal from "containers/user/components/TelegramChatSettingsModal";
 import {useUserState} from "context/UserContext";
-import {useErrorToast} from "hooks/useErrorToast";
 import * as React from "react";
-import {ChangeEvent, useEffect, useState} from "react";
-import InputMask from "react-input-mask";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {createPortalSession} from "services/planService";
-import {changePassword, editUser} from "services/userService";
-import {SUCCESS_TYPES} from "utils/constants/successConstants";
-import {
-    applyDateMask,
-    applyPhoneMask,
-    removeCountryPrefixFromPhone,
-    sanitizePhoneMask
-} from "utils/helpers/sanitizationHelper";
-import {PasswordChangeBody, UserContext, UserCreationBody} from "utils/interfaces";
-
-const EditUserModal = () => {
-    const userContext: UserContext = useUserState();
-    const [form, setForm] = useState<UserCreationBody>({
-        name: userContext.user.name || "",
-        email: userContext.user.email || "",
-        phone: removeCountryPrefixFromPhone(userContext.user.phone) || "",
-    });
-
-    const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-        setForm({
-            ...form,
-            [e.target.id]: e.target.value
-        });
-    }
-
-    const handleSubmit = useErrorToast(async () => {
-        const user: UserCreationBody = {...form, phone: sanitizePhoneMask(form.phone)};
-        if (!!userContext.user.id) {
-            await editUser(userContext.user.id, user);
-            window.location.reload();
-        }
-    }, SUCCESS_TYPES.USER_EDITED)
-
-    return <Modal buttonText="Editar usuário" title="Editar usuário" actionText="Salvar"
-                  actionCallback={handleSubmit}>
-        <Stack spacing="5">
-            <FormControl>
-                <FormLabel htmlFor="name">Nome</FormLabel>
-                <Input id="name" type="text" onChange={handleInput} value={form.name}/>
-            </FormControl>
-            <FormControl>
-                <FormLabel htmlFor="email">E-mail</FormLabel>
-                <Input id="email" type="email" onChange={handleInput} value={form.email}/>
-            </FormControl>
-            <FormControl>
-                <FormLabel htmlFor="phone">Telefone</FormLabel>
-                <Input id="phone" as={InputMask} mask="(**) *********" type="text" onChange={handleInput}
-                       value={form.phone}/>
-            </FormControl>
-        </Stack>
-    </Modal>
-}
-
-const ChangePasswordModal = () => {
-    const userContext: UserContext = useUserState();
-    const [form, setForm] = useState<PasswordChangeBody>({
-        currentPassword: "",
-        password: "",
-        passwordConfirmation: "",
-    });
-
-    const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-        setForm({
-            ...form,
-            [e.target.id]: e.target.value
-        });
-    }
-
-    const handleSubmit = useErrorToast(async () => {
-        if (userContext.user.id) await changePassword(userContext.user.id, form);
-    }, SUCCESS_TYPES.PASSWORD_CHANGED);
-
-    return <Modal buttonText="Alterar senha" title="Alterar senha" actionText="Salvar"
-                  actionCallback={handleSubmit}><Stack spacing="5">
-        <PasswordField onChange={handleInput} currentPassword/>
-        <PasswordField onChange={handleInput}/>
-        <PasswordField onChange={handleInput} passwordConfirmation/>
-    </Stack></Modal>
-}
+import {fetchTelegramChats} from "services/telegramService";
+import {FEATURES} from "utils/constants/featureConstants";
+import {getFeatureAmount} from "utils/helpers/featureHelper";
+import {applyDateMask, applyPhoneMask} from "utils/helpers/sanitizationHelper";
+import {TelegramChat, UserContext} from "utils/interfaces";
 
 const UserManagement = () => {
     const [managementLink, setManagementLink] = useState<string>("");
     const [isManagementLinkLoaded, setIsManagementLinkLoaded] = useState<boolean>(false);
-    const columns: number = useBreakpointValue({base: 1, md: 2}) || 2;
+    const [telegramChats, setTelegramChats] = useState<TelegramChat[]>([]);
+    const [isTelegramLoaded, setIsTelegramLoaded] = useState<boolean>(false);
+    const columns: number = useBreakpointValue({base: 1, md: 2, lg: 3}) || 2;
     const userContext: UserContext = useUserState();
     const isLoaded: boolean = !!userContext.user.id;
+    const connectedTelegramChats = useMemo(() => telegramChats.filter(chat => !!chat.chatId), [telegramChats]);
+
+    const telegramChatFeatures = getFeatureAmount(userContext.user, FEATURES.TELEGRAM_CHAT);
+    const availableTelegramChats = useMemo(
+        () => telegramChatFeatures - connectedTelegramChats.length,
+        [telegramChats, telegramChatFeatures]
+    );
+
+    const getManagementLink = useCallback(async () => {
+        const {url} = await createPortalSession();
+        setManagementLink(url);
+        setIsManagementLinkLoaded(true);
+    }, []);
+
+    const getTelegramChats = useCallback(async () => {
+        setIsTelegramLoaded(false);
+        if (!!userContext.user.id) {
+            const {telegramChats: chats} = await fetchTelegramChats(userContext.user.id);
+            setTelegramChats(chats);
+            setIsTelegramLoaded(true);
+        }
+    }, [userContext.user.id]);
 
     useEffect(() => {
-        const getManagementLink = async () => {
-            const {url} = await createPortalSession();
-            setManagementLink(url);
-            setIsManagementLinkLoaded(true);
-        }
-
         getManagementLink();
-    }, []);
+        getTelegramChats();
+    }, [userContext.user]);
 
     const handleManagementSubscriptionClick = () => {
         if (managementLink !== "") window.location.assign(managementLink);
     }
 
-    return <SimpleGrid columns={columns} spacing={10} p={4}>
+    const UserSection = () => (
         <Box>
             <Skeleton isLoaded={isLoaded}>
                 <Flex direction="column" mb={4}>
@@ -140,6 +71,34 @@ const UserManagement = () => {
                 </Flex>
             </Skeleton>
         </Box>
+    );
+
+    const TelegramSection = () => (
+        <Box>
+            <Skeleton isLoaded={isTelegramLoaded}>
+                <Flex direction="column" mb={4}>
+                    <Flex gap={4} alignItems="center"><Heading size="md" mb={2}>Telegram</Heading>
+                        {connectedTelegramChats.length > 0 ? <Badge colorScheme='green'>Conectado</Badge> :
+                            <Badge colorScheme='red'>Desconectado</Badge>}
+                    </Flex>
+                    <Text>{`Seu plano dá direito a ${telegramChatFeatures} chats do Telegram.`}</Text>
+                    {connectedTelegramChats.map((chat: TelegramChat, index: number) => (
+                        <Flex gap={4} mt={4} alignItems="center">
+                            <TelegramChatSettingsModal key={index} chat={chat} onCloseCallback={getTelegramChats}/>
+                        </Flex>))}
+                </Flex>
+                {availableTelegramChats > 0 && (
+                    <Flex direction="column" gap={4} alignItems="self-start">
+                        <Skeleton isLoaded={isTelegramLoaded}>
+                            <TelegramChatConnectModal onCloseCallback={getTelegramChats}/>
+                        </Skeleton>
+                    </Flex>
+                )}
+            </Skeleton>
+        </Box>
+    );
+
+    const PlanSection = () => (
         <Box>
             <Skeleton isLoaded={isLoaded}>
                 <Flex direction="column" mb={4}>
@@ -161,6 +120,28 @@ const UserManagement = () => {
                 </Flex>
             </Skeleton>
         </Box>
+    );
+
+    const SupportSection = () => (
+        <Box>
+            <Skeleton isLoaded={isLoaded}>
+                <Flex direction="column" mb={4}>
+                    <Flex gap={4} alignItems="center"><Heading size="md" mb={2}>Suporte</Heading>
+                    </Flex>
+                    <Text>Precisa de ajuda? Entre em contato com o suporte abaixo.</Text>
+                </Flex>
+                <Flex direction="column" gap={4} alignItems="self-start">
+                    <Button>Entrar em contato</Button>
+                </Flex>
+            </Skeleton>
+        </Box>
+    );
+
+    return <SimpleGrid columns={columns} spacing={10} p={4}>
+        <UserSection/>
+        <TelegramSection/>
+        <PlanSection/>
+        <SupportSection/>
     </SimpleGrid>
 }
 

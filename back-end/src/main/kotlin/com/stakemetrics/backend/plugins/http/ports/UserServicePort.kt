@@ -10,5 +10,5 @@ interface UserServicePort {
     fun edit(authenticatedEmail: String, userId: UUID, name: String, email: String, phone: String)
     fun changePassword(userId: UUID, currentPassword: String, password: String, passwordConfirmation: String)
     fun findById(userId: UUID): User
-    fun findByEmail(email: String): User
+    fun findByEmail(email: String): User?
 }

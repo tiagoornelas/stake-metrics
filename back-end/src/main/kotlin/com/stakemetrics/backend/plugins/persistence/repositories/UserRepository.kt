@@ -2,7 +2,7 @@ package com.stakemetrics.backend.plugins.persistence.repositories
 
 import com.stakemetrics.backend.domain.entities.User
 import com.stakemetrics.backend.domain.ports.UserRepositoryPort
-import com.stakemetrics.backend.plugins.persistence.jpa.UserJpaRepository
+import com.stakemetrics.backend.plugins.persistence.repositories.jpa.UserJpaRepository
 import com.stakemetrics.backend.plugins.persistence.models.UserModel
 import java.util.UUID
 import org.springframework.stereotype.Repository
