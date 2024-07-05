@@ -38,8 +38,8 @@ export const SUCCESS_TYPES: Record<string, SuccessDictionary> = {
         description: "Chat do Telegram editado com sucesso."
     },
     TELEGRAM_CHAT_TESTED: {
-        title: "Testamos seu chat!",
-        description: "Leve em consideração que o atraso e a taxa de entrega também são testados, então a mensagem pode chegar com atraso ou não chegar."
+        title: "Enviamos uma mensagem!",
+        description: "Leve em consideração que o atraso e a taxa de entrega também são testados, então a mensagem pode chegar com atraso ou até não chegar."
     },
 }
 

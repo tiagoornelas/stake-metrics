@@ -56,7 +56,7 @@ class TelegramService(
 
     override fun integrateChannel(userId: UUID, channelId: String) {
         val user = userServicePort.findById(userId)
-        val telegramChat = TelegramChat(id = UUID.randomUUID(), user = user, chatId = channelId)
+        val telegramChat = TelegramChat(id = UUID.randomUUID(), user = user, chatId = channelId, name = "Meu Canal")
         telegramChatRepositoryPort.save(telegramChat)
     }
 
@@ -124,11 +124,17 @@ class TelegramService(
                 delay(delayInSeconds * 1000L)
 
                 if (Random.nextDouble() <= deliveryProbability) {
+                    val finalMessage = if (!telegramChat.extraText.isNullOrEmpty()) {
+                        "$message\n\n${telegramChat.extraText}"
+                    } else {
+                        message
+                    }
+
                     telegramClient.execute(
                         SendMessage
                             .builder()
                             .chatId(telegramChat.chatId)
-                            .text(message)
+                            .text(finalMessage)
                             .build()
                     )
                 }
@@ -139,12 +145,13 @@ class TelegramService(
     fun getChatIdWithPassPhrase(passPhrase: UUID): ChatDetails {
         val query = GetUpdates.builder().build()
         val updates = telegramClient.execute(query)
-        val chat = updates.find { it.message.text == passPhrase.toString() }?.message?.chat
+        val chat = updates
+            .filter { it.message != null }
+            .find { it.message.text == passPhrase.toString() }?.message?.chat
             ?: throw NotFoundException("Chat", "passPhrase", passPhrase.toString())
 
         return ChatDetails(chat.id.toString(), chat.userName)
     }
-
     fun findWithoutIntegrationByUserWhileCleaningUp(id: UUID): TelegramChat {
         val telegramChats = telegramChatRepositoryPort.findAllByUserId(id)
         val telegramChatsWithoutIntegration = telegramChats.filter { it.chatId == null }

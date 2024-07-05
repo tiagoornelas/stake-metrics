@@ -3,9 +3,10 @@ import Modal from "components/Modal";
 import {useUserState} from "context/UserContext";
 import {useErrorToast} from "hooks/useErrorToast";
 import React, {useState} from 'react';
+import {SiTelegram} from "react-icons/all";
 import {beginIntegration, integratePrivateChat} from "services/telegramService";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
-import {TelegramChat, UserContext} from "utils/interfaces";
+import {UserContext} from "utils/interfaces";
 
 type Props = {
     onCloseCallback?: () => void;
@@ -40,8 +41,8 @@ const TelegramChatConnectModal = ({onCloseCallback}: Props) => {
     }, SUCCESS_TYPES.TELEGRAM_CHAT_CONNECTED);
 
     return (
-        <Modal buttonText="Conectar Telegram" title="Conectar" actionText="Conectar" actionCallback={handleIntegrate}
-               onCloseCallback={onCloseCallback}>
+        <Modal buttonText="Conectar Chat" title="Conectar Chat do Telegram" actionText="Conectar" actionCallback={handleIntegrate}
+               onCloseCallback={onCloseCallback} icon={<SiTelegram />} colorScheme="blue" disableAction={telegramPassPhrase === ""}>
             <Stack spacing="5">
                 <Text><b>Para conectar um chat privado do Telegram:</b></Text>
                 <Text><b>1.</b> Clique em gerar código e copie o código abaixo.</Text>

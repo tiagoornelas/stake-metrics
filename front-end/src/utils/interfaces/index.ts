@@ -102,6 +102,7 @@ export interface TelegramChat {
 
 export interface ExtraButton extends ButtonProps {
     callback: () => void;
+    disbled?: boolean;
     label: string;
     colorScheme?: string;
     rightIcon?: ReactElement;

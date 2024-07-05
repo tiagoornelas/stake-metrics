@@ -8,14 +8,17 @@ export const beginIntegration = (userId: string) => makeRequest(`${BASE_URL}${EN
 
 export const integratePrivateChat = (userId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}${ENDPOINTS.TELEGRAM.INTEGRATE_PRIVATE_CHAT}/${userId}`, REQUEST_TYPE.POST);
 
+export const integrateChannel = (userId: string, channelId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}${ENDPOINTS.TELEGRAM.INTEGRATE_CHANNEL}`, REQUEST_TYPE.POST, { userId, channelId });
+
 export const deletePrivateChat = (telegramChatId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}/${telegramChatId}`, REQUEST_TYPE.DELETE);
 
 export const testPrivateChat = (telegramChatId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}${ENDPOINTS.TELEGRAM.TEST_MESSAGE}/${telegramChatId}`, REQUEST_TYPE.POST);
 
-export const editIntegration = (telegramChatId: string, name: string, status: string, delay: number, deliveryProbability: number) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}`, REQUEST_TYPE.PUT, {
+export const editIntegration = (telegramChatId: string, name: string, status: string, delay: number, deliveryProbability: number, extraText: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}`, REQUEST_TYPE.PUT, {
     id: telegramChatId,
     name,
     status,
     delay,
-    deliveryProbability
+    deliveryProbability,
+    extraText
 });
