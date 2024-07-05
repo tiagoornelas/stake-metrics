@@ -1,8 +1,9 @@
 import {Badge, Box, Button, Flex, Heading, SimpleGrid, Skeleton, Text, useBreakpointValue} from "@chakra-ui/react";
 import ChangePasswordModal from "containers/user/components/ChangePasswordModal";
 import EditUserModal from "containers/user/components/EditUserModal";
+import TelegramChannelConnectModal from "containers/user/components/TelegramChannelConnectModal";
 import TelegramChatConnectModal from "containers/user/components/TelegramChatConnectModal";
-import TelegramChatSettingsModal from "containers/user/components/TelegramChatSettingsModal";
+import TelegramSettingsModal from "containers/user/components/TelegramSettingsModal";
 import {useUserState} from "context/UserContext";
 import * as React from "react";
 import {useCallback, useEffect, useMemo, useState} from "react";
@@ -84,13 +85,16 @@ const UserManagement = () => {
                     <Text>{`Seu plano dá direito a ${telegramChatFeatures} chats do Telegram.`}</Text>
                     {connectedTelegramChats.map((chat: TelegramChat, index: number) => (
                         <Flex gap={4} mt={4} alignItems="center">
-                            <TelegramChatSettingsModal key={index} chat={chat} onCloseCallback={getTelegramChats}/>
+                            <TelegramSettingsModal key={index} chat={chat} onCloseCallback={getTelegramChats}/>
                         </Flex>))}
                 </Flex>
                 {availableTelegramChats > 0 && (
                     <Flex direction="column" gap={4} alignItems="self-start">
                         <Skeleton isLoaded={isTelegramLoaded}>
                             <TelegramChatConnectModal onCloseCallback={getTelegramChats}/>
+                        </Skeleton>
+                        <Skeleton isLoaded={isTelegramLoaded}>
+                            <TelegramChannelConnectModal onCloseCallback={getTelegramChats}/>
                         </Skeleton>
                     </Flex>
                 )}

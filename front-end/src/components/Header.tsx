@@ -55,7 +55,7 @@ export const Header = () => {
     const userContext: UserContext = useUserState();
     const userDispatch: Dispatch<UserReducerAction> = useUserDispatch();
 
-    const getLoggedUserNames = (): Array<String> => (userContext.user.name || "User").split(" ");
+    const getLoggedUserNames = (): Array<String> => (userContext.user.name || "").split(" ");
 
     const getAvatarSource = (): string => `https://ui-avatars.com/api/?name=${getLoggedUserNames().join("+")}`
 

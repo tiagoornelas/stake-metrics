@@ -22,6 +22,7 @@ export const ENDPOINTS = {
         BASE: "/telegram",
         BEGIN_PRIVATE_CHAT_INTEGRATION: "/private-chat/begin-integration",
         INTEGRATE_PRIVATE_CHAT: "/private-chat/integrate",
+        INTEGRATE_CHANNEL: "/channel/integrate",
         TEST_MESSAGE: "/test-message"
     }
 }

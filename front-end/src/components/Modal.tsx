@@ -1,6 +1,7 @@
 import {
     Button,
     ButtonProps,
+    IconButton,
     Modal as ChakraModal,
     ModalBody,
     ModalCloseButton,
@@ -12,39 +13,48 @@ import {
     useDisclosure
 } from "@chakra-ui/react";
 import useThemeColors from "hooks/useThemeColors";
-import React, {MouseEventHandler, ReactNode} from "react";
+import React, {MouseEventHandler, ReactElement, ReactNode} from "react";
 import {ExtraButton} from "utils/interfaces";
 
 interface Props extends ButtonProps {
     children: ReactNode;
-    buttonText: string;
+    buttonText?: string;
     title: string;
     actionText?: string;
     actionCallback?: () => void;
+    disableAction?: boolean
     noFooter?: boolean;
     size?: string;
     tooltip?: string;
     extraButtons?: ExtraButton[];
     onCloseCallback?: () => void;
+    icon?: ReactElement;
 }
 
 interface TooltipButtonProps extends ButtonProps {
     tooltip?: string;
-    buttonText: string;
+    icon?: ReactElement;
+    buttonText: string | undefined;
     onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
-const TooltipButton: React.FC<TooltipButtonProps> = ({tooltip, onClick, buttonText, ...props}) => {
+const TooltipButton: React.FC<TooltipButtonProps> = ({tooltip, onClick, buttonText, icon, ...props}) => {
     return tooltip ? (
         <Tooltip label={tooltip} placement="top">
-            <Button onClick={onClick} {...props}>
-                {buttonText}
-            </Button>
+            {buttonText ? (
+                <Button onClick={onClick} {...props} rightIcon={icon}>
+                    {buttonText}
+                </Button>
+            ) : (
+                <IconButton aria-label="icon button" size="sm" icon={icon} onClick={onClick} {...props} />
+            )}
         </Tooltip>
-    ) : (
-        <Button onClick={onClick} {...props}>
+    ) : buttonText ? (
+        <Button onClick={onClick} {...props} rightIcon={icon}>
             {buttonText}
         </Button>
+    ) : (
+        <IconButton aria-label="icon button" size="sm" icon={icon} onClick={onClick} {...props} />
     );
 };
 
@@ -54,11 +64,13 @@ const Modal: React.FC<Props> = ({
                                     title,
                                     actionText,
                                     actionCallback,
+                                    disableAction = false,
                                     noFooter = false,
                                     size = "md",
                                     tooltip,
                                     extraButtons = [],
                                     onCloseCallback,
+                                    icon,
                                     ...props
                                 }) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
@@ -80,7 +92,7 @@ const Modal: React.FC<Props> = ({
 
     return (
         <>
-            <TooltipButton tooltip={tooltip} onClick={onOpen} buttonText={buttonText} {...props} />
+            <TooltipButton tooltip={tooltip} onClick={onOpen} buttonText={buttonText} icon={icon} {...props} />
 
             <ChakraModal isOpen={isOpen} onClose={onClose} size={size}>
                 <ModalOverlay/>
@@ -101,13 +113,15 @@ const Modal: React.FC<Props> = ({
                                     key={idx}
                                     colorScheme={button.colorScheme}
                                     onClick={() => handleExtraButtonClick(button)}
+                                    isDisabled={button.disabled}
                                     mr={2}
                                     {...(button.rightIcon && {rightIcon: button.rightIcon})}
                                 >
                                     {button.label}
                                 </Button>
                             ))}
-                            <Button bgColor={colors.product} color={colors.productContrast} onClick={handleSubmit}>
+                            <Button bgColor={colors.product} color={colors.productContrast} onClick={handleSubmit}
+                                    isDisabled={disableAction}>
                                 {actionText}
                             </Button>
                         </ModalFooter>
