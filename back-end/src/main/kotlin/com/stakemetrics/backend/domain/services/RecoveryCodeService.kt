@@ -46,7 +46,7 @@ class RecoveryCodeService(
 
         userRepository.save(
             User(
-                user.id, user.email, user.name, user.phone, passwordEncoder.encode(password)
+                user.id, user.email, user.name, passwordEncoder.encode(password),
             )
         )
         recoveryCodeRepository.delete(recoveryCode)

@@ -1,11 +1,12 @@
 package com.stakemetrics.backend.domain.entities
 
+import com.stakemetrics.backend.domain.enums.UserTypes
 import java.util.UUID
 
 data class User(
     val id: UUID = UUID.randomUUID(),
     val email: String,
     val name: String,
-    val phone: String,
-    var password: String,
+    val password: String,
+    val type: UserTypes = UserTypes.USER
 )

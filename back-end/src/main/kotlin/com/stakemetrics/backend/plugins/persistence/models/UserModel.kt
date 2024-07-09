@@ -1,6 +1,7 @@
 package com.stakemetrics.backend.plugins.persistence.models
 
 import com.stakemetrics.backend.domain.entities.User
+import com.stakemetrics.backend.domain.enums.UserTypes
 import jakarta.persistence.*
 import java.util.UUID
 import org.springframework.security.core.GrantedAuthority
@@ -18,14 +19,17 @@ data class UserModel(
     val email: String = "",
     val name: String = "",
     @Column(name = "password_hash") val passwordHash: String = "",
-    val phone: String = "",
+    val type: UserTypes = UserTypes.USER,
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL]) val telegramChats: Set<TelegramChatModel> = setOf(),
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL]) val subscription: SubscriptionModel? = null,
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL]) val recoveryCodes: Set<RecoveryCodeModel> = setOf(),
 ) : UserDetails {
 
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return mutableListOf(SimpleGrantedAuthority("USER"))
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return when (type) {
+            UserTypes.SERVICE -> listOf(SimpleGrantedAuthority("ROLE_SERVICE"))
+            else -> listOf(SimpleGrantedAuthority("ROLE_USER"))
+        }
     }
 
     override fun getPassword(): String = passwordHash
@@ -41,6 +45,6 @@ data class UserModel(
     override fun isEnabled(): Boolean = true
 
     fun toDomain(): User {
-        return User(id, email, name, phone, password)
+        return User(id, email, name, password, type)
     }
 }

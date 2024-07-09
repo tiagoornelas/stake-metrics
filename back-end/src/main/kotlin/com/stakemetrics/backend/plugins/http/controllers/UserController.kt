@@ -20,7 +20,7 @@ class UserRestController(
     @PostMapping
     fun createUser(@RequestBody request: UserDTO.CreateRequest): ResponseEntity<UserDTO.CreateResponse> {
         userServicePort.create(
-            request.name, request.email, request.phone, request.password, request.passwordConfirmation
+            request.name, request.email, request.password, request.passwordConfirmation
         )
         return ResponseEntity.status(HttpStatus.CREATED).body(UserDTO.CreateResponse(request.email))
     }
@@ -39,7 +39,7 @@ class UserRestController(
     fun editUser(
         @PathVariable userId: UUID, @RequestBody request: UserDTO.EditRequest, principal: Principal
     ): ResponseEntity<UserDTO.EditResponse> {
-        userServicePort.edit(principal.name, userId, request.name, request.email, request.phone)
+        userServicePort.edit(principal.name, userId, request.name, request.email)
         return ResponseEntity.status(HttpStatus.OK).body(UserDTO.EditResponse())
     }
 

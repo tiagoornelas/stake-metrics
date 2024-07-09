@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserRepositoryPort {
+    fun existsByEmail(email: String): Boolean
     fun findById(userId: UUID): User?
     fun findByEmail(email: String): User?
     fun save(user: User): User

@@ -3,7 +3,6 @@ package com.stakemetrics.backend.plugins.http.dto
 import com.stakemetrics.backend.domain.entities.RecoveryCode
 import org.springframework.stereotype.Component
 
-@Component
 class RecoveryCodeDTO {
     data class CreateRequest(
         val email: String

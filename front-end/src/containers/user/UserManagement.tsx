@@ -11,7 +11,7 @@ import {createPortalSession} from "services/planService";
 import {fetchTelegramChats} from "services/telegramService";
 import {FEATURES} from "utils/constants/featureConstants";
 import {getFeatureAmount} from "utils/helpers/featureHelper";
-import {applyDateMask, applyPhoneMask} from "utils/helpers/sanitizationHelper";
+import {applyDateMask} from "utils/helpers/sanitizationHelper";
 import {TelegramChat, UserContext} from "utils/interfaces";
 
 const UserManagement = () => {
@@ -63,8 +63,6 @@ const UserManagement = () => {
                     <Text>{userContext.user.name}</Text>
                     <Heading size="sm">E-mail</Heading>
                     <Text>{userContext.user.email}</Text>
-                    <Heading size="sm">Telefone</Heading>
-                    <Text>{applyPhoneMask(userContext.user.phone)}</Text>
                 </Flex>
                 <Flex direction="column" gap={4} alignItems="self-start">
                     <EditUserModal/>

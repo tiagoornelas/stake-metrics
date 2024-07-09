@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository
 class UserRepository(
     private val userJpaRepository: UserJpaRepository
 ) : UserRepositoryPort {
+    override fun existsByEmail(email: String): Boolean {
+        return userJpaRepository.existsByEmail(email)
+    }
+
     override fun findById(userId: UUID): User? {
         val queriedUser = userJpaRepository.findById(userId).takeIf { it.isPresent } ?: return null
         return queriedUser.get().toDomain()
@@ -33,6 +37,6 @@ fun User.toModel(): UserModel {
         email = email,
         name = name,
         passwordHash = password,
-        phone = phone,
+        type = type
     )
 }
