@@ -1,20 +1,12 @@
-import {
-    Button,
-    FormControl,
-    FormLabel,
-    HStack,
-    Input,
-    Stack,
-} from '@chakra-ui/react'
-import useThemeColors from "hooks/useThemeColors";
-import {ChangeEvent, useState} from "react";
-import * as React from "react";
+import {Button, FormControl, FormLabel, HStack, Input, Stack,} from '@chakra-ui/react'
 import PasswordField from "components/PasswordField";
-import {UserCreationBody} from "utils/interfaces";
 import {useErrorToast} from "hooks/useErrorToast";
-import {createUser} from "services/userService";
+import useThemeColors from "hooks/useThemeColors";
+import * as React from "react";
+import {ChangeEvent, useState} from "react";
 import InputMask from "react-input-mask";
-import {sanitizePhoneMask} from "../../utils/helpers/sanitizationHelper";
+import {createUser} from "services/userService";
+import {UserCreationBody} from "utils/interfaces";
 import {SUCCESS_TYPES} from "../../utils/constants/successConstants";
 
 const CreateAccount = () => {
@@ -22,7 +14,6 @@ const CreateAccount = () => {
     const [form, setForm] = useState<UserCreationBody>({
         name: "",
         email: "",
-        phone: "",
         password: "",
         passwordConfirmation: ""
     });
@@ -35,8 +26,7 @@ const CreateAccount = () => {
     }
 
     const handleSubmit = useErrorToast(async () => {
-        const user: UserCreationBody = {...form, phone: sanitizePhoneMask(form.phone)}
-        await createUser(user)
+        await createUser(form)
         window.location.assign("/");
     }, SUCCESS_TYPES.USER_CREATED)
 
@@ -50,10 +40,6 @@ const CreateAccount = () => {
                 <FormControl>
                     <FormLabel htmlFor="email">E-mail</FormLabel>
                     <Input id="email" type="email" onChange={handleInput}/>
-                </FormControl>
-                <FormControl>
-                    <FormLabel htmlFor="phone">Telefone</FormLabel>
-                    <Input id="phone" as={InputMask} mask="(**) *********" type="text" onChange={handleInput}/>
                 </FormControl>
                 <PasswordField onChange={handleInput}/>
                 <PasswordField onChange={handleInput} passwordConfirmation/>

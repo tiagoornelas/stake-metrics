@@ -6,11 +6,13 @@ import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
 import com.stakemetrics.backend.domain.ports.SubscriptionServicePort
 import com.stakemetrics.backend.domain.ports.UserRepositoryPort
 import com.stakemetrics.backend.domain.services.RecoveryCodeService
+import com.stakemetrics.backend.domain.services.RepositorySeederService
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.plugins.email.EmailSender
 import com.stakemetrics.backend.plugins.encoder.PasswordEncoder
 import com.stakemetrics.backend.plugins.http.ports.TelegramServicePort
 import com.stakemetrics.backend.plugins.http.ports.UserServicePort
+import com.stakemetrics.backend.plugins.persistence.repositories.FifaLeagueRepository
 import com.stakemetrics.backend.plugins.subscription.ports.SubscriptionRepositoryPort
 import com.stakemetrics.backend.plugins.subscription.service.SubscriptionService
 import com.stakemetrics.backend.plugins.telegram.TelegramService
@@ -94,6 +96,16 @@ class SpringGlobalConfig : WebMvcConfigurer {
         val sessionLocaleResolver = SessionLocaleResolver()
         sessionLocaleResolver.setDefaultLocale(Locale.US)
         return sessionLocaleResolver
+    }
+
+    @Bean
+    fun repositorySeederService(
+        @Value("\${service.password}") servicePassword: String,
+        passwordEncoderPort: PasswordEncoderPort,
+        userRepositoryPort: UserRepositoryPort,
+        fifaLeagueRepository: FifaLeagueRepository
+    ): RepositorySeederService {
+        return RepositorySeederService(servicePassword, passwordEncoderPort, userRepositoryPort, fifaLeagueRepository)
     }
 
     @Bean

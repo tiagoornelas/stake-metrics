@@ -94,7 +94,6 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
             <Badge colorScheme={chat.status === "ACTIVE" ? "green" : "red"}>{chat.status === "ACTIVE" ? "Ativo" : "Inativo"}</Badge>
             <Modal title="Configuração de Telegram" actionText="Salvar"
                    actionCallback={handleSave}
-                   tooltip="Gerenciar Telegram"
                    extraButtons={extraButtons}
                    onCloseCallback={onCloseCallback}
                    icon={<IoMdSettings/>}>

@@ -6,15 +6,13 @@ import React, {ChangeEvent, useState} from 'react';
 import InputMask from "react-input-mask";
 import {editUser} from "services/userService";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
-import {removeCountryPrefixFromPhone, sanitizePhoneMask} from "utils/helpers/sanitizationHelper";
 import {UserContext, UserCreationBody} from "utils/interfaces";
 
 const EditUserModal = () => {
     const userContext: UserContext = useUserState();
     const [form, setForm] = useState<UserCreationBody>({
         name: userContext.user.name || "",
-        email: userContext.user.email || "",
-        phone: removeCountryPrefixFromPhone(userContext.user.phone) || "",
+        email: userContext.user.email || ""
     });
 
     const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -25,9 +23,8 @@ const EditUserModal = () => {
     }
 
     const handleSubmit = useErrorToast(async () => {
-        const user: UserCreationBody = {...form, phone: sanitizePhoneMask(form.phone)};
         if (!!userContext.user.id) {
-            await editUser(userContext.user.id, user);
+            await editUser(userContext.user.id, form);
             window.location.reload();
         }
     }, SUCCESS_TYPES.USER_EDITED)
@@ -42,11 +39,6 @@ const EditUserModal = () => {
             <FormControl>
                 <FormLabel htmlFor="email">E-mail</FormLabel>
                 <Input id="email" type="email" onChange={handleInput} value={form.email}/>
-            </FormControl>
-            <FormControl>
-                <FormLabel htmlFor="phone">Telefone</FormLabel>
-                <Input id="phone" as={InputMask} mask="(**) *********" type="text" onChange={handleInput}
-                       value={form.phone}/>
             </FormControl>
         </Stack>
     </Modal>

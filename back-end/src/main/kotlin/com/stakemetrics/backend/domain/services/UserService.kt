@@ -18,15 +18,14 @@ class UserService(
     private val passwordEncoder: PasswordEncoderPort,
     private val subscriptionServicePort: SubscriptionServicePort
 ) : UserServicePort {
-    override fun create(name: String, email: String, phone: String, password: String, passwordConfirmation: String) {
+    override fun create(name: String, email: String, password: String, passwordConfirmation: String) {
         val userExists = checkUserExistence(email)
         if (userExists) throw AlreadyExistsException("User", email)
 
         if (password != passwordConfirmation) throw PasswordConfirmationException()
-        if (!isValidPhoneNumber(phone)) throw InvalidFieldException("phone", phone)
 
         val user = User(
-            email = email, name = name, phone = phone, password = passwordEncoder.encode(password)
+            email = email, name = name, password = passwordEncoder.encode(password)
         )
 
         userRepository.save(user)
@@ -37,14 +36,13 @@ class UserService(
         return userRepository.findByEmail(email) != null
     }
 
-    override fun edit(authenticatedEmail: String, userId: UUID, name: String, email: String, phone: String) {
+    override fun edit(authenticatedEmail: String, userId: UUID, name: String, email: String) {
         val user = userRepository.findById(userId) ?: throw NotFoundException("User", "id", userId.toString())
 
         checkEmailExistenceIfDifferent(email, user)
         if (user.email != authenticatedEmail) throw EntityDoesntBelongToUserException()
-        if (!isValidPhoneNumber(phone)) throw InvalidFieldException("phone", phone)
 
-        val updatedUser = user.copy(name = name, email = email, phone = phone)
+        val updatedUser = user.copy(name = name, email = email)
         userRepository.save(updatedUser)
     }
 
@@ -63,11 +61,6 @@ class UserService(
 
         val updatedUser = user.copy(password = passwordEncoder.encode(password))
         userRepository.save(updatedUser)
-    }
-
-    private fun isValidPhoneNumber(phone: String): Boolean {
-        val regex = "^\\+\\d{10,13}\$".toRegex()
-        return regex.matches(phone)
     }
 
     override fun findById(userId: UUID): User {

@@ -1,13 +1,3 @@
-export const sanitizePhoneMask = (phone: string | undefined): string => `+55${phone?.replace(/\D/g, '')}`;
-
-export const removeCountryPrefixFromPhone = (phone: string | undefined): string => phone?.replace("+55", "") || '';
-
-export const applyPhoneMask = (phone: string | undefined): string => {
-    if (!phone) return '';
-    const phoneDigits: string = phone.replace("+55", "");
-    return `(${phoneDigits.slice(0, 2)}) ${phoneDigits.slice(2)}`;
-}
-
 export const applyDateMask = (date: string | null | undefined): string => {
     if (!date) return '';
     const dateObj: Date = new Date(date);
