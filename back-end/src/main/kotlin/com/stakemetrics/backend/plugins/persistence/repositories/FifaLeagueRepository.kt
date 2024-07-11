@@ -21,6 +21,10 @@ class FifaLeagueRepository(private val fifaLeagueJpaRepository: FifaLeagueJpaRep
         return fifaLeagueJpaRepository.findAllByStatus(FifaLeagueStatusTypes.ACTIVE).map { it.toDomain() }
     }
 
+    override fun findByIntegrationId(integrationId: Int): FifaLeague? {
+        return fifaLeagueJpaRepository.findByIntegrationId(integrationId)?.toDomain()
+    }
+
 }
 
 fun FifaLeague.toModel(): FifaLeagueModel {

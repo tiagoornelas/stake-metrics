@@ -30,6 +30,8 @@ dependencies {
     implementation("com.stripe:stripe-java:26.0.0")
     implementation("com.mailersend:java-sdk:1.0.0")
     implementation("org.telegram:telegrambots-client:7.4.2")
+    implementation("com.google.cloud:google-cloud-tasks:2.46.0")
+    implementation("com.google.cloud:google-cloud-pubsub:1.131.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 }
