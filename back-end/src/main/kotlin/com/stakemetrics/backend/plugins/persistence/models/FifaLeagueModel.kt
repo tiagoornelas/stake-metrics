@@ -2,11 +2,7 @@ package com.stakemetrics.backend.plugins.persistence.models
 
 import com.stakemetrics.backend.domain.entities.FifaLeague
 import com.stakemetrics.backend.domain.enums.FifaLeagueStatusTypes
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Index
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.*
 import java.util.UUID
 
 @Entity
@@ -21,6 +17,8 @@ data class FifaLeagueModel(
     val status: FifaLeagueStatusTypes = FifaLeagueStatusTypes.ACTIVE,
     val name: String = "",
     val link: String = "",
+    @OneToMany(mappedBy = "league", cascade = [CascadeType.ALL]) val matches: List<FifaMatchModel> = emptyList(),
+    @OneToMany(mappedBy = "league", cascade = [CascadeType.ALL]) val players: List<FifaPlayerModel> = emptyList()
 ) {
     fun toDomain(): FifaLeague {
         return FifaLeague(

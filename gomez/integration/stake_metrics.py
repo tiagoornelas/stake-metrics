@@ -51,28 +51,14 @@ def inform_results(results):
             'Authorization': f'Bearer {SERVICE_TOKEN}'
         }
 
-        retries = 0
-        success = False
-
-        while retries < 3 and not success:
-            conn = http.client.HTTPConnection(STAKE_METRICS_URL)
-            try:
-                conn.request("POST", "/fifa/match", body=payload, headers=headers)
-                response = conn.getresponse()
-                if 200 <= response.status < 300:
-                    print(f"Successfully sent result {formatted_result['integrationId']}")
-                    success = True
-                else:
-                    print(f"Failed to send result {formatted_result['integrationId']}, status code: {response.status}")
-                    retries += 1
-            except Exception as e:
-                print(f"Error sending result {formatted_result['integrationId']}: {e}")
-                retries += 1
-            finally:
-                conn.close()
-
-            if not success and retries == 3:
-                print(f"Failed to send result {formatted_result['integrationId']} after 3 attempts.")
+        conn = http.client.HTTPConnection(STAKE_METRICS_URL)
+        conn.request("POST", "/fifa/match", body=payload, headers=headers)
+        response = conn.getresponse()
+        if 200 <= response.status < 300:
+            print(f"Successfully sent result {formatted_result['integrationId']}")
+        else:
+            print(f"Failed to send result {formatted_result['integrationId']}, status code: {response.status}")
+        conn.close()
 
 
 def format_results_for_stake_metrics(results):

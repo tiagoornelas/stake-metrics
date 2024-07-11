@@ -6,4 +6,5 @@ interface FifaLeagueRepositoryPort {
     fun save(fifaLeague: FifaLeague)
     fun existsByIntegrationId(integrationId: Int): Boolean
     fun listActiveLeagues(): List<FifaLeague>
+    fun findByIntegrationId(integrationId: Int): FifaLeague?
 }

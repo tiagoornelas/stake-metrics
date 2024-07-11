@@ -1,15 +1,13 @@
 package com.stakemetrics.backend.plugins.http
 
-import com.stakemetrics.backend.domain.ports.EmailSenderPort
-import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
-import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
-import com.stakemetrics.backend.domain.ports.SubscriptionServicePort
-import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.domain.ports.*
+import com.stakemetrics.backend.domain.services.FifaService
 import com.stakemetrics.backend.domain.services.RecoveryCodeService
 import com.stakemetrics.backend.domain.services.RepositorySeederService
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.plugins.email.EmailSender
 import com.stakemetrics.backend.plugins.encoder.PasswordEncoder
+import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
 import com.stakemetrics.backend.plugins.http.ports.TelegramServicePort
 import com.stakemetrics.backend.plugins.http.ports.UserServicePort
 import com.stakemetrics.backend.plugins.persistence.repositories.FifaLeagueRepository
@@ -89,6 +87,15 @@ class SpringGlobalConfig : WebMvcConfigurer {
         userServicePort: UserServicePort
     ): TelegramServicePort {
         return TelegramService(botToken, telegramChatRepositoryPort, userServicePort)
+    }
+
+    @Bean
+    fun fifaServicePort(
+        fifaLeagueRepositoryPort: FifaLeagueRepositoryPort,
+        fifaMatchRepositoryPort: FifaMatchRepositoryPort,
+        fifaPlayerRepositoryPort: FifaPlayerRepositoryPort
+    ): FifaServicePort {
+        return FifaService(fifaLeagueRepositoryPort, fifaMatchRepositoryPort, fifaPlayerRepositoryPort)
     }
 
     @Bean
