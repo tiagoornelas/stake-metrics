@@ -32,3 +32,4 @@ package-lock.json
 #.env
 front-end/.env
 back-end/.env
+allejo/.env
