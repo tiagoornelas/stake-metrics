@@ -39,7 +39,6 @@ class FifaDTO {
     )
 
     data class FifaMatchResponse(
-        val id: UUID,
         val success: Boolean = true
     )
 }

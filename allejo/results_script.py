@@ -15,6 +15,4 @@ def run():
 
 # client.report_exception()
 
-
-if __name__ == '__main__':
-    run()
+run()
