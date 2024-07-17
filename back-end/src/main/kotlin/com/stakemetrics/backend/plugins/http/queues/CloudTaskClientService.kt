@@ -24,19 +24,39 @@ class CloudTaskClientService(
         CloudTasksClient.create().use { client ->
             val queuePath = QueueName.of(projectId, locationId, "save-match-result").toString()
             val fullUrl = "$baseUrl/fifa/match"
-            val httpRequest = HttpRequest.newBuilder()
-                .putHeaders("Authorization", request.getHeader("Authorization"))
-                .putHeaders("Content-Type", "application/json")
-                .setHttpMethod(HttpMethod.POST)
-                .setUrl(fullUrl)
-                .setBody(ByteString.copyFrom(payload))
-                .build()
-
-            val task = Task.newBuilder()
-                .setHttpRequest(httpRequest)
-                .build()
-
-            client.createTask(queuePath, task)
+            enqueueTask(request, fullUrl, payload, client, queuePath)
         }
+    }
+
+    fun enqueueAnalyzeNextMatchOddsTask(odds: Any, request: HttpServletRequest) {
+        val payload = objectMapper.writeValueAsString(odds).toByteArray(StandardCharsets.UTF_8)
+
+        CloudTasksClient.create().use { client ->
+            val queuePath = QueueName.of(projectId, locationId, "analyze-match-odds").toString()
+            val fullUrl = "$baseUrl/fifa/next-match/odds"
+            enqueueTask(request, fullUrl, payload, client, queuePath)
+        }
+    }
+
+    private fun enqueueTask(
+        request: HttpServletRequest,
+        fullUrl: String,
+        payload: ByteArray,
+        client: CloudTasksClient,
+        queuePath: String
+    ): Task? {
+        val httpRequest = HttpRequest.newBuilder()
+            .putHeaders("Authorization", request.getHeader("Authorization"))
+            .putHeaders("Content-Type", "application/json")
+            .setHttpMethod(HttpMethod.POST)
+            .setUrl(fullUrl)
+            .setBody(ByteString.copyFrom(payload))
+            .build()
+
+        val task = Task.newBuilder()
+            .setHttpRequest(httpRequest)
+            .build()
+
+        return client.createTask(queuePath, task)
     }
 }

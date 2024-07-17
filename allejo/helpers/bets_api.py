@@ -1,7 +1,3 @@
-def get_player_name_from_default_name(default_name):
-    return default_name.split('(')[-1].split(')')[0].strip()
-
-
 def add_extra_properties_to_result(match):
     goals = match['scores']['2']
     goals_home = int(goals['home'])
@@ -18,3 +14,7 @@ def add_extra_properties_to_result(match):
         match['winner'] = winner
 
     return match
+
+
+def get_player_name_from_default_name(default_name):
+    return default_name.split('(')[-1].split(')')[0].strip()
