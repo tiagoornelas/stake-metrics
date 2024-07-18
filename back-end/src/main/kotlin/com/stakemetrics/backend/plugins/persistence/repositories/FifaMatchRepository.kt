@@ -13,11 +13,13 @@ class FifaMatchRepository(private val fifaMatchJpaRepository: FifaMatchJpaReposi
     }
 
     override fun findLatestMatch(): FifaMatch? {
-        return fifaMatchJpaRepository.findTopByOrderByTimeDesc().toDomain()
+        val optionalResult = fifaMatchJpaRepository.findTopByOrderByTimeDesc()
+        return if (optionalResult.isPresent) optionalResult.get().toDomain() else null
     }
 
     override fun findByIntegrationId(integrationId: Int): FifaMatch? {
-        return fifaMatchJpaRepository.findByIntegrationId(integrationId).toDomain()
+        val optionalResult = fifaMatchJpaRepository.findByIntegrationId(integrationId)
+        return if (optionalResult.isPresent) optionalResult.get().toDomain() else null
     }
 }
 
