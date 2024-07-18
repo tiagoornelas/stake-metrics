@@ -1,12 +1,18 @@
 import http
-import os
-from dotenv import load_dotenv
 import http.client
 import json
+import os
+
+from dotenv import load_dotenv
+
+from helpers.stake_metrics import get_stake_metrics_url, get_inform_odds_url, get_inform_results_url
 
 load_dotenv()
-STAKE_METRICS_URL = os.environ.get('STAKE_METRICS_URL')
+STAKE_METRICS_URL = get_stake_metrics_url()
+INFORM_RESULT_URL = get_inform_results_url()
+INFORM_ODD_URL = get_inform_odds_url()
 SERVICE_TOKEN = os.environ.get('SERVICE_TOKEN')
+CURRENT_ENV = os.environ.get("ENV", "PRODUCTION")
 
 
 def get_last_result_time():
@@ -23,7 +29,7 @@ def fetch_stake_metrics(base_endpoint, path):
     headers = {
         'Authorization': f'Bearer {SERVICE_TOKEN}'
     }
-    conn = http.client.HTTPConnection(base_endpoint)
+    conn = get_connection(base_endpoint)
     conn.request("GET", path, headers=headers)
     res = conn.getresponse()
     data = res.read().decode("utf-8")
@@ -41,6 +47,13 @@ def fetch_stake_metrics(base_endpoint, path):
         return {}
 
 
+def get_connection(base_endpoint):
+    if CURRENT_ENV == "LOCAL":
+        return http.client.HTTPConnection(base_endpoint)
+    else:
+        return http.client.HTTPSConnection(base_endpoint)
+
+
 def inform_results(results):
     formatted_results = format_results_for_stake_metrics(results)
 
@@ -52,7 +65,7 @@ def inform_results(results):
         }
 
         conn = http.client.HTTPConnection(STAKE_METRICS_URL)
-        conn.request("POST", "/fifa/match", body=payload, headers=headers)
+        conn.request("POST", INFORM_RESULT_URL, body=payload, headers=headers)
         response = conn.getresponse()
         if 200 <= response.status < 300:
             print(f"Successfully sent result {formatted_result['integrationId']}")
@@ -98,3 +111,19 @@ def format_results_for_stake_metrics(results):
 
     return formatted_results
 
+
+def inform_upcoming_match(match):
+    payload = json.dumps(match)
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {SERVICE_TOKEN}'
+    }
+
+    conn = http.client.HTTPConnection(STAKE_METRICS_URL)
+    conn.request("POST", INFORM_ODD_URL, body=payload, headers=headers)
+    response = conn.getresponse()
+    if 200 <= response.status < 300:
+        print(f"Successfully sent match {match['id']}")
+    else:
+        print(f"Failed to send match {match['id']}, status code: {response.status}")
+    conn.close()

@@ -1,0 +1,36 @@
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GCP_PROJECT_NAME = "stakemetrics"
+SERVICE_NAME = "allejo"
+LOCAL_STAKE_METRICS_URL = "localhost:8080"
+PROD_STAKE_METRICS_URL = "stakemetrics.net"
+LOCAL_INFORM_RESULTS_URL = "/fifa/match"
+PROD_INFORM_RESULTS_URL = "/fifa/match/enqueue"
+LOCAL_INFORM_ODD_URL = "/fifa/next-match/odds"
+PROD_INFORM_ODD_URL = "/fifa/next-match/odds/enqueue"
+CURRENT_ENV = os.environ.get("ENV", "PRODUCTION")
+
+
+def get_stake_metrics_url():
+    if CURRENT_ENV == "LOCAL":
+        return LOCAL_STAKE_METRICS_URL
+    else:
+        return PROD_STAKE_METRICS_URL
+
+
+def get_inform_results_url():
+    if CURRENT_ENV == "LOCAL":
+        return LOCAL_INFORM_RESULTS_URL
+    else:
+        return PROD_INFORM_RESULTS_URL
+
+
+def get_inform_odds_url():
+    if CURRENT_ENV == "LOCAL":
+        return LOCAL_INFORM_ODD_URL
+    else:
+        return PROD_INFORM_ODD_URL

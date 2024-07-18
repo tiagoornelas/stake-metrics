@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 
-from helpers.bets_api import add_extra_properties_to_result
-from integration.stake_metrics import get_leagues
+from helpers.bets_api import add_extra_properties_to_result, get_player_name_from_default_name
+from integration.stake_metrics import get_leagues, inform_upcoming_match
 
 load_dotenv()
 BETS_API_TOKEN = os.environ.get('BETS_API_TOKEN')
@@ -55,6 +55,56 @@ def get_results_since(last_result_time):
                     formatted_results.append(formatted_match)
 
     return formatted_results
+
+
+def get_and_inform_upcoming_matches_with_odds():
+    leagues = get_leagues()
+
+    results = []
+
+    for league in leagues:
+        page = 1
+
+        while True:
+            endpoint = f"/v3/events/upcoming?sport_id=1&league_id={league['integrationId']}&page={page}"
+            json_data = fetch_bets_api(endpoint)
+            print(f"Fetching upcoming matches from League {league['name']} on page {page}...")
+            total_results = json_data['pager']['total']
+
+            results.extend(json_data['results'])
+
+            if page * json_data['pager']['per_page'] < total_results:
+                page += 1
+            else:
+                break
+
+    for match in results:
+        current_time = time.time()
+        match_time = float(match['time'])
+
+        if current_time <= match_time <= current_time + 3600:
+            match['home']['player_name'] = get_player_name_from_default_name(match['home']['name'])
+            match['away']['player_name'] = get_player_name_from_default_name(match['away']['name'])
+
+            match_odds = get_match_odds(match['id'])
+
+            if match_odds is not None:
+                match_time = datetime.utcfromtimestamp(int(match['time'])) + timedelta(hours=-3)
+                print(
+                    f"Checked odds for {match['home']['player_name']} x {match['away']['player_name']} - {match_time} from {match['league']['name']}")
+                match['sportsbook_odds'] = match_odds
+                inform_upcoming_match(match)
+
+
+def get_match_odds(match_id):
+    endpoint = f"/v2/event/odds?event_id={match_id}"
+    json_data = fetch_bets_api(endpoint)
+    result = json_data['results']
+
+    if result == {"stats": {}, "odds": {}}:
+        return None
+
+    return result
 
 
 def fetch_bets_api(endpoint):
