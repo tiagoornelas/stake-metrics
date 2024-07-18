@@ -34,3 +34,13 @@ def get_inform_odds_url():
         return LOCAL_INFORM_ODD_URL
     else:
         return PROD_INFORM_ODD_URL
+
+
+def get_market_type(market_id):
+    match market_id:
+        case "1_1":
+            return "MATCH_ODDS"
+        case "1_3":
+            return "GOAL_LINE"
+        case _:
+            raise ValueError("Unknown market type")
