@@ -107,6 +107,7 @@ class TelegramService(
     }
 
     override fun sendMessage(telegramChatId: UUID, message: String) {
+        // TODO - Implementar um sistema de fila para mensagens com agendamento
         val telegramChat = telegramChatRepositoryPort.findById(telegramChatId)
             ?: throw NotFoundException("TelegramChat", "id", telegramChatId.toString())
 
