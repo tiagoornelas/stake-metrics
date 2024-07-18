@@ -5,7 +5,7 @@ import os
 
 from dotenv import load_dotenv
 
-from helpers.stake_metrics import get_stake_metrics_url, get_inform_odds_url, get_inform_results_url
+from helpers.stake_metrics import get_stake_metrics_url, get_inform_odds_url, get_inform_results_url, get_market_type
 
 load_dotenv()
 STAKE_METRICS_URL = get_stake_metrics_url()
@@ -113,7 +113,9 @@ def format_results_for_stake_metrics(results):
 
 
 def inform_upcoming_match(match):
-    payload = json.dumps(match)
+    formatted_match = format_upcoming_match(match)
+    payload = json.dumps(formatted_match)
+
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {SERVICE_TOKEN}'
@@ -127,3 +129,79 @@ def inform_upcoming_match(match):
     else:
         print(f"Failed to send match {match['id']}, status code: {response.status}")
     conn.close()
+
+
+def format_upcoming_match(match):
+    return {
+        "integrationId": int(match["id"]),
+        "time": int(match["time"]),
+        "leagueId": int(match["league"]["id"]),
+        "home": match["home"]["player_name"],
+        "away": match["away"]["player_name"],
+        "odds": get_odds_from_match(match)
+    }
+
+
+def get_odds_from_match(match):
+    formatted_odds = []
+    for market_id, odds_array in match["sportsbook_odds"]["odds"].items():
+        latest_odds = None
+        latest_add_time = -1
+        for odds_entry in odds_array:
+            if int(odds_entry["add_time"]) > latest_add_time:
+                latest_add_time = int(odds_entry["add_time"])
+                latest_odds = odds_entry
+        if latest_odds:
+            try:
+                market_type = get_market_type(market_id)
+                strategy = get_strategy(market_type)
+                if strategy:
+                    odds_dict = {
+                        "marketType": market_type,
+                        "updateTime": latest_add_time,
+                    }
+                    odds_dict.update(strategy.get_properties(latest_odds))
+                    formatted_odds.append(odds_dict)
+            except ValueError:
+                continue
+    return formatted_odds
+
+
+class OddsStrategy:
+    def get_properties(self, odds_entry):
+        pass
+
+
+class MatchOddsStrategy(OddsStrategy):
+    def get_properties(self, odds_entry):
+        return {
+            "home": float(odds_entry.get("home_od")),
+            "draw": float(odds_entry.get("draw_od")),
+            "away": float(odds_entry.get("away_od"))
+        }
+
+
+class GoalLineStrategy(OddsStrategy):
+    def get_properties(self, odds_entry):
+        return {
+            "handicap": format_handicap(odds_entry.get("handicap")),
+            "over": float(odds_entry.get("over_od")),
+            "under": float(odds_entry.get("under_od"))
+        }
+
+
+def get_strategy(market_type):
+    if market_type == "MATCH_ODDS":
+        return MatchOddsStrategy()
+    elif market_type == "GOAL_LINE":
+        return GoalLineStrategy()
+    else:
+        return None
+
+
+def format_handicap(line):
+    if ',' in line:
+        line_array = line.split(',')
+        return (float(line_array[0]) + float(line_array[1])) / 2
+    else:
+        return float(line)
