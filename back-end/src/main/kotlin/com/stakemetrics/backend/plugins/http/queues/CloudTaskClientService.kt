@@ -28,12 +28,32 @@ class CloudTaskClientService(
         }
     }
 
-    fun enqueueAnalyzeNextMatchOddsTask(odds: Any, request: HttpServletRequest) {
+    fun enqueueReceiveUpcomingMatchOddsTask(odds: FifaDTO.FifaOddRequest, request: HttpServletRequest) {
         val payload = objectMapper.writeValueAsString(odds).toByteArray(StandardCharsets.UTF_8)
 
         CloudTasksClient.create().use { client ->
-            val queuePath = QueueName.of(projectId, locationId, "analyze-match-odds").toString()
+            val queuePath = QueueName.of(projectId, locationId, "receive-upcoming-match-odds").toString()
             val fullUrl = "$baseUrl/fifa/next-match/odds"
+            enqueueTask(request, fullUrl, payload, client, queuePath)
+        }
+    }
+
+    fun enqueueCheckOddForStrategyTask(pl: Any, request: HttpServletRequest) {
+        val payload = objectMapper.writeValueAsString(pl).toByteArray(StandardCharsets.UTF_8)
+
+        CloudTasksClient.create().use { client ->
+            val queuePath = QueueName.of(projectId, locationId, "check-odd-for-strategy").toString()
+            val fullUrl = "$baseUrl/fifa/odd/strategy"
+            enqueueTask(request, fullUrl, payload, client, queuePath)
+        }
+    }
+
+    fun enqueueSendTelegramMessageTask(pl: Any, request: HttpServletRequest) {
+        val payload = objectMapper.writeValueAsString(pl).toByteArray(StandardCharsets.UTF_8)
+
+        CloudTasksClient.create().use { client ->
+            val queuePath = QueueName.of(projectId, locationId, "send-telegram-message").toString()
+            val fullUrl = "$baseUrl/telegram/send-message"
             enqueueTask(request, fullUrl, payload, client, queuePath)
         }
     }

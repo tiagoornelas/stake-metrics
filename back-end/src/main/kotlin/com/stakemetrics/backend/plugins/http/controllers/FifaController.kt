@@ -62,17 +62,17 @@ class FifaController(
         return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaMatchResponse())
     }
 
-    @PostMapping("/next-match/odds/enqueue")
+    @PostMapping("/upcoming-match/odds/enqueue")
     fun enqueueAnalyzeNextMatchOdds(
         @RequestBody odds: FifaDTO.FifaOddRequest,
         request: HttpServletRequest
     ): ResponseEntity<FifaDTO.FifaOddResponse> {
-        cloudTaskClientService.enqueueAnalyzeNextMatchOddsTask(odds, request)
+        cloudTaskClientService.enqueueReceiveUpcomingMatchOddsTask(odds, request)
         return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaOddResponse())
     }
 
-    @PostMapping("/next-match/odds")
-    fun analyzeNextMatchOdds(@RequestBody odds: FifaDTO.FifaOddRequest): ResponseEntity<FifaDTO.FifaOddResponse> {
+    @PostMapping("/upcoming-match/odds")
+    fun receiveUpcomingMatchOdds(@RequestBody odds: FifaDTO.FifaOddRequest): ResponseEntity<FifaDTO.FifaOddResponse> {
         println(odds)
         return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaOddResponse())
     }
