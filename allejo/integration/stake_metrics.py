@@ -134,10 +134,6 @@ def inform_upcoming_match(match):
 def format_upcoming_match(match):
     return {
         "integrationId": int(match["id"]),
-        "time": int(match["time"]),
-        "leagueId": int(match["league"]["id"]),
-        "home": match["home"]["player_name"],
-        "away": match["away"]["player_name"],
         "odds": get_odds_from_match(match)
     }
 
