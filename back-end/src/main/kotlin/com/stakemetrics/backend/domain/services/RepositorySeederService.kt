@@ -10,7 +10,6 @@ import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
 import com.stakemetrics.backend.domain.ports.UserRepositoryPort
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Service
 
 @Service
@@ -32,12 +31,6 @@ class RepositorySeederService(
             User(
                 email = "allejo@stakemetrics.net",
                 name = "Allejo",
-                type = UserTypes.SERVICE,
-                password = passwordEncoderPort.encode(servicePassword)
-            ),
-            User(
-                email = "gomez@stakemetrics.net",
-                name = "Gomez",
                 type = UserTypes.SERVICE,
                 password = passwordEncoderPort.encode(servicePassword)
             )

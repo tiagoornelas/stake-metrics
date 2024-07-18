@@ -1,12 +1,10 @@
 package com.stakemetrics.backend.plugins.http.controllers
 
-import com.stakemetrics.backend.domain.ports.FifaLeagueRepositoryPort
 import com.stakemetrics.backend.plugins.http.dto.FifaDTO
 import com.stakemetrics.backend.plugins.http.dto.toResponse
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
 import com.stakemetrics.backend.service.CloudTaskClientService
 import jakarta.servlet.http.HttpServletRequest
-import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -65,15 +63,18 @@ class FifaController(
     }
 
     @PostMapping("/next-match/odds/enqueue")
-    fun enqueueAnalyzeNextMatchOdds(@RequestBody odds: Any, request: HttpServletRequest): ResponseEntity<Any> {
+    fun enqueueAnalyzeNextMatchOdds(
+        @RequestBody odds: FifaDTO.FifaOddRequest,
+        request: HttpServletRequest
+    ): ResponseEntity<FifaDTO.FifaOddResponse> {
         cloudTaskClientService.enqueueAnalyzeNextMatchOddsTask(odds, request)
-        return ResponseEntity.status(HttpStatus.OK).body("Odds analysis enqueued")
+        return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaOddResponse())
     }
 
     @PostMapping("/next-match/odds")
-    fun analyzeNextMatchOdds(@RequestBody odds: Any): ResponseEntity<Any> {
+    fun analyzeNextMatchOdds(@RequestBody odds: FifaDTO.FifaOddRequest): ResponseEntity<FifaDTO.FifaOddResponse> {
         println(odds)
-        return ResponseEntity.status(HttpStatus.OK).body("Odds analyzed")
+        return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaOddResponse())
     }
 
 }

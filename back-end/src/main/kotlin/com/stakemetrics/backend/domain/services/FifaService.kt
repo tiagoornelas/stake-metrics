@@ -9,6 +9,7 @@ import com.stakemetrics.backend.domain.ports.FifaLeagueRepositoryPort
 import com.stakemetrics.backend.domain.ports.FifaMatchRepositoryPort
 import com.stakemetrics.backend.domain.ports.FifaPlayerRepositoryPort
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
+import java.util.Calendar
 import java.util.Date
 
 class FifaService(
@@ -21,10 +22,16 @@ class FifaService(
     }
 
     override fun getLastResultTime(): Long {
-        val latestMatch = fifaMatchRepositoryPort.findLatestMatch()
-            ?: throw NotFoundException("Match", "latest", "No matches found")
+    val latestMatch = fifaMatchRepositoryPort.findLatestMatch()
+    if (latestMatch != null) {
         return latestMatch.time.time / 1000
+    } else {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, -60)
+        val aWeekAgo = calendar.time
+        return aWeekAgo.time / 1000
     }
+}
 
     override fun saveMatch(
         integrationId: Int,

@@ -26,7 +26,7 @@ data class FifaMatchModel(
     val awayGoalsAtFullTime: Int? = null,
     val totalGoalsAtHalfTime: Int? = null,
     val totalGoalsAtFullTime: Int? = null,
-    @ManyToOne @JoinColumn(name = "winner_player_id") val winner: FifaPlayerModel? = null,
+    @ManyToOne @JoinColumn(name = "winner_player_id") val winner: FifaPlayerModel? = null
 ) {
     fun toDomain(): FifaMatch {
         return FifaMatch(

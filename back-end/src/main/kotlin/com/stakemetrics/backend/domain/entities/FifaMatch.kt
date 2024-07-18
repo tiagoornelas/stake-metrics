@@ -18,5 +18,5 @@ data class FifaMatch(
     val awayGoalsAtFullTime: Int? = null,
     val totalGoalsAtHalfTime: Int? = null,
     val totalGoalsAtFullTime: Int? = null,
-    val winner: FifaPlayer? = null,
+    val winner: FifaPlayer? = null
 )

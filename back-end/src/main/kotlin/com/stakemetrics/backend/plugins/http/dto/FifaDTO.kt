@@ -1,7 +1,7 @@
 package com.stakemetrics.backend.plugins.http.dto
 
 import com.stakemetrics.backend.domain.entities.FifaLeague
-import com.stakemetrics.backend.domain.enums.FifaMatchStatusTypes
+import com.stakemetrics.backend.domain.enums.FifaMarketTypes
 import java.util.UUID
 
 class FifaDTO {
@@ -39,6 +39,26 @@ class FifaDTO {
     )
 
     data class FifaMatchResponse(
+        val success: Boolean = true
+    )
+
+    data class FifaSingleOdd(
+        val marketType: FifaMarketTypes,
+        val updateTime: Int,
+        val handicap: Double?,
+        val home: Double?,
+        val draw: Double?,
+        val away: Double?,
+        val over: Double?,
+        val under: Double?,
+    )
+
+    data class FifaOddRequest(
+        val integrationId: Int,
+        val odds: List<FifaSingleOdd>
+    )
+
+    data class FifaOddResponse(
         val success: Boolean = true
     )
 }
