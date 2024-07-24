@@ -44,15 +44,7 @@ class TelegramController(private val telegramServicePort: TelegramServicePort) {
 
     @PutMapping
     fun editIntegrationSettings(@RequestBody request: TelegramDTO.EditIntegrationRequest): ResponseEntity<TelegramDTO.EditIntegrationResponse> {
-        telegramServicePort.editIntegrationSettings(
-            request.id,
-            request.name,
-            request.chatId,
-            request.status,
-            request.delay,
-            request.deliveryProbability,
-            request.extraText
-        )
+        telegramServicePort.editIntegrationSettings(request)
         return ResponseEntity.ok(TelegramDTO.EditIntegrationResponse())
     }
 

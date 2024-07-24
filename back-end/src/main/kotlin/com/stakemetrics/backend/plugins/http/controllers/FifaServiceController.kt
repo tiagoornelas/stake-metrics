@@ -5,17 +5,14 @@ import com.stakemetrics.backend.plugins.http.dto.toResponse
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
 import com.stakemetrics.backend.service.CloudTaskClientService
 import jakarta.servlet.http.HttpServletRequest
+import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/fifa")
-class FifaController(
+@RequestMapping("/service/fifa")
+class FifaServiceController(
     private val fifaServicePort: FifaServicePort,
     private val cloudTaskClientService: CloudTaskClientService
 ) {
@@ -42,26 +39,6 @@ class FifaController(
         return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaMatchResponse())
     }
 
-    @PostMapping("/match")
-    fun saveMatchResults(@RequestBody match: FifaDTO.FifaMatchRequest): ResponseEntity<FifaDTO.FifaMatchResponse> {
-        fifaServicePort.saveMatch(
-            match.integrationId,
-            match.time,
-            match.status,
-            match.leagueId,
-            match.home,
-            match.away,
-            match.homeGoalsAtHalfTime,
-            match.awayGoalsAtHalfTime,
-            match.homeGoalsAtFullTime,
-            match.awayGoalsAtFullTime,
-            match.totalGoalsAtHalfTime,
-            match.totalGoalsAtFullTime,
-            match.winner
-        )
-        return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaMatchResponse())
-    }
-
     @PostMapping("/upcoming-match/odds/enqueue")
     fun enqueueAnalyzeNextMatchOdds(
         @RequestBody odds: FifaDTO.FifaOddRequest,
@@ -74,6 +51,18 @@ class FifaController(
     @PostMapping("/upcoming-match/odds")
     fun receiveUpcomingMatchOdds(@RequestBody odds: FifaDTO.FifaOddRequest): ResponseEntity<FifaDTO.FifaOddResponse> {
         println(odds)
+        // Should:
+        // Fetch all strategies for the given league
+        // Run the strategies against the odds, enqueue the analysis for production environment
+        return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaOddResponse())
+    }
+
+    @PostMapping("/strategy-against-odds/{strategyId}")
+    fun runStrategyAgainstOdds(@RequestBody odds: FifaDTO.FifaOddRequest, @PathVariable strategyId: UUID): ResponseEntity<FifaDTO.FifaOddResponse> {
+        println(odds)
+        // Should:
+        // Fetch all strategies for the given league
+        // Run the strategies against the odds, enqueue the analysis for production environment
         return ResponseEntity.status(HttpStatus.OK).body(FifaDTO.FifaOddResponse())
     }
 

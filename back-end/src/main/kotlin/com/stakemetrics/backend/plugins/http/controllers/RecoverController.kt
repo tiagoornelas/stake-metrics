@@ -23,7 +23,7 @@ class RecoverController(private val recoveryCodeServicePort: RecoveryCodeService
     fun changePassword(
         @RequestBody request: RecoveryCodeDTO.RecoverRequest
     ): ResponseEntity<RecoveryCodeDTO.RecoverResponse> {
-        recoveryCodeServicePort.recover(request.email, request.code, request.password, request.passwordConfirmation)
+        recoveryCodeServicePort.recover(request)
         return ResponseEntity.status(HttpStatus.OK).body(RecoveryCodeDTO.RecoverResponse())
     }
 }

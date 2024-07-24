@@ -1,4 +1,4 @@
-package com.stakemetrics.backend.domain.enums
+package com.stakemetrics.backend.domain.enums.fifa
 
 enum class FifaLeagueStatusTypes {
     ACTIVE,

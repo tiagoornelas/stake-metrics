@@ -1,7 +1,7 @@
 package com.stakemetrics.backend.plugins.persistence.models
 
-import com.stakemetrics.backend.domain.entities.FifaMatch
-import com.stakemetrics.backend.domain.enums.FifaMatchStatusTypes
+import com.stakemetrics.backend.domain.entities.fifa.FifaMatch
+import com.stakemetrics.backend.domain.enums.fifa.FifaMatchStatusTypes
 import jakarta.persistence.*
 import java.util.Date
 import java.util.UUID
@@ -13,20 +13,25 @@ import java.util.UUID
     indexes = [Index(columnList = "id"), Index(columnList = "integration_id")]
 )
 data class FifaMatchModel(
-    @Id val id: UUID = UUID.randomUUID(),
+    @Id
+    val id: UUID = UUID.randomUUID(),
     val integrationId: Int = 0,
     val time: Date = Date(),
     val status: FifaMatchStatusTypes = FifaMatchStatusTypes.PENDING,
-    @ManyToOne @JoinColumn(name = "league_id") val league: FifaLeagueModel? = null,
-    @ManyToOne @JoinColumn(name = "home_player_id") val home: FifaPlayerModel? = null,
-    @ManyToOne @JoinColumn(name = "away_player_id") val away: FifaPlayerModel? = null,
+    @ManyToOne @JoinColumn(name = "league_id")
+    val league: FifaLeagueModel? = null,
+    @ManyToOne @JoinColumn(name = "home_player_id")
+    val home: FifaPlayerModel? = null,
+    @ManyToOne @JoinColumn(name = "away_player_id")
+    val away: FifaPlayerModel? = null,
     val homeGoalsAtHalfTime: Int? = null,
     val homeGoalsAtFullTime: Int? = null,
     val awayGoalsAtHalfTime: Int? = null,
     val awayGoalsAtFullTime: Int? = null,
     val totalGoalsAtHalfTime: Int? = null,
     val totalGoalsAtFullTime: Int? = null,
-    @ManyToOne @JoinColumn(name = "winner_player_id") val winner: FifaPlayerModel? = null
+    @ManyToOne @JoinColumn(name = "winner_player_id")
+    val winner: FifaPlayerModel? = null
 ) {
     fun toDomain(): FifaMatch {
         return FifaMatch(

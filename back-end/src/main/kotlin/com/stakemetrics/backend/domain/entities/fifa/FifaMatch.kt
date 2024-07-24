@@ -1,6 +1,6 @@
-package com.stakemetrics.backend.domain.entities
+package com.stakemetrics.backend.domain.entities.fifa
 
-import com.stakemetrics.backend.domain.enums.FifaMatchStatusTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaMatchStatusTypes
 import java.util.Date
 import java.util.UUID
 

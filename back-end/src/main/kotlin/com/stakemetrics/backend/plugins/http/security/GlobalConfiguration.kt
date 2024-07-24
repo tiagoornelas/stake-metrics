@@ -34,7 +34,7 @@ class GlobalConfiguration(
                     .requestMatchers(HttpMethod.POST, "/recover").permitAll()
                     .requestMatchers(HttpMethod.PUT, "/recover").permitAll()
                     .requestMatchers(HttpMethod.POST, "/subscription/notify-event").permitAll()
-                    .requestMatchers("/fifa/**").hasRole("SERVICE")
+                    .requestMatchers("service/**").hasRole("SERVICE")
                     .anyRequest().authenticated()
             }
             .addFilterBefore(securityMiddleware, UsernamePasswordAuthenticationFilter::class.java)

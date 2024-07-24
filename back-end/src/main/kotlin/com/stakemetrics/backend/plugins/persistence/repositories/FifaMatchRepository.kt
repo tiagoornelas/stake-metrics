@@ -1,7 +1,7 @@
 package com.stakemetrics.backend.plugins.persistence.repositories
 
-import com.stakemetrics.backend.domain.entities.FifaMatch
-import com.stakemetrics.backend.domain.ports.FifaMatchRepositoryPort
+import com.stakemetrics.backend.domain.entities.fifa.FifaMatch
+import com.stakemetrics.backend.domain.ports.fifa.FifaMatchRepositoryPort
 import com.stakemetrics.backend.plugins.persistence.models.FifaMatchModel
 import com.stakemetrics.backend.plugins.persistence.repositories.jpa.FifaMatchJpaRepository
 import org.springframework.stereotype.Repository

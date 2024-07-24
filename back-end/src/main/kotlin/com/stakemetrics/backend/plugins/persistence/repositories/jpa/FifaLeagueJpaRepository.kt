@@ -1,6 +1,6 @@
 package com.stakemetrics.backend.plugins.persistence.repositories.jpa
 
-import com.stakemetrics.backend.domain.enums.FifaLeagueStatusTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaLeagueStatusTypes
 import com.stakemetrics.backend.plugins.persistence.models.FifaLeagueModel
 import java.util.UUID
 import org.springframework.data.jpa.repository.JpaRepository
