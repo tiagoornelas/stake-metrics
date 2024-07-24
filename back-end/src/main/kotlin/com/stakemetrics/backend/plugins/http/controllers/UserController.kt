@@ -19,9 +19,7 @@ class UserRestController(
 
     @PostMapping
     fun createUser(@RequestBody request: UserDTO.CreateRequest): ResponseEntity<UserDTO.CreateResponse> {
-        userServicePort.create(
-            request.name, request.email, request.password, request.passwordConfirmation
-        )
+        userServicePort.create(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(UserDTO.CreateResponse(request.email))
     }
 
@@ -39,7 +37,7 @@ class UserRestController(
     fun editUser(
         @PathVariable userId: UUID, @RequestBody request: UserDTO.EditRequest, principal: Principal
     ): ResponseEntity<UserDTO.EditResponse> {
-        userServicePort.edit(principal.name, userId, request.name, request.email)
+        userServicePort.edit(principal.name, userId, request)
         return ResponseEntity.status(HttpStatus.OK).body(UserDTO.EditResponse())
     }
 
@@ -48,7 +46,7 @@ class UserRestController(
         @PathVariable userId: UUID,
         @RequestBody request: UserDTO.ChangePasswordRequest,
     ): ResponseEntity<UserDTO.ChangePasswordResponse> {
-        userServicePort.changePassword(userId, request.currentPassword, request.password, request.passwordConfirmation)
+        userServicePort.changePassword(userId, request)
         return ResponseEntity.status(HttpStatus.OK).body(UserDTO.ChangePasswordResponse())
     }
 }

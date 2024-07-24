@@ -15,14 +15,21 @@ import org.springframework.security.core.userdetails.UserDetails
     indexes = [Index(columnList = "id")]
 )
 data class UserModel(
-    @Id val id: UUID = UUID.randomUUID(),
+    @Id
+    val id: UUID = UUID.randomUUID(),
     val email: String = "",
     val name: String = "",
-    @Column(name = "password_hash") val passwordHash: String = "",
+    @Column(name = "password_hash")
+    val passwordHash: String = "",
     val type: UserTypes = UserTypes.USER,
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL]) val telegramChats: Set<TelegramChatModel> = setOf(),
-    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL]) val subscription: SubscriptionModel? = null,
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL]) val recoveryCodes: Set<RecoveryCodeModel> = setOf(),
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    val telegramChats: MutableSet<TelegramChatModel> = mutableSetOf(),
+    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL])
+    val subscription: SubscriptionModel? = null,
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    val recoveryCodes: MutableSet<RecoveryCodeModel> = mutableSetOf(),
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    val strategies: MutableSet<FifaStrategyModel> = mutableSetOf()
 ) : UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority> {

@@ -8,8 +8,10 @@ import java.util.UUID
 @Entity
 @Table(name = "telegram_chats")
 data class TelegramChatModel(
-    @Id val id: UUID = UUID.randomUUID(),
-    @ManyToOne @JoinColumn(name = "user_id") val user: UserModel? = null,
+    @Id
+    val id: UUID = UUID.randomUUID(),
+    @ManyToOne @JoinColumn(name = "user_id")
+    val user: UserModel? = null,
     val name: String? = null,
     val chatId: String? = null,
     val status: TelegramChatStatus = TelegramChatStatus.ACTIVE,

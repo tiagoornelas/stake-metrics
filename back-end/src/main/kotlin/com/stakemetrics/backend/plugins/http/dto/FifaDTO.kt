@@ -1,7 +1,11 @@
 package com.stakemetrics.backend.plugins.http.dto
 
-import com.stakemetrics.backend.domain.entities.FifaLeague
-import com.stakemetrics.backend.domain.enums.FifaMarketTypes
+import com.stakemetrics.backend.domain.entities.fifa.FifaLeague
+import com.stakemetrics.backend.domain.enums.fifa.FifaMarketSubTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaMarketTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaMatchupTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaRuleTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaStrategyScopeTypes
 import java.util.UUID
 
 class FifaDTO {
@@ -42,7 +46,7 @@ class FifaDTO {
         val success: Boolean = true
     )
 
-    data class FifaSingleOdd(
+    data class FifaSingleOddRequest(
         val marketType: FifaMarketTypes,
         val updateTime: Int,
         val handicap: Double?,
@@ -55,10 +59,30 @@ class FifaDTO {
 
     data class FifaOddRequest(
         val integrationId: Int,
-        val odds: List<FifaSingleOdd>
+        val odds: List<FifaSingleOddRequest>
     )
 
     data class FifaOddResponse(
+        val success: Boolean = true
+    )
+
+    data class FifaRuleRequest(
+        val type: FifaRuleTypes,
+        val matchup: FifaMatchupTypes? = null,
+        val scope: FifaStrategyScopeTypes? = null,
+        val value: Double
+    )
+
+    data class FifaStrategyRequest(
+        val name: String,
+        val marketType: FifaMarketTypes,
+        val marketSubTypes: List<FifaMarketSubTypes>,
+        val leagues: List<UUID>,
+        val excludedPlayers: List<UUID>,
+        val rules: List<FifaRuleRequest>
+    )
+
+    data class FifaStrategyResponse(
         val success: Boolean = true
     )
 }

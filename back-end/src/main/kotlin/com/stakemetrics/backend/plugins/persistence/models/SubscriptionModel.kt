@@ -13,8 +13,10 @@ import java.util.UUID
 @Entity
 @Table(name = "subscriptions")
 data class SubscriptionModel(
-    @Id val id: UUID = UUID.randomUUID(),
-    @OneToOne @JoinColumn(name = "user_id") val user: UserModel? = null,
+    @Id
+    val id: UUID = UUID.randomUUID(),
+    @OneToOne @JoinColumn(name = "user_id")
+    val user: UserModel? = null,
     val customerId: String = "",
     val subscriptionId: String? = null,
     val status: SubscriptionStatus = SubscriptionStatus.INACTIVE,

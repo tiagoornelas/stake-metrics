@@ -1,11 +1,11 @@
 package com.stakemetrics.backend.domain.services
 
 
-import com.stakemetrics.backend.domain.entities.FifaLeague
+import com.stakemetrics.backend.domain.entities.fifa.FifaLeague
 import com.stakemetrics.backend.domain.entities.User
-import com.stakemetrics.backend.domain.enums.DefaultFifaLeagues
+import com.stakemetrics.backend.domain.enums.fifa.FifaDefaultLeagues
 import com.stakemetrics.backend.domain.enums.UserTypes
-import com.stakemetrics.backend.domain.ports.FifaLeagueRepositoryPort
+import com.stakemetrics.backend.domain.ports.fifa.FifaLeagueRepositoryPort
 import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
 import com.stakemetrics.backend.domain.ports.UserRepositoryPort
 import jakarta.annotation.PostConstruct
@@ -44,7 +44,7 @@ class RepositorySeederService(
     }
 
     fun seedFifaLeagues() {
-        DefaultFifaLeagues.entries.forEach { fifaLeague ->
+        FifaDefaultLeagues.entries.forEach { fifaLeague ->
             if (!fifaLeagueRepositoryPort.existsByIntegrationId(fifaLeague.id)) {
                 fifaLeagueRepositoryPort.save(
                     FifaLeague(

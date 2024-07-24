@@ -3,11 +3,11 @@ package com.stakemetrics.backend.plugins.telegram
 import com.stakemetrics.backend.domain.exceptions.AlreadyIntegratedException
 import com.stakemetrics.backend.domain.exceptions.InvalidFieldException
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
+import com.stakemetrics.backend.plugins.http.dto.TelegramDTO
 import com.stakemetrics.backend.plugins.http.ports.TelegramServicePort
 import com.stakemetrics.backend.plugins.http.ports.UserServicePort
 import com.stakemetrics.backend.plugins.telegram.entities.ChatDetails
 import com.stakemetrics.backend.plugins.telegram.entities.TelegramChat
-import com.stakemetrics.backend.plugins.telegram.enums.TelegramChatStatus
 import com.stakemetrics.backend.plugins.telegram.ports.TelegramChatRepositoryPort
 import java.util.UUID
 import kotlin.random.Random
@@ -60,34 +60,26 @@ class TelegramService(
         telegramChatRepositoryPort.save(telegramChat)
     }
 
-    override fun editIntegrationSettings(
-        id: UUID,
-        name: String?,
-        chatId: String?,
-        status: TelegramChatStatus?,
-        delay: Int?,
-        deliveryProbability: Double?,
-        extraText: String?
-    ) {
-        if (delay != null && delay > 120)
-            throw InvalidFieldException("Delay", delay.toString())
+    override fun editIntegrationSettings(dto: TelegramDTO.EditIntegrationRequest) {
+        if (dto.delay != null && dto.delay > 120)
+            throw InvalidFieldException("Delay", dto.delay.toString())
 
-        if (deliveryProbability != null && (deliveryProbability < 0 || deliveryProbability > 1))
-            throw InvalidFieldException("deliveryProbability", deliveryProbability.toString())
+        if (dto.deliveryProbability != null && (dto.deliveryProbability < 0 || dto.deliveryProbability > 1))
+            throw InvalidFieldException("deliveryProbability", dto.deliveryProbability.toString())
 
-        val queriedTelegramChat = telegramChatRepositoryPort.findById(id) ?: throw NotFoundException(
+        val queriedTelegramChat = telegramChatRepositoryPort.findById(dto.id) ?: throw NotFoundException(
             "TelegramChat",
             "id",
-            id.toString()
+            dto.id.toString()
         )
 
         val editedTelegramChat = queriedTelegramChat.copy(
-            name = name ?: queriedTelegramChat.name,
-            status = status ?: queriedTelegramChat.status,
-            chatId = chatId ?: queriedTelegramChat.chatId,
-            delay = delay ?: queriedTelegramChat.delay,
-            deliveryProbability = deliveryProbability ?: queriedTelegramChat.deliveryProbability,
-            extraText = extraText ?: queriedTelegramChat.extraText
+            name = dto.name ?: queriedTelegramChat.name,
+            status = dto.status ?: queriedTelegramChat.status,
+            chatId = dto.chatId ?: queriedTelegramChat.chatId,
+            delay = dto.delay ?: queriedTelegramChat.delay,
+            deliveryProbability = dto.deliveryProbability ?: queriedTelegramChat.deliveryProbability,
+            extraText = dto.extraText ?: queriedTelegramChat.extraText
         )
 
         telegramChatRepositoryPort.save(editedTelegramChat)

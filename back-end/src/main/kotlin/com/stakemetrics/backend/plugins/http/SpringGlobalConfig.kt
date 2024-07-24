@@ -1,10 +1,19 @@
 package com.stakemetrics.backend.plugins.http
 
-import com.stakemetrics.backend.domain.ports.*
-import com.stakemetrics.backend.domain.services.FifaService
+import com.stakemetrics.backend.domain.ports.EmailSenderPort
+import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
+import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
+import com.stakemetrics.backend.domain.ports.SubscriptionServicePort
+import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.domain.ports.fifa.FifaLeagueRepositoryPort
+import com.stakemetrics.backend.domain.ports.fifa.FifaMatchRepositoryPort
+import com.stakemetrics.backend.domain.ports.fifa.FifaPlayerRepositoryPort
+import com.stakemetrics.backend.domain.ports.fifa.FifaRuleRepositoryPort
+import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyRepositoryPort
 import com.stakemetrics.backend.domain.services.RecoveryCodeService
 import com.stakemetrics.backend.domain.services.RepositorySeederService
 import com.stakemetrics.backend.domain.services.UserService
+import com.stakemetrics.backend.domain.services.fifa.FifaService
 import com.stakemetrics.backend.plugins.email.EmailSender
 import com.stakemetrics.backend.plugins.encoder.PasswordEncoder
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
@@ -91,11 +100,21 @@ class SpringGlobalConfig : WebMvcConfigurer {
 
     @Bean
     fun fifaServicePort(
+        userService: UserService,
         fifaLeagueRepositoryPort: FifaLeagueRepositoryPort,
         fifaMatchRepositoryPort: FifaMatchRepositoryPort,
-        fifaPlayerRepositoryPort: FifaPlayerRepositoryPort
+        fifaPlayerRepositoryPort: FifaPlayerRepositoryPort,
+        fifaStrategyRepositoryPort: FifaStrategyRepositoryPort,
+        fifaRuleRepositoryPort: FifaRuleRepositoryPort
     ): FifaServicePort {
-        return FifaService(fifaLeagueRepositoryPort, fifaMatchRepositoryPort, fifaPlayerRepositoryPort)
+        return FifaService(
+            userService,
+            fifaLeagueRepositoryPort,
+            fifaMatchRepositoryPort,
+            fifaPlayerRepositoryPort,
+            fifaStrategyRepositoryPort,
+            fifaRuleRepositoryPort
+        )
     }
 
     @Bean

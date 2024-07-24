@@ -9,6 +9,7 @@ import com.stakemetrics.backend.domain.ports.EmailSenderPort
 import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
 import com.stakemetrics.backend.domain.ports.RecoveryCodeRepositoryPort
 import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.plugins.http.dto.RecoveryCodeDTO
 import com.stakemetrics.backend.plugins.http.ports.RecoveryCodeServicePort
 import java.util.Calendar
 import java.util.UUID
@@ -30,10 +31,10 @@ class RecoveryCodeService(
         emailSenderPort.sendRecoveryCodeEmail(user.name, email, code)
     }
 
-    override fun recover(userEmail: String, code: String, password: String, passwordConfirmation: String) {
-        if (password != passwordConfirmation) throw PasswordConfirmationException()
-        val user = userRepository.findByEmail(userEmail) ?: throw NotFoundException("User", "email", userEmail)
-        val recoveryCode = recoveryCodeRepository.findByCode(code) ?: throw AccountRecoveryException()
+    override fun recover(dto: RecoveryCodeDTO.RecoverRequest) {
+        if (dto.password != dto.passwordConfirmation) throw PasswordConfirmationException()
+        val user = userRepository.findByEmail(dto.email) ?: throw NotFoundException("User", "email", dto.email)
+        val recoveryCode = recoveryCodeRepository.findByCode(dto.code) ?: throw AccountRecoveryException()
         val isCodeExpired = recoveryCode.expireDate.before(Calendar.getInstance().time)
         val codeBelongsToUser = recoveryCode.user?.id == user.id
 
@@ -46,7 +47,7 @@ class RecoveryCodeService(
 
         userRepository.save(
             User(
-                user.id, user.email, user.name, passwordEncoder.encode(password),
+                user.id, user.email, user.name, passwordEncoder.encode(dto.password),
             )
         )
         recoveryCodeRepository.delete(recoveryCode)

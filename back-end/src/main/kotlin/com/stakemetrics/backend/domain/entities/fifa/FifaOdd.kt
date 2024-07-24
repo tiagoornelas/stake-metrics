@@ -1,6 +1,6 @@
-package com.stakemetrics.backend.domain.entities
+package com.stakemetrics.backend.domain.entities.fifa
 
-import com.stakemetrics.backend.domain.enums.FifaMarketTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaMarketTypes
 import java.util.Date
 import java.util.UUID
 

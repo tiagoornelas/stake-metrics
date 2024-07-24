@@ -8,10 +8,10 @@ GCP_PROJECT_NAME = "stakemetrics"
 SERVICE_NAME = "allejo"
 LOCAL_STAKE_METRICS_URL = "localhost:8080"
 PROD_STAKE_METRICS_URL = "stakemetrics.net"
-LOCAL_INFORM_RESULTS_URL = "/fifa/match"
-PROD_INFORM_RESULTS_URL = "/fifa/match/enqueue"
-LOCAL_INFORM_ODD_URL = "/fifa/upcoming-match/odds"
-PROD_INFORM_ODD_URL = "/fifa/upcoming-match/odds/enqueue"
+LOCAL_INFORM_RESULTS_URL = "/service/fifa/match"
+PROD_INFORM_RESULTS_URL = "/service/fifa/match/enqueue"
+LOCAL_INFORM_ODD_URL = "/service/fifa/upcoming-match/odds"
+PROD_INFORM_ODD_URL = "/service/fifa/upcoming-match/odds/enqueue"
 CURRENT_ENV = os.environ.get("ENV", "PRODUCTION")
 
 

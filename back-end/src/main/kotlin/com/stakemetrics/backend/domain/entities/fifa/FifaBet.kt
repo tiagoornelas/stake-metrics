@@ -1,4 +1,4 @@
-package com.stakemetrics.backend.domain.entities
+package com.stakemetrics.backend.domain.entities.fifa
 
 import java.util.UUID
 

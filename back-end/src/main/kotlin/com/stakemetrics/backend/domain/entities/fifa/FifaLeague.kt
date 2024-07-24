@@ -1,6 +1,6 @@
-package com.stakemetrics.backend.domain.entities
+package com.stakemetrics.backend.domain.entities.fifa
 
-import com.stakemetrics.backend.domain.enums.FifaLeagueStatusTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaLeagueStatusTypes
 import java.util.UUID
 
 data class FifaLeague(

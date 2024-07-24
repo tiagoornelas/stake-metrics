@@ -3,12 +3,12 @@ package com.stakemetrics.backend.domain.services
 import com.stakemetrics.backend.domain.entities.User
 import com.stakemetrics.backend.domain.exceptions.AlreadyExistsException
 import com.stakemetrics.backend.domain.exceptions.EntityDoesntBelongToUserException
-import com.stakemetrics.backend.domain.exceptions.InvalidFieldException
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
 import com.stakemetrics.backend.domain.exceptions.PasswordConfirmationException
 import com.stakemetrics.backend.domain.ports.PasswordEncoderPort
 import com.stakemetrics.backend.domain.ports.SubscriptionServicePort
 import com.stakemetrics.backend.domain.ports.UserRepositoryPort
+import com.stakemetrics.backend.plugins.http.dto.UserDTO
 import com.stakemetrics.backend.plugins.http.ports.UserServicePort
 import java.util.UUID
 import org.springframework.security.authentication.BadCredentialsException
@@ -18,14 +18,14 @@ class UserService(
     private val passwordEncoder: PasswordEncoderPort,
     private val subscriptionServicePort: SubscriptionServicePort
 ) : UserServicePort {
-    override fun create(name: String, email: String, password: String, passwordConfirmation: String) {
-        val userExists = checkUserExistence(email)
-        if (userExists) throw AlreadyExistsException("User", email)
+    override fun create(dto: UserDTO.CreateRequest) {
+        val userExists = checkUserExistence(dto.email)
+        if (userExists) throw AlreadyExistsException("User", dto.email)
 
-        if (password != passwordConfirmation) throw PasswordConfirmationException()
+        if (dto.password != dto.passwordConfirmation) throw PasswordConfirmationException()
 
         val user = User(
-            email = email, name = name, password = passwordEncoder.encode(password)
+            email = dto.email, name = dto.name, password = passwordEncoder.encode(dto.password)
         )
 
         userRepository.save(user)
@@ -36,13 +36,13 @@ class UserService(
         return userRepository.findByEmail(email) != null
     }
 
-    override fun edit(authenticatedEmail: String, userId: UUID, name: String, email: String) {
+    override fun edit(authenticatedEmail: String, userId: UUID, dto: UserDTO.EditRequest) {
         val user = userRepository.findById(userId) ?: throw NotFoundException("User", "id", userId.toString())
 
-        checkEmailExistenceIfDifferent(email, user)
+        checkEmailExistenceIfDifferent(dto.email, user)
         if (user.email != authenticatedEmail) throw EntityDoesntBelongToUserException()
 
-        val updatedUser = user.copy(name = name, email = email)
+        val updatedUser = user.copy(name = dto.name, email = dto.email)
         userRepository.save(updatedUser)
     }
 
@@ -53,13 +53,13 @@ class UserService(
         }
     }
 
-    override fun changePassword(userId: UUID, currentPassword: String, password: String, passwordConfirmation: String) {
+    override fun changePassword(userId: UUID, dto: UserDTO.ChangePasswordRequest) {
         val user = userRepository.findById(userId) ?: throw NotFoundException("User", "id", userId.toString())
 
-        if (password != passwordConfirmation) throw PasswordConfirmationException()
-        if (!passwordEncoder.matches(currentPassword, user.password)) throw BadCredentialsException("Invalid password")
+        if (dto.password != dto.passwordConfirmation) throw PasswordConfirmationException()
+        if (!passwordEncoder.matches(dto.currentPassword, user.password)) throw BadCredentialsException("Invalid password")
 
-        val updatedUser = user.copy(password = passwordEncoder.encode(password))
+        val updatedUser = user.copy(password = passwordEncoder.encode(dto.password))
         userRepository.save(updatedUser)
     }
 

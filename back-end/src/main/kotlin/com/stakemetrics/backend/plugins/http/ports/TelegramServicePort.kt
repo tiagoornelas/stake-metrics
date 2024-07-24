@@ -1,8 +1,8 @@
 package com.stakemetrics.backend.plugins.http.ports
 
+import com.stakemetrics.backend.plugins.http.dto.TelegramDTO
 import com.stakemetrics.backend.plugins.telegram.entities.ChatDetails
 import com.stakemetrics.backend.plugins.telegram.entities.TelegramChat
-import com.stakemetrics.backend.plugins.telegram.enums.TelegramChatStatus
 import java.util.UUID
 import org.springframework.stereotype.Service
 
@@ -15,5 +15,5 @@ interface TelegramServicePort {
     fun integratePrivateChat(userId: UUID): ChatDetails
     fun integrateChannel(userId: UUID, channelId: String)
     fun deleteIntegration(telegramChatId: UUID)
-    fun editIntegrationSettings(id: UUID, name: String?, chatId: String?, status: TelegramChatStatus?, delay: Int?, deliveryProbability: Double?, extraText: String?)
+    fun editIntegrationSettings(dto: TelegramDTO.EditIntegrationRequest)
 }
