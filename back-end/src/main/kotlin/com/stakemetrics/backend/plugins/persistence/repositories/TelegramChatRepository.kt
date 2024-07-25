@@ -48,6 +48,8 @@ fun TelegramChat.toModel(): TelegramChatModel {
         status,
         delay,
         deliveryProbability,
+        notDeliveredMessage,
+        delayedAlertMessage,
         extraText
     )
 }
