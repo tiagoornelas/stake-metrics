@@ -96,7 +96,9 @@ export interface TelegramChat {
     status: string;
     delay: number;
     deliveryProbability: number;
-    extraText: string | null;
+    notDeliveredMessage: string;
+    delayedAlertMessage: string;
+    extraText: string;
 }
 
 export interface ExtraButton extends ButtonProps {

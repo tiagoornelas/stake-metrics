@@ -1,6 +1,6 @@
-import {BASE_URL, ENDPOINTS} from "../utils/constants/serviceConstants";
-import {makeRequest} from "../utils/helpers/requestHelper";
-import {REQUEST_TYPE} from "../utils/interfaces";
+import {BASE_URL, ENDPOINTS} from "utils/constants/serviceConstants";
+import {makeRequest} from "utils/helpers/requestHelper";
+import {REQUEST_TYPE} from "utils/interfaces";
 
 export const fetchTelegramChats = (userId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}/${userId}`, REQUEST_TYPE.GET);
 
@@ -8,17 +8,31 @@ export const beginIntegration = (userId: string) => makeRequest(`${BASE_URL}${EN
 
 export const integratePrivateChat = (userId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}${ENDPOINTS.TELEGRAM.INTEGRATE_PRIVATE_CHAT}/${userId}`, REQUEST_TYPE.POST);
 
-export const integrateChannel = (userId: string, channelId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}${ENDPOINTS.TELEGRAM.INTEGRATE_CHANNEL}`, REQUEST_TYPE.POST, { userId, channelId });
+export const integrateChannel = (userId: string, channelId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}${ENDPOINTS.TELEGRAM.INTEGRATE_CHANNEL}`, REQUEST_TYPE.POST, {
+    userId,
+    channelId
+});
 
 export const deletePrivateChat = (telegramChatId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}/${telegramChatId}`, REQUEST_TYPE.DELETE);
 
 export const testPrivateChat = (telegramChatId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}${ENDPOINTS.TELEGRAM.TEST_MESSAGE}/${telegramChatId}`, REQUEST_TYPE.POST);
 
-export const editIntegration = (telegramChatId: string, name: string, status: string, delay: number, deliveryProbability: number, extraText: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}`, REQUEST_TYPE.PUT, {
+export const editIntegration = (
+    telegramChatId: string,
+    name: string,
+    status: string,
+    delay: number,
+    deliveryProbability: number,
+    notDeliveredMessage: string,
+    delayedAlertMessage: string,
+    extraText: string
+) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}`, REQUEST_TYPE.PUT, {
     id: telegramChatId,
     name,
     status,
     delay,
     deliveryProbability,
+    notDeliveredMessage,
+    delayedAlertMessage,
     extraText
 });
