@@ -13,7 +13,9 @@ class TelegramDTO {
         val status: String,
         val delay: Int,
         val deliveryProbability: Double,
-        val extraText: String?
+        val notDeliveredMessage: String,
+        val delayedAlertMessage: String,
+        val extraText: String
     )
 
     data class ListResponse(
@@ -56,7 +58,9 @@ class TelegramDTO {
         val status: TelegramChatStatus?,
         val delay: Int?,
         val deliveryProbability: Double?,
-        val extraText: String?
+        val notDeliveredMessage: String,
+        val delayedAlertMessage: String,
+        val extraText: String
     )
 
     data class EditIntegrationResponse(
@@ -76,6 +80,8 @@ fun TelegramChat.toTelegramChatResponse(): TelegramDTO.TelegramChatResponse {
         this.status.toString(),
         this.delay,
         this.deliveryProbability,
+        this.notDeliveredMessage,
+        this.delayedAlertMessage,
         this.extraText
     )
 }
