@@ -79,7 +79,9 @@ class TelegramService(
             chatId = dto.chatId ?: queriedTelegramChat.chatId,
             delay = dto.delay ?: queriedTelegramChat.delay,
             deliveryProbability = dto.deliveryProbability ?: queriedTelegramChat.deliveryProbability,
-            extraText = dto.extraText ?: queriedTelegramChat.extraText
+            notDeliveredMessage = dto.notDeliveredMessage,
+            delayedAlertMessage = dto.delayedAlertMessage,
+            extraText = dto.extraText
         )
 
         telegramChatRepositoryPort.save(editedTelegramChat)
@@ -110,13 +112,25 @@ class TelegramService(
         )
 
         val delayInSeconds = telegramChat.delay.coerceAtMost(120)
+        val hasDelayedMessage = telegramChat.hasDelayedAlertMessage()
+
         val deliveryProbability = telegramChat.deliveryProbability
+        val hasNotDeliveredMessage = telegramChat.hasNotDeliveredMessage()
 
         runBlocking {
             launch {
-                delay(delayInSeconds * 1000L)
-
                 if (Random.nextDouble() <= deliveryProbability) {
+                    if (hasDelayedMessage) {
+                        telegramClient.execute(
+                            SendMessage
+                                .builder()
+                                .chatId(telegramChat.chatId)
+                                .text(telegramChat.delayedAlertMessage)
+                                .build()
+                        )
+                    }
+                    delay(delayInSeconds * 1000L)
+
                     val finalMessage = if (!telegramChat.extraText.isNullOrEmpty()) {
                         "$message\n\n${telegramChat.extraText}"
                     } else {
@@ -130,6 +144,16 @@ class TelegramService(
                             .text(finalMessage)
                             .build()
                     )
+                } else {
+                    if (hasNotDeliveredMessage) {
+                        telegramClient.execute(
+                            SendMessage
+                                .builder()
+                                .chatId(telegramChat.chatId)
+                                .text(telegramChat.notDeliveredMessage)
+                                .build()
+                        )
+                    }
                 }
             }
         }
@@ -145,6 +169,7 @@ class TelegramService(
 
         return ChatDetails(chat.id.toString(), chat.userName)
     }
+
     fun findWithoutIntegrationByUserWhileCleaningUp(id: UUID): TelegramChat {
         val telegramChats = telegramChatRepositoryPort.findAllByUserId(id)
         val telegramChatsWithoutIntegration = telegramChats.filter { it.chatId == null }

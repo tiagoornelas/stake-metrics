@@ -1,9 +1,20 @@
-import {Badge, Box, CreateToastFnReturn, Heading, Input, Select, Stack, Text, useToast} from "@chakra-ui/react";
+import {
+    Badge,
+    Box, Checkbox,
+    CreateToastFnReturn,
+    Flex,
+    Heading,
+    Input,
+    Select,
+    Stack,
+    Text, Tooltip,
+    useToast
+} from "@chakra-ui/react";
 import DefaultSlider from "components/DefaultSlider";
 import Modal from "components/Modal";
 import {useErrorToast} from "hooks/useErrorToast";
 import React, {useState, useEffect} from 'react';
-import {IoMdSettings, SiTelegram} from "react-icons/all";
+import {IoMdSettings, SiTelegram, IoMdInformationCircleOutline} from "react-icons/all";
 import {MdDelete} from "react-icons/md";
 import {deletePrivateChat, editIntegration, testPrivateChat} from "services/telegramService";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
@@ -23,7 +34,9 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
         status: chat.status,
         delay: chat.delay,
         deliveryProbability: chat.deliveryProbability,
-        extraText: chat.extraText || ""
+        notDeliveredMessage: chat.notDeliveredMessage,
+        delayedAlertMessage: chat.delayedAlertMessage,
+        extraText: chat.extraText
     });
 
     useEffect(() => {
@@ -32,9 +45,27 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
             formState.status !== chat.status ||
             formState.delay !== chat.delay ||
             formState.deliveryProbability !== chat.deliveryProbability ||
+            formState.notDeliveredMessage !== chat.notDeliveredMessage ||
+            formState.delayedAlertMessage !== chat.delayedAlertMessage ||
             formState.extraText !== originalChatExtraText;
         setIsFormDirty(isDirty);
     }, [formState, chat]);
+
+    useEffect(() => {
+        if (formState.delay === 0) {
+            setFormState((prevState) => ({
+                ...prevState,
+                delayedAlertMessage: ""
+            }));
+        }
+
+        if (formState.deliveryProbability === 1) {
+            setFormState((prevState) => ({
+                ...prevState,
+                notDeliveredMessage: ""
+            }));
+        }
+    }, [formState.delay, formState.deliveryProbability]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const {name, value} = e.target;
@@ -58,7 +89,16 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
         }));
     };
 
-    const handleSave = useErrorToast(async () => editIntegration(chat.id, formState.name, formState.status, formState.delay, formState.deliveryProbability, formState.extraText), SUCCESS_TYPES.TELEGRAM_CHAT_EDITED);
+    const handleSave = useErrorToast(async () => editIntegration(
+        chat.id,
+        formState.name,
+        formState.status,
+        formState.delay,
+        formState.deliveryProbability,
+        formState.notDeliveredMessage,
+        formState.delayedAlertMessage,
+        formState.extraText
+    ), SUCCESS_TYPES.TELEGRAM_CHAT_EDITED);
 
     const handleDelete = useErrorToast(async () => deletePrivateChat(chat.id), SUCCESS_TYPES.TELEGRAM_CODE_GENERATED);
     const handleTestMessage = useErrorToast(async () => {
@@ -91,7 +131,8 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
     return (
         <>
             <Text>{chat.name}</Text>
-            <Badge colorScheme={chat.status === "ACTIVE" ? "green" : "red"}>{chat.status === "ACTIVE" ? "Ativo" : "Inativo"}</Badge>
+            <Badge
+                colorScheme={chat.status === "ACTIVE" ? "green" : "red"}>{chat.status === "ACTIVE" ? "Ativo" : "Inativo"}</Badge>
             <Modal title="Configuração de Telegram" actionText="Salvar"
                    actionCallback={handleSave}
                    extraButtons={extraButtons}
@@ -122,7 +163,26 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
                                        min={0} max={1} step={0.01} isPercentage sufix="%"/>
                     </Box>
                     <Box display="flex" flexDirection="column" gap={2}>
-                        <Heading size="sm">Texto extra</Heading>
+                        <Heading size="sm">Mensagem prévia
+                            ao atraso</Heading>
+                        <Text fontSize="xs" color="gray">Preencha para enviar uma mensagem antes da mensagem principal
+                            em caso de atraso</Text>
+                        <Input disabled={formState.delay === 0} name="delayedAlertMessage" value={formState.delayedAlertMessage}
+                               onChange={handleChange}/>
+                    </Box>
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <Heading size="sm">Aviso de
+                            mensagem não entregue</Heading>
+                        <Text fontSize="xs" color="gray">Preencha para enviar uma mensagem antes da mensagem principal
+                            em caso de atraso</Text>
+                        <Input disabled={formState.deliveryProbability === 1} name="notDeliveredMessage" value={formState.notDeliveredMessage}
+                               onChange={handleChange}/>
+                    </Box>
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <Heading size="sm">Texto extra ao
+                            final</Heading>
+                        <Text fontSize="xs" color="gray">Preencha para enviar uma mensagem antes da mensagem principal
+                            em caso de atraso</Text>
                         <Input name="extraText" value={formState.extraText} onChange={handleChange}/>
                     </Box>
                 </Stack>

@@ -17,7 +17,9 @@ data class TelegramChatModel(
     val status: TelegramChatStatus = TelegramChatStatus.ACTIVE,
     val delay: Int = 0,
     val deliveryProbability: Double = 1.0,
-    val extraText: String? = null,
+    val notDeliveredMessage: String = "",
+    val delayedAlertMessage: String = "",
+    val extraText: String = "",
     val createdAt: Long = System.currentTimeMillis()
 ) {
     fun toDomain(): TelegramChat {
@@ -29,6 +31,8 @@ data class TelegramChatModel(
             status,
             delay,
             deliveryProbability,
+            notDeliveredMessage,
+            delayedAlertMessage,
             extraText,
             createdAt
         )
