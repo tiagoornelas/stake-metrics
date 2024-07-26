@@ -14,6 +14,7 @@ import com.stakemetrics.backend.domain.services.RecoveryCodeService
 import com.stakemetrics.backend.domain.services.RepositorySeederService
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.domain.services.fifa.FifaService
+import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyEnqueuer
 import com.stakemetrics.backend.plugins.email.EmailSender
 import com.stakemetrics.backend.plugins.encoder.PasswordEncoder
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
@@ -101,6 +102,7 @@ class SpringGlobalConfig : WebMvcConfigurer {
     @Bean
     fun fifaServicePort(
         userService: UserService,
+        fifaStrategyEnqueuer: FifaStrategyEnqueuer,
         fifaLeagueRepositoryPort: FifaLeagueRepositoryPort,
         fifaMatchRepositoryPort: FifaMatchRepositoryPort,
         fifaPlayerRepositoryPort: FifaPlayerRepositoryPort,
@@ -109,11 +111,11 @@ class SpringGlobalConfig : WebMvcConfigurer {
     ): FifaServicePort {
         return FifaService(
             userService,
+            fifaStrategyEnqueuer,
             fifaLeagueRepositoryPort,
             fifaMatchRepositoryPort,
             fifaPlayerRepositoryPort,
-            fifaStrategyRepositoryPort,
-            fifaRuleRepositoryPort
+            fifaStrategyRepositoryPort
         )
     }
 

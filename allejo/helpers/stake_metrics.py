@@ -10,8 +10,7 @@ LOCAL_STAKE_METRICS_URL = "localhost:8080"
 PROD_STAKE_METRICS_URL = "stakemetrics.net"
 LOCAL_INFORM_RESULTS_URL = "/service/fifa/match"
 PROD_INFORM_RESULTS_URL = "/service/fifa/match/enqueue"
-LOCAL_INFORM_ODD_URL = "/service/fifa/upcoming-match/odds"
-PROD_INFORM_ODD_URL = "/service/fifa/upcoming-match/odds/enqueue"
+INFORM_ODD_URL = "/service/fifa/upcoming-match/odds"
 CURRENT_ENV = os.environ.get("ENV", "PRODUCTION")
 
 
@@ -30,10 +29,7 @@ def get_inform_results_url():
 
 
 def get_inform_odds_url():
-    if CURRENT_ENV == "LOCAL":
-        return LOCAL_INFORM_ODD_URL
-    else:
-        return PROD_INFORM_ODD_URL
+    return INFORM_ODD_URL
 
 
 def get_market_type(market_id):

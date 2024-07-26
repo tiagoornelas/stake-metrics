@@ -33,7 +33,8 @@ data class FifaStrategyModel(
         inverseJoinColumns = [JoinColumn(name = "player_id")]
     )
     val excludedPlayers: MutableSet<FifaPlayerModel> = mutableSetOf(),
-    @OneToMany(mappedBy = "strategy")
+    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "strategy_id")
     var rules: MutableSet<FifaRuleModel> = mutableSetOf(),
     @ManyToOne
     @JoinColumn(name = "user_id")

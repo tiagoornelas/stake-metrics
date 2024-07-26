@@ -2,6 +2,7 @@ package com.stakemetrics.backend.plugins.http.ports
 
 import com.stakemetrics.backend.domain.entities.fifa.FifaLeague
 import com.stakemetrics.backend.plugins.http.dto.FifaDTO
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,4 +11,5 @@ interface FifaServicePort {
     fun getLastResultTime(): Long
     fun saveMatch(dto: FifaDTO.FifaMatchRequest)
     fun saveStrategy(userEmail: String, dto: FifaDTO.FifaStrategyRequest)
+    fun enqueueStrategiesAgainstOdds(odds: FifaDTO.FifaOddRequest, request: HttpServletRequest)
 }

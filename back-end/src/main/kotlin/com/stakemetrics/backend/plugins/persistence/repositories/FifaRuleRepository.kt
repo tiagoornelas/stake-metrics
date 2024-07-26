@@ -1,7 +1,6 @@
 package com.stakemetrics.backend.plugins.persistence.repositories
 
 import com.stakemetrics.backend.domain.entities.fifa.FifaRule
-import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
 import com.stakemetrics.backend.domain.ports.fifa.FifaRuleRepositoryPort
 import com.stakemetrics.backend.plugins.persistence.models.FifaRuleModel
 import com.stakemetrics.backend.plugins.persistence.repositories.jpa.FifaRuleJpaRepository
@@ -10,23 +9,22 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class FifaRuleRepository(private val fifaRuleJpaRepository: FifaRuleJpaRepository) : FifaRuleRepositoryPort {
-    override fun save(rule: FifaRule, strategy: FifaStrategy) {
-        fifaRuleJpaRepository.save(rule.toModel(strategy))
+    override fun save(rule: FifaRule) {
+        fifaRuleJpaRepository.save(rule.toModel())
     }
 
     @Transactional
-    override fun saveAll(rules: List<FifaRule>, strategy: FifaStrategy) {
-        fifaRuleJpaRepository.saveAll(rules.map { it.toModel(strategy) })
+    override fun saveAll(rules: List<FifaRule>) {
+        fifaRuleJpaRepository.saveAll(rules.map { it.toModel() })
     }
 }
 
-fun FifaRule.toModel(strategy: FifaStrategy): FifaRuleModel {
+fun FifaRule.toModel(): FifaRuleModel {
     return FifaRuleModel(
         id,
         type,
         value,
         matchup,
-        scope,
-        strategy.toModel()
+        scope
     )
 }

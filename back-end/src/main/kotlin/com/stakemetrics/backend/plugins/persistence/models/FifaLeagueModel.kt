@@ -19,11 +19,7 @@ data class FifaLeagueModel(
     val name: String = "",
     val link: String = "",
     @OneToMany(mappedBy = "league")
-    val matches: MutableSet<FifaMatchModel> = mutableSetOf(),
-    @OneToMany(mappedBy = "league")
     val players: MutableSet<FifaPlayerModel> = mutableSetOf(),
-    @ManyToMany(mappedBy = "leagues")
-    val strategies: MutableSet<FifaStrategyModel> = mutableSetOf()
 ) {
     fun toDomain(): FifaLeague {
         return FifaLeague(

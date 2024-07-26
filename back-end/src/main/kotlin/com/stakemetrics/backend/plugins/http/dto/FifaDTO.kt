@@ -1,6 +1,7 @@
 package com.stakemetrics.backend.plugins.http.dto
 
 import com.stakemetrics.backend.domain.entities.fifa.FifaLeague
+import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
 import com.stakemetrics.backend.domain.enums.fifa.FifaMarketSubTypes
 import com.stakemetrics.backend.domain.enums.fifa.FifaMarketTypes
 import com.stakemetrics.backend.domain.enums.fifa.FifaMatchupTypes
@@ -83,6 +84,15 @@ class FifaDTO {
     )
 
     data class FifaStrategyResponse(
+        val success: Boolean = true
+    )
+
+    data class FifaStrategyAgainstOddRequest(
+        val strategy: FifaStrategy,
+        val odds: FifaOddRequest
+    )
+
+    data class FifaStrategyAgainstOddResponse(
         val success: Boolean = true
     )
 }
