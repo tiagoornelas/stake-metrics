@@ -14,6 +14,13 @@ Propriedades:
 - stripe.pricing.tabe={{pricing_table_id}}
 - stripe.api.key={{api_key}}
 - stripe.public.key={{public_key}}
+- mailersend.domain.email={{email}}
+- mailersend.api.key={{key}}
+- telegram.api.id={{id}}
+- telegram.api.hash={{hash}}
+- telegram.bot.token={{token}}
+- logging.level.org.springframework.security=DEBUG
+- current.environment={{DEV ou PRODUCTION}}
 
 ### .env (Frontend Env)
 Variáveis:
