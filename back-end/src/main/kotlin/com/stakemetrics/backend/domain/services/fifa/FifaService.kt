@@ -11,22 +11,23 @@ import com.stakemetrics.backend.domain.exceptions.NotFoundException
 import com.stakemetrics.backend.domain.ports.fifa.FifaLeagueRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaMatchRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaPlayerRepositoryPort
-import com.stakemetrics.backend.domain.ports.fifa.FifaRuleRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyRepositoryPort
 import com.stakemetrics.backend.domain.services.UserService
+import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyEnqueuer
 import com.stakemetrics.backend.plugins.http.dto.FifaDTO
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
+import jakarta.servlet.http.HttpServletRequest
 import java.util.Calendar
 import java.util.Date
 import java.util.UUID
 
 class FifaService(
     private val userService: UserService,
+    private val fifaStrategyEnqueuer: FifaStrategyEnqueuer,
     private val fifaLeagueRepositoryPort: FifaLeagueRepositoryPort,
     private val fifaMatchRepositoryPort: FifaMatchRepositoryPort,
     private val fifaPlayerRepositoryPort: FifaPlayerRepositoryPort,
-    private val fifaStrategyRepositoryPort: FifaStrategyRepositoryPort,
-    private val fifaRuleRepositoryPort: FifaRuleRepositoryPort
+    private val fifaStrategyRepositoryPort: FifaStrategyRepositoryPort
 ) : FifaServicePort {
     override fun listActiveLeagues(): List<FifaLeague> {
         return fifaLeagueRepositoryPort.listActiveLeagues()
@@ -91,32 +92,30 @@ class FifaService(
         val leagues = getLeagues(dto.leagues)
         val players = getPlayers(dto.excludedPlayers)
 
-        val strategy = FifaStrategy(
-            name = dto.name,
-            marketType = dto.marketType,
-            marketSubTypes = dto.marketSubTypes.toMutableSet(),
-            leagues = leagues,
-            excludedPlayers = players,
-            rules = mutableSetOf(),
-            user = user
-        )
-
-        fifaStrategyRepositoryPort.save(strategy)
-        createRules(dto.rules, strategy)
-    }
-
-
-    private fun createRules(rules: List<FifaDTO.FifaRuleRequest>, strategy: FifaStrategy): MutableSet<FifaRule> {
-        val ruleEntities = rules.map { ruleRequest ->
+        val ruleEntities = dto.rules.map { ruleRequest ->
             FifaRule(
                 type = ruleRequest.type,
                 value = ruleRequest.value,
                 matchup = ruleRequest.matchup,
                 scope = ruleRequest.scope
             )
-        }
-        fifaRuleRepositoryPort.saveAll(ruleEntities, strategy)
-        return ruleEntities.toMutableSet()
+        }.toMutableSet()
+
+        val strategy = FifaStrategy(
+            name = dto.name,
+            marketType = dto.marketType,
+            marketSubTypes = dto.marketSubTypes.toMutableSet(),
+            leagues = leagues,
+            excludedPlayers = players,
+            rules = ruleEntities,
+            user = user
+        )
+
+        fifaStrategyRepositoryPort.save(strategy)
+    }
+
+    override fun enqueueStrategiesAgainstOdds(odds: FifaDTO.FifaOddRequest, request: HttpServletRequest) {
+        fifaStrategyEnqueuer.enqueue(odds, request)
     }
 
     private fun getUser(email: String): User {

@@ -11,9 +11,7 @@ data class FifaPlayerModel(
     val id: UUID = UUID.randomUUID(),
     val name: String = "",
     @ManyToOne @JoinColumn(name = "league_id")
-    val league: FifaLeagueModel? = null,
-    @ManyToMany(mappedBy = "excludedPlayers")
-    val excludedFromStrategies: MutableSet<FifaStrategyModel> = mutableSetOf()
+    val league: FifaLeagueModel? = null
 ) {
     fun toDomain(): FifaPlayer {
         return FifaPlayer(

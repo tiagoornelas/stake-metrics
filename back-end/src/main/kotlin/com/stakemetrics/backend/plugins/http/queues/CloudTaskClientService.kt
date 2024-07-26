@@ -23,27 +23,17 @@ class CloudTaskClientService(
 
         CloudTasksClient.create().use { client ->
             val queuePath = QueueName.of(projectId, locationId, "save-match-result").toString()
-            val fullUrl = "$baseUrl/fifa/match"
+            val fullUrl = "$baseUrl/service/fifa/match"
             enqueueTask(request, fullUrl, payload, client, queuePath)
         }
     }
 
-    fun enqueueReceiveUpcomingMatchOddsTask(odds: FifaDTO.FifaOddRequest, request: HttpServletRequest) {
-        val payload = objectMapper.writeValueAsString(odds).toByteArray(StandardCharsets.UTF_8)
+    fun enqueueCheckOddForStrategyTask(payload: FifaDTO.FifaStrategyAgainstOddRequest, request: HttpServletRequest) {
+        val payload = objectMapper.writeValueAsString(payload).toByteArray(StandardCharsets.UTF_8)
 
         CloudTasksClient.create().use { client ->
-            val queuePath = QueueName.of(projectId, locationId, "receive-upcoming-match-odds").toString()
-            val fullUrl = "$baseUrl/fifa/next-match/odds"
-            enqueueTask(request, fullUrl, payload, client, queuePath)
-        }
-    }
-
-    fun enqueueCheckOddForStrategyTask(pl: Any, request: HttpServletRequest) {
-        val payload = objectMapper.writeValueAsString(pl).toByteArray(StandardCharsets.UTF_8)
-
-        CloudTasksClient.create().use { client ->
-            val queuePath = QueueName.of(projectId, locationId, "check-odd-for-strategy").toString()
-            val fullUrl = "$baseUrl/fifa/odd/strategy"
+            val queuePath = QueueName.of(projectId, locationId, "run-strategy-against-odds").toString()
+            val fullUrl = "$baseUrl/service/fifa/strategy-against-odds"
             enqueueTask(request, fullUrl, payload, client, queuePath)
         }
     }

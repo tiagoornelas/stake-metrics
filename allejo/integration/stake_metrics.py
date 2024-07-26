@@ -16,12 +16,12 @@ CURRENT_ENV = os.environ.get("ENV", "PRODUCTION")
 
 
 def get_last_result_time():
-    response = fetch_stake_metrics(STAKE_METRICS_URL, "/fifa/last-result-time")
+    response = fetch_stake_metrics(STAKE_METRICS_URL, "/service/fifa/last-result-time")
     return response["lastResultTime"]
 
 
 def get_leagues():
-    response = fetch_stake_metrics(STAKE_METRICS_URL, "/fifa/leagues")
+    response = fetch_stake_metrics(STAKE_METRICS_URL, "/service/fifa/leagues")
     return response["leagues"]
 
 

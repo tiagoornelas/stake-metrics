@@ -4,11 +4,7 @@ import com.stakemetrics.backend.domain.entities.fifa.FifaRule
 import com.stakemetrics.backend.domain.enums.fifa.FifaMatchupTypes
 import com.stakemetrics.backend.domain.enums.fifa.FifaRuleTypes
 import com.stakemetrics.backend.domain.enums.fifa.FifaStrategyScopeTypes
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.util.UUID
 
 @Entity
@@ -20,8 +16,6 @@ data class FifaRuleModel(
     val value: Double = 0.0,
     val matchup: FifaMatchupTypes? = null,
     val scope: FifaStrategyScopeTypes? = null,
-    @ManyToOne @JoinColumn(name = "strategy_id")
-    val strategy: FifaStrategyModel? = null
 ) {
     fun toDomain(): FifaRule {
         return FifaRule(

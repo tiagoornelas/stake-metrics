@@ -22,13 +22,9 @@ data class UserModel(
     @Column(name = "password_hash")
     val passwordHash: String = "",
     val type: UserTypes = UserTypes.USER,
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    @OneToMany(cascade = [CascadeType.ALL])
     val telegramChats: MutableSet<TelegramChatModel> = mutableSetOf(),
-    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL])
-    val subscription: SubscriptionModel? = null,
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
-    val recoveryCodes: MutableSet<RecoveryCodeModel> = mutableSetOf(),
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "user")
     val strategies: MutableSet<FifaStrategyModel> = mutableSetOf()
 ) : UserDetails {
 
