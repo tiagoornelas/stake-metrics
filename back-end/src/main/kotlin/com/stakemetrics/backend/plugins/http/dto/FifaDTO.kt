@@ -71,7 +71,8 @@ class FifaDTO {
         val type: FifaRuleTypes,
         val matchup: FifaMatchupTypes? = null,
         val scope: FifaStrategyScopeTypes? = null,
-        val value: Double
+        val value: Double,
+        val scopeValue: Int,
     )
 
     data class FifaStrategyRequest(

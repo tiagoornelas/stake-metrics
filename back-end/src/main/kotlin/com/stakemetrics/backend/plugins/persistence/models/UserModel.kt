@@ -24,7 +24,7 @@ data class UserModel(
     val type: UserTypes = UserTypes.USER,
     @OneToMany(cascade = [CascadeType.ALL])
     val telegramChats: MutableSet<TelegramChatModel> = mutableSetOf(),
-    @OneToMany(mappedBy = "user")
+    @OneToMany(orphanRemoval = true, mappedBy = "user")
     val strategies: MutableSet<FifaStrategyModel> = mutableSetOf()
 ) : UserDetails {
 

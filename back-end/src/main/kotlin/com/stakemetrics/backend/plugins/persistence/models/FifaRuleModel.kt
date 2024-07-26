@@ -16,6 +16,7 @@ data class FifaRuleModel(
     val value: Double = 0.0,
     val matchup: FifaMatchupTypes? = null,
     val scope: FifaStrategyScopeTypes? = null,
+    val scopeValue: Int = 0
 ) {
     fun toDomain(): FifaRule {
         return FifaRule(
@@ -23,7 +24,8 @@ data class FifaRuleModel(
             type,
             value,
             matchup,
-            scope
+            scope,
+            scopeValue
         )
     }
 }

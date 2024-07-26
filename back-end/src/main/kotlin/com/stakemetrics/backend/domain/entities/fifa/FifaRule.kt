@@ -11,4 +11,5 @@ data class FifaRule(
     val value: Double = 0.0,
     val matchup: FifaMatchupTypes? = null,
     val scope: FifaStrategyScopeTypes? = null,
+    val scopeValue: Int = 0
 )
