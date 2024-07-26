@@ -97,7 +97,8 @@ class FifaService(
                 type = ruleRequest.type,
                 value = ruleRequest.value,
                 matchup = ruleRequest.matchup,
-                scope = ruleRequest.scope
+                scope = ruleRequest.scope,
+                scopeValue = ruleRequest.scopeValue
             )
         }.toMutableSet()
 

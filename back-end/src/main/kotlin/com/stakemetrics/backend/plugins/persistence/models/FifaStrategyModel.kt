@@ -19,7 +19,7 @@ data class FifaStrategyModel(
     @CollectionTable(name = "fifa_strategy_market_subtypes", joinColumns = [JoinColumn(name = "strategy_id")])
     @Column(name = "market_subtype")
     val marketSubTypes: MutableSet<FifaMarketSubTypes> = mutableSetOf(),
-    @ManyToMany
+    @ManyToMany(cascade = [CascadeType.ALL])
     @JoinTable(
         name = "fifa_strategy_leagues",
         joinColumns = [JoinColumn(name = "strategy_id")],

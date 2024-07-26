@@ -25,6 +25,7 @@ fun FifaRule.toModel(): FifaRuleModel {
         type,
         value,
         matchup,
-        scope
+        scope,
+        scopeValue
     )
 }
