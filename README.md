@@ -1,5 +1,5 @@
-# saas-monorepo-template
-A template for a Saas with Kotlin on the backend and React on the frontend
+# Stake Metrics
+Stake Metrics Monolith for betting automation
 
 ### Application Properties (Backend Env)
 Propriedades:
