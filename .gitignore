@@ -30,6 +30,7 @@ fabric.properties
 package-lock.json
 
 #.env
-front-end/.env
+back-end/src/main/resources/application.properties
 back-end/.env
 allejo/.env
+
