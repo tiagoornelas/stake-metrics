@@ -4,6 +4,7 @@ import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
 import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyRepositoryPort
 import com.stakemetrics.backend.plugins.persistence.models.FifaStrategyModel
 import com.stakemetrics.backend.plugins.persistence.repositories.jpa.FifaStrategyJpaRepository
+import java.util.UUID
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
@@ -20,6 +21,15 @@ class FifaStrategyRepository(
     @Cacheable("strategies")
     override fun getAllStrategies(): List<FifaStrategy> {
         return fifaStrategyJpaRepository.findAll().map { it.toDomain() }
+    }
+
+    override fun findById(id: UUID): FifaStrategy? {
+        return fifaStrategyJpaRepository.findById(id).map { it.toDomain() }.orElse(null)
+    }
+
+    @CacheEvict(value = ["strategies"], allEntries = true)
+    override fun delete(strategy: FifaStrategy) {
+        return fifaStrategyJpaRepository.delete(strategy.toModel())
     }
 
 }

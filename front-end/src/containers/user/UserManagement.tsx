@@ -27,7 +27,7 @@ const UserManagement = () => {
     const telegramChatFeatures = getFeatureAmount(userContext.user, FEATURES.TELEGRAM_CHAT);
     const availableTelegramChats = useMemo(
         () => telegramChatFeatures - connectedTelegramChats.length,
-        [telegramChats, telegramChatFeatures]
+        [telegramChatFeatures, connectedTelegramChats.length]
     );
 
     const getManagementLink = useCallback(async () => {
@@ -48,7 +48,7 @@ const UserManagement = () => {
     useEffect(() => {
         getManagementLink();
         getTelegramChats();
-    }, [userContext.user]);
+    }, [getManagementLink, getTelegramChats, userContext.user]);
 
     const handleManagementSubscriptionClick = () => {
         if (managementLink !== "") window.location.assign(managementLink);
