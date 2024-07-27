@@ -41,5 +41,16 @@ export const SUCCESS_TYPES: Record<string, SuccessDictionary> = {
         title: "Enviamos uma mensagem!",
         description: "Leve em consideração que o atraso e a taxa de entrega também são testados, então a mensagem pode chegar com atraso ou até não chegar."
     },
+    STRATEGY_STATUS_CHANGED: {
+        title: "Ok!",
+        description: "Status da estratégia alterado com sucesso."
+    },
+    STRATEGY_SAVED: {
+        title: "Ok!",
+        description: "Estratégia salva com sucesso."
+    },
+    STRATEGY_DELETED: {
+        title: "Ok!",
+        description: "Estratégia excluída com sucesso."
+    },
 }
-

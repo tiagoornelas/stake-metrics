@@ -6,11 +6,11 @@ export const APP_NAVIGATION: NavigationLinkOnHeaderValue[] = [
         path: "strategies"
     },
     {
-        name: "Relatórios",
-        path: "reports"
+        name: "Entradas",
+        path: "bets"
     },
     {
-        name: "Configurações",
-        path: "settings"
+        name: "Métricas",
+        path: "metrics"
     }
 ]

@@ -1,8 +1,8 @@
 import {CreateToastFnReturn, useToast} from "@chakra-ui/react";
-import {defaultToastProps} from "utils/constants/toastConstants";
 import {useCallback} from "react";
-import {TRANSLATED_ERRORS} from "../utils/constants/errorConstants";
-import {ErrorDictionary, SuccessDictionary} from "../utils/interfaces";
+import {TRANSLATED_ERRORS} from "utils/constants/errorConstants";
+import {defaultToastProps} from "utils/constants/toastConstants";
+import {ErrorDictionary, SuccessDictionary} from "utils/interfaces";
 
 export const useErrorToast = (fn: (...args: any[]) => Promise<any>, successDictionary: SuccessDictionary | null = null, successAction: Function | null = null) => {
     const toast: CreateToastFnReturn = useToast();
@@ -46,5 +46,5 @@ export const useErrorToast = (fn: (...args: any[]) => Promise<any>, successDicti
                 ...defaultToastProps
             });
         }
-    }, [fn, toast, successDictionary]);
+    }, [fn, successDictionary, successAction, toast]);
 };

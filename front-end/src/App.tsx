@@ -1,22 +1,23 @@
+import {ChakraProvider, extendTheme} from "@chakra-ui/react"
+import {ErrorBoundary} from "components/ErrorBoundary";
+import Header from "components/Header";
+import PrivateAreaWrapper from "components/PrivateAreaWrapper";
+import PublicAreaWrapper from "components/PublicAreaWrapper";
+import Metrics from "containers/metrics/Metrics";
+import AccountRecovery from "containers/public/AccountRecovery";
+import CreateAccount from "containers/public/CreateAccount";
+import Login from "containers/public/Login"
 import Subscription from "containers/public/Subscription";
+import Strategy from "containers/strategy/Strategy";
+import {UserProvider, useUserDispatch, useUserState} from "context/UserContext";
 import * as React from "react"
 import {Dispatch, useEffect, useMemo} from "react"
-import {ChakraProvider, extendTheme} from "@chakra-ui/react"
-import Login from "containers/public/Login"
-import {getCustomThemeColors} from "utils/helpers/themeColorHelper";
 import {useCookies} from "react-cookie";
-import {getUserDetails} from "services/loginService";
-import Header from "components/Header";
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
-import Workspace from "containers/workspace/Workspace";
-import CreateAccount from "containers/public/CreateAccount";
-import AccountRecovery from "containers/public/AccountRecovery";
+import {getUserDetails} from "services/loginService";
 import {setUser} from "utils/helpers/contextHelper";
-import {useUserDispatch, UserProvider, useUserState} from "context/UserContext";
-import {UserContext, UserReducerAction} from "./utils/interfaces";
-import {ErrorBoundary} from "components/ErrorBoundary";
-import PublicAreaWrapper from "components/PublicAreaWrapper";
-import PrivateAreaWrapper from "components/PrivateAreaWrapper";
+import {getCustomThemeColors} from "utils/helpers/themeColorHelper";
+import {UserContext, UserReducerAction} from "utils/interfaces";
 import UserManagement from "./containers/user/UserManagement";
 
 const publicRouter = createBrowserRouter([
@@ -47,8 +48,16 @@ const appRouter = createBrowserRouter([
         element: <UserManagement/>
     },
     {
+        path: "/strategies",
+        element: <Strategy/>
+    },
+    {
+        path: "/metrics",
+        element: <Metrics/>
+    },
+    {
         path: "/*",
-        element: <Workspace/>,
+        element: <Strategy/>,
     },
 ]);
 

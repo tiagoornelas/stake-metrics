@@ -24,5 +24,9 @@ export const ENDPOINTS = {
         INTEGRATE_PRIVATE_CHAT: "/private-chat/integrate",
         INTEGRATE_CHANNEL: "/channel/integrate",
         TEST_MESSAGE: "/test-message"
+    },
+    STRATEGY: {
+        BASE: "/strategy",
+        STATUS: "/status",
     }
 }

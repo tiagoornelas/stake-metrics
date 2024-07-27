@@ -1,4 +1,4 @@
-import {Box, Button, Heading, Stack, Text} from "@chakra-ui/react";
+import {Box, Heading, Stack, Text} from "@chakra-ui/react";
 import Plans from "components/Plans";
 import ProductLogo from "components/ProductLogo";
 import ProductName from "components/ProductName";

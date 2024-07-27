@@ -7,6 +7,7 @@ import com.stakemetrics.backend.domain.entities.fifa.FifaPlayer
 import com.stakemetrics.backend.domain.entities.fifa.FifaRule
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
 import com.stakemetrics.backend.domain.enums.fifa.FifaMatchStatusTypes
+import com.stakemetrics.backend.domain.enums.fifa.FifaStrategyStatus
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
 import com.stakemetrics.backend.domain.ports.fifa.FifaLeagueRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaMatchRepositoryPort
@@ -115,10 +116,6 @@ class FifaService(
         fifaStrategyRepositoryPort.save(strategy)
     }
 
-    override fun enqueueStrategiesAgainstOdds(odds: FifaDTO.FifaOddRequest, request: HttpServletRequest) {
-        fifaStrategyEnqueuer.enqueue(odds, request)
-    }
-
     private fun getUser(email: String): User {
         return userService.findByEmail(email) ?: throw NotFoundException("User", "email", email)
     }
@@ -157,5 +154,30 @@ class FifaService(
             away -> findOrCreatePlayer(away, league)
             else -> null
         }
+    }
+
+    override fun enqueueStrategiesAgainstOdds(odds: FifaDTO.FifaOddRequest, request: HttpServletRequest) {
+        fifaStrategyEnqueuer.enqueue(odds, request)
+    }
+
+    override fun updateStrategyStatus(userEmail: String, strategyId: UUID, status: FifaStrategyStatus) {
+        val strategy = fifaStrategyRepositoryPort.findById(strategyId)
+            ?: throw NotFoundException("Strategy", "id", strategyId.toString())
+        assureStrategyBelongsToUser(strategy, userEmail)
+        strategy.status = status
+        fifaStrategyRepositoryPort.save(strategy)
+    }
+
+    override fun deleteStrategy(userEmail: String, strategyId: UUID) {
+        val strategy = fifaStrategyRepositoryPort.findById(strategyId)
+            ?: throw NotFoundException("Strategy", "id", strategyId.toString())
+        assureStrategyBelongsToUser(strategy, userEmail)
+
+        fifaStrategyRepositoryPort.delete(strategy)
+    }
+
+    private fun assureStrategyBelongsToUser(strategy: FifaStrategy, userEmail: String) {
+        val user = getUser(userEmail)
+        if (strategy.user?.id != user.id) throw IllegalArgumentException("Strategy does not belong to user")
     }
 }

@@ -4,10 +4,9 @@ import {useErrorToast} from "hooks/useErrorToast";
 import useThemeColors from "hooks/useThemeColors";
 import * as React from "react";
 import {ChangeEvent, useState} from "react";
-import InputMask from "react-input-mask";
 import {createUser} from "services/userService";
+import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {UserCreationBody} from "utils/interfaces";
-import {SUCCESS_TYPES} from "../../utils/constants/successConstants";
 
 const CreateAccount = () => {
     const colors = useThemeColors();

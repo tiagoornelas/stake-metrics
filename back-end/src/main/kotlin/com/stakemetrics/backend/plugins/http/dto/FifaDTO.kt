@@ -2,11 +2,7 @@ package com.stakemetrics.backend.plugins.http.dto
 
 import com.stakemetrics.backend.domain.entities.fifa.FifaLeague
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
-import com.stakemetrics.backend.domain.enums.fifa.FifaMarketSubTypes
-import com.stakemetrics.backend.domain.enums.fifa.FifaMarketTypes
-import com.stakemetrics.backend.domain.enums.fifa.FifaMatchupTypes
-import com.stakemetrics.backend.domain.enums.fifa.FifaRuleTypes
-import com.stakemetrics.backend.domain.enums.fifa.FifaStrategyScopeTypes
+import com.stakemetrics.backend.domain.enums.fifa.*
 import java.util.UUID
 
 class FifaDTO {
@@ -95,6 +91,10 @@ class FifaDTO {
 
     data class FifaStrategyAgainstOddResponse(
         val success: Boolean = true
+    )
+
+    data class FifaStrategyStatusRequest(
+        val status: FifaStrategyStatus
     )
 }
 

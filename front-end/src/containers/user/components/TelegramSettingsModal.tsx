@@ -1,20 +1,9 @@
-import {
-    Badge,
-    Box, Checkbox,
-    CreateToastFnReturn,
-    Flex,
-    Heading,
-    Input,
-    Select,
-    Stack,
-    Text, Tooltip,
-    useToast
-} from "@chakra-ui/react";
+import {Badge, Box, CreateToastFnReturn, Heading, Input, Select, Stack, Text, useToast} from "@chakra-ui/react";
 import DefaultSlider from "components/DefaultSlider";
 import Modal from "components/Modal";
 import {useErrorToast} from "hooks/useErrorToast";
-import React, {useState, useEffect} from 'react';
-import {IoMdSettings, SiTelegram, IoMdInformationCircleOutline} from "react-icons/all";
+import React, {useEffect, useState} from 'react';
+import {IoMdSettings, SiTelegram} from "react-icons/all";
 import {MdDelete} from "react-icons/md";
 import {deletePrivateChat, editIntegration, testPrivateChat} from "services/telegramService";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";

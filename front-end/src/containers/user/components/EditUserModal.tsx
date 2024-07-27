@@ -3,7 +3,6 @@ import Modal from "components/Modal";
 import {useUserState} from "context/UserContext";
 import {useErrorToast} from "hooks/useErrorToast";
 import React, {ChangeEvent, useState} from 'react';
-import InputMask from "react-input-mask";
 import {editUser} from "services/userService";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {UserContext, UserCreationBody} from "utils/interfaces";

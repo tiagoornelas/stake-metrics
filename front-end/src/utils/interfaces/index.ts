@@ -109,3 +109,16 @@ export interface ExtraButton extends ButtonProps {
     rightIcon?: ReactElement;
     closeOnAction?: boolean;
 }
+
+export type StrategyStatus = "ACTIVE" | "INACTIVE" | "PAPER_BET";
+
+export type StrategyListItem = {
+    id: string;
+    name: string;
+    status: StrategyStatus;
+    bets: number;
+    result: number;
+    roi: number;
+    activeResult: number;
+    activeRoi: number;
+}
