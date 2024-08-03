@@ -44,8 +44,8 @@ export const FifaRuleTypesDict: { [key in FifaRuleTypes]: string } = {
 };
 
 export const FifaMatchupTypesDict: { [key in FifaMatchupTypes]: string } = {
-    [FifaMatchupTypes.VS_ANYONE]: "Qualquer confronto",
-    [FifaMatchupTypes.VS_EACH_OTHER]: "Mesmo confronto"
+    [FifaMatchupTypes.VS_ANYONE]: "Qualquer",
+    [FifaMatchupTypes.VS_EACH_OTHER]: "Mesmo"
 };
 
 export const FifaStrategyScopeTypesDict: { [key in FifaStrategyScopeTypes]: string } = {
