@@ -198,7 +198,7 @@ class FifaService(
             leagues = leagues,
             marketTypes = marketTypes,
             players = players,
-            ruleTypes = ruleTypes,
+            ruleTypes = ruleTypes.map { it.toResponse() },
             matchupTypes = matchupTypes,
             scopeTypes = scopeTypes
         )

@@ -5,6 +5,7 @@ import com.stakemetrics.backend.domain.entities.fifa.FifaPlayer
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategyRule
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategyScope
+import com.stakemetrics.backend.domain.enums.RuleValueFormatTypes
 import com.stakemetrics.backend.domain.enums.fifa.*
 import java.util.UUID
 
@@ -154,11 +155,19 @@ class FifaDTO {
         val marketSubTypes: List<FifaMarketSubTypes>
     )
 
+    data class FifaRuleTypesResponse(
+        val type: FifaRuleTypes,
+        val minValue: Double,
+        val maxValue: Double,
+        val defaultValue: Double,
+        val format: RuleValueFormatTypes
+    )
+
     data class FifaStrategyParamsResponse(
         val leagues: List<FifaLeagueResponse>,
         val marketTypes: List<FifaMarketTypeResponse>,
         val players: List<FifaPlayerResponse>,
-        val ruleTypes: List<FifaRuleTypes>,
+        val ruleTypes: List<FifaRuleTypesResponse>,
         val matchupTypes: List<FifaMatchupTypes>,
         val scopeTypes: List<FifaStrategyScopeTypes>
     )

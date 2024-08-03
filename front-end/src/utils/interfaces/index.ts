@@ -179,11 +179,24 @@ export interface MarketType {
     marketSubTypes: FifaMarketSubTypes[];
 }
 
+export enum RuleValueFormatTypes {
+    PERCENTAGE = "PERCENTAGE",
+    ODD = "ODD"
+}
+
+export interface RuleTypeDetail {
+    type: FifaRuleTypes;
+    minValue: number;
+    maxValue: number;
+    defaultValue: number;
+    format: RuleValueFormatTypes;
+}
+
 export interface StrategyParams {
     leagues: FifaLeagueResponse[];
     marketTypes: MarketType[];
     players: FifaPlayerResponse[];
-    ruleTypes: FifaRuleTypes[];
+    ruleTypes: RuleTypeDetail[];
     matchupTypes: FifaMatchupTypes[];
     scopeTypes: FifaStrategyScopeTypes[];
 }

@@ -3,7 +3,8 @@ import {
     FifaMarketTypes,
     FifaMatchupTypes,
     FifaRuleTypes,
-    FifaStrategyScopeTypes
+    FifaStrategyScopeTypes,
+    RuleValueFormatTypes
 } from "../interfaces";
 
 export const strategyStatusDict = {
@@ -38,9 +39,14 @@ export const FifaMarketSubTypesDict: { [key in FifaMarketSubTypes]: string } = {
 };
 
 export const FifaRuleTypesDict: { [key in FifaRuleTypes]: string } = {
-    [FifaRuleTypes.MINIMUM_ODDS]: "Odd mínima",
-    [FifaRuleTypes.MINIMUM_JUICE]: "Juice mínimo",
-    [FifaRuleTypes.MINIMUM_PROBABILITY]: "Probabilidade mínima"
+    [FifaRuleTypes.MINIMUM_ODDS]: "Odd maior que",
+    [FifaRuleTypes.MINIMUM_JUICE]: "Juice maior que",
+    [FifaRuleTypes.MINIMUM_PROBABILITY]: "Chance maior que"
+};
+
+export const FifleRuleTypesFormatDict: { [key in RuleValueFormatTypes]: string } = {
+    [RuleValueFormatTypes.PERCENTAGE]: "%",
+    [RuleValueFormatTypes.ODD]: "Odd",
 };
 
 export const FifaMatchupTypesDict: { [key in FifaMatchupTypes]: string } = {
