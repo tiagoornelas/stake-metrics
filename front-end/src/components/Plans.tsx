@@ -1,4 +1,4 @@
-import {Box, Skeleton, Text} from "@chakra-ui/react";
+import {Box, Skeleton, Text, useColorModeValue} from "@chakra-ui/react";
 import React, {useEffect} from 'react';
 import {getPricingTableInfo} from "services/planService";
 
@@ -16,11 +16,13 @@ const Plans = () => {
     const [customerSessionClientSecret, setCustomerSessionClientSecret] = React.useState<string>("");
     const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
 
+    const isDarkModeOn = useColorModeValue(false, true);
+
     useEffect(() => {
         const fetchPricingTableParameters = async () => {
             setIsLoaded(false);
 
-            const response = await getPricingTableInfo();
+            const response = await getPricingTableInfo(isDarkModeOn);
 
             setStripePricingTableId(response.pricingTableId);
             setStripePublicKey(response.publicKey);
@@ -29,7 +31,7 @@ const Plans = () => {
         }
 
         fetchPricingTableParameters();
-    }, []);
+    }, [isDarkModeOn]);
 
     return (
         <Box display="flex" alignItems="center" flexDirection="column">
