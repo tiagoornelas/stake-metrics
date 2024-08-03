@@ -47,7 +47,7 @@ fun FifaStrategy.toModel(): FifaStrategyModel {
         marketSubTypes = this.marketSubTypes,
         leagues = this.leagues.map { it.toModel() }.toMutableSet(),
         excludedPlayers = this.excludedPlayers.map { it.toModel() }.toMutableSet(),
-        rules = this.rules.map { it.toModel() }.toMutableSet(),
+        scopes = this.scopes.map { it.toModel() }.toMutableSet(),
         user = this.user?.toModel()
     )
 }

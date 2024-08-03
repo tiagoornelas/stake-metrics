@@ -1,6 +1,10 @@
 package com.stakemetrics.backend.plugins.http.dto
 
-import com.stakemetrics.backend.domain.entities.fifa.*
+import com.stakemetrics.backend.domain.entities.fifa.FifaLeague
+import com.stakemetrics.backend.domain.entities.fifa.FifaPlayer
+import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
+import com.stakemetrics.backend.domain.entities.fifa.FifaStrategyRule
+import com.stakemetrics.backend.domain.entities.fifa.FifaStrategyScope
 import com.stakemetrics.backend.domain.enums.fifa.*
 import java.util.UUID
 
@@ -64,22 +68,32 @@ class FifaDTO {
         val success: Boolean = true
     )
 
-    data class FifaRuleRequest(
+    data class FifaStrategyRuleRequest(
         val id: UUID?,
         val type: FifaRuleTypes,
-        val matchup: FifaMatchupTypes? = null,
-        val scope: FifaStrategyScopeTypes? = null,
         val value: Double,
-        val scopeValue: Int
     )
 
-    data class FifaRuleResponse(
-        val id: UUID?,
-        val type: String,
-        val matchup: String,
-        val scope: String,
+    data class FifaStrategyRuleResponse(
+        val id: UUID,
+        val type: FifaRuleTypes,
         val value: Double,
-        val scopeValue: Double
+    )
+
+    data class FifaStrategyScopeRequest(
+        val id: UUID?,
+        val matchup: FifaMatchupTypes? = null,
+        val type: FifaStrategyScopeTypes? = null,
+        val value: Int,
+        val rules: List<FifaStrategyRuleRequest>
+    )
+
+    data class FifaStrategyScopeResponse(
+        val id: UUID,
+        val matchup: FifaMatchupTypes? = null,
+        val type: FifaStrategyScopeTypes? = null,
+        val value: Int,
+        val rules: List<FifaStrategyRuleResponse>
     )
 
     data class FifaStrategyRequest(
@@ -89,7 +103,7 @@ class FifaDTO {
         val marketSubTypes: List<FifaMarketSubTypes>,
         val leagues: List<UUID>,
         val excludedPlayers: List<UUID>,
-        val rules: List<FifaRuleRequest>
+        val scopes: List<FifaStrategyScopeRequest>
     )
 
     data class FifaStrategyWriteResponse(
@@ -103,7 +117,7 @@ class FifaDTO {
         val marketSubTypes: List<FifaMarketSubTypes>,
         val leagues: List<FifaLeagueResponse>,
         val excludedPlayers: List<FifaPlayerResponse>,
-        val rules: List<FifaRuleResponse>
+        val scopes: List<FifaStrategyScopeResponse>
     )
 
     data class FifaStrategySingleResponse(
@@ -167,13 +181,20 @@ fun FifaPlayer.toResponse(): FifaDTO.FifaPlayerResponse {
     )
 }
 
-fun FifaRule.toResponse(): FifaDTO.FifaRuleResponse {
-    return FifaDTO.FifaRuleResponse(
+fun FifaStrategyScope.toResponse(): FifaDTO.FifaStrategyScopeResponse {
+    return FifaDTO.FifaStrategyScopeResponse(
         this.id,
-        this.type.name,
-        this.matchup?.name ?: "",
-        this.scope?.name ?: "",
+        this.matchup,
+        this.type,
         this.value,
-        this.scopeValue.toDouble()
+        this.rules.map { it.toResponse() }
+    )
+}
+
+fun FifaStrategyRule.toResponse(): FifaDTO.FifaStrategyRuleResponse {
+    return FifaDTO.FifaStrategyRuleResponse(
+        this.id,
+        this.type,
+        this.value,
     )
 }

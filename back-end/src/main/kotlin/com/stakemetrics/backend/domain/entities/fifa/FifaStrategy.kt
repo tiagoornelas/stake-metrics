@@ -14,6 +14,6 @@ data class FifaStrategy(
     val marketSubTypes: MutableSet<FifaMarketSubTypes> = mutableSetOf(),
     val leagues: MutableSet<FifaLeague> = mutableSetOf(),
     val excludedPlayers: MutableSet<FifaPlayer> = mutableSetOf(),
-    val rules: MutableSet<FifaRule> = mutableSetOf(),
+    val scopes: MutableSet<FifaStrategyScope> = mutableSetOf(),
     val user: User?
 )
