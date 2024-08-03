@@ -1,6 +1,5 @@
 package com.stakemetrics.backend.plugins.persistence.models
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
 import com.stakemetrics.backend.domain.enums.fifa.FifaMarketSubTypes
 import com.stakemetrics.backend.domain.enums.fifa.FifaMarketTypes
@@ -36,7 +35,7 @@ data class FifaStrategyModel(
     val excludedPlayers: MutableSet<FifaPlayerModel> = mutableSetOf(),
     @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "strategy_id")
-    var rules: MutableSet<FifaRuleModel> = mutableSetOf(),
+    var scopes: MutableSet<FifaStrategyScopeModel> = mutableSetOf(),
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: UserModel? = null
@@ -50,7 +49,7 @@ data class FifaStrategyModel(
             marketSubTypes,
             leagues.map { it.toDomain() }.toMutableSet(),
             excludedPlayers.map { it.toDomain() }.toMutableSet(),
-            rules.map { it.toDomain() }.toMutableSet(),
+            scopes.map { it.toDomain() }.toMutableSet(),
             user?.toDomain()
         )
     }

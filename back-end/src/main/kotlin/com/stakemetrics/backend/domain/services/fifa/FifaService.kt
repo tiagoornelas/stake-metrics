@@ -1,11 +1,7 @@
 package com.stakemetrics.backend.domain.services.fifa
 
 import com.stakemetrics.backend.domain.entities.User
-import com.stakemetrics.backend.domain.entities.fifa.FifaLeague
-import com.stakemetrics.backend.domain.entities.fifa.FifaMatch
-import com.stakemetrics.backend.domain.entities.fifa.FifaPlayer
-import com.stakemetrics.backend.domain.entities.fifa.FifaRule
-import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
+import com.stakemetrics.backend.domain.entities.fifa.*
 import com.stakemetrics.backend.domain.enums.fifa.*
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
 import com.stakemetrics.backend.domain.ports.fifa.FifaLeagueRepositoryPort
@@ -94,14 +90,21 @@ class FifaService(
         val leagues = getLeagues(dto.leagues)
         val players = getPlayers(dto.excludedPlayers)
 
-        val ruleEntities = dto.rules.map { ruleRequest ->
-            FifaRule(
-                id = ruleRequest.id ?: UUID.randomUUID(),
-                type = ruleRequest.type,
-                value = ruleRequest.value,
-                matchup = ruleRequest.matchup,
-                scope = ruleRequest.scope,
-                scopeValue = ruleRequest.scopeValue
+        val scopes = dto.scopes.map { scopeRequest ->
+            val rules = scopeRequest.rules.map { ruleRequest ->
+                FifaStrategyRule(
+                    id = ruleRequest.id ?: UUID.randomUUID(),
+                    type = ruleRequest.type,
+                    value = ruleRequest.value
+                )
+            }.toMutableSet()
+
+            FifaStrategyScope(
+                id = scopeRequest.id ?: UUID.randomUUID(),
+                matchup = scopeRequest.matchup,
+                type = scopeRequest.type,
+                value = scopeRequest.value,
+                rules = rules
             )
         }.toMutableSet()
 
@@ -112,7 +115,7 @@ class FifaService(
             marketSubTypes = dto.marketSubTypes.toMutableSet(),
             leagues = leagues,
             excludedPlayers = players,
-            rules = ruleEntities,
+            scopes = scopes,
             user = user
         )
 
@@ -212,7 +215,7 @@ class FifaService(
             strategy.marketSubTypes.toList(),
             strategy.leagues.map { it.toResponse() },
             strategy.excludedPlayers.map { it.toResponse() },
-            strategy.rules.map { it.toResponse() })
+            strategy.scopes.map { it.toResponse() })
     }
 
     override fun listAllStrategies(userEmail: String): List<FifaDTO.FifaStrategySingleResponse> {
