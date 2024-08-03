@@ -12,6 +12,7 @@ Propriedades:
 - stripe.api.key=
 - api.security.token.secret=UIBmIuZ_BvwA
 - stripe.pricing.tabe={{pricing_table_id}}
+- stripe.dark.mode.pricing.tabe={{pricing_table_id}}
 - stripe.api.key={{api_key}}
 - stripe.public.key={{public_key}}
 - mailersend.domain.email={{email}}
