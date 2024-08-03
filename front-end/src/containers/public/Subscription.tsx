@@ -20,7 +20,8 @@ const Subscription = () => {
                     fontSize={{base: 'xl', sm: '2xl', md: '4xl'}}
                     lineHeight={'110%'}>
                     <Text as={'span'} color={colors.product}>
-                        <ProductName/> <ProductLogo/>
+                        <ProductLogo/>
+                        <ProductName/>
                     </Text>
                 </Heading>
                 <Text color={'gray.500'}>

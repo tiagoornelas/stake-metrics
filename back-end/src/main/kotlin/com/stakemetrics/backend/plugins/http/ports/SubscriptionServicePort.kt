@@ -11,5 +11,5 @@ interface SubscriptionServicePort {
     fun listUserFeatures(user: User): Map<String, Int>
     fun createCheckoutSession(priceId: String, userEmail: String): SubscriptionDTO.CreateSessionResponse
     fun createPortalSession(userEmail: String): SubscriptionDTO.CreateSessionResponse
-    fun createPricingTableInfo(userEmail: String): SubscriptionDTO.PricingTableResponse
+    fun createPricingTableInfo(userEmail: String, darkMode: Boolean): SubscriptionDTO.PricingTableResponse
 }

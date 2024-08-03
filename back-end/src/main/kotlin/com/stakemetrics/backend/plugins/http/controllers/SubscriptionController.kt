@@ -7,11 +7,7 @@ import com.stripe.model.Event
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/subscription")
@@ -21,9 +17,11 @@ class SubscriptionController(
 ) {
 
     @GetMapping("/plan/pricing-table")
-    fun getAllPlans(): ResponseEntity<SubscriptionDTO.PricingTableResponse> {
+    fun getAllPlans(
+        @RequestParam(name = "darkMode", defaultValue = "false") darkMode: Boolean
+    ): ResponseEntity<SubscriptionDTO.PricingTableResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
-        val response = subscriptionServicePort.createPricingTableInfo(userEmail)
+        val response = subscriptionServicePort.createPricingTableInfo(userEmail, darkMode)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
