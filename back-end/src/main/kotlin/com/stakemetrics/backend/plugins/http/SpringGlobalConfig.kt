@@ -52,6 +52,7 @@ class SpringGlobalConfig : WebMvcConfigurer {
     fun subscriptionServicePort(
         @Value("\${stripe.api.key}") stripeApiKey: String,
         @Value("\${stripe.pricing.table}") stripePricingTableId: String,
+        @Value("\${stripe.dark.mode.pricing.table}") stripeDarkModePricingTableId: String,
         @Value("\${stripe.public.key}") stripePublicKey: String,
         @Value("\${app.frontend.base.url}") appBaseUrl: String,
         subscriptionRepositoryPort: SubscriptionRepositoryPort,
@@ -60,6 +61,7 @@ class SpringGlobalConfig : WebMvcConfigurer {
         return SubscriptionService(
             stripeApiKey,
             stripePricingTableId,
+            stripeDarkModePricingTableId,
             stripePublicKey,
             appBaseUrl,
             subscriptionRepositoryPort,

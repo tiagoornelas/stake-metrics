@@ -25,6 +25,7 @@ import com.stripe.param.checkout.SessionCreateParams as CheckoutSessionCreatePar
 class SubscriptionService(
     stripeApiKey: String,
     private val stripePricingTableId: String,
+    private val stripeDarkModePricingTableId: String,
     private val stripePublicKey: String,
     private val appBaseUrl: String,
     private val subscriptionRepositoryPort: SubscriptionRepositoryPort,
@@ -55,7 +56,7 @@ class SubscriptionService(
             .let { BillingPortalSession.create(it) }.let { SubscriptionDTO.CreateSessionResponse(it.url) }
     }
 
-    override fun createPricingTableInfo(userEmail: String): SubscriptionDTO.PricingTableResponse {
+    override fun createPricingTableInfo(userEmail: String, darkMode: Boolean): SubscriptionDTO.PricingTableResponse {
         val customerId = getCustomerIdByUserEmail(userEmail)
 
         val params = CustomerSessionCreateParams.builder()
@@ -71,9 +72,10 @@ class SubscriptionService(
             )
             .build()
 
+        val pricingTableId = if (darkMode) stripeDarkModePricingTableId else stripePricingTableId
         val customerSessionClientSecret = CustomerSession.create(params)
         return SubscriptionDTO.PricingTableResponse(
-            stripePricingTableId,
+            pricingTableId,
             stripePublicKey,
             customerSessionClientSecret.clientSecret
         )
