@@ -191,10 +191,15 @@ export interface StrategyParams {
 export interface Rule {
     id?: string;
     type: string;
-    matchup: string;
-    scope: string;
     value: number;
-    scopeValue: number;
+}
+
+export interface Scope {
+    id?: string;
+    matchup: string;
+    type: string;
+    value: number;
+    rules: Rule[];
 }
 
 export interface StrategyCreationBody {
@@ -204,7 +209,7 @@ export interface StrategyCreationBody {
     marketSubTypes: string[];
     leagues: string[];
     excludedPlayers: string[];
-    rules: Rule[];
+    scopes: Scope[];
 }
 
 export type Option = {

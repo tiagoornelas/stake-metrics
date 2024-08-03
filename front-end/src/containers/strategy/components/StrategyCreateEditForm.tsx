@@ -1,9 +1,22 @@
-import {Button, Flex, FormControl, FormLabel, Grid, Input, Select, Skeleton, Stack, Tag} from "@chakra-ui/react";
+import {
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    Grid,
+    GridItem,
+    IconButton,
+    Input,
+    Select,
+    Skeleton,
+    Stack,
+    Tag
+} from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
 import {useErrorToast} from "hooks/useErrorToast";
 import useThemeColors from "hooks/useThemeColors";
 import React, {ChangeEvent, useEffect, useState} from 'react';
-import {FaMagic, MdDelete} from "react-icons/all";
+import {FaMagic, MdAdd, MdContentCopy, MdDelete} from "react-icons/all";
 import {getFifaStrategyParams, getStrategy, saveStrategy} from "services/strategyService";
 import {
     FifaMarketSubTypesDict,
@@ -17,7 +30,7 @@ import {
     FifaLeagueResponse,
     FifaPlayerResponse,
     Option,
-    Rule,
+    Scope,
     StrategyCreationBody,
     StrategyParams
 } from "utils/interfaces";
@@ -32,7 +45,7 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
         marketSubTypes: [],
         leagues: [],
         excludedPlayers: [],
-        rules: []
+        scopes: []
     });
 
     const [dynamicSubmarkets, setDynamicSubmarkets] = useState<Option[]>([]);
@@ -52,7 +65,7 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
                     marketSubTypes: strategy.marketSubTypes,
                     leagues: strategy.leagues.map((league: FifaLeagueResponse) => league.id),
                     excludedPlayers: strategy.excludedPlayers.map((player: FifaPlayerResponse) => player.id),
-                    rules: strategy.rules
+                    scopes: strategy.scopes
                 });
             }
         };
@@ -126,7 +139,6 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
     };
 
     const handleLeaguesChange = (selectedLeagues: string[]) => {
-        debugger;
         setForm(prevState => ({
             ...prevState,
             leagues: selectedLeagues
@@ -140,13 +152,11 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
         }));
     };
 
-    const setRules = (rules: Rule[]) => {
-        setForm((prevState) => {
-            return {
-                ...prevState,
-                rules
-            }
-        });
+    const setScopes = (scopes: Scope[]) => {
+        setForm((prevState) => ({
+            ...prevState,
+            scopes
+        }));
     }
 
     const handleInput = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -157,34 +167,70 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
         });
     }
 
-    const handleRuleInput = (index: number, e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const newRules = [...form.rules];
-        newRules[index] = {
-            ...newRules[index],
+    const handleScopeInput = (index: number, e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const newScopes = [...form.scopes];
+        newScopes[index] = {
+            ...newScopes[index],
             [e.target.id]: e.target.value
         };
-        setRules(newRules);
+        setScopes(newScopes);
     }
 
-    const addRule = () => {
+    const handleRuleInput = (scopeIndex: number, ruleIndex: number, e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const newScopes = [...form.scopes];
+        newScopes[scopeIndex].rules[ruleIndex] = {
+            ...newScopes[scopeIndex].rules[ruleIndex],
+            [e.target.id]: e.target.value
+        };
+        setScopes(newScopes);
+    }
+
+    const addScope = () => {
         if (formParams) {
-            const defaultRule = {
-                type: formParams.ruleTypes[0] || "",
+            const defaultScope: Scope = {
+                type: formParams.scopeTypes[0] || "",
                 matchup: formParams.matchupTypes[0] || "",
-                scope: formParams.scopeTypes[0] || "",
                 value: 0,
-                scopeValue: 0
+                rules: [{
+                    type: formParams.ruleTypes[0] || "",
+                    value: 0
+                }]
             };
-            setRules([...form.rules, defaultRule]);
+            setScopes([...form.scopes, defaultScope]);
         }
     };
 
-    const deleteRule = (index: number) => {
-        const newRules = form.rules.filter((_, i) => i !== index);
-        setRules(newRules);
+    const deleteScope = (index: number) => {
+        const newScopes = form.scopes.filter((_, i) => i !== index);
+        setScopes(newScopes);
     }
 
-    const getRuleLabel = (count: number) => {
+    const duplicateScope = (index: number) => {
+        const scopeToDuplicate = form.scopes[index];
+        const newScopes = [...form.scopes, {...scopeToDuplicate}];
+        setScopes(newScopes);
+    }
+
+    const addRule = (scopeIndex: number) => {
+        const newScopes = [...form.scopes];
+        const selectedRuleTypes = newScopes[scopeIndex].rules.map(rule => rule.type);
+        const availableRuleTypes = formParams?.ruleTypes.filter(ruleType => !selectedRuleTypes.includes(ruleType));
+        const defaultRuleType = availableRuleTypes ? availableRuleTypes[0] : "";
+
+        newScopes[scopeIndex].rules.push({
+            type: defaultRuleType,
+            value: 0
+        });
+        setScopes(newScopes);
+    };
+
+    const deleteRule = (scopeIndex: number, ruleIndex: number) => {
+        const newScopes = [...form.scopes];
+        newScopes[scopeIndex].rules = newScopes[scopeIndex].rules.filter((_, i) => i !== ruleIndex);
+        setScopes(newScopes);
+    }
+
+    const getScopeLabel = (count: number) => {
         return count === 1 ? "1 regra" : `${count} regras`;
     }
 
@@ -202,7 +248,7 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
             <Skeleton isLoaded={isLoaded}>
                 <FormControl>
                     <FormLabel htmlFor="market">Mercado</FormLabel>
-                    <Select id="marketTypes" onChange={handleInput} value={form.marketType || ""}>
+                    <Select id="marketType" onChange={handleInput} value={form.marketType || ""}>
                         {formParams && formParams.marketTypes.map(marketType => (
                             <option key={marketType.marketType} value={marketType.marketType}>
                                 {FifaMarketTypesDict[marketType.marketType]}
@@ -239,75 +285,115 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
 
             <Skeleton isLoaded={isLoaded} w={"100%"}>
                 <Button
-                    onClick={addRule}
+                    onClick={addScope}
                     colorScheme={"blue"}
                     rightIcon={<FaMagic/>}
                     w={"100%"}
                 >
-                    {form.rules.length > 0 && <Tag m="2">{getRuleLabel(form.rules.length)}</Tag>}
-                    Adicionar Regra
+                    {form.scopes.length > 0 && <Tag m="2">{getScopeLabel(form.scopes.length)}</Tag>}
+                    Adicionar regra
                 </Button>
             </Skeleton>
 
-            {isLoaded && formParams && form.rules.map((rule, index) => (
-                <Stack key={index} spacing="5" border="1px solid #f0f0f0" padding="10px" borderRadius="5px">
-                    <FormControl>
-                        <FormLabel htmlFor={`matchupType-${index}`}>Tipo de Confronto</FormLabel>
-                        <Select id="matchup" onChange={(e) => handleRuleInput(index, e)}
-                                value={rule.matchup}>
-                            {formParams.matchupTypes.map(matchupType => (
-                                <option key={matchupType} value={matchupType}>
-                                    {FifaMatchupTypesDict[matchupType]}
-                                </option>
-                            ))}
-                        </Select>
-                    </FormControl>
+            {isLoaded && formParams && form.scopes.map((scope, index) => {
+                return (
+                    <Stack key={index} spacing="5" border="1px solid #f0f0f0" padding="10px" borderRadius="5px">
+                        <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+                            <GridItem colSpan={6}>
+                                <FormControl>
+                                    <FormLabel htmlFor={`matchup-${index}`}>Confronto</FormLabel>
+                                    <Select id="matchup" onChange={(e) => handleScopeInput(index, e)}
+                                            value={scope.matchup}>
+                                        {formParams.matchupTypes.map(matchupType => (
+                                            <option key={matchupType} value={matchupType}>
+                                                {FifaMatchupTypesDict[matchupType]}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </GridItem>
 
-                    <Grid templateColumns="2fr 1fr" gap={4}>
-                        <FormControl>
-                            <FormLabel htmlFor={`ruleType-${index}`}>Tipo de Regra</FormLabel>
-                            <Select id="type" onChange={(e) => handleRuleInput(index, e)}
-                                    value={rule.type}>
-                                {formParams.ruleTypes.map(ruleType => (
-                                    <option key={ruleType} value={ruleType}>
-                                        {FifaRuleTypesDict[ruleType]}
-                                    </option>
-                                ))}
-                            </Select>
-                        </FormControl>
+                            <GridItem colSpan={6}>
+                                <FormControl>
+                                    <FormLabel htmlFor={`value-${index}`}>Período</FormLabel>
+                                    <Grid templateColumns="repeat(6, 1fr)" gap={4}>
+                                        <GridItem colSpan={2}>
+                                            <Input id="value" type="number" onChange={(e) => handleScopeInput(index, e)}
+                                                   value={scope.value}/>
+                                        </GridItem>
+                                        <GridItem colSpan={4}>
+                                            <Select id="type" onChange={(e) => handleScopeInput(index, e)}
+                                                    value={scope.type}>
+                                                {formParams.scopeTypes.map(scopeType => (
+                                                    <option key={scopeType} value={scopeType}>
+                                                        {FifaStrategyScopeTypesDict[scopeType]}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                        </GridItem>
+                                    </Grid>
+                                </FormControl>
+                            </GridItem>
+                        </Grid>
 
-                        <FormControl>
-                            <FormLabel htmlFor={`value-${index}`}>Valor</FormLabel>
-                            <Input id="value" type="number" onChange={(e) => handleRuleInput(index, e)}
-                                   value={rule.value}/>
-                        </FormControl>
-                    </Grid>
+                        {scope.rules.map((rule, ruleIndex) => {
+                            const selectedRuleTypes = scope.rules.map(rule => rule.type);
+                            const availableRuleTypes = formParams.ruleTypes.filter(ruleType => !selectedRuleTypes.includes(ruleType) || ruleType === rule.type);
 
-                    <Grid templateColumns="2fr 1fr" gap={4}>
-                        <FormControl>
-                            <FormLabel htmlFor={`scopeType-${index}`}>Escopo</FormLabel>
-                            <Select id="scope" onChange={(e) => handleRuleInput(index, e)}
-                                    value={rule.scope}>
-                                {formParams.scopeTypes.map(scopeType => (
-                                    <option key={scopeType} value={scopeType}>
-                                        {FifaStrategyScopeTypesDict[scopeType]}
-                                    </option>
-                                ))}
-                            </Select>
-                        </FormControl>
+                            return (
+                                <Grid key={ruleIndex} templateColumns="repeat(12, 1fr)" gap={4} alignItems={"end"}>
+                                    <GridItem colSpan={6}>
+                                        <FormControl>
+                                            {ruleIndex === 0 && <FormLabel
+                                                htmlFor={`ruleType-${index}-${ruleIndex}`}>Critério</FormLabel>}
+                                            <Select id="type" onChange={(e) => handleRuleInput(index, ruleIndex, e)}
+                                                    value={rule.type}>
+                                                {availableRuleTypes.map(ruleType => (
+                                                    <option key={ruleType} value={ruleType}>
+                                                        {FifaRuleTypesDict[ruleType]}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </GridItem>
 
-                        <FormControl>
-                            <FormLabel htmlFor={`scopeValue-${index}`}>Valor</FormLabel>
-                            <Input id="scopeValue" type="number" onChange={(e) => handleRuleInput(index, e)}
-                                   value={rule.scopeValue}/>
-                        </FormControl>
-                    </Grid>
+                                    <GridItem colSpan={4}>
+                                        <FormControl>
+                                            {ruleIndex === 0 && <FormLabel
+                                                htmlFor={`ruleValue-${index}-${ruleIndex}`}>Valor</FormLabel>}
+                                            <Input id="value" type="number"
+                                                   onChange={(e) => handleRuleInput(index, ruleIndex, e)}
+                                                   value={rule.value}/>
+                                        </FormControl>
+                                    </GridItem>
 
-                    <Button colorScheme={"red"} onClick={() => deleteRule(index)} rightIcon={<MdDelete/>}>
-                        Deletar Regra
-                    </Button>
-                </Stack>
-            ))}
+                                    <GridItem colSpan={2}>
+                                        {ruleIndex === scope.rules.length - 1 && scope.rules.length < formParams.ruleTypes.length ? (
+                                            <IconButton aria-label="Add rule" icon={<MdAdd/>} variant={"outline"}
+                                                        colorScheme={"blue"} onClick={() => addRule(index)}/>
+                                        ) : (
+                                            <IconButton aria-label="Delete rule" icon={<MdDelete/>} variant={"outline"}
+                                                        colorScheme={"red"}
+                                                        onClick={() => deleteRule(index, ruleIndex)}/>
+                                        )}
+                                    </GridItem>
+                                </Grid>
+                            )
+                        })}
+
+                        <Flex justifyContent="flex-end" alignItems="center" w={"100%"}>
+                            <Button colorScheme="blue" onClick={() => duplicateScope(index)} leftIcon={<MdContentCopy/>}
+                                    w={"100%"}>
+                                Duplicar
+                            </Button>
+                            <Button colorScheme="red" onClick={() => deleteScope(index)} leftIcon={<MdDelete/>} ml={2}
+                                    w={"100%"}>
+                                Excluir
+                            </Button>
+                        </Flex>
+                    </Stack>
+                )
+            })}
             <Flex justifyContent={"flex-end"} mb={2}>
                 <Button mr={3} onClick={() => {
                 }}>
