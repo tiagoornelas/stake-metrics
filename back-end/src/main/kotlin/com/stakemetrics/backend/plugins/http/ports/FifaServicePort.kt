@@ -16,4 +16,7 @@ interface FifaServicePort {
     fun enqueueStrategiesAgainstOdds(odds: FifaDTO.FifaOddRequest, request: HttpServletRequest)
     fun updateStrategyStatus(userEmail: String, strategyId: UUID, status: FifaStrategyStatus)
     fun deleteStrategy(userEmail: String, strategyId: UUID)
+    fun getStrategyParams(): FifaDTO.FifaStrategyParamsResponse
+    fun getStrategy(userEmail: String, strategyId: UUID): FifaDTO.FifaStrategyReadResponse
+    fun listAllStrategies(userEmail: String): List<FifaDTO.FifaStrategySingleResponse>
 }

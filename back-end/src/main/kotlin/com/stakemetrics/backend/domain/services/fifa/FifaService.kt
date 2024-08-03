@@ -6,8 +6,7 @@ import com.stakemetrics.backend.domain.entities.fifa.FifaMatch
 import com.stakemetrics.backend.domain.entities.fifa.FifaPlayer
 import com.stakemetrics.backend.domain.entities.fifa.FifaRule
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
-import com.stakemetrics.backend.domain.enums.fifa.FifaMatchStatusTypes
-import com.stakemetrics.backend.domain.enums.fifa.FifaStrategyStatus
+import com.stakemetrics.backend.domain.enums.fifa.*
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
 import com.stakemetrics.backend.domain.ports.fifa.FifaLeagueRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaMatchRepositoryPort
@@ -16,11 +15,13 @@ import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyRepositoryPort
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyEnqueuer
 import com.stakemetrics.backend.plugins.http.dto.FifaDTO
+import com.stakemetrics.backend.plugins.http.dto.toResponse
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
 import jakarta.servlet.http.HttpServletRequest
 import java.util.Calendar
 import java.util.Date
 import java.util.UUID
+import kotlin.random.Random
 
 class FifaService(
     private val userService: UserService,
@@ -95,6 +96,7 @@ class FifaService(
 
         val ruleEntities = dto.rules.map { ruleRequest ->
             FifaRule(
+                id = ruleRequest.id ?: UUID.randomUUID(),
                 type = ruleRequest.type,
                 value = ruleRequest.value,
                 matchup = ruleRequest.matchup,
@@ -104,6 +106,7 @@ class FifaService(
         }.toMutableSet()
 
         val strategy = FifaStrategy(
+            id = dto.id ?: UUID.randomUUID(),
             name = dto.name,
             marketType = dto.marketType,
             marketSubTypes = dto.marketSubTypes.toMutableSet(),
@@ -174,6 +177,60 @@ class FifaService(
         assureStrategyBelongsToUser(strategy, userEmail)
 
         fifaStrategyRepositoryPort.delete(strategy)
+    }
+
+    override fun getStrategyParams(): FifaDTO.FifaStrategyParamsResponse {
+        val leagues = listActiveLeagues().map { it.toResponse() }
+        val players = fifaPlayerRepositoryPort.findAll().map { it.toResponse() }
+
+        val ruleTypes = FifaRuleTypes.entries.toList()
+        val matchupTypes = FifaMatchupTypes.entries.toList()
+        val scopeTypes = FifaStrategyScopeTypes.entries.toList()
+        val marketTypes = FifaMarketTypes.entries.map { marketType ->
+            val subTypes = FifaMarketSubTypes.entries.filter { it.parentType == marketType }
+            FifaDTO.FifaMarketTypeResponse(marketType, subTypes.toList())
+        }
+
+        return FifaDTO.FifaStrategyParamsResponse(
+            leagues = leagues,
+            marketTypes = marketTypes,
+            players = players,
+            ruleTypes = ruleTypes,
+            matchupTypes = matchupTypes,
+            scopeTypes = scopeTypes
+        )
+    }
+
+    override fun getStrategy(userEmail: String, strategyId: UUID): FifaDTO.FifaStrategyReadResponse {
+        val strategy = fifaStrategyRepositoryPort.findById(strategyId)
+            ?: throw NotFoundException("Strategy", "id", strategyId.toString())
+        assureStrategyBelongsToUser(strategy, userEmail)
+        return FifaDTO.FifaStrategyReadResponse(
+            strategy.id,
+            strategy.name,
+            strategy.marketType,
+            strategy.marketSubTypes.toList(),
+            strategy.leagues.map { it.toResponse() },
+            strategy.excludedPlayers.map { it.toResponse() },
+            strategy.rules.map { it.toResponse() })
+    }
+
+    override fun listAllStrategies(userEmail: String): List<FifaDTO.FifaStrategySingleResponse> {
+        val user = getUser(userEmail)
+        val strategies = fifaStrategyRepositoryPort.getStrategiesByUser(user.id)
+        // TODO : Pending real bet results
+        return strategies.map { strategy ->
+            FifaDTO.FifaStrategySingleResponse(
+                strategy.id,
+                strategy.name,
+                strategy.status,
+                Random.nextInt(1, 500),
+                Random.nextDouble(-100.0, 100.0),
+                Random.nextDouble(-100.0, 100.0),
+                Random.nextDouble(-100.0, 100.0),
+                Random.nextDouble(-100.0, 100.0)
+            )
+        }
     }
 
     private fun assureStrategyBelongsToUser(strategy: FifaStrategy, userEmail: String) {

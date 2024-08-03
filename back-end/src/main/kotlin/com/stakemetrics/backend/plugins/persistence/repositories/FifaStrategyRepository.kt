@@ -23,6 +23,10 @@ class FifaStrategyRepository(
         return fifaStrategyJpaRepository.findAll().map { it.toDomain() }
     }
 
+    override fun getStrategiesByUser(userId: UUID): List<FifaStrategy> {
+        return fifaStrategyJpaRepository.findAllByUserId(userId).map { it.toDomain() }
+    }
+
     override fun findById(id: UUID): FifaStrategy? {
         return fifaStrategyJpaRepository.findById(id).map { it.toDomain() }.orElse(null)
     }

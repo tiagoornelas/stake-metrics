@@ -7,4 +7,5 @@ interface FifaPlayerRepositoryPort {
     fun save(fifaPlayer: FifaPlayer)
     fun findByName(name: String): FifaPlayer?
     fun findById(id: UUID): FifaPlayer?
+    fun findAll(): List<FifaPlayer>
 }

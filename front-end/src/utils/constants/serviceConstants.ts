@@ -25,8 +25,12 @@ export const ENDPOINTS = {
         INTEGRATE_CHANNEL: "/channel/integrate",
         TEST_MESSAGE: "/test-message"
     },
+    FIFA: {
+        BASE: "/fifa"
+    },
     STRATEGY: {
         BASE: "/strategy",
+        PARAMS: "/params",
         STATUS: "/status",
     }
 }

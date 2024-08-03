@@ -17,6 +17,10 @@ class FifaPlayerRepository(private val fifaPlayerJpaRepository: FifaPlayerJpaRep
         return fifaPlayerJpaRepository.findById(id).let { if (it.isPresent) it.get().toDomain() else null }
     }
 
+    override fun findAll(): List<FifaPlayer> {
+        return fifaPlayerJpaRepository.findAll().map { it.toDomain() }
+    }
+
     override fun save(fifaPlayer: FifaPlayer) {
         fifaPlayerJpaRepository.save(fifaPlayer.toModel())
     }

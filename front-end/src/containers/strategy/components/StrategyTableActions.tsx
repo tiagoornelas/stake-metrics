@@ -1,5 +1,4 @@
 import {
-    Button,
     ButtonGroup,
     IconButton,
     Menu,
@@ -10,7 +9,6 @@ import {
     ModalBody,
     ModalCloseButton,
     ModalContent,
-    ModalFooter,
     ModalHeader,
     ModalOverlay,
     Tooltip,
@@ -19,7 +17,6 @@ import {
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import StrategyCreateEditForm from "containers/strategy/components/StrategyCreateEditForm";
 import {useErrorToast} from "hooks/useErrorToast";
-import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
 import {BiSpreadsheet, IoMdPower, MdEdit} from "react-icons/all";
 import {changeStrategyStatus, deleteStrategy} from "services/strategyService";
@@ -36,7 +33,7 @@ const StatusMenu = ({strategy}: { strategy: StrategyListItem }) => {
     return (
         <Menu>
             <Tooltip label={"Alterar status"} placement={"top"}>
-                <MenuButton as={IconButton} icon={<IoMdPower/>}/>
+                <MenuButton as={IconButton} icon={<IoMdPower/>} variant='outline'/>
             </Tooltip>
             <MenuList>
                 {statuses.map((status: StrategyStatus) => (
@@ -48,55 +45,48 @@ const StatusMenu = ({strategy}: { strategy: StrategyListItem }) => {
     );
 };
 
-const DeleteButton = ({strategy}: { strategy: StrategyListItem }) => {
-    const handleDelete = useErrorToast(async () => {
-        await deleteStrategy(strategy.id);
-    }, SUCCESS_TYPES.STRATEGY_DELETED);
-
-    return <DeleteConfirmationDialog entityName={"estratégia"} confirmCallback={handleDelete}/>
+const ReportButton = () => {
+    return <IconButton aria-label="Baixar relatório" icon={<BiSpreadsheet/>} variant='outline'/>
 }
 
-const EditButton = () => {
+const EditButton = ({strategyId}: { strategyId: string }) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
-    const colors = useThemeColors();
 
     return (
         <>
-            <IconButton aria-label="Editar" onClick={onOpen} icon={<MdEdit/>}/>
+            <IconButton aria-label="Editar" onClick={onOpen} icon={<MdEdit/>} variant='outline'/>
 
-            <ChakraModal isOpen={isOpen} onClose={onClose}>
+            <ChakraModal isOpen={isOpen} onClose={onClose} motionPreset={"none"}>
                 <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>Editar estratégia</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        <StrategyCreateEditForm/>
+                        <StrategyCreateEditForm strategyId={strategyId}/>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button mr={3} onClick={onClose}>
-                            Voltar
-                        </Button>
-                        <Button bgColor={colors.product} color={colors.productContrast} onClick={() => {
-                        }}>
-                            Salvar
-                        </Button>
-                    </ModalFooter>
                 </ModalContent>
             </ChakraModal>
         </>
     )
+}
 
+const DeleteButton = ({strategy}: { strategy: StrategyListItem }) => {
+    const handleDelete = useErrorToast(async () => {
+        await deleteStrategy(strategy.id);
+    }, SUCCESS_TYPES.STRATEGY_DELETED);
+
+    return <DeleteConfirmationDialog entityName={"estratégia"} confirmCallback={handleDelete} variant='outline'/>
 }
 
 const StrategyTableActions = ({strategy}: { strategy: StrategyListItem }) => {
     return (
-        <ButtonGroup isAttached variant='outline'>
+        <ButtonGroup isAttached>
             <StatusMenu strategy={strategy}/>
             <Tooltip label={"Baixar relatório"} placement={"top"}>
-                <IconButton aria-label="Baixar relatório" icon={<BiSpreadsheet/>}/>
+                <ReportButton/>
             </Tooltip>
             <Tooltip label={"Editar"} placement={"top"}>
-                <EditButton/>
+                <EditButton strategyId={strategy.id}/>
             </Tooltip>
             <Tooltip label={"Excluir"} placement={"top"}>
                 <DeleteButton strategy={strategy}/>
