@@ -8,5 +8,5 @@ data class FifaLeague(
     val integrationId: Int,
     val status: FifaLeagueStatusTypes = FifaLeagueStatusTypes.ACTIVE,
     val name: String,
-    val link: String,
+    val link: String
 )

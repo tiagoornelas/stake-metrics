@@ -9,15 +9,16 @@ import {
     IconButton,
     useDisclosure
 } from "@chakra-ui/react";
-import React from 'react';
+import React, {Fragment} from 'react';
 import {MdDelete} from "react-icons/all";
 
 type Props = {
     confirmCallback: () => void;
     entityName: string;
+    [key: string]: any;
 }
 
-const DeleteConfirmationDialog = ({confirmCallback, entityName}: Props) => {
+const DeleteConfirmationDialog = ({confirmCallback, entityName, ...props}: Props) => {
     const {isOpen, onOpen, onClose} = useDisclosure()
     const cancelRef = React.useRef<HTMLButtonElement>(null)
 
@@ -28,7 +29,7 @@ const DeleteConfirmationDialog = ({confirmCallback, entityName}: Props) => {
 
     return (
         <>
-            <IconButton icon={<MdDelete/>} aria-label="Excluir" onClick={onOpen}/>
+            <IconButton icon={<MdDelete/>} aria-label="Excluir" onClick={onOpen} {...props}/>
 
             <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                 <AlertDialogOverlay>

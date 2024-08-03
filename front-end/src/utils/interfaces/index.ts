@@ -122,3 +122,92 @@ export type StrategyListItem = {
     activeResult: number;
     activeRoi: number;
 }
+
+export interface FifaLeagueResponse {
+    id: string;
+    integrationId: number;
+    name: string;
+    link: string;
+}
+
+export interface FifaPlayerResponse {
+    id: string;
+    leagueId?: string;
+    name: string;
+}
+
+export enum FifaMarketTypes {
+    MATCH_ODDS = "MATCH_ODDS",
+    GOAL_LINE = "GOAL_LINE"
+}
+
+export enum FifaMarketSubTypes {
+    HOME = "HOME",
+    DRAW = "DRAW",
+    AWAY = "AWAY",
+    OVER = "OVER",
+    UNDER = "UNDER"
+}
+
+export const FifaMarketSubTypesParent: { [key in FifaMarketSubTypes]: FifaMarketTypes } = {
+    [FifaMarketSubTypes.HOME]: FifaMarketTypes.MATCH_ODDS,
+    [FifaMarketSubTypes.DRAW]: FifaMarketTypes.MATCH_ODDS,
+    [FifaMarketSubTypes.AWAY]: FifaMarketTypes.MATCH_ODDS,
+    [FifaMarketSubTypes.OVER]: FifaMarketTypes.GOAL_LINE,
+    [FifaMarketSubTypes.UNDER]: FifaMarketTypes.GOAL_LINE
+};
+
+export enum FifaRuleTypes {
+    MINIMUM_ODDS = "MINIMUM_ODDS",
+    MINIMUM_JUICE = "MINIMUM_JUICE",
+    MINIMUM_PROBABILITY = "MINIMUM_PROBABILITY"
+}
+
+export enum FifaMatchupTypes {
+    VS_ANYONE = "VS_ANYONE",
+    VS_EACH_OTHER = "VS_EACH_OTHER"
+}
+
+export enum FifaStrategyScopeTypes {
+    HOURS = "HOURS",
+    DAYS = "DAYS",
+    MATCHES = "MATCHES"
+}
+
+export interface MarketType {
+    marketType: FifaMarketTypes;
+    marketSubTypes: FifaMarketSubTypes[];
+}
+
+export interface StrategyParams {
+    leagues: FifaLeagueResponse[];
+    marketTypes: MarketType[];
+    players: FifaPlayerResponse[];
+    ruleTypes: FifaRuleTypes[];
+    matchupTypes: FifaMatchupTypes[];
+    scopeTypes: FifaStrategyScopeTypes[];
+}
+
+export interface Rule {
+    id?: string;
+    type: string;
+    matchup: string;
+    scope: string;
+    value: number;
+    scopeValue: number;
+}
+
+export interface StrategyCreationBody {
+    id?: string;
+    name: string;
+    marketType: string | null;
+    marketSubTypes: string[];
+    leagues: string[];
+    excludedPlayers: string[];
+    rules: Rule[];
+}
+
+export type Option = {
+    value: string;
+    label: string;
+};

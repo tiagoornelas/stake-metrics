@@ -94,7 +94,7 @@ const Modal: React.FC<Props> = ({
         <>
             <TooltipButton tooltip={tooltip} onClick={onOpen} buttonText={buttonText} icon={icon} {...props} />
 
-            <ChakraModal isOpen={isOpen} onClose={onClose} size={size}>
+            <ChakraModal isOpen={isOpen} onClose={onClose} size={size} motionPreset={"none"}>
                 <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>{title}</ModalHeader>

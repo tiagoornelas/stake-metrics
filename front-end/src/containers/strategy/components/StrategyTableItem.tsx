@@ -43,10 +43,10 @@ const StrategyTableItem = ({strategy}: { strategy: StrategyListItem }) => {
         <Tr key={strategy.id}>
             <Td><StrategyNameAndStatus status={strategy.status} name={strategy.name}/></Td>
             <Td textAlign={"center"}>{strategy.bets}</Td>
-            <ResultData value={Number(strategy.result)}/>
-            <ROIData value={Number(strategy.roi)}/>
-            <ResultData value={Number(strategy.activeResult)}/>
-            <ROIData value={Number(strategy.activeRoi)}/>
+            <ResultData value={Number(strategy.result.toFixed(1))}/>
+            <ROIData value={Number(strategy.roi.toFixed(1))}/>
+            <ResultData value={Number(strategy.activeResult.toFixed(1))}/>
+            <ROIData value={Number(strategy.activeRoi.toFixed(1))}/>
             <Td><StrategyTableActions strategy={strategy}/></Td>
         </Tr>
     );

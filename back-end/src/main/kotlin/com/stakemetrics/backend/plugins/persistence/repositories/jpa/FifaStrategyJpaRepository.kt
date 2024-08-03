@@ -5,4 +5,5 @@ import java.util.UUID
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface FifaStrategyJpaRepository : JpaRepository<FifaStrategyModel, UUID> {
+    fun findAllByUserId(userId: UUID): List<FifaStrategyModel>
 }

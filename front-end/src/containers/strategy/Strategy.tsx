@@ -2,15 +2,14 @@ import {Box, Flex, Table, TableContainer, Tbody, Text, Th, Thead, Tr} from "@cha
 import Modal from "components/Modal";
 import StrategyCreateEditForm from "containers/strategy/components/StrategyCreateEditForm";
 import StrategyTableItem from "containers/strategy/components/StrategyTableItem";
-import React from 'react';
-import {GoTelescope} from 'react-icons/all'
+import React, {useEffect, useState} from 'react';
+import {GoTelescope} from 'react-icons/all';
+import {listStrategies} from "services/strategyService";
 import {StrategyListItem} from "utils/interfaces";
 
 const NewStrategyButton = () => {
     return (
-        <Modal buttonText="Nova estratégia" title="Nova estratégia" actionText="Salvar"
-               actionCallback={() => {
-               }} icon={<GoTelescope/>} colorScheme="blue">
+        <Modal buttonText="Nova estratégia" title="Nova estratégia" noFooter icon={<GoTelescope/>} colorScheme="blue">
             <StrategyCreateEditForm/>
         </Modal>
     )
@@ -23,41 +22,18 @@ const Header = () => {
     </Flex>)
 }
 
-const strategiesMock: StrategyListItem[] = [
-    {
-        id: "1",
-        name: "Under Apogeu",
-        status: "ACTIVE",
-        bets: Number((Math.random() * 1000).toFixed(0)),
-        result: Number((Math.random() * 100).toFixed(0)),
-        roi: Number((Math.random() * 10).toFixed(1)),
-        activeResult: Number((Math.random() * 100).toFixed(0)),
-        activeRoi: Number((Math.random() * 10).toFixed(1))
-    },
-    {
-        id: "2",
-        name: "Empate Bombito",
-        status: "PAPER_BET",
-        bets: Number((Math.random() * 1000).toFixed(0)),
-        result: Number((Math.random() * 100).toFixed(1)),
-        roi: Number((Math.random() * 10).toFixed(1)),
-        activeResult: Number((Math.random() * 100).toFixed(0)),
-        activeRoi: Number((Math.random() * 10).toFixed(1))
-    },
-    {
-        id: "3",
-        name: "Match Odds",
-        status: "INACTIVE",
-        bets: Number((Math.random() * 1000).toFixed(0)),
-        result: Number((Math.random() * -100).toFixed(1)),
-        roi: Number((Math.random() * -10).toFixed(1)),
-        activeResult: Number((Math.random() * -100).toFixed(0)),
-        activeRoi: Number((Math.random() * -10).toFixed(1))
-    }
-]
-
-
 const Strategy = () => {
+    const [strategies, setStrategies] = useState<StrategyListItem[]>([]);
+
+    useEffect(() => {
+        const fetchStrategies = async () => {
+            const response = await listStrategies();
+            setStrategies(response.strategies);
+        };
+
+        fetchStrategies();
+    }, []);
+
     return (
         <Box p={8}>
             <Header/>
@@ -75,7 +51,8 @@ const Strategy = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {strategiesMock.map((strategy: StrategyListItem) => <StrategyTableItem strategy={strategy}/>)}
+                        {strategies.map((strategy: StrategyListItem) => <StrategyTableItem key={strategy.id}
+                                                                                           strategy={strategy}/>)}
                     </Tbody>
                 </Table>
             </TableContainer>
