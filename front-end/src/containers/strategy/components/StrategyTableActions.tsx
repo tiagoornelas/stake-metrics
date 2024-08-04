@@ -15,7 +15,7 @@ import {
     useDisclosure
 } from "@chakra-ui/react";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
-import StrategyCreateEditForm from "containers/strategy/components/StrategyCreateEditForm";
+import StrategyForm from "containers/strategy/components/StrategyForm";
 import {useErrorToast} from "hooks/useErrorToast";
 import React from 'react';
 import {BiSpreadsheet, IoMdPower, MdEdit} from "react-icons/all";
@@ -62,7 +62,7 @@ const EditButton = ({strategyId}: { strategyId: string }) => {
                     <ModalHeader>Editar estratégia</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        <StrategyCreateEditForm strategyId={strategyId}/>
+                        <StrategyForm strategyId={strategyId}/>
                     </ModalBody>
                 </ModalContent>
             </ChakraModal>

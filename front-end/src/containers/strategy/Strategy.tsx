@@ -1,6 +1,6 @@
 import {Box, Flex, Table, TableContainer, Tbody, Text, Th, Thead, Tr} from "@chakra-ui/react";
 import Modal from "components/Modal";
-import StrategyCreateEditForm from "containers/strategy/components/StrategyCreateEditForm";
+import StrategyForm from "containers/strategy/components/StrategyForm";
 import StrategyTableItem from "containers/strategy/components/StrategyTableItem";
 import React, {useEffect, useState} from 'react';
 import {GoTelescope} from 'react-icons/all';
@@ -10,7 +10,7 @@ import {StrategyListItem} from "utils/interfaces";
 const NewStrategyButton = () => {
     return (
         <Modal buttonText="Nova estratégia" title="Nova estratégia" noFooter icon={<GoTelescope/>} colorScheme="blue">
-            <StrategyCreateEditForm/>
+            <StrategyForm/>
         </Modal>
     )
 }
