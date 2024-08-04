@@ -21,7 +21,7 @@ const Header = ({strategiesLength, isLoaded}: { strategiesLength: number, isLoad
     const getLabel = () => {
         switch (strategiesLength) {
             case 0:
-                return "Nenhuma estratégia";
+                return "";
             case 1:
                 return "1 estratégia";
             default:
