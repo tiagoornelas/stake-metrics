@@ -8,7 +8,7 @@ import java.util.UUID
 
 data class FifaStrategy(
     val id: UUID = UUID.randomUUID(),
-    var status: FifaStrategyStatus = FifaStrategyStatus.PAPER_BET,
+    var status: FifaStrategyStatus = FifaStrategyStatus.INACTIVE,
     val name: String,
     val marketType: FifaMarketTypes,
     val marketSubTypes: MutableSet<FifaMarketSubTypes> = mutableSetOf(),

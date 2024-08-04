@@ -22,6 +22,7 @@ import kotlin.random.Random
 
 class FifaService(
     private val userService: UserService,
+    private val fifaStrategyValidator: FifaStrategyValidator,
     private val fifaStrategyEnqueuer: FifaStrategyEnqueuer,
     private val fifaLeagueRepositoryPort: FifaLeagueRepositoryPort,
     private val fifaMatchRepositoryPort: FifaMatchRepositoryPort,
@@ -87,9 +88,11 @@ class FifaService(
     }
 
     override fun saveStrategy(userEmail: String, dto: FifaDTO.FifaStrategyRequest) {
-        FifaStrategyValidator().validate(dto)
+        fifaStrategyValidator.validate(dto)
 
         val user = getUser(userEmail)
+        fifaStrategyValidator.checkIfUserCanCreate(user)
+
         val leagues = getLeagues(dto.leagues)
         val players = getPlayers(dto.excludedPlayers)
 
@@ -172,7 +175,11 @@ class FifaService(
     override fun updateStrategyStatus(userEmail: String, strategyId: UUID, status: FifaStrategyStatus) {
         val strategy = fifaStrategyRepositoryPort.findById(strategyId)
             ?: throw NotFoundException("Strategy", "id", strategyId.toString())
-        assureStrategyBelongsToUser(strategy, userEmail)
+
+        val user = getUser(userEmail)
+        fifaStrategyValidator.assureStrategyBelongsToUser(strategy, user)
+        fifaStrategyValidator.canUserChangeStatus(user, status)
+
         strategy.status = status
         fifaStrategyRepositoryPort.save(strategy)
     }
@@ -180,8 +187,9 @@ class FifaService(
     override fun deleteStrategy(userEmail: String, strategyId: UUID) {
         val strategy = fifaStrategyRepositoryPort.findById(strategyId)
             ?: throw NotFoundException("Strategy", "id", strategyId.toString())
-        assureStrategyBelongsToUser(strategy, userEmail)
 
+        val user = getUser(userEmail)
+        fifaStrategyValidator.assureStrategyBelongsToUser(strategy, user)
         fifaStrategyRepositoryPort.delete(strategy)
     }
 
@@ -210,7 +218,10 @@ class FifaService(
     override fun getStrategy(userEmail: String, strategyId: UUID): FifaDTO.FifaStrategyReadResponse {
         val strategy = fifaStrategyRepositoryPort.findById(strategyId)
             ?: throw NotFoundException("Strategy", "id", strategyId.toString())
-        assureStrategyBelongsToUser(strategy, userEmail)
+
+        val user = getUser(userEmail)
+        fifaStrategyValidator.assureStrategyBelongsToUser(strategy, user)
+
         return FifaDTO.FifaStrategyReadResponse(
             strategy.id,
             strategy.name,
@@ -224,8 +235,14 @@ class FifaService(
     override fun listAllStrategies(userEmail: String): List<FifaDTO.FifaStrategySingleResponse> {
         val user = getUser(userEmail)
         val strategies = fifaStrategyRepositoryPort.getStrategiesByUser(user.id)
-        // TODO : Pending real bet results
-        return strategies.map { strategy ->
+
+        val sortedStrategies = strategies.sortedWith(
+            compareBy({ it.status == FifaStrategyStatus.INACTIVE },
+                { it.status == FifaStrategyStatus.PAPER_BET },
+                { it.status == FifaStrategyStatus.ACTIVE })
+        )
+
+        return sortedStrategies.map { strategy ->
             FifaDTO.FifaStrategySingleResponse(
                 strategy.id,
                 strategy.name,
@@ -237,10 +254,5 @@ class FifaService(
                 Random.nextDouble(-100.0, 100.0)
             )
         }
-    }
-
-    private fun assureStrategyBelongsToUser(strategy: FifaStrategy, userEmail: String) {
-        val user = getUser(userEmail)
-        if (strategy.user?.id != user.id) throw IllegalArgumentException("Strategy does not belong to user")
     }
 }
