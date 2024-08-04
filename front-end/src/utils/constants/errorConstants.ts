@@ -29,4 +29,20 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
         title: "Não salvamos a estratégia!",
         description: "Existem valores não permitidos para o tipo de regra, dê uma olhada nisso."
     },
+    "Strategy does not belong to user": {
+        title: "Não salvamos a estratégia!",
+        description: "A estratégia não pertence a você, você não pode alterá-la."
+    },
+    "User has reached the maximum number of strategies": {
+        title: "Limite de estratégias atingido!",
+        description: "Você não pode ter mais do que 30 estratégias criadas."
+    },
+    "User has reached the maximum number of active strategies": {
+        title: "Limite de estratégias atingido!",
+        description: "Você chegou ao seu limite de estratégias ativas, verifique seu plano."
+    },
+    "User has reached the maximum number of paper bet strategies": {
+        title: "Limite de estratégias atingido!",
+        description: "Você chegou ao seu limite de estratégias no modo Paper Bet, verifique seu plano."
+    },
 }

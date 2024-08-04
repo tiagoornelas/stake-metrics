@@ -12,7 +12,7 @@ import java.util.UUID
 data class FifaStrategyModel(
     @Id
     val id: UUID = UUID.randomUUID(),
-    val status: FifaStrategyStatus = FifaStrategyStatus.PAPER_BET,
+    val status: FifaStrategyStatus = FifaStrategyStatus.INACTIVE,
     val name: String = "",
     val marketType: FifaMarketTypes = FifaMarketTypes.MATCH_ODDS,
     @ElementCollection

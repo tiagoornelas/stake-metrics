@@ -1,6 +1,7 @@
 package com.stakemetrics.backend.domain.ports.fifa
 
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
+import com.stakemetrics.backend.domain.enums.fifa.FifaStrategyStatus
 import java.util.UUID
 
 interface FifaStrategyRepositoryPort {
@@ -9,4 +10,6 @@ interface FifaStrategyRepositoryPort {
     fun getStrategiesByUser(userId: UUID): List<FifaStrategy>
     fun findById(id: UUID): FifaStrategy?
     fun delete(strategy: FifaStrategy)
+    fun countByUser(userId: UUID): Int
+    fun countByUserAndStatus(userId: UUID, status: FifaStrategyStatus): Int
 }

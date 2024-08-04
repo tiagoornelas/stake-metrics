@@ -73,6 +73,18 @@ class ExceptionHandlerController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse)
     }
 
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(success = false, message = e.message ?: "Illegal argument")
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
+    }
+
+    @ExceptionHandler(NotAllowedException::class)
+    fun handleNotAllowedException(e: NotAllowedException): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(success = false, message = e.message ?: "Not allowed")
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse)
+    }
+
     data class ErrorResponse(
         val success: Boolean, val message: String
     )

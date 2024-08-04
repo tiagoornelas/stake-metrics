@@ -1,6 +1,7 @@
 package com.stakemetrics.backend.plugins.persistence.repositories
 
 import com.stakemetrics.backend.domain.entities.fifa.FifaStrategy
+import com.stakemetrics.backend.domain.enums.fifa.FifaStrategyStatus
 import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyRepositoryPort
 import com.stakemetrics.backend.plugins.persistence.models.FifaStrategyModel
 import com.stakemetrics.backend.plugins.persistence.repositories.jpa.FifaStrategyJpaRepository
@@ -34,6 +35,14 @@ class FifaStrategyRepository(
     @CacheEvict(value = ["strategies"], allEntries = true)
     override fun delete(strategy: FifaStrategy) {
         return fifaStrategyJpaRepository.delete(strategy.toModel())
+    }
+
+    override fun countByUser(userId: UUID): Int {
+        return fifaStrategyJpaRepository.countByUserId(userId)
+    }
+
+    override fun countByUserAndStatus(userId: UUID, status: FifaStrategyStatus): Int {
+        return fifaStrategyJpaRepository.countByUserIdAndStatus(userId, status)
     }
 
 }
