@@ -1,5 +1,6 @@
 import {Box, Flex, Skeleton, Spinner, Table, TableContainer, Tbody, Text, Th, Thead, Tr} from "@chakra-ui/react";
 import Modal from "components/Modal";
+import StrategyEmptyState from "containers/strategy/components/StrategyEmptyState";
 import StrategyForm from "containers/strategy/components/StrategyForm";
 import StrategyTableItem from "containers/strategy/components/StrategyTableItem";
 import useStrategyQuery from "containers/strategy/hooks/useStrategyQuery";
@@ -39,6 +40,7 @@ const Header = ({strategiesLength, isLoaded}: { strategiesLength: number, isLoad
 const Strategy = () => {
     const {data: strategies = [], isLoading} = useStrategyQuery();
     const colors = useThemeColors();
+    const shouldRenderEmptyState = !isLoading && strategies.length === 0;
 
     return (
         <Box p={8}>
@@ -72,6 +74,7 @@ const Strategy = () => {
                     size='xl'
                 />
             </Flex>}
+            {shouldRenderEmptyState && <StrategyEmptyState/>}
         </Box>
     )
 };
