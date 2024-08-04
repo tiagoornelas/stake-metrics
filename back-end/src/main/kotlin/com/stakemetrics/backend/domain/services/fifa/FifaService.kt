@@ -10,6 +10,7 @@ import com.stakemetrics.backend.domain.ports.fifa.FifaPlayerRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyRepositoryPort
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyEnqueuer
+import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyValidator
 import com.stakemetrics.backend.plugins.http.dto.FifaDTO
 import com.stakemetrics.backend.plugins.http.dto.toResponse
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
@@ -86,6 +87,8 @@ class FifaService(
     }
 
     override fun saveStrategy(userEmail: String, dto: FifaDTO.FifaStrategyRequest) {
+        FifaStrategyValidator().validate(dto)
+
         val user = getUser(userEmail)
         val leagues = getLeagues(dto.leagues)
         val players = getPlayers(dto.excludedPlayers)
