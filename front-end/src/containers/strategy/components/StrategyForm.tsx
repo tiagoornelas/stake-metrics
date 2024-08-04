@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
 import StrategyRuleValueInput from "containers/strategy/components/StrategyRuleValueInput";
+import useInvalidateStrategyQuery from "containers/strategy/hooks/useInvalidateStrategyQuery";
 import {useErrorToast} from "hooks/useErrorToast";
 import useThemeColors from "hooks/useThemeColors";
 import React, {ChangeEvent, useEffect, useState} from 'react';
@@ -58,6 +59,7 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
     const [validationErrors, setValidationErrors] = useState<{ [key: string]: boolean }>({});
 
     const colors = useThemeColors();
+    const invalidateStrategyQuery = useInvalidateStrategyQuery();
 
     useEffect(() => {
         const getFormParams = async () => {
@@ -256,6 +258,7 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
         if (isFormValid(errors)) {
             await saveStrategy(form);
             if (onClose) onClose();
+            invalidateStrategyQuery();
         } else {
             throw new Error("Revise os campos em vermelho e tente novamente.");
         }

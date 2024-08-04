@@ -1,10 +1,14 @@
-import {useEffect, useMemo} from "react";
+import {useUserState} from "context/UserContext";
 import * as React from "react";
-import {UserContext} from "../utils/interfaces";
-import {useUserState} from "../context/UserContext";
+import {useEffect, useMemo} from "react";
+import {QueryClient, QueryClientProvider} from "react-query";
+import {UserContext} from "utils/interfaces";
+
 interface Props {
     children: React.ReactNode;
 }
+
+const queryClient = new QueryClient()
 
 const PrivateAreaWrapper = ({children}: Props) => {
     const userContext: UserContext = useUserState();
@@ -16,7 +20,7 @@ const PrivateAreaWrapper = ({children}: Props) => {
         }
     }, [userContext.user.isExpired, isContextLoaded]);
 
-    return <>{children}</>
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
 
 export default PrivateAreaWrapper;

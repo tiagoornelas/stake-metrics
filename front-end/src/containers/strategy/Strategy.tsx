@@ -2,10 +2,10 @@ import {Box, Flex, Skeleton, Spinner, Table, TableContainer, Tbody, Text, Th, Th
 import Modal from "components/Modal";
 import StrategyForm from "containers/strategy/components/StrategyForm";
 import StrategyTableItem from "containers/strategy/components/StrategyTableItem";
+import useStrategyQuery from "containers/strategy/hooks/useStrategyQuery";
 import useThemeColors from "hooks/useThemeColors";
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {GoTelescope} from 'react-icons/all';
-import {listStrategies} from "services/strategyService";
 import {StrategyListItem} from "utils/interfaces";
 
 const NewStrategyButton = () => {
@@ -37,24 +37,12 @@ const Header = ({strategiesLength, isLoaded}: { strategiesLength: number, isLoad
 }
 
 const Strategy = () => {
-    const [isLoaded, setIsLoaded] = useState<boolean>(false);
-    const [strategies, setStrategies] = useState<StrategyListItem[]>([]);
-
+    const {data: strategies = [], isLoading} = useStrategyQuery();
     const colors = useThemeColors();
-
-    useEffect(() => {
-        setIsLoaded(false);
-        const fetchStrategies = async () => {
-            const response = await listStrategies();
-            setStrategies(response.strategies);
-        };
-
-        fetchStrategies().then(() => setIsLoaded(true));
-    }, []);
 
     return (
         <Box p={8}>
-            <Header strategiesLength={strategies.length} isLoaded={isLoaded}/>
+            <Header strategiesLength={strategies.length} isLoaded={!isLoading}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
                     <Thead>
@@ -68,14 +56,14 @@ const Strategy = () => {
                             <Th w={"210px"}/>
                         </Tr>
                     </Thead>
-                    {isLoaded && <Tbody>
+                    {!isLoading && <Tbody>
                         {strategies.map((strategy: StrategyListItem) => <StrategyTableItem
                             key={strategy.id}
                             strategy={strategy}/>)}
                     </Tbody>}
                 </Table>
             </TableContainer>
-            {!isLoaded && <Flex justifyContent={"center"} w={"100%"} mt={8}>
+            {isLoading && <Flex justifyContent={"center"} w={"100%"} mt={8}>
                 <Spinner
                     thickness='4px'
                     speed='0.65s'
