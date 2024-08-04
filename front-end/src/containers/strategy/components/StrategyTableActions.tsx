@@ -62,7 +62,7 @@ const EditButton = ({strategyId}: { strategyId: string }) => {
                     <ModalHeader>Editar estratégia</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        <StrategyForm strategyId={strategyId}/>
+                        <StrategyForm strategyId={strategyId} onClose={onClose}/>
                     </ModalBody>
                 </ModalContent>
             </ChakraModal>

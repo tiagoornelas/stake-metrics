@@ -90,6 +90,17 @@ const Modal: React.FC<Props> = ({
         }
     };
 
+    interface ChildWithOnClose {
+        onClose?: () => void;
+    }
+
+    const childrenWithOnClose = React.Children.map(children, child => {
+        if (React.isValidElement<ChildWithOnClose>(child)) {
+            return React.cloneElement(child, {onClose});
+        }
+        return child;
+    });
+
     return (
         <>
             <TooltipButton tooltip={tooltip} onClick={onOpen} buttonText={buttonText} icon={icon} {...props} />
@@ -100,7 +111,7 @@ const Modal: React.FC<Props> = ({
                     <ModalHeader>{title}</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        {children}
+                        {childrenWithOnClose}
                     </ModalBody>
 
                     {!noFooter && (
