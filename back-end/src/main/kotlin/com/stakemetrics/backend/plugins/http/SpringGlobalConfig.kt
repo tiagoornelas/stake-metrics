@@ -8,13 +8,14 @@ import com.stakemetrics.backend.domain.ports.UserRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaLeagueRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaMatchRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaPlayerRepositoryPort
-import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyScopeRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyRepositoryPort
+import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyScopeRepositoryPort
 import com.stakemetrics.backend.domain.services.RecoveryCodeService
 import com.stakemetrics.backend.domain.services.RepositorySeederService
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.domain.services.fifa.FifaService
 import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyEnqueuer
+import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyValidator
 import com.stakemetrics.backend.plugins.email.EmailSender
 import com.stakemetrics.backend.plugins.encoder.PasswordEncoder
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
@@ -29,6 +30,7 @@ import java.util.Locale
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.Environment
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.servlet.LocaleResolver
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -50,20 +52,12 @@ class SpringGlobalConfig : WebMvcConfigurer {
 
     @Bean
     fun subscriptionServicePort(
-        @Value("\${stripe.api.key}") stripeApiKey: String,
-        @Value("\${stripe.pricing.table}") stripePricingTableId: String,
-        @Value("\${stripe.dark.mode.pricing.table}") stripeDarkModePricingTableId: String,
-        @Value("\${stripe.public.key}") stripePublicKey: String,
-        @Value("\${app.frontend.base.url}") appBaseUrl: String,
+        environment: Environment,
         subscriptionRepositoryPort: SubscriptionRepositoryPort,
         userRepositoryPort: UserRepositoryPort
     ): SubscriptionServicePort {
         return SubscriptionService(
-            stripeApiKey,
-            stripePricingTableId,
-            stripeDarkModePricingTableId,
-            stripePublicKey,
-            appBaseUrl,
+            environment,
             subscriptionRepositoryPort,
             userRepositoryPort
         )
@@ -104,15 +98,17 @@ class SpringGlobalConfig : WebMvcConfigurer {
     @Bean
     fun fifaServicePort(
         userService: UserService,
+        fifaStrategyValidator: FifaStrategyValidator,
         fifaStrategyEnqueuer: FifaStrategyEnqueuer,
         fifaLeagueRepositoryPort: FifaLeagueRepositoryPort,
         fifaMatchRepositoryPort: FifaMatchRepositoryPort,
         fifaPlayerRepositoryPort: FifaPlayerRepositoryPort,
         fifaStrategyRepositoryPort: FifaStrategyRepositoryPort,
-        fifaStrategyScopeRepositoryPort: FifaStrategyScopeRepositoryPort
+        fifaStrategyScopeRepositoryPort: FifaStrategyScopeRepositoryPort,
     ): FifaServicePort {
         return FifaService(
             userService,
+            fifaStrategyValidator,
             fifaStrategyEnqueuer,
             fifaLeagueRepositoryPort,
             fifaMatchRepositoryPort,

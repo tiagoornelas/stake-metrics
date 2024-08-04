@@ -1,4 +1,16 @@
-import {Badge, Box, CreateToastFnReturn, Heading, Input, Select, Stack, Text, useToast} from "@chakra-ui/react";
+import {
+    Badge,
+    Box,
+    CreateToastFnReturn,
+    Flex,
+    Heading,
+    Input,
+    Select,
+    Stack,
+    Tag,
+    Text,
+    useToast
+} from "@chakra-ui/react";
 import DefaultSlider from "components/DefaultSlider";
 import Modal from "components/Modal";
 import {useErrorToast} from "hooks/useErrorToast";
@@ -140,23 +152,29 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
                         </Select>
                     </Box>
                     <Box display="flex" flexDirection="column" gap={2}>
-                        <Heading size="sm">Atraso (em segundos)</Heading>
+                        <Flex gap={2}>
+                            <Heading size="sm">Atraso</Heading>
+                            <Tag>{`${formState.delay} s`}</Tag>
+                        </Flex>
                         <DefaultSlider handleChange={handleDelayChange} value={formState.delay} min={0} max={120}
-                                       step={1}
-                                       sufix=" s"/>
+                                       step={1}/>
                     </Box>
                     <Box display="flex" flexDirection="column" gap={2}>
-                        <Heading size="sm">Taxa de entrega (em %)</Heading>
+                        <Flex gap={2}>
+                            <Heading size="sm">Taxa de entrega</Heading>
+                            <Tag>{`${formState.deliveryProbability * 100} %`}</Tag>
+                        </Flex>
                         <DefaultSlider handleChange={handleDeliveryProbabilityChange}
                                        value={formState.deliveryProbability}
-                                       min={0} max={1} step={0.01} isPercentage sufix="%"/>
+                                       min={0} max={1} step={0.01} isPercentage/>
                     </Box>
                     <Box display="flex" flexDirection="column" gap={2}>
                         <Heading size="sm">Mensagem prévia
                             ao atraso</Heading>
                         <Text fontSize="xs" color="gray">Preencha para enviar uma mensagem antes da mensagem principal
                             em caso de atraso</Text>
-                        <Input disabled={formState.delay === 0} name="delayedAlertMessage" value={formState.delayedAlertMessage}
+                        <Input disabled={formState.delay === 0} name="delayedAlertMessage"
+                               value={formState.delayedAlertMessage}
                                onChange={handleChange}/>
                     </Box>
                     <Box display="flex" flexDirection="column" gap={2}>
@@ -164,7 +182,8 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
                             mensagem não entregue</Heading>
                         <Text fontSize="xs" color="gray">Preencha para enviar uma mensagem antes da mensagem principal
                             em caso de atraso</Text>
-                        <Input disabled={formState.deliveryProbability === 1} name="notDeliveredMessage" value={formState.notDeliveredMessage}
+                        <Input disabled={formState.deliveryProbability === 1} name="notDeliveredMessage"
+                               value={formState.notDeliveredMessage}
                                onChange={handleChange}/>
                     </Box>
                     <Box display="flex" flexDirection="column" gap={2}>

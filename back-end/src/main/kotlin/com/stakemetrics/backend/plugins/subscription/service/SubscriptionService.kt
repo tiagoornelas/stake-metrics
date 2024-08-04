@@ -14,6 +14,8 @@ import com.stripe.model.entitlements.ActiveEntitlement
 import com.stripe.param.CustomerCreateParams
 import com.stripe.param.CustomerSessionCreateParams
 import com.stripe.param.entitlements.ActiveEntitlementListParams
+import org.springframework.core.env.Environment
+import org.springframework.stereotype.Service
 import com.stakemetrics.backend.domain.ports.SubscriptionServicePort as DomainSubscriptionServicePort
 import com.stakemetrics.backend.plugins.http.ports.SubscriptionServicePort as HttpSubscriptionServicePort
 import com.stripe.model.billingportal.Session as BillingPortalSession
@@ -21,16 +23,28 @@ import com.stripe.model.checkout.Session as CheckoutSession
 import com.stripe.param.billingportal.SessionCreateParams as BillingPortalSessionCreateParams
 import com.stripe.param.checkout.SessionCreateParams as CheckoutSessionCreateParams
 
-
+@Service
 class SubscriptionService(
-    stripeApiKey: String,
-    private val stripePricingTableId: String,
-    private val stripeDarkModePricingTableId: String,
-    private val stripePublicKey: String,
-    private val appBaseUrl: String,
+    environment: Environment,
     private val subscriptionRepositoryPort: SubscriptionRepositoryPort,
     private val userRepositoryPort: UserRepositoryPort
 ) : HttpSubscriptionServicePort, DomainSubscriptionServicePort {
+
+    private final val stripeApiKey: String =
+        environment.getProperty("stripe.api.key") ?: throw IllegalStateException("stripe.api.key not configured")
+
+    val stripePricingTableId: String = environment.getProperty("stripe.pricing.table")
+        ?: throw IllegalStateException("stripe.pricing.table not configured")
+
+    val stripeDarkModePricingTableId: String = environment.getProperty("stripe.dark.mode.pricing.table")
+        ?: throw IllegalStateException("stripe.dark.mode.pricing.table not configured")
+
+    val stripePublicKey: String =
+        environment.getProperty("stripe.public.key") ?: throw IllegalStateException("stripe.public.key not configured")
+
+    val appBaseUrl: String =
+        environment.getProperty("app.frontend.base.url")
+            ?: throw IllegalStateException("app.frontend.base.url not configured")
 
     init {
         Stripe.apiKey = stripeApiKey
