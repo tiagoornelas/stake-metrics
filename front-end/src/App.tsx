@@ -1,8 +1,8 @@
 import {ChakraProvider, extendTheme} from "@chakra-ui/react"
 import {ErrorBoundary} from "components/ErrorBoundary";
-import Header from "components/Header";
 import PrivateAreaWrapper from "components/PrivateAreaWrapper";
 import PublicAreaWrapper from "components/PublicAreaWrapper";
+import RouterLayout from "components/RouterLayout";
 import Metrics from "containers/metrics/Metrics";
 import AccountRecovery from "containers/public/AccountRecovery";
 import CreateAccount from "containers/public/CreateAccount";
@@ -45,19 +45,22 @@ const unsubscribedRouter = createBrowserRouter([
 const appRouter = createBrowserRouter([
     {
         path: "/user-management",
-        element: <UserManagement/>
+        element: <RouterLayout><UserManagement/></RouterLayout>
     },
     {
         path: "/strategies",
-        element: <Strategy/>
+        element: <RouterLayout><Strategy/></RouterLayout>
+
     },
     {
         path: "/metrics",
-        element: <Metrics/>
+        element: <RouterLayout><Metrics/></RouterLayout>
+
     },
     {
         path: "/*",
-        element: <Strategy/>,
+        element: <RouterLayout><Strategy/></RouterLayout>
+
     },
 ]);
 
@@ -94,7 +97,6 @@ const AppContent = () => {
     )
 
     return (<PrivateAreaWrapper>
-        <Header/>
         <RouterProvider router={appRouter}/>
     </PrivateAreaWrapper>);
 

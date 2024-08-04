@@ -1,6 +1,7 @@
 package com.stakemetrics.backend.plugins.telegram
 
 import com.stakemetrics.backend.domain.exceptions.AlreadyIntegratedException
+import com.stakemetrics.backend.domain.exceptions.IntegrationException
 import com.stakemetrics.backend.domain.exceptions.InvalidFieldException
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
 import com.stakemetrics.backend.plugins.http.dto.TelegramDTO
@@ -165,7 +166,7 @@ class TelegramService(
         val chat = updates
             .filter { it.message != null }
             .find { it.message.text == passPhrase.toString() }?.message?.chat
-            ?: throw NotFoundException("Chat", "passPhrase", passPhrase.toString())
+            ?: throw IntegrationException("Telegram chat with passphrase not found")
 
         return ChatDetails(chat.id.toString(), chat.userName)
     }
