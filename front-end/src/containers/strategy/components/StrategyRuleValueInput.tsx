@@ -19,9 +19,9 @@ const StrategyRuleValueInput = ({onChange, rule, ruleTypeDetail, isInvalid}: Pro
 
     useEffect(() => {
         if (isPercentage) {
-            setDisplayedValue(Number(rule.value * 100));
+            setDisplayedValue(Math.round(Number(rule.value * 100)));
         } else {
-            setDisplayedValue(Number(rule.value));
+            setDisplayedValue(Math.round(Number(rule.value)));
         }
         //eslint-disable-next-line
     }, [rule.type, isPercentage]);

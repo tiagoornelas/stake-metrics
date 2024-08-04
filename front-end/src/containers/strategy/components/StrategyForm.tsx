@@ -348,12 +348,12 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
                                 <FormControl>
                                     <FormLabel htmlFor={`value-${index}`}>Período</FormLabel>
                                     <Grid templateColumns="repeat(6, 1fr)" gap={4}>
-                                        <GridItem colSpan={2}>
+                                        <GridItem colSpan={3}>
                                             <Input id="value" type="number" onChange={(e) => handleScopeInput(index, e)}
                                                    value={scope.value}
                                                    isInvalid={validationErrors[`scope-${index}-value`]}/>
                                         </GridItem>
-                                        <GridItem colSpan={4}>
+                                        <GridItem colSpan={3}>
                                             <Select id="type" onChange={(e) => handleScopeInput(index, e)}
                                                     value={scope.type}
                                                     isInvalid={validationErrors[`scope-${index}-type`]}>
