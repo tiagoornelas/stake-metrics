@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import StrategyForm from "containers/strategy/components/StrategyForm";
+import useInvalidateStrategyQuery from "containers/strategy/hooks/useInvalidateStrategyQuery";
 import {useErrorToast} from "hooks/useErrorToast";
 import React from 'react';
 import {BiSpreadsheet, IoMdPower, MdEdit} from "react-icons/all";
@@ -25,9 +26,12 @@ import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {StrategyListItem, StrategyStatus} from "utils/interfaces";
 
 const StatusMenu = ({strategy}: { strategy: StrategyListItem }) => {
+    const invalidateStrategyQuery = useInvalidateStrategyQuery();
+
     const statuses: StrategyStatus[] = Object.keys(strategyStatusDict).filter(status => status !== strategy.status) as StrategyStatus[];
     const handleStatusChange = useErrorToast(async (status: StrategyStatus) => {
         await changeStrategyStatus(strategy.id, status);
+        invalidateStrategyQuery();
     }, SUCCESS_TYPES.STRATEGY_STATUS_CHANGED);
 
     return (
@@ -71,8 +75,11 @@ const EditButton = ({strategyId}: { strategyId: string }) => {
 }
 
 const DeleteButton = ({strategy}: { strategy: StrategyListItem }) => {
+    const invalidateStrategyQuery = useInvalidateStrategyQuery();
+
     const handleDelete = useErrorToast(async () => {
         await deleteStrategy(strategy.id);
+        invalidateStrategyQuery();
     }, SUCCESS_TYPES.STRATEGY_DELETED);
 
     return <DeleteConfirmationDialog entityName={"estratégia"} confirmCallback={handleDelete} variant='outline'/>
