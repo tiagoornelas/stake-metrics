@@ -23,6 +23,7 @@ type Props = {
     entity?: string[];
     tagColor?: "green" | "blue" | "yellow" | "red";
     defaultSelected?: string[];
+    isInvalid?: boolean;
 };
 
 const sortOptions = (options: Option[], selectedOptions: string[]): Option[] => {
@@ -35,7 +36,15 @@ const sortOptions = (options: Option[], selectedOptions: string[]): Option[] => 
     });
 };
 
-const MultiSelect = ({title, options, onChange, entity = [], tagColor = "blue", defaultSelected = []}: Props) => {
+const MultiSelect = ({
+                         title,
+                         options,
+                         onChange,
+                         entity = [],
+                         tagColor = "blue",
+                         defaultSelected = [],
+                         isInvalid
+                     }: Props) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>(defaultSelected);
     const [searchInput, setSearchInput] = useState<string>("");
 
@@ -94,7 +103,7 @@ const MultiSelect = ({title, options, onChange, entity = [], tagColor = "blue", 
                 <Menu closeOnSelect={false}>
                     <MenuButton
                         as={Button}
-                        colorScheme="gray"
+                        colorScheme={isInvalid ? "red" : "gray"}
                         variant={"outline"}
                         rightIcon={<Icon as={BiListCheck}/>}
                         w={"100%"}

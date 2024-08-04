@@ -1,20 +1,30 @@
 import {Input} from "@chakra-ui/react";
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Rule, RuleTypeDetail, RuleValueFormatTypes} from "utils/interfaces";
 
 type Props = {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     rule: Rule;
     ruleTypeDetail?: RuleTypeDetail;
+    isInvalid: boolean;
 }
 
-const StrategyRuleDynamicFormatInput = ({onChange, rule, ruleTypeDetail}: Props) => {
+const StrategyRuleValueInput = ({onChange, rule, ruleTypeDetail, isInvalid}: Props) => {
     const isPercentage = ruleTypeDetail?.format === RuleValueFormatTypes.PERCENTAGE;
     const defaultValue = isPercentage ? Number(rule.value * 100) : Number(rule.value);
     const [displayedValue, setDisplayedValue] = useState<number>(defaultValue);
 
-    const minValue = isPercentage ? ruleTypeDetail?.minValue * 100 : ruleTypeDetail?.minValue;
-    const maxValue = isPercentage ? ruleTypeDetail?.maxValue * 100 : ruleTypeDetail?.maxValue;
+    const minValue = (isPercentage ? ruleTypeDetail?.minValue * 100 : ruleTypeDetail?.minValue) || 0;
+    const maxValue = (isPercentage ? ruleTypeDetail?.maxValue * 100 : ruleTypeDetail?.maxValue) || 1000;
+
+    useEffect(() => {
+        if (isPercentage) {
+            setDisplayedValue(Number(rule.value * 100));
+        } else {
+            setDisplayedValue(Number(rule.value));
+        }
+        //eslint-disable-next-line
+    }, [rule.type, isPercentage]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = Number(e.target.value);
@@ -35,9 +45,11 @@ const StrategyRuleDynamicFormatInput = ({onChange, rule, ruleTypeDetail}: Props)
                    onChange={handleChange}
                    value={displayedValue}
                    min={minValue}
-                   max={maxValue}/>
+                   max={maxValue}
+                   isInvalid={isInvalid}
+            />
         </>
     );
 };
 
-export default StrategyRuleDynamicFormatInput;
+export default StrategyRuleValueInput;

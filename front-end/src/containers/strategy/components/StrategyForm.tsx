@@ -14,7 +14,7 @@ import {
     Tag
 } from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
-import StrategyRuleDynamicFormatInput from "containers/strategy/components/StrategyRuleDynamicFormatInput";
+import StrategyRuleValueInput from "containers/strategy/components/StrategyRuleValueInput";
 import {useErrorToast} from "hooks/useErrorToast";
 import useThemeColors from "hooks/useThemeColors";
 import React, {ChangeEvent, useEffect, useState} from 'react';
@@ -29,6 +29,7 @@ import {
     FifleRuleTypesFormatDict
 } from "utils/constants/strategyConstants";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
+import {isFormValid, validateForm} from "utils/helpers/strategyHelper";
 import {
     FifaLeagueResponse,
     FifaPlayerResponse,
@@ -38,7 +39,7 @@ import {
     StrategyParams
 } from "utils/interfaces";
 
-const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
+const StrategyForm = ({strategyId}: { strategyId?: string }) => {
     const [formParams, setFormParams] = useState<StrategyParams | null>(null);
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [form, setForm] = useState<StrategyCreationBody>({
@@ -54,10 +55,22 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
     const [dynamicSubmarkets, setDynamicSubmarkets] = useState<Option[]>([]);
     const [dynamicLeagues, setDynamicLeagues] = useState<Option[]>([]);
     const [dynamicPlayers, setDynamicPlayers] = useState<Option[]>([]);
+    const [validationErrors, setValidationErrors] = useState<{ [key: string]: boolean }>({});
 
     const colors = useThemeColors();
 
     useEffect(() => {
+        const getFormParams = async () => {
+            const params = await getFifaStrategyParams();
+            setFormParams(params);
+        };
+
+        getFormParams();
+    }, []);
+
+    useEffect(() => {
+        setIsLoaded(false);
+
         const fetchStrategy = async () => {
             if (strategyId) {
                 const strategy = await getStrategy(strategyId);
@@ -70,30 +83,17 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
                     excludedPlayers: strategy.excludedPlayers.map((player: FifaPlayerResponse) => player.id),
                     scopes: strategy.scopes
                 });
-            }
-        };
-
-        const getFormParams = async () => {
-            const params = await getFifaStrategyParams();
-            setFormParams(params);
-        };
-
-        Promise.all([fetchStrategy(), getFormParams()]).then(() => {
-            setIsLoaded(true);
-        });
-    }, [strategyId]);
-
-    useEffect(() => {
-        const setDefaultFormBasedOnParams = () => {
-            if (formParams && !strategyId) {
+            } else if (formParams) {
                 setForm(prevState => ({
                     ...prevState,
                     marketType: formParams.marketTypes[0].marketType,
                 }));
             }
-        }
+        };
 
-        setDefaultFormBasedOnParams();
+        fetchStrategy().then(() => {
+            setTimeout(() => setIsLoaded(true), 500);
+        });
     }, [formParams, strategyId]);
 
     useEffect(() => {
@@ -248,20 +248,31 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
     }
 
     const handleSave = useErrorToast(async () => {
-        await saveStrategy(form);
+        if (!formParams) throw new Error("Formulário sem parâmetros de validação. Entre em contato com o suporte se o erro persistir.");
+
+        const errors = validateForm(form, formParams);
+        setValidationErrors(errors);
+
+        if (isFormValid(errors)) {
+            await saveStrategy(form);
+        } else {
+            throw new Error("Revise os campos em vermelho e tente novamente.");
+        }
     }, SUCCESS_TYPES.FIFA_STRATEGY_SAVED);
 
     return (
         <Stack spacing="5">
             <FormControl>
                 <FormLabel htmlFor="name">Nome</FormLabel>
-                <Input id="name" type="text" onChange={handleInput} value={form.name}/>
+                <Input id="name" type="text" onChange={handleInput} value={form.name}
+                       isInvalid={validationErrors.name}/>
             </FormControl>
 
             <Skeleton isLoaded={isLoaded}>
                 <FormControl>
                     <FormLabel htmlFor="market">Mercado</FormLabel>
-                    <Select id="marketType" onChange={handleInput} value={form.marketType || ""}>
+                    <Select id="marketType" onChange={handleInput} value={form.marketType || ""}
+                            isInvalid={validationErrors.marketType}>
                         {formParams && formParams.marketTypes.map(marketType => (
                             <option key={marketType.marketType} value={marketType.marketType}>
                                 {FifaMarketTypesDict[marketType.marketType]}
@@ -274,7 +285,8 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
             <Skeleton isLoaded={isLoaded}>
                 <FormControl>
                     <MultiSelect title={"Linhas do mercado"} entity={["linha", "linhas"]} options={dynamicSubmarkets}
-                                 onChange={handleSubmarketChange}/>
+                                 defaultSelected={form.marketSubTypes}
+                                 onChange={handleSubmarketChange} isInvalid={validationErrors.marketSubTypes}/>
                 </FormControl>
             </Skeleton>
 
@@ -283,7 +295,7 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
                     <MultiSelect title={"Ligas observadas"} entity={["liga", "ligas"]}
                                  options={dynamicLeagues}
                                  defaultSelected={form.leagues}
-                                 onChange={handleLeaguesChange}/>
+                                 onChange={handleLeaguesChange} isInvalid={validationErrors.leagues}/>
                 </FormControl>
             </Skeleton>
 
@@ -303,7 +315,8 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
                     rightIcon={<FaMagic/>}
                     w={"100%"}
                 >
-                    {form.scopes.length > 0 && <Tag m="2">{getScopeLabel(form.scopes.length)}</Tag>}
+                    {form.scopes.length > 0 ? <Tag m="2">{getScopeLabel(form.scopes.length)}</Tag> :
+                        <Tag colorScheme="red" m="2">Sem regras</Tag>}
                     Adicionar regra
                 </Button>
             </Skeleton>
@@ -316,7 +329,8 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
                                 <FormControl>
                                     <FormLabel htmlFor={`matchup-${index}`}>Confronto</FormLabel>
                                     <Select id="matchup" onChange={(e) => handleScopeInput(index, e)}
-                                            value={scope.matchup}>
+                                            value={scope.matchup}
+                                            isInvalid={validationErrors[`scope-${index}-matchup`]}>
                                         {formParams.matchupTypes.map(matchupType => (
                                             <option key={matchupType} value={matchupType}>
                                                 {FifaMatchupTypesDict[matchupType]}
@@ -332,11 +346,13 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
                                     <Grid templateColumns="repeat(6, 1fr)" gap={4}>
                                         <GridItem colSpan={2}>
                                             <Input id="value" type="number" onChange={(e) => handleScopeInput(index, e)}
-                                                   value={scope.value}/>
+                                                   value={scope.value}
+                                                   isInvalid={validationErrors[`scope-${index}-value`]}/>
                                         </GridItem>
                                         <GridItem colSpan={4}>
                                             <Select id="type" onChange={(e) => handleScopeInput(index, e)}
-                                                    value={scope.type}>
+                                                    value={scope.type}
+                                                    isInvalid={validationErrors[`scope-${index}-type`]}>
                                                 {formParams.scopeTypes.map(scopeType => (
                                                     <option key={scopeType} value={scopeType}>
                                                         {FifaStrategyScopeTypesDict[scopeType]}
@@ -362,7 +378,8 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
                                             {ruleIndex === 0 && <FormLabel
                                                 htmlFor={`ruleType-${index}-${ruleIndex}`}>Critério</FormLabel>}
                                             <Select id="type" onChange={(e) => handleRuleTypeInput(index, ruleIndex, e)}
-                                                    value={rule.type}>
+                                                    value={rule.type}
+                                                    isInvalid={validationErrors[`scope-${index}-rule-${ruleIndex}-type`]}>
                                                 {availableRuleTypes.map(ruleType => (
                                                     <option key={ruleType.type} value={ruleType.type}>
                                                         {FifaRuleTypesDict[ruleType.type]}
@@ -379,10 +396,12 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
                                             <Grid templateColumns="repeat(12, 1fr)" gap={2} alignItems={"center"}
                                                   justifyItems={"center"}>
                                                 <GridItem colSpan={8} alignItems={"center"} justifyItems={"center"}>
-                                                    <StrategyRuleDynamicFormatInput
+                                                    <StrategyRuleValueInput
                                                         onChange={(e) => handleRuleValueInput(index, ruleIndex, e)}
                                                         rule={rule}
-                                                        ruleTypeDetail={currentRuleDetail}/>
+                                                        ruleTypeDetail={currentRuleDetail}
+                                                        isInvalid={validationErrors[`scope-${index}-rule-${ruleIndex}-value`]}
+                                                    />
                                                 </GridItem>
                                                 <GridItem colSpan={4}>
                                                     {currentRuleDetail &&
@@ -432,4 +451,4 @@ const StrategyCreateEditForm = ({strategyId}: { strategyId?: string }) => {
     );
 };
 
-export default StrategyCreateEditForm;
+export default StrategyForm;
