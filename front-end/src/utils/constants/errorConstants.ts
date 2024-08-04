@@ -45,4 +45,8 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
         title: "Limite de estratégias atingido!",
         description: "Você chegou ao seu limite de estratégias no modo Paper Bet, verifique seu plano."
     },
+    "Telegram chat with passphrase not found": {
+        title: "Não conseguimos integrar o Telegram!",
+        description: "Tente novamente aguardando um pouco mais para conectar após enviar o código. Caso ainda assim não consiga, entre em contato com o suporte."
+    },
 }
