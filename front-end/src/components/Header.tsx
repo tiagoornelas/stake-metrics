@@ -12,17 +12,19 @@ import {
     MenuList,
     Stack,
     useColorMode,
-    useColorModeValue
+    useColorModeValue,
+    useMediaQuery
 } from '@chakra-ui/react';
-import {FaMoon, FaSun} from "react-icons/fa";
 import ProductLogo from "components/ProductLogo";
-import {useCookies} from "react-cookie";
-import {Dispatch, ReactNode} from "react";
-import {useUserState, useUserDispatch} from "context/UserContext";
 import ProductName from "components/ProductName";
+import {useUserDispatch, useUserState} from "context/UserContext";
+import {Dispatch, Fragment, ReactNode} from "react";
+import {useCookies} from "react-cookie";
+import {FaMoon, FaSun} from "react-icons/fa";
+import {useNavigate} from 'react-router-dom';
 import {APP_NAVIGATION} from "utils/constants/navigationConstants";
-import {NavigationLinkOnHeaderValue, UserContext, UserReducerAction} from "utils/interfaces";
 import {cleanUser} from "utils/helpers/contextHelper";
+import {NavigationLinkOnHeaderValue, UserContext, UserReducerAction} from "utils/interfaces";
 
 interface Props {
     children: ReactNode,
@@ -30,7 +32,8 @@ interface Props {
 }
 
 const NavLink = (props: Props) => {
-    const {children, path} = props
+    const {children, path} = props;
+    const navigate = useNavigate();
 
     return (
         <Box
@@ -42,7 +45,8 @@ const NavLink = (props: Props) => {
                 textDecoration: 'none',
                 bg: useColorModeValue('gray.200', 'gray.700'),
             }}
-            href={path}>
+            cursor={"pointer"}
+            onClick={() => navigate(path.toLowerCase(), {replace: true})}>
             {children}
         </Box>
     )
@@ -51,6 +55,8 @@ const NavLink = (props: Props) => {
 export const Header = () => {
     const {colorMode, toggleColorMode} = useColorMode();
     const [, , removeCookie] = useCookies(["userId", "token"]);
+    const [isSmallerThanMd] = useMediaQuery("(max-width: 48em)");
+    const navigate = useNavigate();
 
     const userContext: UserContext = useUserState();
     const userDispatch: Dispatch<UserReducerAction> = useUserDispatch();
@@ -66,7 +72,7 @@ export const Header = () => {
         window.location.reload();
     };
 
-    const goToHomePage = () => window.location.assign("/");
+    const goToHomePage = () => navigate("/", {replace: true});
 
     return (
         <>
@@ -113,8 +119,20 @@ export const Header = () => {
                                     </Center>
                                     <br/>
                                     <MenuDivider/>
-                                    <MenuItem onClick={() => window.location.assign("/user-management")}>Minha
-                                        conta</MenuItem>
+                                    {isSmallerThanMd &&
+                                        <Fragment>
+                                            {APP_NAVIGATION.map(({
+                                                                     name,
+                                                                     path
+                                                                 }: NavigationLinkOnHeaderValue) => (
+                                                <MenuItem key={path}
+                                                          onClick={() => navigate(path.toLowerCase(), {replace: true})}>
+                                                    {name}
+                                                </MenuItem>))}
+                                            <MenuDivider/>
+                                        </Fragment>
+                                    }
+                                    <MenuItem onClick={() => navigate("/user-management")}>Minha conta</MenuItem>
                                     <MenuItem onClick={logOut}>Sair</MenuItem>
                                 </MenuList>
                             </Menu>
