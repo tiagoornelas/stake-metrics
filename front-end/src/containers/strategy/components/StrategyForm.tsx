@@ -39,7 +39,7 @@ import {
     StrategyParams
 } from "utils/interfaces";
 
-const StrategyForm = ({strategyId}: { strategyId?: string }) => {
+const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: () => void }) => {
     const [formParams, setFormParams] = useState<StrategyParams | null>(null);
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [form, setForm] = useState<StrategyCreationBody>({
@@ -255,10 +255,11 @@ const StrategyForm = ({strategyId}: { strategyId?: string }) => {
 
         if (isFormValid(errors)) {
             await saveStrategy(form);
+            if (onClose) onClose();
         } else {
             throw new Error("Revise os campos em vermelho e tente novamente.");
         }
-    }, SUCCESS_TYPES.FIFA_STRATEGY_SAVED);
+    }, SUCCESS_TYPES.STRATEGY_SAVED);
 
     return (
         <Stack spacing="5">
@@ -439,8 +440,7 @@ const StrategyForm = ({strategyId}: { strategyId?: string }) => {
                 )
             })}
             <Flex justifyContent={"flex-end"} mb={2}>
-                <Button mr={3} onClick={() => {
-                }}>
+                <Button mr={3} onClick={onClose}>
                     Voltar
                 </Button>
                 <Button bgColor={colors.product} color={colors.productContrast} onClick={handleSave}>
