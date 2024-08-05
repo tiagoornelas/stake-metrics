@@ -115,6 +115,7 @@ def format_results_for_stake_metrics(results):
 def inform_upcoming_match(match):
     formatted_match = format_upcoming_match(match)
     payload = json.dumps(formatted_match)
+    match_identifier = f"{match['id']} - {formatted_match['homePlayerName']} x {formatted_match['awayPlayerName']}"
 
     headers = {
         'Content-Type': 'application/json',
@@ -125,15 +126,17 @@ def inform_upcoming_match(match):
     conn.request("POST", INFORM_ODD_URL, body=payload, headers=headers)
     response = conn.getresponse()
     if 200 <= response.status < 300:
-        print(f"Successfully sent match {match['id']}")
+        print(f"Successfully sent match {match_identifier}")
     else:
-        print(f"Failed to send match {match['id']}, status code: {response.status}")
+        print(f"Failed to send match {match_identifier}, status code: {response.status}")
     conn.close()
 
 
 def format_upcoming_match(match):
     return {
-        "integrationId": int(match["id"]),
+        "leagueIntegrationId": int(match["league"]["id"]),
+        "homePlayerName": match["home"]["player_name"],
+        "awayPlayerName": match["away"]["player_name"],
         "odds": get_odds_from_match(match)
     }
 

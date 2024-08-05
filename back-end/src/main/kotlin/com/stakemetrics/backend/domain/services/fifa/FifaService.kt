@@ -10,7 +10,7 @@ import com.stakemetrics.backend.domain.ports.fifa.FifaPlayerRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaStrategyRepositoryPort
 import com.stakemetrics.backend.domain.services.UserService
 import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyEnqueuer
-import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyValidator
+import com.stakemetrics.backend.domain.services.fifa.workers.FifaStrategyResourceValidator
 import com.stakemetrics.backend.plugins.http.dto.FifaDTO
 import com.stakemetrics.backend.plugins.http.dto.toResponse
 import com.stakemetrics.backend.plugins.http.ports.FifaServicePort
@@ -22,7 +22,7 @@ import kotlin.random.Random
 
 class FifaService(
     private val userService: UserService,
-    private val fifaStrategyValidator: FifaStrategyValidator,
+    private val fifaStrategyResourceValidator: FifaStrategyResourceValidator,
     private val fifaStrategyEnqueuer: FifaStrategyEnqueuer,
     private val fifaLeagueRepositoryPort: FifaLeagueRepositoryPort,
     private val fifaMatchRepositoryPort: FifaMatchRepositoryPort,
@@ -88,10 +88,10 @@ class FifaService(
     }
 
     override fun saveStrategy(userEmail: String, dto: FifaDTO.FifaStrategyRequest) {
-        fifaStrategyValidator.validate(dto)
+        fifaStrategyResourceValidator.validate(dto)
 
         val user = getUser(userEmail)
-        fifaStrategyValidator.checkIfUserCanCreate(user)
+        fifaStrategyResourceValidator.checkIfUserCanCreate(user)
 
         val leagues = getLeagues(dto.leagues)
         val players = getPlayers(dto.excludedPlayers)
@@ -177,8 +177,8 @@ class FifaService(
             ?: throw NotFoundException("Strategy", "id", strategyId.toString())
 
         val user = getUser(userEmail)
-        fifaStrategyValidator.assureStrategyBelongsToUser(strategy, user)
-        fifaStrategyValidator.canUserChangeStatus(user, status)
+        fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy, user)
+        fifaStrategyResourceValidator.canUserChangeStatus(user, status)
 
         strategy.status = status
         fifaStrategyRepositoryPort.save(strategy)
@@ -189,7 +189,7 @@ class FifaService(
             ?: throw NotFoundException("Strategy", "id", strategyId.toString())
 
         val user = getUser(userEmail)
-        fifaStrategyValidator.assureStrategyBelongsToUser(strategy, user)
+        fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy, user)
         fifaStrategyRepositoryPort.delete(strategy)
     }
 
@@ -220,7 +220,7 @@ class FifaService(
             ?: throw NotFoundException("Strategy", "id", strategyId.toString())
 
         val user = getUser(userEmail)
-        fifaStrategyValidator.assureStrategyBelongsToUser(strategy, user)
+        fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy, user)
 
         return FifaDTO.FifaStrategyReadResponse(
             strategy.id,

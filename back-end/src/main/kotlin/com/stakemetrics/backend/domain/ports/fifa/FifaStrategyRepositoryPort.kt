@@ -6,7 +6,7 @@ import java.util.UUID
 
 interface FifaStrategyRepositoryPort {
     fun save(strategy: FifaStrategy)
-    fun getAllStrategies(): List<FifaStrategy>
+    fun getAllProneToBetStrategies(): List<FifaStrategy>
     fun getStrategiesByUser(userId: UUID): List<FifaStrategy>
     fun findById(id: UUID): FifaStrategy?
     fun delete(strategy: FifaStrategy)
