@@ -12,7 +12,7 @@ import com.stakemetrics.backend.plugins.subscription.service.SubscriptionService
 import org.springframework.stereotype.Service
 
 @Service
-class FifaStrategyValidator(
+class FifaStrategyResourceValidator(
     private val fifaStrategyRepositoryPort: FifaStrategyRepositoryPort,
     private val subscriptionService: SubscriptionService
 ) {

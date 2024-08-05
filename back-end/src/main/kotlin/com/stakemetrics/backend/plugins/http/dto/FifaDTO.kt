@@ -61,7 +61,9 @@ class FifaDTO {
     )
 
     data class FifaOddRequest(
-        val integrationId: Int,
+        val leagueIntegrationId: Int,
+        val homePlayerName: String,
+        val awayPlayerName: String,
         val odds: List<FifaSingleOddRequest>
     )
 

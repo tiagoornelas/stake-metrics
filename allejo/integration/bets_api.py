@@ -60,8 +60,6 @@ def get_results_since(last_result_time):
 def get_and_inform_upcoming_matches_with_odds():
     leagues = get_leagues()
 
-    results = []
-
     for league in leagues:
         page = 1
 
@@ -71,29 +69,32 @@ def get_and_inform_upcoming_matches_with_odds():
             print(f"Fetching upcoming matches from League {league['name']} on page {page}...")
             total_results = json_data['pager']['total']
 
-            results.extend(json_data['results'])
+            matches = json_data['results']
+            for match in matches:
+                inform_upcoming_match_with_odds(match)
 
             if page * json_data['pager']['per_page'] < total_results:
                 page += 1
             else:
                 break
 
-    for match in results:
-        current_time = time.time()
-        match_time = float(match['time'])
 
-        if current_time <= match_time <= current_time + 3600:
-            match['home']['player_name'] = get_player_name_from_default_name(match['home']['name'])
-            match['away']['player_name'] = get_player_name_from_default_name(match['away']['name'])
+def inform_upcoming_match_with_odds(match):
+    current_time = time.time()
+    match_time = float(match['time'])
 
-            match_odds = get_match_odds(match['id'])
+    if current_time <= match_time <= current_time + 3600:
+        match['home']['player_name'] = get_player_name_from_default_name(match['home']['name'])
+        match['away']['player_name'] = get_player_name_from_default_name(match['away']['name'])
 
-            if match_odds is not None:
-                match_time = datetime.utcfromtimestamp(int(match['time'])) + timedelta(hours=-3)
-                print(
-                    f"Checked odds for {match['home']['player_name']} x {match['away']['player_name']} - {match_time} from {match['league']['name']}")
-                match['sportsbook_odds'] = match_odds
-                inform_upcoming_match(match)
+        match_odds = get_match_odds(match['id'])
+
+        if match_odds is not None:
+            match_time = datetime.utcfromtimestamp(int(match['time'])) + timedelta(hours=-3)
+            print(
+                f"Checked odds for {match['home']['player_name']} x {match['away']['player_name']} - {match_time} from {match['league']['name']}")
+            match['sportsbook_odds'] = match_odds
+            inform_upcoming_match(match)
 
 
 def get_match_odds(match_id):

@@ -49,4 +49,8 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
         title: "Não conseguimos integrar o Telegram!",
         description: "Tente novamente aguardando um pouco mais para conectar após enviar o código. Caso ainda assim não consiga, entre em contato com o suporte."
     },
+    "Network Error": {
+        title: "Ops! Tivemos uma queda por aqui.",
+        description: "Tente novamente mais tarde, estamos trabalhando para resolver o problema."
+    },
 }

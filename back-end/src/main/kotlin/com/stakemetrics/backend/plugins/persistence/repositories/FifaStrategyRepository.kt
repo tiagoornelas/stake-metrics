@@ -20,8 +20,9 @@ class FifaStrategyRepository(
     }
 
     @Cacheable("strategies")
-    override fun getAllStrategies(): List<FifaStrategy> {
-        return fifaStrategyJpaRepository.findAll().map { it.toDomain() }
+    override fun getAllProneToBetStrategies(): List<FifaStrategy> {
+        val proneToBetStatuses = listOf(FifaStrategyStatus.ACTIVE, FifaStrategyStatus.PAPER_BET)
+        return fifaStrategyJpaRepository.findAllByStatusIn(proneToBetStatuses).map { it.toDomain() }
     }
 
     override fun getStrategiesByUser(userId: UUID): List<FifaStrategy> {
