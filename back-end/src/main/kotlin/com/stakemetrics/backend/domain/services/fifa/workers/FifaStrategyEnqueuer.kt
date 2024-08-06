@@ -16,7 +16,7 @@ class FifaStrategyEnqueuer(
     private val environment: Environment
 ) {
     fun enqueue(odds: FifaDTO.FifaOddRequest, request: HttpServletRequest) {
-        val strategies = fifaStrategyRepositoryPort.getAllStrategies()
+        val strategies = fifaStrategyRepositoryPort.getAllProneToBetStrategies()
         val currentEnvironment = environment.getProperty("current.environment")
 
         strategies.forEach { strategy ->
