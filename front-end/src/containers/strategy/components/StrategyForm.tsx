@@ -11,7 +11,8 @@ import {
     Select,
     Skeleton,
     Stack,
-    Tag
+    Tag,
+    useColorModeValue
 } from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
 import StrategyRuleValueInput from "containers/strategy/components/StrategyRuleValueInput";
@@ -60,6 +61,7 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
 
     const colors = useThemeColors();
     const invalidateStrategyQuery = useInvalidateStrategyQuery();
+    const scopeGridBorderColor = useColorModeValue("#f0f0f0", "#47536b");
 
     useEffect(() => {
         const getFormParams = async () => {
@@ -327,7 +329,8 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
 
             {isLoaded && formParams && form.scopes.map((scope, index) => {
                 return (
-                    <Stack key={index} spacing="5" border="1px solid #f0f0f0" padding="10px" borderRadius="5px">
+                    <Stack key={index} spacing="5" border={`1px solid ${scopeGridBorderColor}`} padding="10px"
+                           borderRadius="5px">
                         <Grid templateColumns="repeat(12, 1fr)" gap={4}>
                             <GridItem colSpan={6}>
                                 <FormControl>

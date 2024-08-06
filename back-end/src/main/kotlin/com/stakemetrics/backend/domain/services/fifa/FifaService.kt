@@ -116,6 +116,7 @@ class FifaService(
 
         val strategy = FifaStrategy(
             id = dto.id ?: UUID.randomUUID(),
+            status = getStrategyStatusOrDefault(dto.id),
             name = dto.name,
             marketType = dto.marketType,
             marketSubTypes = dto.marketSubTypes.toMutableSet(),
@@ -130,6 +131,12 @@ class FifaService(
 
     private fun getUser(email: String): User {
         return userService.findByEmail(email) ?: throw NotFoundException("User", "email", email)
+    }
+
+    private fun getStrategyStatusOrDefault(strategyId: UUID?): FifaStrategyStatus {
+        return strategyId?.let {
+            fifaStrategyRepositoryPort.findById(it)?.status
+        } ?: FifaStrategyStatus.INACTIVE
     }
 
     private fun getLeagues(leagues: List<UUID>): MutableSet<FifaLeague> {
