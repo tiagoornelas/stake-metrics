@@ -21,7 +21,7 @@ class FifaGoalLineTipster(
         odds: List<FifaDTO.FifaGenericOddRequest>,
         results: MutableSet<FifaMatch>
     ) {
-        val goalLine = odds.filter { it.isGoalLine() }.maxByOrNull { it.updateTime }!!.toFifaGoalLine()
+        val goalLine = odds.first { it.isGoalLine() }.toFifaGoalLine()
 
         rules.forEach { rule -> checkRule(marketSubType, rule, goalLine, results) }
         fifaStrategyBettor.bet()
@@ -154,18 +154,18 @@ class FifaGoalLineTipster(
     }
 
     private fun getMatchCount(results: MutableSet<FifaMatch>): Int {
-        return results.size
+        return results.count { it.totalGoalsAtFullTime != null }
     }
 
     private fun getVoidMatchCount(results: MutableSet<FifaMatch>, threshold: Int): Int {
-        return results.count { it.totalGoalsAtFullTime == threshold }
+        return results.count { it.totalGoalsAtFullTime != null && it.totalGoalsAtFullTime == threshold }
     }
 
     private fun getMatchesOverThreshold(results: MutableSet<FifaMatch>, threshold: Int): Int {
-        return results.count { it.totalGoalsAtFullTime!! > threshold }
+        return results.count { it.totalGoalsAtFullTime != null && it.totalGoalsAtFullTime > threshold }
     }
 
     private fun getMatchesUnderThreshold(results: MutableSet<FifaMatch>, threshold: Int): Int {
-        return results.count { it.totalGoalsAtFullTime!! < threshold }
+        return results.count { it.totalGoalsAtFullTime != null && it.totalGoalsAtFullTime < threshold }
     }
 }
