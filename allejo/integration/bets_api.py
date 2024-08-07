@@ -7,13 +7,13 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 from helpers.bets_api import add_extra_properties_to_result, get_player_name_from_default_name
-from integration.stake_metrics import get_leagues, inform_upcoming_match
+from integration.stake_metrics import get_leagues, inform_upcoming_match, inform_result
 
 load_dotenv()
 BETS_API_TOKEN = os.environ.get('BETS_API_TOKEN')
 
 
-def get_results_since(last_result_time):
+def get_and_inform_results_since(last_result_time):
     if last_result_time is None:
         two_months_ago = datetime.now() - timedelta(days=61)
         start_date = two_months_ago
@@ -24,8 +24,6 @@ def get_results_since(last_result_time):
     today = datetime.now().date()
     start_date = datetime.combine(start_date, datetime.min.time()).date()
     date_range = [start_date + timedelta(days=x) for x in range((today - start_date).days + 1)]
-
-    results = []
 
     for league in leagues:
         for date in date_range:
@@ -38,23 +36,18 @@ def get_results_since(last_result_time):
                 print(f"Fetching league {league['name']} for date {formatted_date} and page {page}...")
                 total_results = json_data['pager']['total']
 
-                results.extend(json_data['results'])
+                matches = json_data['results']
+                for match in matches:
+                    if 'scores' in match and '2' in match['scores']:
+                        if 'home' in match['scores']['2'] and 'away' in match['scores']['2']:
+                            if 'time_status' in match and match['time_status'] == '3':
+                                formatted_match = add_extra_properties_to_result(match)
+                                inform_result(formatted_match)
 
                 if page * json_data['pager']['per_page'] < total_results:
                     page += 1
                 else:
                     break
-
-    formatted_results = []
-
-    for match in results:
-        if 'scores' in match and '2' in match['scores']:
-            if 'home' in match['scores']['2'] and 'away' in match['scores']['2']:
-                if 'time_status' in match and match['time_status'] == '3':
-                    formatted_match = add_extra_properties_to_result(match)
-                    formatted_results.append(formatted_match)
-
-    return formatted_results
 
 
 def get_and_inform_upcoming_matches_with_odds():

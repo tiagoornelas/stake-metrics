@@ -54,62 +54,55 @@ def get_connection(base_endpoint):
         return http.client.HTTPSConnection(base_endpoint)
 
 
-def inform_results(results):
-    formatted_results = format_results_for_stake_metrics(results)
+def inform_result(result):
+    formatted_result = format_result_for_stake_metrics(result)
+    payload = json.dumps(formatted_result)
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {SERVICE_TOKEN}'
+    }
 
-    for formatted_result in formatted_results:
-        payload = json.dumps(formatted_result)
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {SERVICE_TOKEN}'
-        }
-
-        conn = http.client.HTTPConnection(STAKE_METRICS_URL)
-        conn.request("POST", INFORM_RESULT_URL, body=payload, headers=headers)
-        response = conn.getresponse()
-        if 200 <= response.status < 300:
-            print(f"Successfully sent result {formatted_result['integrationId']}")
-        else:
-            print(f"Failed to send result {formatted_result['integrationId']}, status code: {response.status}")
-        conn.close()
+    conn = http.client.HTTPConnection(STAKE_METRICS_URL)
+    conn.request("POST", INFORM_RESULT_URL, body=payload, headers=headers)
+    response = conn.getresponse()
+    if 200 <= response.status < 300:
+        print(f"Successfully sent result {formatted_result['integrationId']}")
+    else:
+        print(f"Failed to send result {formatted_result['integrationId']}, status code: {response.status}")
+    conn.close()
 
 
-def format_results_for_stake_metrics(results):
-    formatted_results = []
+def format_result_for_stake_metrics(result):
+    if '1' in result["scores"]:
+        total_goals_at_half_time = (int(result["scores"]["1"]["home"] or 0)) + (
+            int(result["scores"]["1"]["away"] or 0))
+        home_goals_at_half_time = int(result["scores"]["1"]["home"] or 0)
+        away_goals_at_half_time = int(result["scores"]["1"]["away"] or 0)
+    else:
+        total_goals_at_half_time = 0
+        home_goals_at_half_time = 0
+        away_goals_at_half_time = 0
 
-    for result in results:
-        if '1' in result["scores"]:
-            total_goals_at_half_time = (int(result["scores"]["1"]["home"] or 0)) + (
-                int(result["scores"]["1"]["away"] or 0))
-            home_goals_at_half_time = int(result["scores"]["1"]["home"] or 0)
-            away_goals_at_half_time = int(result["scores"]["1"]["away"] or 0)
-        else:
-            total_goals_at_half_time = 0
-            home_goals_at_half_time = 0
-            away_goals_at_half_time = 0
+    total_goals_at_full_time = int(result["scores"]["2"]["home"]) + int(result["scores"]["2"]["away"])
 
-        total_goals_at_full_time = int(result["scores"]["2"]["home"]) + int(result["scores"]["2"]["away"])
+    winner = None if not result["winner"] else result["winner"]["player_name"]
 
-        winner = None if not result["winner"] else result["winner"]["player_name"]
-
-        formatted_result = {
-            "integrationId": int(result["id"]),
-            "time": int(result["time"]),
-            "status": int(result["time_status"]),
-            "leagueId": int(result["league"]["id"]),
-            "home": result["home"]["player_name"],
-            "away": result["away"]["player_name"],
-            "homeGoalsAtHalfTime": home_goals_at_half_time,
-            "homeGoalsAtFullTime": int(result["scores"]["2"]["home"]),
-            "awayGoalsAtHalfTime": away_goals_at_half_time,
-            "awayGoalsAtFullTime": int(result["scores"]["2"]["away"]),
-            "totalGoalsAtHalfTime": total_goals_at_half_time,
-            "totalGoalsAtFullTime": total_goals_at_full_time,
-            "winner": winner
-        }
-        formatted_results.append(formatted_result)
-
-    return formatted_results
+    formatted_result = {
+        "integrationId": int(result["id"]),
+        "time": int(result["time"]),
+        "status": int(result["time_status"]),
+        "leagueId": int(result["league"]["id"]),
+        "home": result["home"]["player_name"],
+        "away": result["away"]["player_name"],
+        "homeGoalsAtHalfTime": home_goals_at_half_time,
+        "homeGoalsAtFullTime": int(result["scores"]["2"]["home"]),
+        "awayGoalsAtHalfTime": away_goals_at_half_time,
+        "awayGoalsAtFullTime": int(result["scores"]["2"]["away"]),
+        "totalGoalsAtHalfTime": total_goals_at_half_time,
+        "totalGoalsAtFullTime": total_goals_at_full_time,
+        "winner": winner
+    }
+    return formatted_result
 
 
 def inform_upcoming_match(match):
