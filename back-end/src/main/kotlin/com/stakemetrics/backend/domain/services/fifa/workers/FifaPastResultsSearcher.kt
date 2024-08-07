@@ -7,7 +7,6 @@ import com.stakemetrics.backend.domain.entities.fifa.FifaStrategyScope
 import com.stakemetrics.backend.domain.enums.fifa.FifaMatchupTypes
 import com.stakemetrics.backend.domain.enums.fifa.FifaStrategyScopeTypes
 import com.stakemetrics.backend.domain.exceptions.FifaMatchIntegrationDataException
-import com.stakemetrics.backend.domain.exceptions.FifaStrategyRuleBreakException
 import com.stakemetrics.backend.domain.exceptions.NotFoundException
 import com.stakemetrics.backend.domain.ports.fifa.FifaLeagueRepositoryPort
 import com.stakemetrics.backend.domain.ports.fifa.FifaMatchRepositoryPort
@@ -51,9 +50,7 @@ class FifaPastResultsSearcher(
         val league = fifaLeagueRepositoryPort.findByIntegrationId(leagueIntegrationId)
             ?: throw NotFoundException("League", "integrationId", leagueIntegrationId.toString())
 
-        if (!leagues.contains(league)) throw FifaStrategyRuleBreakException(
-            "Odd sent is for a league that the strategy does not observe."
-        )
+        if (!leagues.contains(league)) return results
 
         val matchQuickIdentifier = FifaMatchQuickIdentifier(homePlayer, awayPlayer, league)
 

@@ -49,22 +49,54 @@ class FifaDTO {
         val success: Boolean = true
     )
 
-    data class FifaSingleOddRequest(
+    data class FifaGenericOddRequest(
         val marketType: FifaMarketTypes,
         val updateTime: Int,
         val handicap: Double?,
+        val over: Double?,
+        val under: Double?,
         val home: Double?,
         val draw: Double?,
-        val away: Double?,
-        val over: Double?,
-        val under: Double?
+        val away: Double?
+    ) {
+        fun isMatchOdds(): Boolean {
+            return home != null && draw != null && away != null
+        }
+
+        fun toFifaMatchOddsLine(): FifaMatchOddsOddRequest {
+            return FifaMatchOddsOddRequest(marketType, updateTime, home!!, draw!!, away!!)
+        }
+
+        fun isGoalLine(): Boolean {
+            return handicap != null && over != null && under != null
+        }
+
+        fun toFifaGoalLine(): FifaGoalLineOddRequest {
+            return FifaGoalLineOddRequest(marketType, updateTime, handicap!!, over!!, under!!)
+        }
+    }
+
+    data class FifaGoalLineOddRequest(
+        val marketType: FifaMarketTypes,
+        val updateTime: Int,
+        val handicap: Double,
+        val over: Double,
+        val under: Double
+    )
+
+    data class FifaMatchOddsOddRequest(
+        val marketType: FifaMarketTypes,
+        val updateTime: Int,
+        val home: Double,
+        val draw: Double,
+        val away: Double
     )
 
     data class FifaOddRequest(
         val leagueIntegrationId: Int,
         val homePlayerName: String,
         val awayPlayerName: String,
-        val odds: List<FifaSingleOddRequest>
+        val odds: List<FifaGenericOddRequest>
     )
 
     data class FifaOddResponse(
