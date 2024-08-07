@@ -11,7 +11,7 @@ import java.util.UUID
 data class SubscriptionModel(
     @Id
     val id: UUID = UUID.randomUUID(),
-    @OneToOne(cascade = [CascadeType.ALL])
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "user_id")
     val user: UserModel? = null,
     val customerId: String = "",

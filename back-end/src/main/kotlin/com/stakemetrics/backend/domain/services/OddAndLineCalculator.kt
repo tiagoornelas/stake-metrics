@@ -8,12 +8,19 @@ class OddAndLineCalculator {
         return 1 / odds
     }
 
-    fun getPointsThreshold(handicapLine: Double): Int {
-        // TODO
-        return 3
+    fun getFairLine(odds: Double): Double {
+        return 1 / odds
     }
 
-    fun getBettorsJuice(givenOdds: Double, calculatedOdds: Double): Double {
-        return givenOdds / calculatedOdds
+    fun getScoreThreshold(handicapLine: Double): Double {
+        val fractionalPart = handicapLine % 1.0
+        return when {
+            fractionalPart == 0.25 || fractionalPart == 0.75 -> handicapLine - fractionalPart + 0.5
+            else -> handicapLine
+        }
+    }
+
+    fun getBettorsJuice(givenOdds: Double, fairLine: Double): Double {
+        return (fairLine / givenOdds) - 1
     }
 }

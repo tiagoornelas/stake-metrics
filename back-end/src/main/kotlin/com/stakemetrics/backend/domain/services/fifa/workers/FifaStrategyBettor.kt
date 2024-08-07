@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component
 @Component
 class FifaStrategyBettor {
     fun bet() {
-//        sendBetTipOnTelegram()
+//        checkIfAlreadyBet()
+//        notifyUser()
 //        saveBet()
         println("Betting on Fifa Strategy")
     }

@@ -26,11 +26,13 @@ class FifaStrategyAgainstOddsWorker(
         request: FifaDTO.FifaStrategyAgainstOddRequest,
         tipster: FifaTipster
     ) {
+        val matchupPlayerNames: Pair<String, String> = Pair(request.odds.homePlayerName, request.odds.awayPlayerName)
+
         resultsByScopes.forEach { (scope, results) ->
             scope?.let {
                 request.strategy.marketSubTypes.forEach { marketSubType ->
                     try {
-                        tipster.tip(marketSubType, scope.rules, request.odds.odds, results)
+                        tipster.tip(matchupPlayerNames, marketSubType, scope.rules, request.odds.odds, results)
                     } catch (e: FifaStrategyRuleBreakException) {
                         loggerPort.logFifaStrategyRuleBreak(e)
                         return

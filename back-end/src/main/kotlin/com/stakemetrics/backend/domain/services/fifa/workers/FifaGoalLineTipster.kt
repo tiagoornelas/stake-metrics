@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component
 @Component
 class FifaGoalLineTipster(
     private val oddAndLineCalculator: OddAndLineCalculator,
-    private val fifaStrategyBettor: FifaStrategyBettor,
-
-    ) : FifaTipster {
+    private val fifaStrategyBettor: FifaStrategyBettor
+) : FifaTipster {
     override fun tip(
+        matchupPlayerNames: Pair<String, String>,
         marketSubType: FifaMarketSubTypes,
         rules: MutableSet<FifaStrategyRule>,
         odds: List<FifaDTO.FifaGenericOddRequest>,
@@ -28,34 +28,34 @@ class FifaGoalLineTipster(
     }
 
     private fun checkRule(
-        marketSubType: FifaMarketSubTypes, rule: FifaStrategyRule, goalLine: FifaDTO
+        marketSubType: FifaMarketSubTypes, rule: FifaStrategyRule, line: FifaDTO
         .FifaGoalLineOddRequest, results: MutableSet<FifaMatch>
     ) {
         return when (rule.type) {
-            FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(marketSubType, rule, goalLine)
-            FifaRuleTypes.MINIMUM_JUICE -> checkMinimumJuiceRule(marketSubType, rule, goalLine, results)
-            FifaRuleTypes.MINIMUM_PROBABILITY -> checkMinimumProbabilityRule(marketSubType, rule, goalLine, results)
+            FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(marketSubType, rule, line)
+            FifaRuleTypes.MINIMUM_JUICE -> checkMinimumJuiceRule(marketSubType, rule, line, results)
+            FifaRuleTypes.MINIMUM_PROBABILITY -> checkMinimumProbabilityRule(marketSubType, rule, line, results)
         }
     }
 
     private fun checkMinimumOddsRule(
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        goalLine: FifaDTO.FifaGoalLineOddRequest
+        line: FifaDTO.FifaGoalLineOddRequest
     ) {
         when (marketSubType) {
             FifaMarketSubTypes.OVER -> {
-                if (goalLine.over < rule.value) {
+                if (line.over < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for over market: ${goalLine.over} < ${rule.value}"
+                        "Minimum odds rule break for over market: ${line.over} < ${rule.value}"
                     )
                 }
             }
 
             FifaMarketSubTypes.UNDER -> {
-                if (goalLine.under < rule.value) {
+                if (line.under < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for under market: ${goalLine.under} < ${rule.value}"
+                        "Minimum odds rule break for under market: ${line.under} < ${rule.value}"
                     )
                 }
             }
@@ -67,18 +67,16 @@ class FifaGoalLineTipster(
     private fun checkMinimumJuiceRule(
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        goalLine: FifaDTO.FifaGoalLineOddRequest,
+        line: FifaDTO.FifaGoalLineOddRequest,
         results: MutableSet<FifaMatch>
     ) {
-        val threshold = oddAndLineCalculator.getPointsThreshold(goalLine.handicap)
-        val (overGivenProbability, underGivenProbability) = getGivenOverAndUnderProbabilities(goalLine)
-        val (overProbability, underProbability) = getScopeOverAndUnderProbabilities(results, threshold)
-
-        val overJuice = oddAndLineCalculator.getBettorsJuice(overGivenProbability, overProbability)
-        val underJuice = oddAndLineCalculator.getBettorsJuice(underGivenProbability, underProbability)
+        val threshold = oddAndLineCalculator.getScoreThreshold(line.handicap)
+        val (overProbability, underProbability) = getScopeGoalLineProbabilities(results, threshold)
 
         when (marketSubType) {
             FifaMarketSubTypes.OVER -> {
+                val overFairLine = oddAndLineCalculator.getFairLine(overProbability)
+                val overJuice = oddAndLineCalculator.getBettorsJuice(line.over, overFairLine)
                 if (overJuice < rule.value) {
                     throw FifaStrategyRuleBreakException(
                         "Minimum juice rule break for over market: $overJuice < ${rule.value}"
@@ -87,6 +85,8 @@ class FifaGoalLineTipster(
             }
 
             FifaMarketSubTypes.UNDER -> {
+                val underFairLine = oddAndLineCalculator.getFairLine(underProbability)
+                val underJuice = oddAndLineCalculator.getBettorsJuice(line.under, underFairLine)
                 if (underJuice < rule.value) {
                     throw FifaStrategyRuleBreakException(
                         "Minimum juice rule break for under market: $underJuice < ${rule.value}"
@@ -101,11 +101,11 @@ class FifaGoalLineTipster(
     private fun checkMinimumProbabilityRule(
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        goalLine: FifaDTO.FifaGoalLineOddRequest,
+        line: FifaDTO.FifaGoalLineOddRequest,
         results: MutableSet<FifaMatch>
     ) {
-        val threshold = oddAndLineCalculator.getPointsThreshold(goalLine.handicap)
-        val (overProbability, underProbability) = getScopeOverAndUnderProbabilities(results, threshold)
+        val threshold = oddAndLineCalculator.getScoreThreshold(line.handicap)
+        val (overProbability, underProbability) = getScopeGoalLineProbabilities(results, threshold)
 
         when (marketSubType) {
             FifaMarketSubTypes.OVER -> {
@@ -128,18 +128,9 @@ class FifaGoalLineTipster(
         }
     }
 
-    private fun getGivenOverAndUnderProbabilities(
-        goalLine: FifaDTO.FifaGoalLineOddRequest
-    ): Pair<Double, Double> {
-        val givenOverProbability = oddAndLineCalculator.getProbability(goalLine.over)
-        val givenUnderProbability = oddAndLineCalculator.getProbability(goalLine.under)
-
-        return Pair(givenOverProbability, givenUnderProbability)
-    }
-
-    private fun getScopeOverAndUnderProbabilities(
+    private fun getScopeGoalLineProbabilities(
         results: MutableSet<FifaMatch>,
-        threshold: Int
+        threshold: Double
     ): Pair<Double, Double> {
         val totalMatchesInScope: Int = getMatchCount(results)
         val voidMatches: Int = getVoidMatchCount(results, threshold)
@@ -157,15 +148,19 @@ class FifaGoalLineTipster(
         return results.count { it.totalGoalsAtFullTime != null }
     }
 
-    private fun getVoidMatchCount(results: MutableSet<FifaMatch>, threshold: Int): Int {
-        return results.count { it.totalGoalsAtFullTime != null && it.totalGoalsAtFullTime == threshold }
+    private fun getVoidMatchCount(results: MutableSet<FifaMatch>, threshold: Double): Int {
+        return if (threshold % 1.0 == 0.0) {
+            results.count { it.totalGoalsAtFullTime != null && it.totalGoalsAtFullTime == threshold.toInt() }
+        } else {
+            0
+        }
     }
 
-    private fun getMatchesOverThreshold(results: MutableSet<FifaMatch>, threshold: Int): Int {
+    private fun getMatchesOverThreshold(results: MutableSet<FifaMatch>, threshold: Double): Int {
         return results.count { it.totalGoalsAtFullTime != null && it.totalGoalsAtFullTime > threshold }
     }
 
-    private fun getMatchesUnderThreshold(results: MutableSet<FifaMatch>, threshold: Int): Int {
+    private fun getMatchesUnderThreshold(results: MutableSet<FifaMatch>, threshold: Double): Int {
         return results.count { it.totalGoalsAtFullTime != null && it.totalGoalsAtFullTime < threshold }
     }
 }

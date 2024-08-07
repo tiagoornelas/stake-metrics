@@ -37,6 +37,7 @@ fun User.toModel(): UserModel {
         email = email,
         name = name,
         passwordHash = password,
-        type = type
+        type = type,
+        timezoneOffset = timezoneOffset
     )
 }
