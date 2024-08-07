@@ -39,7 +39,7 @@ class FifaService(
             return latestMatch.time.time / 1000
         } else {
             val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DAY_OF_YEAR, -1)
+            calendar.add(Calendar.DAY_OF_YEAR, -60)
             val aWeekAgo = calendar.time
             return aWeekAgo.time / 1000
         }
