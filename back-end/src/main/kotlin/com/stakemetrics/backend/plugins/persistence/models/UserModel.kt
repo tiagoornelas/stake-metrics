@@ -3,6 +3,7 @@ package com.stakemetrics.backend.plugins.persistence.models
 import com.stakemetrics.backend.domain.entities.User
 import com.stakemetrics.backend.domain.enums.UserTypes
 import jakarta.persistence.*
+import java.time.ZoneOffset
 import java.util.UUID
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -25,7 +26,8 @@ data class UserModel(
     @OneToMany(cascade = [CascadeType.ALL])
     val telegramChats: MutableSet<TelegramChatModel> = mutableSetOf(),
     @OneToMany(orphanRemoval = true, mappedBy = "user")
-    val strategies: MutableSet<FifaStrategyModel> = mutableSetOf()
+    val strategies: MutableSet<FifaStrategyModel> = mutableSetOf(),
+    val timezoneOffset: ZoneOffset = ZoneOffset.of("-03:00")
 ) : UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority> {

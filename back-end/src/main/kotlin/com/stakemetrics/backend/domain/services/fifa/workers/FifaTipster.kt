@@ -7,6 +7,7 @@ import com.stakemetrics.backend.plugins.http.dto.FifaDTO
 
 interface FifaTipster {
     fun tip(
+        matchupPlayerNames: Pair<String, String>,
         marketSubType: FifaMarketSubTypes,
         rules: MutableSet<FifaStrategyRule>,
         odds: List<FifaDTO.FifaGenericOddRequest>,
