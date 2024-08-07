@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 from google.cloud import error_reporting
 
 from helpers.stake_metrics import GCP_PROJECT_NAME, SERVICE_NAME
-from integration.bets_api import get_results_since
-from integration.stake_metrics import get_last_result_time, inform_results
+from integration.bets_api import get_and_inform_results_since
+from integration.stake_metrics import get_last_result_time
 
 load_dotenv()
 
@@ -17,8 +17,7 @@ def run():
 
     try:
         last_result_time = get_last_result_time()
-        new_results = get_results_since(last_result_time)
-        inform_results(new_results)
+        get_and_inform_results_since(last_result_time)
     except Exception as exc:
         print(f"An error occurred. {exc}")
         if CURRENT_ENV != "LOCAL":
