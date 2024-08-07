@@ -52,6 +52,7 @@ class FifaDTO {
     data class FifaGenericOddRequest(
         val marketType: FifaMarketTypes,
         val updateTime: Int,
+        val time: Int,
         val handicap: Double?,
         val over: Double?,
         val under: Double?,
@@ -64,7 +65,7 @@ class FifaDTO {
         }
 
         fun toFifaMatchOddsLine(): FifaMatchOddsOddRequest {
-            return FifaMatchOddsOddRequest(marketType, updateTime, home!!, draw!!, away!!)
+            return FifaMatchOddsOddRequest(marketType, updateTime, time, home!!, draw!!, away!!)
         }
 
         fun isGoalLine(): Boolean {
@@ -72,13 +73,14 @@ class FifaDTO {
         }
 
         fun toFifaGoalLine(): FifaGoalLineOddRequest {
-            return FifaGoalLineOddRequest(marketType, updateTime, handicap!!, over!!, under!!)
+            return FifaGoalLineOddRequest(marketType, updateTime, time, handicap!!, over!!, under!!)
         }
     }
 
     data class FifaGoalLineOddRequest(
         val marketType: FifaMarketTypes,
         val updateTime: Int,
+        val time: Int,
         val handicap: Double,
         val over: Double,
         val under: Double
@@ -87,6 +89,7 @@ class FifaDTO {
     data class FifaMatchOddsOddRequest(
         val marketType: FifaMarketTypes,
         val updateTime: Int,
+        val time: Int,
         val home: Double,
         val draw: Double,
         val away: Double
