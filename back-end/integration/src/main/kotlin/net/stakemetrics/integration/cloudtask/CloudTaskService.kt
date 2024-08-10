@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
 
 @Service
 @EnvironmentSensitive
-class CloudTaskClientService(
+class CloudTaskService(
     private val objectMapper: ObjectMapper,
     private val environmentVerifier: EnvironmentVerifier
 ) : IQueueService {
@@ -35,8 +35,9 @@ class CloudTaskClientService(
         val payload = objectMapper.writeValueAsString(match).toByteArray(StandardCharsets.UTF_8)
 
         createCloudTaskClient().use { client ->
-            val queuePath = QueueName.of(projectId, locationId, "save-match-result").toString()
-            val fullUrl = "$baseUrl/service/fifa/match"
+            val queueName = "save-match-result"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
             enqueueTask(fullUrl, payload, client, queuePath)
         }
     }
@@ -45,8 +46,9 @@ class CloudTaskClientService(
         val payload = objectMapper.writeValueAsString(payload).toByteArray(StandardCharsets.UTF_8)
 
         createCloudTaskClient().use { client ->
-            val queuePath = QueueName.of(projectId, locationId, "run-strategy-against-odds").toString()
-            val fullUrl = "$baseUrl/queue/fifa/strategy-against-odds"
+            val queueName = "run-strategy-against-odds"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
             enqueueTask(fullUrl, payload, client, queuePath)
         }
     }

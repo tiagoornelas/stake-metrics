@@ -32,14 +32,14 @@ class FifaMatchRepository(private val fifaMatchJpaRepository: FifaMatchJpaReposi
             List<FifaMatch> {
         return fifaMatchJpaRepository.findAllByLeagueAndHomeOrAwayAndStatusAndTimeGreaterThan(
             league.toModel(), player.toModel(), player.toModel(),
-            FifaMatchStatusTypes.FULL_TIME, since
+            FifaMatchStatusTypes.ENDED, since
         ).map { it.toDomain() }
     }
 
     override fun listLastFinishedMatchesByPlayer(league: FifaLeague, player: FifaPlayer, last: Int): List<FifaMatch> {
         return fifaMatchJpaRepository.findAllByLeagueAndHomeOrAwayAndStatusOrderByTimeDesc(
             league.toModel(), player.toModel(), player.toModel(),
-            FifaMatchStatusTypes.FULL_TIME, PageRequest.of(0, last)
+            FifaMatchStatusTypes.ENDED, PageRequest.of(0, last)
         ).map { it.toDomain() }
     }
 
@@ -51,7 +51,7 @@ class FifaMatchRepository(private val fifaMatchJpaRepository: FifaMatchJpaReposi
     ): List<FifaMatch> {
         return fifaMatchJpaRepository.findAllByLeagueAndHomeAndAwayAndStatusAndTimeGreaterThan(
             league.toModel(), homePlayer.toModel(), awayPlayer.toModel(),
-            FifaMatchStatusTypes.FULL_TIME, since
+            FifaMatchStatusTypes.ENDED, since
         ).map { it.toDomain() }
     }
 
@@ -63,7 +63,7 @@ class FifaMatchRepository(private val fifaMatchJpaRepository: FifaMatchJpaReposi
     ): List<FifaMatch> {
         return fifaMatchJpaRepository.findAllByLeagueAndHomeAndAwayAndStatusOrderByTimeDesc(
             league.toModel(), homePlayer.toModel(), awayPlayer.toModel(),
-            FifaMatchStatusTypes.FULL_TIME, PageRequest.of(0, last)
+            FifaMatchStatusTypes.ENDED, PageRequest.of(0, last)
         ).map { it.toDomain() }
     }
 }

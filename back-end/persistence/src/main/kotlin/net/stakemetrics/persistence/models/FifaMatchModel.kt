@@ -17,7 +17,7 @@ data class FifaMatchModel(
     val id: UUID = UUID.randomUUID(),
     val integrationId: Int = 0,
     val time: Date = Date(),
-    val status: FifaMatchStatusTypes = FifaMatchStatusTypes.PENDING,
+    val status: FifaMatchStatusTypes = FifaMatchStatusTypes.NOT_STARTED,
     @ManyToOne @JoinColumn(name = "league_id")
     val league: FifaLeagueModel? = null,
     @ManyToOne @JoinColumn(name = "home_player_id")
