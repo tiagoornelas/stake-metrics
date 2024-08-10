@@ -1,5 +1,7 @@
 package net.stakemetrics.http.security
 
+import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
+import net.stakemetrics.application.utils.EnvironmentVerifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -13,10 +15,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class GlobalConfiguration(
-    val securityMiddleware: SecurityMiddleware
+    val securityMiddleware: SecurityMiddleware,
+    val environmentVerifier: EnvironmentVerifier
 ) {
 
     @Bean
+    @EnvironmentSensitive
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.csrf { csrf -> csrf.disable() }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
@@ -26,6 +30,11 @@ class GlobalConfiguration(
                     .requestMatchers(HttpMethod.POST, "/recover").permitAll()
                     .requestMatchers(HttpMethod.PUT, "/recover").permitAll()
                     .requestMatchers(HttpMethod.POST, "/subscription/notify-event").permitAll()
+                    .apply {
+                        if (!environmentVerifier.isProd()) {
+                            requestMatchers(HttpMethod.POST, "/queue/**").permitAll()
+                        }
+                    }
                     .anyRequest().authenticated()
             }
             .addFilterBefore(securityMiddleware, UsernamePasswordAuthenticationFilter::class.java)
