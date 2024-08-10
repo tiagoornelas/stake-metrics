@@ -24,6 +24,7 @@ application-{{dev | prod}}.properties:
 - telegram.api.id=21770625
 - telegram.api.hash=5d6c78524953731cd978db89c7eb6230
 - telegram.bot.token=6875098813:AAEmMj7BWA8gfEjXPpSvflcWpYXoiEO5RSE
+- bets.api.token=176456-TFL5dSmiPoyS8M
 - logging.level.org.springframework.security=DEBUG
 
 ### .env (Frontend Env)
