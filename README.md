@@ -1,4 +1,4 @@
-![Novo Projeto (1)](https://github.com/user-attachments/assets/412379bd-0fc1-4945-af09-623c7d75d46d)
+![Novo Projeto (2)](https://github.com/user-attachments/assets/9fe96670-10e2-4716-89fd-71dd420f4ac1)
 
 ### Application Properties (Backend Env)
 application-properties:
