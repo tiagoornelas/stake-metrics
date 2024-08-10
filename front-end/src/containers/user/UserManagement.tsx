@@ -24,7 +24,7 @@ const UserManagement = () => {
     const isLoaded: boolean = !!userContext.user.id;
     const connectedTelegramChats = useMemo(() => telegramChats.filter(chat => !!chat.chatId), [telegramChats]);
 
-    const telegramChatFeatures = getFeatureAmount(userContext.user, FEATURES.TELEGRAM_CHAT);
+    const telegramChatFeatures = getFeatureAmount(userContext.user, FEATURES.MESSENGER_CHAT);
     const availableTelegramChats = useMemo(
         () => telegramChatFeatures - connectedTelegramChats.length,
         [telegramChatFeatures, connectedTelegramChats.length]
@@ -39,7 +39,7 @@ const UserManagement = () => {
     const getTelegramChats = useCallback(async () => {
         setIsTelegramLoaded(false);
         if (!!userContext.user.id) {
-            const {telegramChats: chats} = await fetchTelegramChats(userContext.user.id);
+            const {messengerChats: chats} = await fetchTelegramChats(userContext.user.id);
             setTelegramChats(chats);
             setIsTelegramLoaded(true);
         }
