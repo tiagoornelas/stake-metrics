@@ -1,0 +1,30 @@
+package net.stakemetrics.application.entities
+
+import java.util.UUID
+import net.stakemetrics.application.entities.enums.MessengerChatStatus
+
+data class MessengerChat(
+    val id: UUID = UUID.randomUUID(),
+    val user: User? = null,
+    val name: String? = null,
+    val chatId: String? = null,
+    val status: MessengerChatStatus = MessengerChatStatus.ACTIVE,
+    val delay: Int = 0,
+    val deliveryProbability: Double = 1.0,
+    val notDeliveredMessage: String = "",
+    val delayedAlertMessage: String = "",
+    val extraText: String = "",
+    val createdAt: Long = System.currentTimeMillis()
+) {
+    fun hasNotDeliveredMessage(): Boolean {
+        return notDeliveredMessage.isNotEmpty()
+    }
+
+    fun hasDelayedAlertMessage(): Boolean {
+        return delayedAlertMessage.isNotEmpty()
+    }
+
+    fun hasExtraText(): Boolean {
+        return extraText.isNotEmpty()
+    }
+}
