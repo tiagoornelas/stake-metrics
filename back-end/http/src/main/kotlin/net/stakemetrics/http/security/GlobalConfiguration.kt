@@ -33,6 +33,7 @@ class GlobalConfiguration(
                     .apply {
                         if (!environmentVerifier.isProd()) {
                             requestMatchers(HttpMethod.POST, "/queue/**").permitAll()
+                            requestMatchers(HttpMethod.POST, "/cron/**").permitAll()
                         }
                     }
                     .anyRequest().authenticated()

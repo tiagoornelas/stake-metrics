@@ -5,43 +5,47 @@ import java.util.Date
 import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaPlayer
+import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
 import net.stakemetrics.application.entities.dtos.FifaDTO
-import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaMatchRepository
+import net.stakemetrics.application.utils.EnvironmentVerifier
+import net.stakemetrics.application.utils.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class FifaMatchService @Autowired constructor(
+    private val logger: Logger,
     private val fifaLeagueService: FifaLeagueService,
     private val fifaPlayerService: FifaPlayerService,
     private val fifaMatchRepository: IFifaMatchRepository,
+    private val environmentVerifier: EnvironmentVerifier
 ) {
 
-    fun getLastMatchResultTime(): Long {
+    @EnvironmentSensitive
+    fun getLastMatchResultTime(): Date {
         val latestMatch = fifaMatchRepository.findLatestMatch()
-        if (latestMatch != null) {
-            return latestMatch.time.time / 1000
+        return if (latestMatch != null) {
+            latestMatch.time
         } else {
+            val populateDatabaseDays = if (environmentVerifier.isProd()) 60 else 1
             val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DAY_OF_YEAR, -60)
-            val aWeekAgo = calendar.time
-            return aWeekAgo.time / 1000
+            calendar.add(Calendar.DAY_OF_YEAR, -populateDatabaseDays)
+            calendar.time
         }
     }
 
     fun saveMatch(dto: FifaDTO.FifaMatchRequest) {
+        logger.log("Saving match ${dto.integrationId}")
         val league = fifaLeagueService.findByIntegrationId(dto.leagueId)
         val matchDate = Date(dto.time.toLong() * 1000)
-        val matchStatus = FifaMatchStatusTypes.entries.find { it.ordinal == dto.status }
-            ?: throw IllegalArgumentException("Invalid match status")
 
         val existingMatch = fifaMatchRepository.findByIntegrationId(dto.integrationId)
 
         val match = existingMatch?.copy(
             time = matchDate,
-            status = matchStatus,
+            status = dto.status,
             league = league,
             homeGoalsAtHalfTime = dto.homeGoalsAtHalfTime,
             homeGoalsAtFullTime = dto.homeGoalsAtFullTime,
@@ -52,7 +56,7 @@ class FifaMatchService @Autowired constructor(
         ) ?: FifaMatch(
             integrationId = dto.integrationId,
             time = matchDate,
-            status = matchStatus,
+            status = dto.status,
             league = league,
             home = findOrCreatePlayer(dto.home, league),
             away = findOrCreatePlayer(dto.away, league),

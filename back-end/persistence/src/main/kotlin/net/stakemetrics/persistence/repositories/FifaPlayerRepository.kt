@@ -12,7 +12,11 @@ import org.springframework.stereotype.Repository
 class FifaPlayerRepository(private val fifaPlayerJpaRepository: FifaPlayerJpaRepository) : IFifaPlayerRepository {
 
     override fun findByName(name: String): FifaPlayer {
-        val queriedFifaPlayer = fifaPlayerJpaRepository.findByName(name)
+        val queriedFifaPlayer = fifaPlayerJpaRepository.findByName(name) ?: throw NotFoundException(
+            "FifaPlayer",
+            "name",
+            name
+        )
         return queriedFifaPlayer.toDomain()
     }
 
