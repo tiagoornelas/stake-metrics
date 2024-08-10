@@ -2,14 +2,18 @@
 Stake Metrics Monolith for betting automation
 
 ### Application Properties (Backend Env)
-Propriedades:
+application-properties:
+- spring.application.name=back-end
+- spring.profiles.active={{dev | prod}} // dev ou prod a depender do env
+
+application-{{dev | prod}}.properties:
 - app.frontend.base.url=http://localhost:3000
 - spring.datasource.url=jdbc:mysql://localhost:3306/backend
 - spring.datasource.username=root
 - spring.jpa.hibernate.ddl-auto=update
 - spring.datasource.password={{senha}}
 - api.security.token.secret={{senha}}
-- stripe.api.key=
+- stripe.api.key={{api;key}}
 - api.security.token.secret=UIBmIuZ_BvwA
 - stripe.pricing.tabe={{pricing_table_id}}
 - stripe.dark.mode.pricing.tabe={{pricing_table_id}}
@@ -21,7 +25,6 @@ Propriedades:
 - telegram.api.hash={{hash}}
 - telegram.bot.token={{token}}
 - logging.level.org.springframework.security=DEBUG
-- current.environment={{DEV ou PRODUCTION}}
 
 ### .env (Frontend Env)
 Variáveis:
