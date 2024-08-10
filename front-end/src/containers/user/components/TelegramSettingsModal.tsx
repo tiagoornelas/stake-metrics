@@ -162,7 +162,7 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
                     <Box display="flex" flexDirection="column" gap={2}>
                         <Flex gap={2}>
                             <Heading size="sm">Taxa de entrega</Heading>
-                            <Tag>{`${formState.deliveryProbability * 100} %`}</Tag>
+                            <Tag>{`${Math.floor(formState.deliveryProbability * 100)} %`}</Tag>
                         </Flex>
                         <DefaultSlider handleChange={handleDeliveryProbabilityChange}
                                        value={formState.deliveryProbability}
