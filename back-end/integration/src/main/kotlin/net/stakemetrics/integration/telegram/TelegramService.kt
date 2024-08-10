@@ -26,12 +26,13 @@ class TelegramService(
 
     @Value("\${telegram.bot.token}")
     private val token: String = ""
-    private val telegramClient = OkHttpTelegramClient(token)
+    private val telegramClient by lazy { OkHttpTelegramClient(token) }
 
     override fun sendTestMessage(telegramChatId: UUID) {
         sendMessage(
             telegramChatId,
-            "Esta é uma mensagem de teste do Stake Metrics. Isso signifia que sua integração com o Telegram está funcionando! ✅"
+            "Esta é uma mensagem de teste do Stake Metrics. Isso significa que sua integração com o Telegram está " +
+                    "funcionando! ✅"
         )
     }
 
