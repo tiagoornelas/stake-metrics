@@ -18,7 +18,7 @@ export const deletePrivateChat = (telegramChatId: string) => makeRequest(`${BASE
 export const testPrivateChat = (telegramChatId: string) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}${ENDPOINTS.TELEGRAM.TEST_MESSAGE}/${telegramChatId}`, REQUEST_TYPE.POST);
 
 export const editIntegration = (
-    telegramChatId: string,
+    messengerChatId: string,
     name: string,
     status: string,
     delay: number,
@@ -27,7 +27,7 @@ export const editIntegration = (
     delayedAlertMessage: string,
     extraText: string
 ) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}`, REQUEST_TYPE.PUT, {
-    id: telegramChatId,
+    id: messengerChatId,
     name,
     status,
     delay,
