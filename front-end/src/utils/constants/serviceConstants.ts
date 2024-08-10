@@ -19,7 +19,7 @@ export const ENDPOINTS = {
         CREATE_PORTAL_SESSION: "/create-portal-session",
     },
     TELEGRAM: {
-        BASE: "/telegram",
+        BASE: "/messenger",
         BEGIN_PRIVATE_CHAT_INTEGRATION: "/private-chat/begin-integration",
         INTEGRATE_PRIVATE_CHAT: "/private-chat/integrate",
         INTEGRATE_CHANNEL: "/channel/integrate",
