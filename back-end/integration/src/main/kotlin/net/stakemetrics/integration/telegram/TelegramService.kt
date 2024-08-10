@@ -26,7 +26,7 @@ class TelegramService(
 
     @Value("\${telegram.bot.token}")
     private val token: String = ""
-    private val telegramClient = OkHttpTelegramClient(token)
+    private val telegramClient by lazy { OkHttpTelegramClient(token) }
 
     override fun sendTestMessage(telegramChatId: UUID) {
         sendMessage(
