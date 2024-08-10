@@ -22,7 +22,7 @@ class FifaDTO {
     data class FifaMatchRequest(
         val integrationId: Int,
         val time: Int,
-        val status: Int,
+        val status: FifaMatchStatusTypes,
         val leagueId: Int,
         val home: String,
         val away: String,
