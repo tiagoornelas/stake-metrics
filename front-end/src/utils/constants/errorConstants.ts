@@ -53,4 +53,8 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
         title: "Ops! Tivemos uma queda por aqui.",
         description: "Tente novamente mais tarde, estamos trabalhando para resolver o problema."
     },
+    "Password does not match for specific account.": {
+        title: "Ops! Credenciais estão erradas.",
+        description: "Verifique e-mail e login e tente novamente."
+    },
 }
