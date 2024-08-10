@@ -8,7 +8,7 @@ data class FifaMatch(
     val id: UUID = UUID.randomUUID(),
     val integrationId: Int,
     val time: Date,
-    val status: FifaMatchStatusTypes = FifaMatchStatusTypes.PENDING,
+    val status: FifaMatchStatusTypes = FifaMatchStatusTypes.NOT_STARTED,
     val league: FifaLeague? = null,
     val home: FifaPlayer? = null,
     val away: FifaPlayer? = null,

@@ -187,14 +187,14 @@ class FifaMatchOddsTipster(
     }
 
     private fun getMatchCount(results: MutableSet<FifaMatch>): Int {
-        return results.count { it.status == FifaMatchStatusTypes.FULL_TIME }
+        return results.count { it.status == FifaMatchStatusTypes.ENDED }
     }
 
     private fun getDrawMatchCount(results: MutableSet<FifaMatch>): Int {
-        return results.count { it.status == FifaMatchStatusTypes.FULL_TIME && it.winner == null }
+        return results.count { it.status == FifaMatchStatusTypes.ENDED && it.winner == null }
     }
 
     private fun getPlayerWonMatchesCount(results: MutableSet<FifaMatch>, player: FifaPlayer): Int {
-        return results.count { it.status == FifaMatchStatusTypes.FULL_TIME && it.winner == player }
+        return results.count { it.status == FifaMatchStatusTypes.ENDED && it.winner == player }
     }
 }
