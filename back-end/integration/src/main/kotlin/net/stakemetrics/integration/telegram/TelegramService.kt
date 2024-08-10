@@ -31,7 +31,8 @@ class TelegramService(
     override fun sendTestMessage(telegramChatId: UUID) {
         sendMessage(
             telegramChatId,
-            "Esta é uma mensagem de teste do Stake Metrics. Isso signifia que sua integração com o Telegram está funcionando! ✅"
+            "Esta é uma mensagem de teste do Stake Metrics. Isso significa que sua integração com o Telegram está " +
+                    "funcionando! ✅"
         )
     }
 
