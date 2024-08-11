@@ -1,50 +1,55 @@
 package net.stakemetrics.application.workers
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
-import net.stakemetrics.application.entities.enums.FifaMatchupTypes
-import net.stakemetrics.application.entities.enums.FifaStrategyScopeTypes
-import net.stakemetrics.application.entities.exceptions.FifaMatchIntegrationDataException
 import java.util.Calendar
 import java.util.Date
 import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.FifaMatch
-import net.stakemetrics.application.entities.FifaStrategyScope
+import net.stakemetrics.application.entities.FifaPlayer
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
+import net.stakemetrics.application.entities.enums.FifaMatchupTypes
+import net.stakemetrics.application.entities.enums.FifaStrategyScopeTypes
+import net.stakemetrics.application.entities.exceptions.FifaMatchIntegrationDataException
+import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.service.FifaLeagueService
 import net.stakemetrics.application.service.FifaMatchService
 import net.stakemetrics.application.service.FifaPlayerService
+import net.stakemetrics.application.utils.Logger
 import org.springframework.stereotype.Service
 
 @Service
 class FifaPastResultsSearcher(
     private val fifaMatchService: FifaMatchService,
     private val fifaPlayerService: FifaPlayerService,
-    private val fifaLeagueService: FifaLeagueService
+    private val fifaLeagueService: FifaLeagueService,
+    private val logger: Logger
 ) {
 
+    fun search(request: FifaStrategyDTO.FifaStrategyAgainstOddRequest): MutableSet<FifaStrategyDTO.FifaStrategyScopePastResults> {
+        val results = mutableSetOf<FifaStrategyDTO.FifaStrategyScopePastResults>()
+        val (strategy, odds) = request
 
-    fun search(
-        leagueIntegrationId: Int,
-        homePlayerName: String,
-        awayPlayerName: String,
-        leagues: Set<FifaLeague>,
-        scopes: Set<FifaStrategyScope>
-    ): MutableSet<FifaDTO.FifaStrategyScopePastResults> {
-        val results = mutableSetOf<FifaDTO.FifaStrategyScopePastResults>()
+        val homePlayer: FifaPlayer?
+        val awayPlayer: FifaPlayer?
+        val league: FifaLeague?
 
-        val homePlayer = fifaPlayerService.findByName(homePlayerName)
-        val awayPlayer = fifaPlayerService.findByName(awayPlayerName)
-        val league = fifaLeagueService.findByIntegrationId(leagueIntegrationId)
+        try {
+            homePlayer = fifaPlayerService.findByName(odds.homePlayerName)
+            awayPlayer = fifaPlayerService.findByName(odds.awayPlayerName)
+            league = fifaLeagueService.findByIntegrationId(odds.leagueIntegrationId)
+        } catch (e: NotFoundException) {
+            logger.warn("Past results searcher could not find player or league in the database. Cause: ${e.message}")
+            return results
+        }
 
-        if (!leagues.contains(league)) return results
+        val matchContainsExcludedPlayers =
+            strategy.excludedPlayers.contains(homePlayer) || strategy.excludedPlayers.contains(awayPlayer)
+        if (matchContainsExcludedPlayers) return results
 
-        val matchQuickIdentifier = FifaDTO.FifaMatchQuickIdentifier(homePlayer, awayPlayer, league)
+        val matchQuickIdentifier = FifaStrategyDTO.FifaMatchQuickIdentifier(homePlayer, awayPlayer, league)
 
-        scopes.forEach { scope ->
-            if (scope.matchup == null || scope.type == null || scope.value == 0)
-                throw IllegalArgumentException("Scope is missing required fields when trying to get past results.")
-
-            val pastResults = searchScope(scope.matchup, scope.type, scope.value, matchQuickIdentifier)
-            results.add(FifaDTO.FifaStrategyScopePastResults(scope, pastResults))
+        strategy.scopes.forEach { scope ->
+            val pastResults = searchScope(scope.matchup!!, scope.type!!, scope.value!!, matchQuickIdentifier)
+            results.add(FifaStrategyDTO.FifaStrategyScopePastResults(scope, pastResults))
         }
 
         return results
@@ -54,7 +59,7 @@ class FifaPastResultsSearcher(
         matchup: FifaMatchupTypes,
         type: FifaStrategyScopeTypes,
         value: Int,
-        match: FifaDTO.FifaMatchQuickIdentifier
+        match: FifaStrategyDTO.FifaMatchQuickIdentifier
     ): MutableSet<FifaMatch> {
         return when (type) {
             FifaStrategyScopeTypes.HOURS, FifaStrategyScopeTypes.DAYS -> {
@@ -71,7 +76,7 @@ class FifaPastResultsSearcher(
 
     private fun searchMatchupSinceDate(
         sinceDate: Date,
-        match: FifaDTO.FifaMatchQuickIdentifier,
+        match: FifaStrategyDTO.FifaMatchQuickIdentifier,
         isSameMatchup: Boolean
     ): MutableSet<FifaMatch> {
         if (match.league == null || match.home == null || match.away == null)
@@ -123,7 +128,7 @@ class FifaPastResultsSearcher(
 
     private fun searchMatchupLastMatches(
         last: Int,
-        match: FifaDTO.FifaMatchQuickIdentifier,
+        match: FifaStrategyDTO.FifaMatchQuickIdentifier,
         isSameMatchup: Boolean
     ): MutableSet<FifaMatch> {
         if (match.league == null || match.home == null || match.away == null)

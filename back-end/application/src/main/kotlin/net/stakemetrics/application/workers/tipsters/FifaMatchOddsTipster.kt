@@ -1,17 +1,17 @@
 package net.stakemetrics.application.workers.tipsters
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
-import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
-import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
-import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
-import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.FifaStrategyRule
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
+import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
+import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
 import net.stakemetrics.application.service.FifaPlayerService
 import net.stakemetrics.application.workers.FifaStrategyBettor
 import net.stakemetrics.application.workers.OddAndLineCalculator
+import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import org.springframework.stereotype.Component
 
 @Component
@@ -24,7 +24,7 @@ class FifaMatchOddsTipster(
         matchupPlayerNames: Pair<String, String>,
         marketSubType: FifaMarketSubTypes,
         rules: MutableSet<FifaStrategyRule>,
-        odds: List<FifaDTO.FifaGenericOddRequest>,
+        odds: List<FifaDataSourceDTO.FifaGenericOddRequest>,
         results: MutableSet<FifaMatch>
     ) {
         if (results.isEmpty()) return
@@ -38,7 +38,7 @@ class FifaMatchOddsTipster(
         matchupPlayerNames: Pair<String, String>,
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        line: FifaDTO.FifaMatchOddsOddRequest,
+        line: FifaDataSourceDTO.FifaMatchOddsOddRequest,
         results: MutableSet<FifaMatch>
     ) {
         return when (rule.type) {
@@ -53,7 +53,7 @@ class FifaMatchOddsTipster(
     private fun checkMinimumOddsRule(
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        line: FifaDTO.FifaMatchOddsOddRequest
+        line: FifaDataSourceDTO.FifaMatchOddsOddRequest
     ) {
         when (marketSubType) {
             FifaMarketSubTypes.HOME -> {
@@ -88,7 +88,7 @@ class FifaMatchOddsTipster(
         matchupPlayerNames: Pair<String, String>,
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        line: FifaDTO.FifaMatchOddsOddRequest,
+        line: FifaDataSourceDTO.FifaMatchOddsOddRequest,
         results: MutableSet<FifaMatch>
     ) {
         val (homeProbability, drawProbability, awayProbability) =

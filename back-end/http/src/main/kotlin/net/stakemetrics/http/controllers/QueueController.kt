@@ -1,8 +1,9 @@
 package net.stakemetrics.http.controllers
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.service.FifaMatchService
-import net.stakemetrics.application.workers.enqueuers.FifaStrategyEnqueuer
+import net.stakemetrics.application.service.FifaStrategyService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -10,15 +11,18 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/queue")
-class QueueController(private val fifaMatchService: FifaMatchService) {
+class QueueController(
+    private val fifaMatchService: FifaMatchService,
+    private val fifaStrategyService: FifaStrategyService
+) {
 
     @PostMapping("/fifa/save-match-result")
-    fun saveMatchResult(@RequestBody payload: FifaDTO.FifaMatchRequest) {
+    fun saveMatchResult(@RequestBody payload: FifaDataSourceDTO.FifaMatchRequest) {
         fifaMatchService.saveMatch(payload)
     }
 
     @PostMapping("/fifa/run-strategy-against-odds")
-    fun runStrategyAgainstOdds(@RequestBody payload: FifaDTO.FifaStrategyAgainstOddRequest) {
-        println("Tarefa chegou na fila!, Payload: $payload")
+    fun runStrategyAgainstOdds(@RequestBody payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
+        fifaStrategyService.runStrategyAgainstOdds(payload)
     }
 }

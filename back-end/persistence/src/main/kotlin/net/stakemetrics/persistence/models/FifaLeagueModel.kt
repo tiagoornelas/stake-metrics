@@ -14,7 +14,7 @@ import net.stakemetrics.application.entities.FifaLeague
 data class FifaLeagueModel(
     @Id
     val id: UUID = UUID.randomUUID(),
-    val integrationId: Int = 0,
+    val integrationId: Long = 0L,
     val status: FifaLeagueStatusTypes = FifaLeagueStatusTypes.ACTIVE,
     val name: String = "",
     val link: String = "",
