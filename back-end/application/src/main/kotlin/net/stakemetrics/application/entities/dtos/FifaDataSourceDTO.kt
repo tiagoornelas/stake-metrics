@@ -1,5 +1,6 @@
 package net.stakemetrics.application.entities.dtos
 
+import java.util.Date
 import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 
@@ -7,7 +8,7 @@ class FifaDataSourceDTO {
 
     data class FifaMatchRequest(
         val integrationId: Long,
-        val time: Long,
+        val time: Date,
         val status: FifaMatchStatusTypes,
         val leagueId: Long,
         val home: String,
@@ -23,9 +24,9 @@ class FifaDataSourceDTO {
 
     data class FifaGenericOddRequest(
         val marketType: FifaMarketTypes,
-        val lastCheckedTime: Long?,
-        val oddOfferTime: Long,
-        val matchTime: Long,
+        val lastCheckedTime: Date?,
+        val oddOfferTime: Date,
+        val matchTime: Date,
         val handicap: Double?,
         val over: Double?,
         val under: Double?,
@@ -69,9 +70,9 @@ class FifaDataSourceDTO {
 
     data class FifaGoalLineOddRequest(
         val marketType: FifaMarketTypes,
-        val lastCheckedTime: Long,
-        val oddOfferTime: Long,
-        val matchTime: Long,
+        val lastCheckedTime: Date,
+        val oddOfferTime: Date,
+        val matchTime: Date,
         val handicap: Double,
         val over: Double,
         val under: Double
@@ -79,9 +80,9 @@ class FifaDataSourceDTO {
 
     data class FifaMatchOddsOddRequest(
         val marketType: FifaMarketTypes,
-        val lastCheckedTime: Long,
-        val oddOfferTime: Long,
-        val matchTime: Long,
+        val lastCheckedTime: Date,
+        val oddOfferTime: Date,
+        val matchTime: Date,
         val home: Double,
         val draw: Double,
         val away: Double

@@ -13,8 +13,8 @@ class Logger {
         logger.info(message)
     }
 
-    fun logError(message: String) {
-        logger.error(message)
+    fun logError(e: Exception) {
+        logger.error(e.message)
     }
 
     fun logFifaStrategyRuleBreak(e: FifaStrategyRuleBreakException) {

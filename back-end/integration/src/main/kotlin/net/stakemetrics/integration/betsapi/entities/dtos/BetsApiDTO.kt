@@ -37,7 +37,7 @@ class BetsApiDTO {
         val substitutions: List<String>? = emptyList(),
         val yellowcards: List<String>? = emptyList(),
         val matching_dir: Int? = null,
-        val odds_update: Map<MarketType, Long> = emptyMap()
+        val odds_update: Map<MarketType, String> = emptyMap()
     )
 
     data class MatchResponse(
