@@ -37,7 +37,7 @@ class FifaPastResultsSearcher(
             awayPlayer = fifaPlayerService.findByName(odds.awayPlayerName)
             league = fifaLeagueService.findByIntegrationId(odds.leagueIntegrationId)
         } catch (e: NotFoundException) {
-            logger.log("The past results searcher could not find player or league in the database. Cause: ${e.message}")
+            logger.warn("Past results searcher could not find player or league in the database. Cause: ${e.message}")
             return results
         }
 
@@ -48,10 +48,7 @@ class FifaPastResultsSearcher(
         val matchQuickIdentifier = FifaStrategyDTO.FifaMatchQuickIdentifier(homePlayer, awayPlayer, league)
 
         strategy.scopes.forEach { scope ->
-            if (scope.matchup == null || scope.type == null || scope.value == 0)
-                throw IllegalArgumentException("Scope is missing required fields when trying to get past results.")
-
-            val pastResults = searchScope(scope.matchup, scope.type, scope.value, matchQuickIdentifier)
+            val pastResults = searchScope(scope.matchup!!, scope.type!!, scope.value!!, matchQuickIdentifier)
             results.add(FifaStrategyDTO.FifaStrategyScopePastResults(scope, pastResults))
         }
 

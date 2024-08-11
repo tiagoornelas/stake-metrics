@@ -13,7 +13,7 @@ data class FifaStrategyScopeModel(
     val id: UUID = UUID.randomUUID(),
     val matchup: FifaMatchupTypes? = null,
     val type: FifaStrategyScopeTypes? = null,
-    val value: Int = 0,
+    val value: Int? = null,
     @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "fifa_strategy_scope_id")
     var rules: MutableSet<FifaStrategyRuleModel> = mutableSetOf(),

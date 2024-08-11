@@ -30,7 +30,7 @@ class FifaStrategyDTO {
         val id: UUID,
         val matchup: FifaMatchupTypes? = null,
         val type: FifaStrategyScopeTypes? = null,
-        val value: Int,
+        val value: Int? = null,
         val rules: List<FifaStrategyRuleResponse>
     )
 

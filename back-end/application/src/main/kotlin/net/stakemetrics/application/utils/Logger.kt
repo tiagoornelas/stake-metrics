@@ -13,6 +13,10 @@ class Logger {
         logger.info(message)
     }
 
+    fun warn(message: String) {
+        logger.warn(message)
+    }
+
     fun logError(e: Exception) {
         logger.error(e.message)
     }
