@@ -8,7 +8,7 @@ import net.stakemetrics.application.entities.FifaPlayer
 interface IFifaMatchRepository {
     fun save(fifaMatch: FifaMatch)
     fun findLatestMatch(): FifaMatch?
-    fun findByIntegrationId(integrationId: Int): FifaMatch?
+    fun findByIntegrationId(integrationId: Long): FifaMatch?
     fun listFinishedMatchesByPlayerSince(league: FifaLeague, player: FifaPlayer, since: Date): List<FifaMatch>
     fun listLastFinishedMatchesByPlayer(league: FifaLeague, player: FifaPlayer, last: Int): List<FifaMatch>
     fun listFinishedMatchesByMatchupSince(

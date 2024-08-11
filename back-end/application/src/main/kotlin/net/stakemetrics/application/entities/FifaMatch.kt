@@ -6,7 +6,7 @@ import java.util.UUID
 
 data class FifaMatch(
     val id: UUID = UUID.randomUUID(),
-    val integrationId: Int,
+    val integrationId: Long,
     val time: Date,
     val status: FifaMatchStatusTypes = FifaMatchStatusTypes.NOT_STARTED,
     val league: FifaLeague? = null,

@@ -1,4 +1,4 @@
-package net.stakemetrics.application.workers.miners
+package net.stakemetrics.application.workers.enqueuers
 
 import java.util.Calendar
 import java.util.Date
@@ -9,11 +9,11 @@ import net.stakemetrics.application.service.IQueueService
 import org.springframework.stereotype.Service
 
 @Service
-class FifaPastResultsMiner(
+class FifaEndedMatchesEnqueuer(
     private val queueService: IQueueService,
     private val fifaMatchService: FifaMatchService,
     private val fifaLeagueService: FifaLeagueService,
-    private val fifaIntegratedDataSourceRepository: IFifaIntegratedDataSourceService
+    private val fifaIntegratedDataSourceService: IFifaIntegratedDataSourceService
 ) {
 
     fun mine() {
@@ -22,7 +22,7 @@ class FifaPastResultsMiner(
 
         activeLeagues.forEach { league ->
             val pastResults =
-                fifaIntegratedDataSourceRepository.getFifaMatchResultsForLeagueSinceDate(league, sinceDate)
+                fifaIntegratedDataSourceService.getFifaMatchResultsForLeagueSinceDate(league, sinceDate)
             pastResults.forEach(queueService::enqueueSaveMatchResultTask)
         }
     }

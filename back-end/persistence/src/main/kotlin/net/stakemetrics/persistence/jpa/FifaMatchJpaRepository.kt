@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface FifaMatchJpaRepository : JpaRepository<FifaMatchModel, UUID> {
     fun findTopByOrderByTimeDesc(): Optional<FifaMatchModel>
 
-    fun findByIntegrationId(integrationId: Int): Optional<FifaMatchModel>
+    fun findByIntegrationId(integrationId: Long): Optional<FifaMatchModel>
 
     fun findAllByLeagueAndHomeOrAwayAndStatusAndTimeGreaterThan(
         league: FifaLeagueModel, home: FifaPlayerModel, away: FifaPlayerModel, status: FifaMatchStatusTypes, time:

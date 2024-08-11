@@ -30,17 +30,17 @@ class BetsApiDTO {
     )
 
     data class Stats(
-        val corners: List<String>? = null,
-        val goals: List<String>? = null,
-        val penalties: List<String>? = null,
-        val redcards: List<String>? = null,
-        val substitutions: List<String>? = null,
-        val yellowcards: List<String>? = null,
+        val corners: List<String>? = emptyList(),
+        val goals: List<String>? = emptyList(),
+        val penalties: List<String>? = emptyList(),
+        val redcards: List<String>? = emptyList(),
+        val substitutions: List<String>? = emptyList(),
+        val yellowcards: List<String>? = emptyList(),
         val matching_dir: Int? = null,
-        val oddsUpdate: Map<MarketType, Long>? = null
+        val odds_update: Map<MarketType, Long> = emptyMap()
     )
 
-    data class EndedScoresResponse(
+    data class MatchResponse(
         val success: Int,
         val pager: Pager,
         val results: List<Result>
@@ -54,14 +54,15 @@ class BetsApiDTO {
             val home: Team,
             val away: Team,
             val ss: String?,
-            val scores: Map<String, Score>,
-            val stats: Stats
+            val bet365Id: String? = null,
+            val scores: Map<String, Score>? = emptyMap(),
+            val stats: Stats? = null
         )
     }
 
     data class EventOddsResponse(
         val stats: Stats,
-        val odds: Map<MarketType, List<Odds>>
+        val odds: Map<MarketType, List<Odds>> = emptyMap()
     ) {
         data class Odds(
             val id: String,
@@ -74,24 +75,6 @@ class BetsApiDTO {
             val ss: String? = null,
             val time_str: String? = null,
             val add_time: String
-        )
-    }
-
-    data class UpcomingMatchResponse(
-        val success: Int,
-        val pager: Pager,
-        val results: List<Result>
-    ) {
-        data class Result(
-            val id: String,
-            val sport_id: String,
-            val time: String,
-            val time_status: BetsApiSoccerMatchStatus,
-            val league: League,
-            val home: Team,
-            val away: Team,
-            val ss: String?,
-            val bet365Id: String?
         )
     }
 }

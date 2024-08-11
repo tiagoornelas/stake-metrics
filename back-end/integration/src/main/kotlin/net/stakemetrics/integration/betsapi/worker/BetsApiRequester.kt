@@ -17,13 +17,18 @@ class BetsApiRequester {
     private val betsApiBaseUrl: String = "api.b365api.com"
     private val client = OkHttpClient()
 
-    fun fetchEndedSoccerEvents(leagueId: Int, date: String, page: Int): JsonObject {
+    fun fetchEndedSoccerEvents(leagueId: Long, date: String, page: Int): JsonObject {
         val endpoint = "/v3/events/ended?sport_id=1&league_id=$leagueId&day=$date&page=$page"
         return fetchBetsApi(endpoint)
     }
 
-    fun fetchUpcomingSoccerEvents(leagueId: Int, date: String, page: Int): JsonObject {
-        val endpoint = "/v3/events/upcoming?sport_id=1&league_id=$leagueId&day=$date&page=$page"
+    fun fetchUpcomingSoccerEvents(leagueId: Long, page: Int): JsonObject {
+        val endpoint = "/v3/events/upcoming?sport_id=1&league_id=$leagueId&page=$page"
+        return fetchBetsApi(endpoint)
+    }
+
+    fun fetchOddsForMatch(matchId: Int): JsonObject {
+        val endpoint = "/v2/event/odds?event_id=$matchId"
         return fetchBetsApi(endpoint)
     }
 

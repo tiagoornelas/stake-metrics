@@ -26,7 +26,7 @@ class FifaLeagueService @Autowired constructor(private val fifaLeagueRepository:
         return fifaLeagueRepository.listActiveLeagues()
     }
 
-    fun findByIntegrationId(integrationId: Int): FifaLeague {
+    fun findByIntegrationId(integrationId: Long): FifaLeague {
         return fifaLeagueRepository.findByIntegrationId(integrationId) ?: throw NotFoundException(
             "League",
             "integrationId",
@@ -34,7 +34,7 @@ class FifaLeagueService @Autowired constructor(private val fifaLeagueRepository:
         )
     }
 
-    fun existsByIntegrationId(integrationId: Int): Boolean {
+    fun existsByIntegrationId(integrationId: Long): Boolean {
         return fifaLeagueRepository.findByIntegrationId(integrationId) != null
     }
 

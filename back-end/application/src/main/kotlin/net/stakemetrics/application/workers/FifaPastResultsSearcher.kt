@@ -1,14 +1,12 @@
 package net.stakemetrics.application.workers
 
+import java.util.Calendar
+import java.util.Date
+import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.dtos.FifaDTO
 import net.stakemetrics.application.entities.enums.FifaMatchupTypes
 import net.stakemetrics.application.entities.enums.FifaStrategyScopeTypes
 import net.stakemetrics.application.entities.exceptions.FifaMatchIntegrationDataException
-import java.util.Calendar
-import java.util.Date
-import net.stakemetrics.application.entities.FifaLeague
-import net.stakemetrics.application.entities.FifaMatch
-import net.stakemetrics.application.entities.FifaStrategyScope
 import net.stakemetrics.application.service.FifaLeagueService
 import net.stakemetrics.application.service.FifaMatchService
 import net.stakemetrics.application.service.FifaPlayerService
@@ -21,25 +19,21 @@ class FifaPastResultsSearcher(
     private val fifaLeagueService: FifaLeagueService
 ) {
 
-
-    fun search(
-        leagueIntegrationId: Int,
-        homePlayerName: String,
-        awayPlayerName: String,
-        leagues: Set<FifaLeague>,
-        scopes: Set<FifaStrategyScope>
-    ): MutableSet<FifaDTO.FifaStrategyScopePastResults> {
+    fun search(request: FifaDTO.FifaStrategyAgainstOddRequest): MutableSet<FifaDTO.FifaStrategyScopePastResults> {
         val results = mutableSetOf<FifaDTO.FifaStrategyScopePastResults>()
+        val (strategy, odds) = request
 
-        val homePlayer = fifaPlayerService.findByName(homePlayerName)
-        val awayPlayer = fifaPlayerService.findByName(awayPlayerName)
-        val league = fifaLeagueService.findByIntegrationId(leagueIntegrationId)
+        val homePlayer = fifaPlayerService.findByName(odds.homePlayerName)
+        val awayPlayer = fifaPlayerService.findByName(odds.awayPlayerName)
+        val league = fifaLeagueService.findByIntegrationId(odds.leagueIntegrationId)
 
-        if (!leagues.contains(league)) return results
+        val matchContainsExcludedPlayers =
+            strategy.excludedPlayers.contains(homePlayer) || strategy.excludedPlayers.contains(awayPlayer)
+        if (matchContainsExcludedPlayers) return results
 
         val matchQuickIdentifier = FifaDTO.FifaMatchQuickIdentifier(homePlayer, awayPlayer, league)
 
-        scopes.forEach { scope ->
+        strategy.scopes.forEach { scope ->
             if (scope.matchup == null || scope.type == null || scope.value == 0)
                 throw IllegalArgumentException("Scope is missing required fields when trying to get past results.")
 

@@ -179,11 +179,7 @@ class FifaStrategyService @Autowired constructor(
     }
 
     fun runStrategyAgainstOdds(request: FifaDTO.FifaStrategyAgainstOddRequest) {
-        val resultsByScopes = fifaPastResultsSearcher.search(
-            request.odds.leagueIntegrationId, request.odds.homePlayerName,
-            request.odds.awayPlayerName, request.strategy.leagues, request.strategy.scopes
-        )
-
+        val resultsByScopes = fifaPastResultsSearcher.search(request)
         val tipster = fifaTipsterFactory.getTipster(request.strategy.marketType)
         iterateOverOpportunitiesToTipster(resultsByScopes, request, tipster)
     }
