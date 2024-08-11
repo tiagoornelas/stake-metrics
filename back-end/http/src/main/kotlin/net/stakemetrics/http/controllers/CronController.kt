@@ -19,8 +19,8 @@ class CronController(private val logger: Logger, val cronService: CronService) {
     }
 
     @PostMapping("/fifa/mine-odds")
-    fun mineFifaMatchOdds() {
-
+    fun mineFifaMatchOdds(): ResponseEntity<CronDTO.Response> {
+        return runCronAndReturnResponse("mineFifaMatchOdds") { cronService.mineFifaMatchOdds() }
     }
 
     @PostMapping("/")
@@ -37,7 +37,7 @@ class CronController(private val logger: Logger, val cronService: CronService) {
         block()
         val endTime = System.currentTimeMillis()
         val elapsedTime = (endTime - startTime) / 1000.0
-        logger.log("Elapsed time for $methodName: $elapsedTime seconds")
+        logger.log("[CRON] Elapsed time for $methodName: $elapsedTime seconds")
         return elapsedTime
     }
 }

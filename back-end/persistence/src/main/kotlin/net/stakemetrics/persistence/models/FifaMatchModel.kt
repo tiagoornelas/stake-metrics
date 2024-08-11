@@ -15,7 +15,7 @@ import net.stakemetrics.application.entities.FifaMatch
 data class FifaMatchModel(
     @Id
     val id: UUID = UUID.randomUUID(),
-    val integrationId: Int = 0,
+    val integrationId: Long = 0L,
     val time: Date = Date(),
     val status: FifaMatchStatusTypes = FifaMatchStatusTypes.NOT_STARTED,
     @ManyToOne @JoinColumn(name = "league_id")

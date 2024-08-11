@@ -31,37 +31,34 @@ class CloudTaskService(
     @Value("\${app.gcp.location.id}")
     private val locationId: String = "us-central1"
 
-    override fun enqueueSaveMatchResultTask(match: FifaDTO.FifaMatchRequest) {
-        val payload = objectMapper.writeValueAsString(match).toByteArray(StandardCharsets.UTF_8)
-
+    override fun enqueueSaveMatchResultTask(payload: FifaDTO.FifaMatchRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "save-match-result"
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
             val fullUrl = "$baseUrl/queue/fifa/$queueName"
-            enqueueTask(fullUrl, payload, client, queuePath)
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
         }
     }
 
-    override fun enqueueCheckOddForStrategyTask(payload: FifaDTO.FifaStrategyAgainstOddRequest) {
-        val payload = objectMapper.writeValueAsString(payload).toByteArray(StandardCharsets.UTF_8)
-
+    override fun enqueueRunStrategyAgainstOddTask(payload: FifaDTO.FifaStrategyAgainstOddRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "run-strategy-against-odds"
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
             val fullUrl = "$baseUrl/queue/fifa/$queueName"
-            enqueueTask(fullUrl, payload, client, queuePath)
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
         }
     }
 
     override fun enqueueSendMessageTask(payload: Any) {
-        val payload = objectMapper.writeValueAsString(payload).toByteArray(StandardCharsets.UTF_8)
-
         createCloudTaskClient().use { client ->
             val queuePath = QueueName.of(projectId, locationId, "send-message").toString()
             val fullUrl = "$baseUrl/telegram/send-message"
-            enqueueTask(fullUrl, payload, client, queuePath)
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
         }
     }
+
+    private fun getJsonPayload(payload: Any) =
+        objectMapper.writeValueAsString(payload).toByteArray(StandardCharsets.UTF_8)
 
     private fun createCloudTaskClient(): CloudTasksClient {
         return if (!environmentVerifier.isProd()) {

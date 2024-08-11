@@ -1,17 +1,17 @@
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
+package net.stakemetrics.integration.betsapi.worker.deserializer
+
+import com.google.gson.*
 import java.lang.reflect.Type
 import net.stakemetrics.integration.betsapi.entities.dtos.BetsApiDTO
+import org.springframework.stereotype.Component
 
-class BetsApiEndedScoresDeserializer : JsonDeserializer<BetsApiDTO.EndedScoresResponse> {
+@Component
+class MatchDeserializer : JsonDeserializer<BetsApiDTO.MatchResponse> {
     override fun deserialize(
         json: JsonElement,
         typeOfT: Type,
         context: JsonDeserializationContext
-    ): BetsApiDTO.EndedScoresResponse {
+    ): BetsApiDTO.MatchResponse {
         val jsonObject = json.asJsonObject
 
         val resultsArray = jsonObject.getAsJsonArray("results")
@@ -27,6 +27,13 @@ class BetsApiEndedScoresDeserializer : JsonDeserializer<BetsApiDTO.EndedScoresRe
 
         jsonObject.add("results", modifiedResultsArray)
 
-        return Gson().fromJson(jsonObject, BetsApiDTO.EndedScoresResponse::class.java)
+        return Gson().fromJson(jsonObject, BetsApiDTO.MatchResponse::class.java)
+    }
+
+    fun parseJsonToMatchResponse(response: JsonObject): BetsApiDTO.MatchResponse {
+        val gson = GsonBuilder()
+            .registerTypeAdapter(BetsApiDTO.MatchResponse::class.java, MatchDeserializer())
+            .create()
+        return gson.fromJson(response, BetsApiDTO.MatchResponse::class.java)
     }
 }
