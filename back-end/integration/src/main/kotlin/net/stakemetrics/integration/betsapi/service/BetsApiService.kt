@@ -3,7 +3,7 @@ package net.stakemetrics.integration.betsapi.service
 import java.util.Calendar
 import java.util.Date
 import net.stakemetrics.application.entities.FifaLeague
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.service.IFifaIntegratedDataSourceService
 import net.stakemetrics.integration.betsapi.worker.miner.FifaMatchResultsMiner
 import net.stakemetrics.integration.betsapi.worker.miner.FifaUpcomingMatchesMiner
@@ -15,9 +15,12 @@ class BetsApiService(
     private val fifaUpcomingMatchesMiner: FifaUpcomingMatchesMiner
 ) : IFifaIntegratedDataSourceService {
 
-    override fun getFifaMatchResultsForLeagueSinceDate(league: FifaLeague, date: Date): List<FifaDTO.FifaMatchRequest> {
+    override fun getFifaMatchResultsForLeagueSinceDate(
+        league: FifaLeague,
+        date: Date
+    ): List<FifaDataSourceDTO.FifaMatchRequest> {
         val miningDateArrays = getMiningDateRange(date)
-        val results = mutableListOf<FifaDTO.FifaMatchRequest>()
+        val results = mutableListOf<FifaDataSourceDTO.FifaMatchRequest>()
         miningDateArrays.forEach { miningDate ->
             results.addAll(fifaMatchResultsMiner.getFifaMarchResultsForDate(league, miningDate))
         }
@@ -40,7 +43,7 @@ class BetsApiService(
         return dateList
     }
 
-    override fun getUpcomingFifaMatchesWithOddsForLeague(league: FifaLeague): List<FifaDTO.FifaOddRequest> {
+    override fun getUpcomingFifaMatchesWithOddsForLeague(league: FifaLeague): List<FifaDataSourceDTO.FifaOddRequest> {
         return fifaUpcomingMatchesMiner.getUpcomingFifaMatchesWithOddsForLeague(league)
     }
 

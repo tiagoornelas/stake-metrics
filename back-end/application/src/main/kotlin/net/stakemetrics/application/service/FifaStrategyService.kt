@@ -3,7 +3,7 @@ package net.stakemetrics.application.service
 import java.util.UUID
 import kotlin.random.Random
 import net.stakemetrics.application.entities.*
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.*
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
@@ -30,7 +30,7 @@ class FifaStrategyService @Autowired constructor(
     private val logger: Logger
 ) {
 
-    fun save(userEmail: String, dto: FifaDTO.FifaStrategyRequest) {
+    fun save(userEmail: String, dto: FifaStrategyDTO.FifaStrategyRequest) {
         fifaStrategyResourceValidator.validate(dto)
 
         val user = userService.findByEmail(userEmail)
@@ -113,7 +113,7 @@ class FifaStrategyService @Autowired constructor(
         fifaStrategyRepository.delete(strategy)
     }
 
-    fun getStrategyParams(): FifaDTO.FifaStrategyParamsResponse {
+    fun getStrategyParams(): FifaStrategyDTO.FifaStrategyParamsResponse {
         val leagues = fifaLeagueService.listActiveLeagues().map { it.toResponse() }
         val players = fifaPlayerService.findAll().map { it.toResponse() }
 
@@ -122,10 +122,10 @@ class FifaStrategyService @Autowired constructor(
         val scopeTypes = FifaStrategyScopeTypes.entries.toList()
         val marketTypes = FifaMarketTypes.entries.map { marketType ->
             val subTypes = FifaMarketSubTypes.entries.filter { it.parentType == marketType }
-            FifaDTO.FifaMarketTypeResponse(marketType, subTypes.toList())
+            FifaStrategyDTO.FifaMarketTypeResponse(marketType, subTypes.toList())
         }
 
-        return FifaDTO.FifaStrategyParamsResponse(
+        return FifaStrategyDTO.FifaStrategyParamsResponse(
             leagues = leagues,
             marketTypes = marketTypes,
             players = players,
@@ -135,12 +135,12 @@ class FifaStrategyService @Autowired constructor(
         )
     }
 
-    fun getStrategy(userEmail: String, strategyId: UUID): FifaDTO.FifaStrategyReadResponse {
+    fun getStrategy(userEmail: String, strategyId: UUID): FifaStrategyDTO.FifaStrategyReadResponse {
         val strategy = findById(strategyId)
         val user = userService.findByEmail(userEmail)
         fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy, user)
 
-        return FifaDTO.FifaStrategyReadResponse(
+        return FifaStrategyDTO.FifaStrategyReadResponse(
             strategy.id,
             strategy.name,
             strategy.marketType,
@@ -150,7 +150,7 @@ class FifaStrategyService @Autowired constructor(
             strategy.scopes.map { it.toResponse() })
     }
 
-    fun listAllStrategies(userEmail: String): List<FifaDTO.FifaStrategySingleResponse> {
+    fun listAllStrategies(userEmail: String): List<FifaStrategyDTO.FifaStrategySingleResponse> {
         val user = userService.findByEmail(userEmail)
         val strategies = fifaStrategyRepository.getStrategiesByUser(user.id)
 
@@ -161,7 +161,7 @@ class FifaStrategyService @Autowired constructor(
         )
 
         return sortedStrategies.map { strategy ->
-            FifaDTO.FifaStrategySingleResponse(
+            FifaStrategyDTO.FifaStrategySingleResponse(
                 strategy.id,
                 strategy.name,
                 strategy.status,
@@ -178,15 +178,15 @@ class FifaStrategyService @Autowired constructor(
         return fifaStrategyRepository.getAllProneToBetStrategies()
     }
 
-    fun runStrategyAgainstOdds(request: FifaDTO.FifaStrategyAgainstOddRequest) {
+    fun runStrategyAgainstOdds(request: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
         val resultsByScopes = fifaPastResultsSearcher.search(request)
         val tipster = fifaTipsterFactory.getTipster(request.strategy.marketType)
         iterateOverOpportunitiesToTipster(resultsByScopes, request, tipster)
     }
 
     private fun iterateOverOpportunitiesToTipster(
-        resultsByScopes: MutableSet<FifaDTO.FifaStrategyScopePastResults>,
-        request: FifaDTO.FifaStrategyAgainstOddRequest,
+        resultsByScopes: MutableSet<FifaStrategyDTO.FifaStrategyScopePastResults>,
+        request: FifaStrategyDTO.FifaStrategyAgainstOddRequest,
         tipster: FifaTipster
     ) {
         val matchupPlayerNames: Pair<String, String> = Pair(request.odds.homePlayerName, request.odds.awayPlayerName)
