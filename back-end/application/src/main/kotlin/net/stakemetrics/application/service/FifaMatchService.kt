@@ -39,12 +39,11 @@ class FifaMatchService @Autowired constructor(
     fun saveMatch(dto: FifaDataSourceDTO.FifaMatchRequest) {
         logger.log("Saving match ${dto.integrationId}")
         val league = fifaLeagueService.findByIntegrationId(dto.leagueId)
-        val matchDate = Date(dto.time * 1000)
 
         val existingMatch = fifaMatchRepository.findByIntegrationId(dto.integrationId)
 
         val match = existingMatch?.copy(
-            time = matchDate,
+            time = dto.time,
             status = dto.status,
             league = league,
             homeGoalsAtHalfTime = dto.homeGoalsAtHalfTime,
@@ -52,10 +51,11 @@ class FifaMatchService @Autowired constructor(
             awayGoalsAtHalfTime = dto.awayGoalsAtHalfTime,
             awayGoalsAtFullTime = dto.awayGoalsAtFullTime,
             totalGoalsAtHalfTime = dto.totalGoalsAtHalfTime,
-            totalGoalsAtFullTime = dto.totalGoalsAtFullTime
+            totalGoalsAtFullTime = dto.totalGoalsAtFullTime,
+            winner = determineWinner(dto.winner, dto.home, dto.away, league)
         ) ?: FifaMatch(
             integrationId = dto.integrationId,
-            time = matchDate,
+            time = dto.time,
             status = dto.status,
             league = league,
             home = findOrCreatePlayer(dto.home, league),
@@ -66,7 +66,7 @@ class FifaMatchService @Autowired constructor(
             awayGoalsAtFullTime = dto.awayGoalsAtFullTime,
             totalGoalsAtHalfTime = dto.totalGoalsAtHalfTime,
             totalGoalsAtFullTime = dto.totalGoalsAtFullTime,
-            winner = determineAndSaveWinner(dto.winner, dto.home, dto.away, league)
+            winner = determineWinner(dto.winner, dto.home, dto.away, league)
         )
 
         fifaMatchRepository.save(match)
@@ -82,7 +82,7 @@ class FifaMatchService @Autowired constructor(
         }
     }
 
-    private fun determineAndSaveWinner(winner: String?, home: String, away: String, league: FifaLeague): FifaPlayer? {
+    private fun determineWinner(winner: String?, home: String, away: String, league: FifaLeague): FifaPlayer? {
         return when (winner) {
             home -> findOrCreatePlayer(home, league)
             away -> findOrCreatePlayer(away, league)

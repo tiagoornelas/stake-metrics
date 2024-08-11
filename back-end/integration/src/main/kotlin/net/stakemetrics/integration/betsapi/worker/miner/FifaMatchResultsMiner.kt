@@ -7,7 +7,7 @@ import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.integration.betsapi.entities.dtos.BetsApiDTO
-import net.stakemetrics.integration.betsapi.utils.BetsApiHttpHelper
+import net.stakemetrics.integration.betsapi.utils.BetsApiHelper
 import net.stakemetrics.integration.betsapi.utils.FifaMarketHelper
 import net.stakemetrics.integration.betsapi.worker.BetsApiRequester
 import net.stakemetrics.integration.betsapi.worker.deserializer.MatchDeserializer
@@ -18,7 +18,7 @@ class FifaMatchResultsMiner(
     private val matchDeserializer: MatchDeserializer,
     private val betsApiRequester: BetsApiRequester,
     private val fifaMarketHelper: FifaMarketHelper,
-    private val betsApiHttpHelper: BetsApiHttpHelper,
+    private val betsApiHelper: BetsApiHelper,
     private val logger: Logger
 ) {
     fun getFifaMarchResultsForDate(league: FifaLeague, date: Date): List<FifaDataSourceDTO.FifaMatchRequest> {
@@ -33,7 +33,7 @@ class FifaMatchResultsMiner(
             val pageResults = convertResultListToFifaDtoList(matchResponse.results)
             results.addAll(pageResults)
             page++
-        } while (betsApiHttpHelper.hasNext(matchResponse.pager, page))
+        } while (betsApiHelper.hasNext(matchResponse.pager, page))
 
         return results
     }
@@ -44,7 +44,7 @@ class FifaMatchResultsMiner(
             val totalGoalsAtFullTime = calculateTotalGoals(result.scores, 2)
             FifaDataSourceDTO.FifaMatchRequest(
                 integrationId = result.id.toLong(),
-                time = result.time.toLong(),
+                time = betsApiHelper.convertTimestampToDate(result.time),
                 status = result.time_status.toFifaMatchStatusType(),
                 leagueId = result.league.id.toLong(),
                 home = fifaMarketHelper.getPlayerName(result.home.name),

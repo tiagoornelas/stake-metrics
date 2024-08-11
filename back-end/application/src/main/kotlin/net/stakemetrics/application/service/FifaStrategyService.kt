@@ -198,6 +198,8 @@ class FifaStrategyService @Autowired constructor(
                         tipster.tip(matchupPlayerNames, marketSubType, scope.rules, request.odds.odds, results)
                     } catch (e: FifaStrategyRuleBreakException) {
                         logger.logFifaStrategyRuleBreak(e)
+                    } catch (e: NotFoundException) {
+                        logger.logError(e)
                     }
                 }
             } ?: throw IllegalArgumentException("Scope is null when sending the results to the tipster")

@@ -2,30 +2,44 @@ package net.stakemetrics.application.workers
 
 import java.util.Calendar
 import java.util.Date
+import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.FifaMatch
+import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.FifaMatchupTypes
 import net.stakemetrics.application.entities.enums.FifaStrategyScopeTypes
 import net.stakemetrics.application.entities.exceptions.FifaMatchIntegrationDataException
+import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.service.FifaLeagueService
 import net.stakemetrics.application.service.FifaMatchService
 import net.stakemetrics.application.service.FifaPlayerService
+import net.stakemetrics.application.utils.Logger
 import org.springframework.stereotype.Service
 
 @Service
 class FifaPastResultsSearcher(
     private val fifaMatchService: FifaMatchService,
     private val fifaPlayerService: FifaPlayerService,
-    private val fifaLeagueService: FifaLeagueService
+    private val fifaLeagueService: FifaLeagueService,
+    private val logger: Logger
 ) {
 
     fun search(request: FifaStrategyDTO.FifaStrategyAgainstOddRequest): MutableSet<FifaStrategyDTO.FifaStrategyScopePastResults> {
         val results = mutableSetOf<FifaStrategyDTO.FifaStrategyScopePastResults>()
         val (strategy, odds) = request
 
-        val homePlayer = fifaPlayerService.findByName(odds.homePlayerName)
-        val awayPlayer = fifaPlayerService.findByName(odds.awayPlayerName)
-        val league = fifaLeagueService.findByIntegrationId(odds.leagueIntegrationId)
+        val homePlayer: FifaPlayer?
+        val awayPlayer: FifaPlayer?
+        val league: FifaLeague?
+
+        try {
+            homePlayer = fifaPlayerService.findByName(odds.homePlayerName)
+            awayPlayer = fifaPlayerService.findByName(odds.awayPlayerName)
+            league = fifaLeagueService.findByIntegrationId(odds.leagueIntegrationId)
+        } catch (e: NotFoundException) {
+            logger.log("The past results searcher could not find player or league in the database. Cause: ${e.message}")
+            return results
+        }
 
         val matchContainsExcludedPlayers =
             strategy.excludedPlayers.contains(homePlayer) || strategy.excludedPlayers.contains(awayPlayer)
