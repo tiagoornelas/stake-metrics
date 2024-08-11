@@ -1,6 +1,6 @@
 package net.stakemetrics.application.workers.enqueuers
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.service.FifaLeagueService
 import net.stakemetrics.application.service.FifaStrategyService
 import net.stakemetrics.application.service.IFifaIntegratedDataSourceService
@@ -23,7 +23,7 @@ class FifaUpcomingMatchesEnqueuer(
             val nextMatchesOdds = fifaIntegratedDataSourceRepository.getUpcomingFifaMatchesWithOddsForLeague(league)
             nextMatchesOdds.flatMap { odds ->
                 strategies.filter { it.leagues.contains(league) }
-                    .map { strategy -> FifaDTO.FifaStrategyAgainstOddRequest(strategy, odds) }
+                    .map { strategy -> FifaStrategyDTO.FifaStrategyAgainstOddRequest(strategy, odds) }
             }
         }
 

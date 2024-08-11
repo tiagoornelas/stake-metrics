@@ -9,7 +9,8 @@ import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import java.nio.charset.StandardCharsets
 import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.service.IQueueService
 import net.stakemetrics.application.utils.EnvironmentVerifier
 import org.springframework.beans.factory.annotation.Value
@@ -31,7 +32,7 @@ class CloudTaskService(
     @Value("\${app.gcp.location.id}")
     private val locationId: String = "us-central1"
 
-    override fun enqueueSaveMatchResultTask(payload: FifaDTO.FifaMatchRequest) {
+    override fun enqueueSaveMatchResultTask(payload: FifaDataSourceDTO.FifaMatchRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "save-match-result"
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
@@ -40,7 +41,7 @@ class CloudTaskService(
         }
     }
 
-    override fun enqueueRunStrategyAgainstOddTask(payload: FifaDTO.FifaStrategyAgainstOddRequest) {
+    override fun enqueueRunStrategyAgainstOddTask(payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "run-strategy-against-odds"
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()

@@ -1,9 +1,10 @@
 package net.stakemetrics.application.service
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 
 interface IQueueService {
-    fun enqueueSaveMatchResultTask(payload: FifaDTO.FifaMatchRequest)
-    fun enqueueRunStrategyAgainstOddTask(payload: FifaDTO.FifaStrategyAgainstOddRequest)
+    fun enqueueSaveMatchResultTask(payload: FifaDataSourceDTO.FifaMatchRequest)
+    fun enqueueRunStrategyAgainstOddTask(payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest)
     fun enqueueSendMessageTask(payload: Any)
 }

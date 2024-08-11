@@ -1,7 +1,7 @@
 package net.stakemetrics.integration.betsapi.worker.miner
 
 import net.stakemetrics.application.entities.FifaLeague
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.integration.betsapi.entities.dtos.BetsApiDTO
 import net.stakemetrics.integration.betsapi.utils.BetsApiHttpHelper
@@ -20,8 +20,8 @@ class FifaUpcomingMatchesMiner(
     private val betsApiHttpHelper: BetsApiHttpHelper,
     private val logger: Logger
 ) {
-    fun getUpcomingFifaMatchesWithOddsForLeague(league: FifaLeague): List<FifaDTO.FifaOddRequest> {
-        val results = mutableListOf<FifaDTO.FifaOddRequest>()
+    fun getUpcomingFifaMatchesWithOddsForLeague(league: FifaLeague): List<FifaDataSourceDTO.FifaOddRequest> {
+        val results = mutableListOf<FifaDataSourceDTO.FifaOddRequest>()
         var page = 1
 
         do {
@@ -36,7 +36,7 @@ class FifaUpcomingMatchesMiner(
         return results
     }
 
-    private fun convertResultListToFifaDtoList(results: List<BetsApiDTO.MatchResponse.Result>): List<FifaDTO.FifaOddRequest> {
+    private fun convertResultListToFifaDtoList(results: List<BetsApiDTO.MatchResponse.Result>): List<FifaDataSourceDTO.FifaOddRequest> {
         val filteredResults = filterResultsWithinOneHour(results)
 
         return filteredResults.map { result ->
@@ -45,7 +45,7 @@ class FifaUpcomingMatchesMiner(
             val oddResponse = oddDeserializer.parseJsonToOddResponse(response)
             val odds = convertResultListToFifaGenericOddsList(oddResponse, result.time.toLong())
 
-            FifaDTO.FifaOddRequest(
+            FifaDataSourceDTO.FifaOddRequest(
                 leagueIntegrationId = result.league.id.toLong(),
                 homePlayerName = fifaMarketHelper.getPlayerName(result.home.name),
                 awayPlayerName = fifaMarketHelper.getPlayerName(result.away.name),
@@ -64,8 +64,8 @@ class FifaUpcomingMatchesMiner(
     }
 
     private fun convertResultListToFifaGenericOddsList(oddResponse: BetsApiDTO.EventOddsResponse, matchTime: Long):
-            List<FifaDTO.FifaGenericOddRequest> {
-        val fifaGenericOddRequests = mutableListOf<FifaDTO.FifaGenericOddRequest>()
+            List<FifaDataSourceDTO.FifaGenericOddRequest> {
+        val fifaGenericOddRequests = mutableListOf<FifaDataSourceDTO.FifaGenericOddRequest>()
 
         oddResponse.odds.forEach { (marketType, oddsList) ->
             val updateTime = oddResponse.stats.odds_update[marketType]
@@ -74,7 +74,7 @@ class FifaUpcomingMatchesMiner(
             if (fifaMarketTypeOnApplication != null) {
                 oddsList.forEach { odd ->
                     fifaGenericOddRequests.add(
-                        FifaDTO.FifaGenericOddRequest(
+                        FifaDataSourceDTO.FifaGenericOddRequest(
                             marketType = fifaMarketTypeOnApplication,
                             lastCheckedTime = updateTime,
                             oddOfferTime = odd.add_time.toLong(),

@@ -1,6 +1,7 @@
 package net.stakemetrics.http.controllers
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.service.FifaMatchService
 import net.stakemetrics.application.service.FifaStrategyService
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,12 +17,12 @@ class QueueController(
 ) {
 
     @PostMapping("/fifa/save-match-result")
-    fun saveMatchResult(@RequestBody payload: FifaDTO.FifaMatchRequest) {
+    fun saveMatchResult(@RequestBody payload: FifaDataSourceDTO.FifaMatchRequest) {
         fifaMatchService.saveMatch(payload)
     }
 
     @PostMapping("/fifa/run-strategy-against-odds")
-    fun runStrategyAgainstOdds(@RequestBody payload: FifaDTO.FifaStrategyAgainstOddRequest) {
+    fun runStrategyAgainstOdds(@RequestBody payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
         fifaStrategyService.runStrategyAgainstOdds(payload)
     }
 }

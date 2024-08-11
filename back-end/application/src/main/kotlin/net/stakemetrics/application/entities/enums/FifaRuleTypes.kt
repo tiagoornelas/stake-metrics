@@ -1,6 +1,6 @@
 package net.stakemetrics.application.entities.enums
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 
 enum class FifaRuleTypes(
     val minValue: Double,
@@ -13,4 +13,4 @@ enum class FifaRuleTypes(
     MINIMUM_PROBABILITY(0.0, 1.00, 0.50, RuleValueFormatTypes.PERCENTAGE)
 }
 
-fun FifaRuleTypes.toResponse() = FifaDTO.FifaRuleTypesResponse(this, minValue, maxValue, defaultValue, format)
+fun FifaRuleTypes.toResponse() = FifaStrategyDTO.FifaRuleTypesResponse(this, minValue, maxValue, defaultValue, format)

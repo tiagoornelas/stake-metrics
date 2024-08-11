@@ -4,11 +4,11 @@ import BetsApiSoccerMatchStatus
 import java.text.SimpleDateFormat
 import java.util.Date
 import net.stakemetrics.application.entities.FifaLeague
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.integration.betsapi.entities.dtos.BetsApiDTO
-import net.stakemetrics.integration.betsapi.utils.FifaMarketHelper
 import net.stakemetrics.integration.betsapi.utils.BetsApiHttpHelper
+import net.stakemetrics.integration.betsapi.utils.FifaMarketHelper
 import net.stakemetrics.integration.betsapi.worker.BetsApiRequester
 import net.stakemetrics.integration.betsapi.worker.deserializer.MatchDeserializer
 import org.springframework.stereotype.Service
@@ -21,9 +21,9 @@ class FifaMatchResultsMiner(
     private val betsApiHttpHelper: BetsApiHttpHelper,
     private val logger: Logger
 ) {
-    fun getFifaMarchResultsForDate(league: FifaLeague, date: Date): List<FifaDTO.FifaMatchRequest> {
+    fun getFifaMarchResultsForDate(league: FifaLeague, date: Date): List<FifaDataSourceDTO.FifaMatchRequest> {
         val formattedDate = convertDateToString(date)
-        val results = mutableListOf<FifaDTO.FifaMatchRequest>()
+        val results = mutableListOf<FifaDataSourceDTO.FifaMatchRequest>()
         var page = 1
 
         do {
@@ -38,11 +38,11 @@ class FifaMatchResultsMiner(
         return results
     }
 
-    private fun convertResultListToFifaDtoList(results: List<BetsApiDTO.MatchResponse.Result>): List<FifaDTO.FifaMatchRequest> {
+    private fun convertResultListToFifaDtoList(results: List<BetsApiDTO.MatchResponse.Result>): List<FifaDataSourceDTO.FifaMatchRequest> {
         return results.filter { it.time_status == BetsApiSoccerMatchStatus.ENDED && it.scores != null }.map { result ->
             val totalGoalsAtHalfTime = calculateTotalGoals(result.scores!!, 1)
             val totalGoalsAtFullTime = calculateTotalGoals(result.scores, 2)
-            FifaDTO.FifaMatchRequest(
+            FifaDataSourceDTO.FifaMatchRequest(
                 integrationId = result.id.toLong(),
                 time = result.time.toLong(),
                 status = result.time_status.toFifaMatchStatusType(),

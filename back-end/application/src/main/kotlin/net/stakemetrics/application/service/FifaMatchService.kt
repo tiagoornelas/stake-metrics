@@ -6,7 +6,7 @@ import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.application.utils.EnvironmentVerifier
@@ -36,10 +36,10 @@ class FifaMatchService @Autowired constructor(
         }
     }
 
-    fun saveMatch(dto: FifaDTO.FifaMatchRequest) {
+    fun saveMatch(dto: FifaDataSourceDTO.FifaMatchRequest) {
         logger.log("Saving match ${dto.integrationId}")
         val league = fifaLeagueService.findByIntegrationId(dto.leagueId)
-        val matchDate = Date(dto.time.toLong() * 1000)
+        val matchDate = Date(dto.time * 1000)
 
         val existingMatch = fifaMatchRepository.findByIntegrationId(dto.integrationId)
 
