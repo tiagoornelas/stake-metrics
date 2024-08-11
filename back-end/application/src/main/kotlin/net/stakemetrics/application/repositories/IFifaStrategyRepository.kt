@@ -1,9 +1,9 @@
 package net.stakemetrics.application.repositories
 
-import net.stakemetrics.application.entities.enums.FifaStrategyStatus
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.User
+import net.stakemetrics.application.entities.enums.FifaStrategyStatus
 
 interface IFifaStrategyRepository {
     fun save(strategy: FifaStrategy)

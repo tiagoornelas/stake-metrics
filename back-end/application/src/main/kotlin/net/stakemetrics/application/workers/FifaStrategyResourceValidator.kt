@@ -1,14 +1,14 @@
 package net.stakemetrics.application.workers
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
-import net.stakemetrics.application.entities.enums.FeatureTypes
-import net.stakemetrics.application.entities.enums.FifaStrategyStatus
-import net.stakemetrics.application.entities.exceptions.NotAllowedException
-import net.stakemetrics.application.service.ISubscriptionService
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.User
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
+import net.stakemetrics.application.entities.enums.FeatureTypes
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
+import net.stakemetrics.application.entities.enums.FifaStrategyStatus
+import net.stakemetrics.application.entities.exceptions.NotAllowedException
 import net.stakemetrics.application.service.FifaStrategyService
+import net.stakemetrics.application.service.ISubscriptionService
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,7 +18,7 @@ class FifaStrategyResourceValidator(
 ) {
     private val globalMaxStrategies = 30
 
-    fun validate(dto: FifaDTO.FifaStrategyRequest) {
+    fun validate(dto: FifaStrategyDTO.FifaStrategyRequest) {
         if (dto.name.isBlank() || dto.marketSubTypes.isEmpty() || dto.leagues.isEmpty()) {
             throw IllegalArgumentException("Name, marketSubTypes and leagues cannot be blank")
         }

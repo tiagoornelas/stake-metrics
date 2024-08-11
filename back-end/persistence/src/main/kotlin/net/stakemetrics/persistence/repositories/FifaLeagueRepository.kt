@@ -15,7 +15,7 @@ class FifaLeagueRepository(private val fifaLeagueJpaRepository: FifaLeagueJpaRep
         fifaLeagueJpaRepository.save(fifaLeague.toModel())
     }
 
-    override fun existsByIntegrationId(integrationId: Int): Boolean {
+    override fun existsByIntegrationId(integrationId: Long): Boolean {
         return fifaLeagueJpaRepository.existsByIntegrationId(integrationId)
     }
 
@@ -23,7 +23,7 @@ class FifaLeagueRepository(private val fifaLeagueJpaRepository: FifaLeagueJpaRep
         return fifaLeagueJpaRepository.findAllByStatus(FifaLeagueStatusTypes.ACTIVE).map { it.toDomain() }
     }
 
-    override fun findByIntegrationId(integrationId: Int): FifaLeague? {
+    override fun findByIntegrationId(integrationId: Long): FifaLeague? {
         return fifaLeagueJpaRepository.findByIntegrationId(integrationId)?.toDomain()
     }
 

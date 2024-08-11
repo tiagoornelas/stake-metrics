@@ -9,7 +9,8 @@ import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import java.nio.charset.StandardCharsets
 import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
-import net.stakemetrics.application.entities.dtos.FifaDTO
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.service.IQueueService
 import net.stakemetrics.application.utils.EnvironmentVerifier
 import org.springframework.beans.factory.annotation.Value
@@ -31,37 +32,34 @@ class CloudTaskService(
     @Value("\${app.gcp.location.id}")
     private val locationId: String = "us-central1"
 
-    override fun enqueueSaveMatchResultTask(match: FifaDTO.FifaMatchRequest) {
-        val payload = objectMapper.writeValueAsString(match).toByteArray(StandardCharsets.UTF_8)
-
+    override fun enqueueSaveMatchResultTask(payload: FifaDataSourceDTO.FifaMatchRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "save-match-result"
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
             val fullUrl = "$baseUrl/queue/fifa/$queueName"
-            enqueueTask(fullUrl, payload, client, queuePath)
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
         }
     }
 
-    override fun enqueueCheckOddForStrategyTask(payload: FifaDTO.FifaStrategyAgainstOddRequest) {
-        val payload = objectMapper.writeValueAsString(payload).toByteArray(StandardCharsets.UTF_8)
-
+    override fun enqueueRunStrategyAgainstOddTask(payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "run-strategy-against-odds"
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
             val fullUrl = "$baseUrl/queue/fifa/$queueName"
-            enqueueTask(fullUrl, payload, client, queuePath)
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
         }
     }
 
     override fun enqueueSendMessageTask(payload: Any) {
-        val payload = objectMapper.writeValueAsString(payload).toByteArray(StandardCharsets.UTF_8)
-
         createCloudTaskClient().use { client ->
             val queuePath = QueueName.of(projectId, locationId, "send-message").toString()
             val fullUrl = "$baseUrl/telegram/send-message"
-            enqueueTask(fullUrl, payload, client, queuePath)
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
         }
     }
+
+    private fun getJsonPayload(payload: Any) =
+        objectMapper.writeValueAsString(payload).toByteArray(StandardCharsets.UTF_8)
 
     private fun createCloudTaskClient(): CloudTasksClient {
         return if (!environmentVerifier.isProd()) {

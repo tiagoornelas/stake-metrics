@@ -1,14 +1,14 @@
 package net.stakemetrics.application.workers.tipsters
 
-import net.stakemetrics.application.entities.dtos.FifaDTO
-import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
-import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
-import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategyRule
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
+import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
 import net.stakemetrics.application.workers.FifaStrategyBettor
 import net.stakemetrics.application.workers.OddAndLineCalculator
+import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import org.springframework.stereotype.Component
 
 @Component
@@ -20,7 +20,7 @@ class FifaGoalLineTipster(
         matchupPlayerNames: Pair<String, String>,
         marketSubType: FifaMarketSubTypes,
         rules: MutableSet<FifaStrategyRule>,
-        odds: List<FifaDTO.FifaGenericOddRequest>,
+        odds: List<FifaDataSourceDTO.FifaGenericOddRequest>,
         results: MutableSet<FifaMatch>
     ) {
         val goalLine = odds.first { it.isGoalLine() }.toFifaGoalLine()
@@ -30,8 +30,10 @@ class FifaGoalLineTipster(
     }
 
     private fun checkRule(
-        marketSubType: FifaMarketSubTypes, rule: FifaStrategyRule, line: FifaDTO
-        .FifaGoalLineOddRequest, results: MutableSet<FifaMatch>
+        marketSubType: FifaMarketSubTypes,
+        rule: FifaStrategyRule,
+        line: FifaDataSourceDTO.FifaGoalLineOddRequest,
+        results: MutableSet<FifaMatch>
     ) {
         return when (rule.type) {
             FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(marketSubType, rule, line)
@@ -43,7 +45,7 @@ class FifaGoalLineTipster(
     private fun checkMinimumOddsRule(
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        line: FifaDTO.FifaGoalLineOddRequest
+        line: FifaDataSourceDTO.FifaGoalLineOddRequest
     ) {
         when (marketSubType) {
             FifaMarketSubTypes.OVER -> {
@@ -69,7 +71,7 @@ class FifaGoalLineTipster(
     private fun checkMinimumJuiceRule(
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        line: FifaDTO.FifaGoalLineOddRequest,
+        line: FifaDataSourceDTO.FifaGoalLineOddRequest,
         results: MutableSet<FifaMatch>
     ) {
         val threshold = oddAndLineCalculator.getScoreThreshold(line.handicap)
@@ -103,7 +105,7 @@ class FifaGoalLineTipster(
     private fun checkMinimumProbabilityRule(
         marketSubType: FifaMarketSubTypes,
         rule: FifaStrategyRule,
-        line: FifaDTO.FifaGoalLineOddRequest,
+        line: FifaDataSourceDTO.FifaGoalLineOddRequest,
         results: MutableSet<FifaMatch>
     ) {
         val threshold = oddAndLineCalculator.getScoreThreshold(line.handicap)
