@@ -44,12 +44,8 @@ kotlin {
     }
 }
 
-tasks.register("prepareKotlinBuildScriptModel"){}
+tasks.register("prepareKotlinBuildScriptModel") {}
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-    mainClass.set("net.stakemetrics.backend.BackEndApplicationKt")
 }
