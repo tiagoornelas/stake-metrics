@@ -3,9 +3,10 @@ package net.stakemetrics.application.workers.tipsters
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategyRule
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
-import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
+import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
+import net.stakemetrics.application.entities.exceptions.IntegrationException
 import net.stakemetrics.application.workers.FifaStrategyBettor
 import net.stakemetrics.application.workers.OddAndLineCalculator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
@@ -16,39 +17,42 @@ class FifaGoalLineTipster(
     private val oddAndLineCalculator: OddAndLineCalculator,
     private val fifaStrategyBettor: FifaStrategyBettor
 ) : FifaTipster {
+    val notSupportedErrorMessage = "Market's bet candidate not supported for goal line tipster"
+
     override fun tip(
+        betCandidate: FifaMarketBetCandidates,
         matchupPlayerNames: Pair<String, String>,
-        marketSubType: FifaMarketSubTypes,
         rules: MutableSet<FifaStrategyRule>,
         odds: List<FifaDataSourceDTO.FifaGenericOddRequest>,
         results: MutableSet<FifaMatch>
     ) {
-        val goalLine = odds.first { it.isGoalLine() }.toFifaGoalLine()
+        val goalLine = odds.firstOrNull() { it.isGoalLine() }?.toFifaGoalLine()
+            ?: throw IntegrationException("No goal lines came from the integrated data source.")
 
-        rules.forEach { rule -> checkRule(marketSubType, rule, goalLine, results) }
+        rules.forEach { rule -> checkRule(betCandidate, rule, goalLine, results) }
         fifaStrategyBettor.bet()
     }
 
     private fun checkRule(
-        marketSubType: FifaMarketSubTypes,
+        betCandidate: FifaMarketBetCandidates,
         rule: FifaStrategyRule,
         line: FifaDataSourceDTO.FifaGoalLineOddRequest,
         results: MutableSet<FifaMatch>
     ) {
         return when (rule.type) {
-            FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(marketSubType, rule, line)
-            FifaRuleTypes.MINIMUM_JUICE -> checkMinimumJuiceRule(marketSubType, rule, line, results)
-            FifaRuleTypes.MINIMUM_PROBABILITY -> checkMinimumProbabilityRule(marketSubType, rule, line, results)
+            FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(betCandidate, rule, line)
+            FifaRuleTypes.MINIMUM_JUICE -> checkMinimumJuiceRule(betCandidate, rule, line, results)
+            FifaRuleTypes.MINIMUM_PROBABILITY -> checkMinimumProbabilityRule(betCandidate, rule, line, results)
         }
     }
 
     private fun checkMinimumOddsRule(
-        marketSubType: FifaMarketSubTypes,
+        betCandidate: FifaMarketBetCandidates,
         rule: FifaStrategyRule,
         line: FifaDataSourceDTO.FifaGoalLineOddRequest
     ) {
-        when (marketSubType) {
-            FifaMarketSubTypes.OVER -> {
+        when (betCandidate) {
+            FifaMarketBetCandidates.OVER -> {
                 if (line.over < rule.value) {
                     throw FifaStrategyRuleBreakException(
                         "Minimum odds rule break for over market: ${line.over} < ${rule.value}"
@@ -56,7 +60,7 @@ class FifaGoalLineTipster(
                 }
             }
 
-            FifaMarketSubTypes.UNDER -> {
+            FifaMarketBetCandidates.UNDER -> {
                 if (line.under < rule.value) {
                     throw FifaStrategyRuleBreakException(
                         "Minimum odds rule break for under market: ${line.under} < ${rule.value}"
@@ -64,12 +68,12 @@ class FifaGoalLineTipster(
                 }
             }
 
-            else -> throw IllegalArgumentException("Market sub type not supported for goal line tipster")
+            else -> throw IllegalArgumentException(notSupportedErrorMessage)
         }
     }
 
     private fun checkMinimumJuiceRule(
-        marketSubType: FifaMarketSubTypes,
+        betCandidate: FifaMarketBetCandidates,
         rule: FifaStrategyRule,
         line: FifaDataSourceDTO.FifaGoalLineOddRequest,
         results: MutableSet<FifaMatch>
@@ -77,8 +81,8 @@ class FifaGoalLineTipster(
         val threshold = oddAndLineCalculator.getScoreThreshold(line.handicap)
         val (overProbability, underProbability) = getScopeGoalLineProbabilities(results, threshold)
 
-        when (marketSubType) {
-            FifaMarketSubTypes.OVER -> {
+        when (betCandidate) {
+            FifaMarketBetCandidates.OVER -> {
                 val overFairLine = oddAndLineCalculator.getFairLine(overProbability)
                 val overJuice = oddAndLineCalculator.getBettorsJuice(line.over, overFairLine)
                 if (overJuice < rule.value) {
@@ -88,7 +92,7 @@ class FifaGoalLineTipster(
                 }
             }
 
-            FifaMarketSubTypes.UNDER -> {
+            FifaMarketBetCandidates.UNDER -> {
                 val underFairLine = oddAndLineCalculator.getFairLine(underProbability)
                 val underJuice = oddAndLineCalculator.getBettorsJuice(line.under, underFairLine)
                 if (underJuice < rule.value) {
@@ -98,12 +102,12 @@ class FifaGoalLineTipster(
                 }
             }
 
-            else -> throw IllegalArgumentException("Market sub type not supported for goal line tipster")
+            else -> throw IllegalArgumentException(notSupportedErrorMessage)
         }
     }
 
     private fun checkMinimumProbabilityRule(
-        marketSubType: FifaMarketSubTypes,
+        betCandidate: FifaMarketBetCandidates,
         rule: FifaStrategyRule,
         line: FifaDataSourceDTO.FifaGoalLineOddRequest,
         results: MutableSet<FifaMatch>
@@ -111,8 +115,8 @@ class FifaGoalLineTipster(
         val threshold = oddAndLineCalculator.getScoreThreshold(line.handicap)
         val (overProbability, underProbability) = getScopeGoalLineProbabilities(results, threshold)
 
-        when (marketSubType) {
-            FifaMarketSubTypes.OVER -> {
+        when (betCandidate) {
+            FifaMarketBetCandidates.OVER -> {
                 if (overProbability < rule.value) {
                     throw FifaStrategyRuleBreakException(
                         "Minimum probability rule break for over market: $overProbability < ${rule.value}"
@@ -120,7 +124,7 @@ class FifaGoalLineTipster(
                 }
             }
 
-            FifaMarketSubTypes.UNDER -> {
+            FifaMarketBetCandidates.UNDER -> {
                 if (underProbability < rule.value) {
                     throw FifaStrategyRuleBreakException(
                         "Minimum probability rule break for under market: $underProbability < ${rule.value}"
@@ -128,7 +132,7 @@ class FifaGoalLineTipster(
                 }
             }
 
-            else -> throw IllegalArgumentException("Market sub type not supported for goal line tipster")
+            else -> throw IllegalArgumentException(notSupportedErrorMessage)
         }
     }
 
