@@ -54,7 +54,8 @@ class FifaMatchResultsMiner(
                 awayGoalsAtHalfTime = getGoals(result.scores, 1, "away"),
                 awayGoalsAtFullTime = getGoals(result.scores, 2, "away"),
                 totalGoalsAtHalfTime = totalGoalsAtHalfTime,
-                totalGoalsAtFullTime = totalGoalsAtFullTime
+                totalGoalsAtFullTime = totalGoalsAtFullTime,
+                winner = determineWinner(result)
             )
         }
     }
@@ -76,6 +77,17 @@ class FifaMatchResultsMiner(
         } ?: 0
     }
 
+    private fun determineWinner(result: BetsApiDTO.MatchResponse.Result): String? {
+        val scores = result.scores?.get("2") ?: return null
+        val homeScore = scores.home.toInt()
+        val awayScore = scores.away.toInt()
+
+        return when {
+            homeScore == awayScore -> null
+            homeScore > awayScore -> fifaMarketHelper.getPlayerName(result.home.name)
+            else -> fifaMarketHelper.getPlayerName(result.away.name)
+        }
+    }
 
     private fun convertDateToString(date: Date): String {
         return SimpleDateFormat("yyyyMMdd").format(date)

@@ -31,9 +31,8 @@ export const FifaMarketTypesDict: { [key in FifaMarketTypes]: string } = {
 };
 
 export const FifaMarketSubTypesDict: { [key in FifaMarketSubTypes]: string } = {
-    [FifaMarketSubTypes.HOME]: "Casa",
+    [FifaMarketSubTypes.WINNER]: "Vencedor",
     [FifaMarketSubTypes.DRAW]: "Empate",
-    [FifaMarketSubTypes.AWAY]: "Fora",
     [FifaMarketSubTypes.OVER]: "Over",
     [FifaMarketSubTypes.UNDER]: "Under"
 };

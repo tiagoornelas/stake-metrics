@@ -3,6 +3,7 @@ package net.stakemetrics.application.service
 import java.util.UUID
 import kotlin.random.Random
 import net.stakemetrics.application.entities.*
+import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.*
@@ -121,8 +122,8 @@ class FifaStrategyService @Autowired constructor(
         val matchupTypes = FifaMatchupTypes.entries.toList()
         val scopeTypes = FifaStrategyScopeTypes.entries.toList()
         val marketTypes = FifaMarketTypes.entries.map { marketType ->
-            val subTypes = FifaMarketSubTypes.entries.filter { it.parentType == marketType }
-            FifaStrategyDTO.FifaMarketTypeResponse(marketType, subTypes.toList())
+            val subTypes = marketType.subTypes
+            FifaStrategyDTO.FifaMarketTypeResponse(marketType, subTypes)
         }
 
         return FifaStrategyDTO.FifaStrategyParamsResponse(
@@ -194,15 +195,29 @@ class FifaStrategyService @Autowired constructor(
         resultsByScopes.forEach { (scope, results) ->
             scope?.let {
                 request.strategy.marketSubTypes.forEach { marketSubType ->
-                    try {
-                        tipster.tip(matchupPlayerNames, marketSubType, scope.rules, request.odds.odds, results)
-                    } catch (e: FifaStrategyRuleBreakException) {
-                        logger.logFifaStrategyRuleBreak(e)
-                    } catch (e: NotFoundException) {
-                        logger.logError(e)
-                    }
+                    processBetCandidates(tipster, matchupPlayerNames, marketSubType, scope, request.odds.odds, results)
                 }
             } ?: throw IllegalArgumentException("Scope is null when sending the results to the tipster")
+        }
+    }
+
+    private fun processBetCandidates(
+        tipster: FifaTipster,
+        matchupPlayerNames: Pair<String, String>,
+        marketSubType: FifaMarketSubTypes,
+        scope: FifaStrategyScope,
+        odds: List<FifaDataSourceDTO.FifaGenericOddRequest>,
+        results: MutableSet<FifaMatch>
+    ) {
+        val betCandidates = marketSubType.betCandidates
+        betCandidates.forEach { betCandidate ->
+            try {
+                tipster.tip(betCandidate, matchupPlayerNames, scope.rules, odds, results)
+            } catch (e: FifaStrategyRuleBreakException) {
+                logger.logFifaStrategyRuleBreak(e)
+            } catch (e: NotFoundException) {
+                logger.logError(e)
+            }
         }
     }
 
