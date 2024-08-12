@@ -1,6 +1,9 @@
 name: Build
 
 on:
+  push:
+    branches:
+      - test-workflows
   pull_request:
     branches:
       - main
@@ -13,11 +16,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Change directory to back-end
-      run: cd back-end
+    - name: Verify gradlew presence
+      run: test -f ./gradlew
+      working-directory: back-end
 
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
+      working-directory: back-end
 
     - name: Set up JDK 11
       uses: actions/setup-java@v3
@@ -27,9 +32,11 @@ jobs:
 
     - name: Build with Gradle
       run: ./gradlew build
+      working-directory: back-end
 
   build-frontend:
     runs-on: ubuntu-latest
+    if: always()
 
     steps:
     - name: Checkout repository
@@ -40,11 +47,10 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Change directory to front-end
-      run: cd front-end
-
     - name: Install dependencies
       run: npm install
+      working-directory: front-end
 
     - name: Build React app
       run: npm run build
+      working-directory: front-end
