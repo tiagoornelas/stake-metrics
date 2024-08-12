@@ -5,8 +5,6 @@ import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.FifaStrategyRule
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
-import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
-import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
 import net.stakemetrics.application.entities.exceptions.IntegrationException

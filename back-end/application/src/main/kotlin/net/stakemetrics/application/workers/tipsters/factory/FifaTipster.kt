@@ -4,7 +4,6 @@ import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategyRule
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
-import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
 
 interface FifaTipster {
     fun tip(
