@@ -142,17 +142,15 @@ export enum FifaMarketTypes {
 }
 
 export enum FifaMarketSubTypes {
-    HOME = "HOME",
+    WINNER = "WINNER",
     DRAW = "DRAW",
-    AWAY = "AWAY",
     OVER = "OVER",
     UNDER = "UNDER"
 }
 
 export const FifaMarketSubTypesParent: { [key in FifaMarketSubTypes]: FifaMarketTypes } = {
-    [FifaMarketSubTypes.HOME]: FifaMarketTypes.MATCH_ODDS,
+    [FifaMarketSubTypes.WINNER]: FifaMarketTypes.MATCH_ODDS,
     [FifaMarketSubTypes.DRAW]: FifaMarketTypes.MATCH_ODDS,
-    [FifaMarketSubTypes.AWAY]: FifaMarketTypes.MATCH_ODDS,
     [FifaMarketSubTypes.OVER]: FifaMarketTypes.GOAL_LINE,
     [FifaMarketSubTypes.UNDER]: FifaMarketTypes.GOAL_LINE
 };
