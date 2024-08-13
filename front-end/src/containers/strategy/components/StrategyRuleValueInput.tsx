@@ -11,6 +11,7 @@ type Props = {
 
 const StrategyRuleValueInput = ({onChange, rule, ruleTypeDetail, isInvalid}: Props) => {
     const isPercentage = ruleTypeDetail?.format === RuleValueFormatTypes.PERCENTAGE;
+    const isInteger = ruleTypeDetail?.format === RuleValueFormatTypes.INTEGER;
     const defaultValue = isPercentage ? Math.round(Number(rule.value * 100)) : Number(rule.value);
     const [displayedValue, setDisplayedValue] = useState<string>(defaultValue.toString());
 
@@ -20,14 +21,19 @@ const StrategyRuleValueInput = ({onChange, rule, ruleTypeDetail, isInvalid}: Pro
     useEffect(() => {
         if (isPercentage) {
             setDisplayedValue(Math.round(rule.value * 100).toString());
+        } else if (isInteger) {
+            setDisplayedValue(Math.round(rule.value).toString());
         } else {
             setDisplayedValue(rule.value.toString());
         }
         //eslint-disable-next-line
-    }, [rule.type, isPercentage]);
+    }, [rule.type, isPercentage, isInteger]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
+        let newValue = e.target.value;
+        if (isInteger) {
+            newValue = newValue.replace(/\D/g, ''); // Remove non-digit characters
+        }
         setDisplayedValue(newValue);
         const event = {
             ...e,
@@ -47,7 +53,7 @@ const StrategyRuleValueInput = ({onChange, rule, ruleTypeDetail, isInvalid}: Pro
                    min={minValue}
                    max={maxValue}
                    isInvalid={isInvalid}
-                   step="any"
+                   step={isInteger ? "1" : "any"}
             />
         </>
     );
