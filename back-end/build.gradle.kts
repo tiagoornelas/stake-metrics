@@ -1,5 +1,3 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-
 plugins {
     kotlin("jvm") version "1.9.24"
     kotlin("plugin.spring") version "1.9.24"
@@ -7,8 +5,8 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
 }
 
-tasks.bootJar {enabled = false}
-tasks.jar {enabled = true}
+tasks.bootJar { enabled = false }
+tasks.jar { enabled = true }
 
 group = "net.stakemetrics"
 version = "0.0.1-SNAPSHOT"
