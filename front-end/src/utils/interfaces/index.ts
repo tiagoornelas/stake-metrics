@@ -158,7 +158,8 @@ export const FifaMarketSubTypesParent: { [key in FifaMarketSubTypes]: FifaMarket
 export enum FifaRuleTypes {
     MINIMUM_ODDS = "MINIMUM_ODDS",
     MINIMUM_JUICE = "MINIMUM_JUICE",
-    MINIMUM_PROBABILITY = "MINIMUM_PROBABILITY"
+    MINIMUM_PROBABILITY = "MINIMUM_PROBABILITY",
+    MINIMUM_MATCHES = "MINIMUM_MATCHES"
 }
 
 export enum FifaMatchupTypes {
@@ -178,6 +179,7 @@ export interface MarketType {
 }
 
 export enum RuleValueFormatTypes {
+    INTEGER = "INTEGER",
     PERCENTAGE = "PERCENTAGE",
     ODD = "ODD"
 }
