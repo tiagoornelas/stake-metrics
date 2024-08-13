@@ -36,6 +36,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.15.0")
     implementation("com.google.cloud:google-cloud-tasks:2.46.0")
     implementation("com.google.cloud:google-cloud-pubsub:1.131.0")
+    implementation(platform("com.google.cloud:libraries-bom:26.44.0"))
+    implementation("com.google.cloud:google-cloud-errorreporting")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation(project(":application"))
     testImplementation("org.springframework.boot:spring-boot-test")
