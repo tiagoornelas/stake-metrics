@@ -419,7 +419,7 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
                                     </GridItem>
 
                                     <GridItem colSpan={2}>
-                                        {ruleIndex === scope.rules.length - 1 && scope.rules.length < formParams.ruleTypes.length ? (
+                                        {ruleIndex === 0 && scope.rules.length < formParams.ruleTypes.length ? (
                                             <IconButton aria-label="Add rule" icon={<MdAdd/>} variant={"outline"}
                                                         colorScheme={"blue"} onClick={() => addRule(index)}/>
                                         ) : (
