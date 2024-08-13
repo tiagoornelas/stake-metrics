@@ -12,13 +12,15 @@ import net.stakemetrics.application.service.FifaPlayerService
 import net.stakemetrics.application.workers.FifaStrategyBettor
 import net.stakemetrics.application.workers.OddAndLineCalculator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
+import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
 import org.springframework.stereotype.Component
 
 @Component
 class FifaMatchOddsTipster(
     private val oddAndLineCalculator: OddAndLineCalculator,
     private val fifaStrategyBettor: FifaStrategyBettor,
-    private val fifaPlayerService: FifaPlayerService
+    private val fifaPlayerService: FifaPlayerService,
+    private val fifaTipsterHelper: FifaTipsterHelper
 ) : FifaTipster {
     val notSupportedErrorMessage = "Market's bet candidate not supported for match odds tipster"
 
@@ -48,8 +50,13 @@ class FifaMatchOddsTipster(
             FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(betCandidate, rule, line)
             FifaRuleTypes.MINIMUM_JUICE -> checkMinimumJuiceRule(matchupPlayerNames, betCandidate, rule, line, results)
             FifaRuleTypes.MINIMUM_PROBABILITY -> checkMinimumProbabilityRule(
-                matchupPlayerNames, betCandidate, rule, results
+                matchupPlayerNames,
+                betCandidate,
+                rule,
+                results
             )
+
+            FifaRuleTypes.MINIMUM_MATCHES -> fifaTipsterHelper.checkMinimumMatchesRule(rule, results)
         }
     }
 

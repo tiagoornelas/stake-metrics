@@ -40,12 +40,14 @@ export const FifaMarketSubTypesDict: { [key in FifaMarketSubTypes]: string } = {
 export const FifaRuleTypesDict: { [key in FifaRuleTypes]: string } = {
     [FifaRuleTypes.MINIMUM_ODDS]: "Odd maior que",
     [FifaRuleTypes.MINIMUM_JUICE]: "Juice maior que",
-    [FifaRuleTypes.MINIMUM_PROBABILITY]: "Chance maior que"
+    [FifaRuleTypes.MINIMUM_PROBABILITY]: "Chance maior que",
+    [FifaRuleTypes.MINIMUM_MATCHES]: "Mínimo de partidas",
 };
 
 export const FifleRuleTypesFormatDict: { [key in RuleValueFormatTypes]: string } = {
+    [RuleValueFormatTypes.INTEGER]: "N",
     [RuleValueFormatTypes.PERCENTAGE]: "%",
-    [RuleValueFormatTypes.ODD]: "Odd",
+    [RuleValueFormatTypes.ODD]: "Odd"
 };
 
 export const FifaMatchupTypesDict: { [key in FifaMatchupTypes]: string } = {
