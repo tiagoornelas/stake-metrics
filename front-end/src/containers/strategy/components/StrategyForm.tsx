@@ -321,8 +321,9 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
                     rightIcon={<FaMagic/>}
                     w={"100%"}
                 >
-                    {form.scopes.length > 0 ? <Tag m="2">{getScopeLabel(form.scopes.length)}</Tag> :
-                        <Tag colorScheme="red" m="2">Sem regras</Tag>}
+                    {validationErrors.scopes && (form.scopes.length > 0 ?
+                        <Tag m="2">{getScopeLabel(form.scopes.length)}</Tag> :
+                        <Tag colorScheme="red" m="2">Sem regras</Tag>)}
                     Adicionar regra
                 </Button>
             </Skeleton>
@@ -419,7 +420,7 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
                                     </GridItem>
 
                                     <GridItem colSpan={2}>
-                                        {ruleIndex === scope.rules.length - 1 && scope.rules.length < formParams.ruleTypes.length ? (
+                                        {ruleIndex === 0 && scope.rules.length < formParams.ruleTypes.length ? (
                                             <IconButton aria-label="Add rule" icon={<MdAdd/>} variant={"outline"}
                                                         colorScheme={"blue"} onClick={() => addRule(index)}/>
                                         ) : (
