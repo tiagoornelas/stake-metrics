@@ -6,8 +6,12 @@ import org.springframework.stereotype.Component
 class FifaStrategyBettor {
     fun bet() {
 //        checkIfAlreadyBet()
-//        notifyUser()
 //        saveBet()
+//        if (!fifaBet.isPaperBet) notifyUser()
         println("Betting on Fifa Strategy")
+    }
+
+    private fun notifyUser() {
+        println("Notifying user")
     }
 }
