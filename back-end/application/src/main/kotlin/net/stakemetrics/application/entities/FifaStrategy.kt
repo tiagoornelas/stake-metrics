@@ -15,4 +15,6 @@ data class FifaStrategy(
     val excludedPlayers: MutableSet<FifaPlayer> = mutableSetOf(),
     val scopes: MutableSet<FifaStrategyScope> = mutableSetOf(),
     val user: User?
-)
+) {
+    val isPaperBetting: Boolean = status == FifaStrategyStatus.PAPER_BET
+}

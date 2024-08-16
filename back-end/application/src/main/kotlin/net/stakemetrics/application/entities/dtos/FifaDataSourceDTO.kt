@@ -90,6 +90,7 @@ class FifaDataSourceDTO {
 
     data class FifaOddRequest(
         val leagueIntegrationId: Long,
+        val matchIntegrationId: Long,
         val homePlayerName: String,
         val awayPlayerName: String,
         val odds: List<FifaGenericOddRequest>
