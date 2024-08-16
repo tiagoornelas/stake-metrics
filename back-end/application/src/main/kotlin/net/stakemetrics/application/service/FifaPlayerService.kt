@@ -24,4 +24,5 @@ class FifaPlayerService @Autowired constructor(private val fifaPlayerRepository:
     fun findAll(): List<FifaPlayer> {
         return fifaPlayerRepository.findAll()
     }
+
 }

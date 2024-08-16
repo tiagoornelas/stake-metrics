@@ -47,6 +47,7 @@ class FifaUpcomingMatchesMiner(
 
             FifaDataSourceDTO.FifaOddRequest(
                 leagueIntegrationId = result.league.id.toLong(),
+                matchIntegrationId = result.id.toLong(),
                 homePlayerName = fifaMarketHelper.getPlayerName(result.home.name),
                 awayPlayerName = fifaMarketHelper.getPlayerName(result.away.name),
                 odds = odds

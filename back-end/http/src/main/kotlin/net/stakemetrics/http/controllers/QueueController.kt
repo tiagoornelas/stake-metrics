@@ -18,7 +18,7 @@ class QueueController(
 
     @PostMapping("/fifa/save-match-result")
     fun saveMatchResult(@RequestBody payload: FifaDataSourceDTO.FifaMatchRequest) {
-        fifaMatchService.saveMatch(payload)
+        fifaMatchService.buildAndSave(payload)
     }
 
     @PostMapping("/fifa/run-strategy-against-odds")

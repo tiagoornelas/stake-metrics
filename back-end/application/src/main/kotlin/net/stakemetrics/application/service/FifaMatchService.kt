@@ -22,7 +22,6 @@ class FifaMatchService @Autowired constructor(
     private val fifaMatchRepository: IFifaMatchRepository,
     private val environmentVerifier: EnvironmentVerifier
 ) {
-
     @EnvironmentSensitive
     fun getLastMatchResultTime(): Date {
         val latestMatch = fifaMatchRepository.findLatestMatch()
@@ -36,7 +35,11 @@ class FifaMatchService @Autowired constructor(
         }
     }
 
-    fun saveMatch(dto: FifaDataSourceDTO.FifaMatchRequest) {
+    fun save(fifaMatch: FifaMatch) {
+        fifaMatchRepository.save(fifaMatch)
+    }
+
+    fun buildAndSave(dto: FifaDataSourceDTO.FifaMatchRequest) {
         logger.log("Saving match ${dto.integrationId}")
         val league = fifaLeagueService.findByIntegrationId(dto.leagueId)
 
@@ -70,6 +73,13 @@ class FifaMatchService @Autowired constructor(
         )
 
         fifaMatchRepository.save(match)
+    }
+
+    fun findByIntegrationId(integrationId: Long): FifaMatch {
+        return fifaMatchRepository.findByIntegrationId(integrationId) ?: throw NotFoundException(
+            "Match",
+            "integrationId", integrationId.toString()
+        )
     }
 
     private fun findOrCreatePlayer(name: String, league: FifaLeague): FifaPlayer {
