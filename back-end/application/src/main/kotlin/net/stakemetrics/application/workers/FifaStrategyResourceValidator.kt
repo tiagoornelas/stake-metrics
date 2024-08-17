@@ -68,7 +68,7 @@ class FifaStrategyResourceValidator(
     private fun checkIfUserCanActivate(user: User) {
         val errorMessage = "User has reached the maximum number of active strategies"
         val count = fifaStrategyService.countByUserAndStatus(user, FifaStrategyStatus.ACTIVE)
-        val userFeatures = subscriptionService.listUserFeatures(user)
+        val userFeatures = subscriptionService.getSubscriptionDetails(user).features
 
         val maxActiveStrategies = userFeatures[FeatureTypes.ACTIVE_STRATEGY.identifier]
             ?: throw NotAllowedException(errorMessage)
@@ -81,7 +81,7 @@ class FifaStrategyResourceValidator(
     private fun checkIfUserCanPaperBet(user: User) {
         val errorMessage = "User has reached the maximum number of paper bet strategies"
         val count = fifaStrategyService.countByUserAndStatus(user, FifaStrategyStatus.PAPER_BET)
-        val userFeatures = subscriptionService.listUserFeatures(user)
+        val userFeatures = subscriptionService.getSubscriptionDetails(user).features
 
         val maxActiveStrategies = userFeatures[FeatureTypes.TEST_STRATEGY.identifier]
             ?: throw NotAllowedException(errorMessage)
