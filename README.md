@@ -35,12 +35,6 @@ Variáveis:
 - Para identificar o código que é sensível ao ambiente, procure pela anotação @EnvironmentSensitive
 - Para ativar as alterações do ambiente local, insira spring.profiles.active=dev no application.properties
 
-### Stripe
-- Para testar a integração com Stripe para pagamentos, é preciso [instalar a CLI do Stripe](https://github.com/stripe/stripe-cli/releases/tag/v1.21.0) para redirecionar o webhook para o endpoint local.
-- Na CLI, rode o seguinte comando: stripe login (para fazer login na sua conta Stripe)
-- Após logado, rode o comando: stripe listen --forward-to localhost:8080/subscription/notify-events --skip-verify
-- Limpe os clientes e assinaturas no Stripe para evitar problemas de sync
-
 ### Cloud-Task-Emulator
 - Clone o repositório [cloud-task-emulator](https://github.com/aertje/cloud-tasks-emulator)
 - No repositório, faça o build do docker com o comando docker build ./ -t tasks_emulator
