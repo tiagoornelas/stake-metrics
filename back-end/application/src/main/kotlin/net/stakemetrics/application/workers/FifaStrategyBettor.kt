@@ -37,15 +37,16 @@ class FifaStrategyBettor(
         val fifaMatch = try {
             fifaMatchService.findByIntegrationId(request.odds.matchIntegrationId)
         } catch (e: NotFoundException) {
-            FifaMatch(
+            val newFifaMatch = FifaMatch(
                 integrationId = request.odds.matchIntegrationId,
                 time = request.odds.odds.first().matchTime,
                 league = fifaLeague,
                 home = home,
                 away = away
             )
+            fifaMatchService.save(newFifaMatch)
+            newFifaMatch
         }
-
 
         val fifaBet = FifaBet(
             isPaperBet = request.strategy.isPaperBetting,
@@ -53,6 +54,7 @@ class FifaStrategyBettor(
             match = fifaMatch,
             line = candidate,
             messages = mutableListOf(),
+            handicap = lineOdds.handicap,
             odds = fifaTipsterHelper.getOddForCandidate(candidate, lineOdds),
             oddOfferTime = lineOdds.oddOfferTime,
             betTime = Date()
