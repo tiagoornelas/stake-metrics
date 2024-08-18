@@ -1,8 +1,7 @@
 package net.stakemetrics.http.controllers
 
-import net.stakemetrics.application.service.ISubscriptionService
-import net.stakemetrics.application.service.ISubscriptionWebhookService
 import net.stakemetrics.application.entities.dtos.SubscriptionDTO
+import net.stakemetrics.application.service.ISubscriptionService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -11,8 +10,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/subscription")
 class SubscriptionController(
-    private val subscriptionService: ISubscriptionService,
-    private val subscriptionWebhookService: ISubscriptionWebhookService
+    private val subscriptionService: ISubscriptionService
 ) {
 
     @GetMapping("/plan/pricing-table")
@@ -22,12 +20,6 @@ class SubscriptionController(
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
         val response = subscriptionService.createPricingTable(userEmail, darkMode)
         return ResponseEntity.status(HttpStatus.OK).body(response)
-    }
-
-    @PostMapping("/notify-event")
-    fun notifyEvent(@RequestBody event: SubscriptionDTO.SubscriptionEvent): ResponseEntity<Unit> {
-        subscriptionWebhookService.handle(event)
-        return ResponseEntity.status(HttpStatus.OK).build()
     }
 
     @PostMapping("/create-checkout-session")

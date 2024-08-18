@@ -29,7 +29,6 @@ class GlobalConfiguration(
                     .requestMatchers(HttpMethod.POST, "/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/recover").permitAll()
                     .requestMatchers(HttpMethod.PUT, "/recover").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/subscription/notify-event").permitAll()
                     .apply {
                         if (!environmentVerifier.isProd()) {
                             requestMatchers(HttpMethod.POST, "/queue/**").permitAll()

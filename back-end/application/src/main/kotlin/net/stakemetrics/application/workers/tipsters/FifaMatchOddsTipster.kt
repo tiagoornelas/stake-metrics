@@ -7,9 +7,7 @@ import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
-import net.stakemetrics.application.entities.exceptions.IntegrationException
 import net.stakemetrics.application.service.FifaPlayerService
-import net.stakemetrics.application.workers.FifaStrategyBettor
 import net.stakemetrics.application.workers.OddAndLineCalculator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
@@ -18,25 +16,25 @@ import org.springframework.stereotype.Component
 @Component
 class FifaMatchOddsTipster(
     private val oddAndLineCalculator: OddAndLineCalculator,
-    private val fifaStrategyBettor: FifaStrategyBettor,
     private val fifaPlayerService: FifaPlayerService,
     private val fifaTipsterHelper: FifaTipsterHelper
 ) : FifaTipster {
     val notSupportedErrorMessage = "Market's bet candidate not supported for match odds tipster"
 
-    override fun tip(
+    override fun getTipstersSpecificLines(odds: List<FifaDataSourceDTO.FifaGenericOddRequest>): FifaDataSourceDTO.FifaGenericOddRequest {
+        return odds.filter { it.isMatchOdds() }.maxBy { it.oddOfferTime }
+    }
+
+    override fun analyze(
         betCandidate: FifaMarketBetCandidates,
         matchupPlayerNames: Pair<String, String>,
         rules: MutableSet<FifaStrategyRule>,
-        odds: List<FifaDataSourceDTO.FifaGenericOddRequest>,
+        odds: FifaDataSourceDTO.FifaGenericOddRequest,
         results: MutableSet<FifaMatch>
     ) {
         if (results.isEmpty()) return
-        val matchOddsLine = odds.firstOrNull { it.isMatchOdds() }?.toFifaMatchOddsLine()
-            ?: throw IntegrationException("No match odds lines came from the integrated data source.")
-
+        val matchOddsLine = odds.toFifaMatchOddsLine()
         rules.forEach { rule -> checkRule(matchupPlayerNames, betCandidate, rule, matchOddsLine, results) }
-        fifaStrategyBettor.bet()
     }
 
     private fun checkRule(
@@ -61,9 +59,7 @@ class FifaMatchOddsTipster(
     }
 
     private fun checkMinimumOddsRule(
-        betCandidate: FifaMarketBetCandidates,
-        rule: FifaStrategyRule,
-        line: FifaDataSourceDTO.FifaMatchOddsOddRequest
+        betCandidate: FifaMarketBetCandidates, rule: FifaStrategyRule, line: FifaDataSourceDTO.FifaMatchOddsOddRequest
     ) {
         when (betCandidate) {
             FifaMarketBetCandidates.HOME -> {
@@ -101,8 +97,10 @@ class FifaMatchOddsTipster(
         line: FifaDataSourceDTO.FifaMatchOddsOddRequest,
         results: MutableSet<FifaMatch>
     ) {
-        val (homeProbability, drawProbability, awayProbability) =
-            getScopeMatchOddsProbabilities(matchupPlayerNames, results)
+        val (homeProbability, drawProbability, awayProbability) = getScopeMatchOddsProbabilities(
+            matchupPlayerNames,
+            results
+        )
 
         when (betCandidate) {
             FifaMarketBetCandidates.HOME -> {
@@ -145,8 +143,10 @@ class FifaMatchOddsTipster(
         rule: FifaStrategyRule,
         results: MutableSet<FifaMatch>
     ) {
-        val (homeProbability, drawProbability, awayProbability) =
-            getScopeMatchOddsProbabilities(matchupPlayerNames, results)
+        val (homeProbability, drawProbability, awayProbability) = getScopeMatchOddsProbabilities(
+            matchupPlayerNames,
+            results
+        )
 
         when (betCandidate) {
             FifaMarketBetCandidates.HOME -> {
@@ -178,8 +178,7 @@ class FifaMatchOddsTipster(
     }
 
     private fun getScopeMatchOddsProbabilities(
-        matchupPlayerNames: Pair<String, String>, results:
-        MutableSet<FifaMatch>
+        matchupPlayerNames: Pair<String, String>, results: MutableSet<FifaMatch>
     ): Triple<Double, Double, Double> {
         val (homePlayerName, awayPlayerName) = matchupPlayerNames
         val homePlayer = fifaPlayerService.findByName(homePlayerName)
