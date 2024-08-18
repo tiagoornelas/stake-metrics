@@ -22,6 +22,7 @@ class ErrorReportingService : IErrorReportingService {
 
     override fun reportError(exception: Exception) {
         try {
+            exception.printStackTrace()
             ReportErrorsServiceClient.create().use { serviceClient ->
                 val sw = StringWriter()
                 exception.printStackTrace(PrintWriter(sw))
