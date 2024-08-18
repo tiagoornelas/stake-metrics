@@ -3,7 +3,6 @@ package net.stakemetrics.application.service
 import java.util.UUID
 import kotlin.random.Random
 import net.stakemetrics.application.entities.*
-import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.*
@@ -12,6 +11,7 @@ import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaStrategyRepository
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.workers.FifaPastResultsSearcher
+import net.stakemetrics.application.workers.FifaStrategyBettor
 import net.stakemetrics.application.workers.FifaStrategyResourceValidator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipsterFactory
@@ -24,6 +24,7 @@ class FifaStrategyService @Autowired constructor(
     private val userService: UserService,
     private val fifaLeagueService: FifaLeagueService,
     private val fifaPlayerService: FifaPlayerService,
+    private val fifaStrategyBettor: FifaStrategyBettor,
     private val fifaStrategyRepository: IFifaStrategyRepository,
     @Lazy private val fifaStrategyResourceValidator: FifaStrategyResourceValidator,
     private val fifaPastResultsSearcher: FifaPastResultsSearcher,
@@ -43,9 +44,7 @@ class FifaStrategyService @Autowired constructor(
         val scopes = dto.scopes.map { scopeRequest ->
             val rules = scopeRequest.rules.map { ruleRequest ->
                 FifaStrategyRule(
-                    id = ruleRequest.id ?: UUID.randomUUID(),
-                    type = ruleRequest.type,
-                    value = ruleRequest.value
+                    id = ruleRequest.id ?: UUID.randomUUID(), type = ruleRequest.type, value = ruleRequest.value
                 )
             }.toMutableSet()
 
@@ -141,8 +140,7 @@ class FifaStrategyService @Autowired constructor(
         val user = userService.findByEmail(userEmail)
         fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy, user)
 
-        return FifaStrategyDTO.FifaStrategyReadResponse(
-            strategy.id,
+        return FifaStrategyDTO.FifaStrategyReadResponse(strategy.id,
             strategy.name,
             strategy.marketType,
             strategy.marketSubTypes.toList(),
@@ -191,34 +189,25 @@ class FifaStrategyService @Autowired constructor(
         tipster: FifaTipster
     ) {
         val matchupPlayerNames: Pair<String, String> = Pair(request.odds.homePlayerName, request.odds.awayPlayerName)
+        val betCandidates = request.strategy.marketSubTypes.flatMap { it.betCandidates }
 
-        resultsByScopes.forEach { (scope, results) ->
-            scope?.let {
-                request.strategy.marketSubTypes.forEach { marketSubType ->
-                    processBetCandidates(tipster, matchupPlayerNames, marketSubType, scope, request.odds.odds, results)
+        run candidatesAnalysis@{
+            betCandidates.forEach { candidate ->
+                resultsByScopes.forEach { (scope, results) ->
+                    scope?.let {
+                        try {
+                            val specificLine = tipster.getTipstersSpecificLines(request.odds.odds)
+                            tipster.analyze(candidate, matchupPlayerNames, scope.rules, specificLine, results)
+                            fifaStrategyBettor.buildAndBet(request, candidate, specificLine)
+                            return@candidatesAnalysis
+                        } catch (e: FifaStrategyRuleBreakException) {
+                            logger.logFifaStrategyRuleBreak(e)
+                        } catch (e: NotFoundException) {
+                            logger.logError(e)
+                        }
+                    } ?: throw IllegalArgumentException("Scope is null when sending the results to the tipster")
                 }
-            } ?: throw IllegalArgumentException("Scope is null when sending the results to the tipster")
-        }
-    }
-
-    private fun processBetCandidates(
-        tipster: FifaTipster,
-        matchupPlayerNames: Pair<String, String>,
-        marketSubType: FifaMarketSubTypes,
-        scope: FifaStrategyScope,
-        odds: List<FifaDataSourceDTO.FifaGenericOddRequest>,
-        results: MutableSet<FifaMatch>
-    ) {
-        val betCandidates = marketSubType.betCandidates
-        betCandidates.forEach { betCandidate ->
-            try {
-                tipster.tip(betCandidate, matchupPlayerNames, scope.rules, odds, results)
-            } catch (e: FifaStrategyRuleBreakException) {
-                logger.logFifaStrategyRuleBreak(e)
-            } catch (e: NotFoundException) {
-                logger.logError(e)
             }
         }
     }
-
 }

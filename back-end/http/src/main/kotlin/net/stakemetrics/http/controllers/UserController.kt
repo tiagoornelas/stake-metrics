@@ -3,7 +3,6 @@ package net.stakemetrics.http.controllers
 import java.security.Principal
 import java.util.UUID
 import net.stakemetrics.application.entities.dtos.UserDTO
-import net.stakemetrics.application.entities.dtos.toSubscriptionResponse
 import net.stakemetrics.application.entities.dtos.toUserResponse
 import net.stakemetrics.application.service.ISubscriptionService
 import net.stakemetrics.application.service.UserService
@@ -24,10 +23,9 @@ class UserController(private val userService: UserService, private val subscript
     @GetMapping("/{userId}")
     fun getUser(@PathVariable userId: UUID): ResponseEntity<UserDTO.FindResponse> {
         val user = userService.findById(userId)
-        val subscription = subscriptionService.findByUser(user)
-        val features = subscriptionService.listUserFeatures(user)
+        val subscription = subscriptionService.getSubscriptionDetails(user)
         return ResponseEntity.status(HttpStatus.OK).body(
-            UserDTO.FindResponse(user.toUserResponse(subscription.toSubscriptionResponse(features)))
+            UserDTO.FindResponse(user.toUserResponse(subscription))
         )
     }
 

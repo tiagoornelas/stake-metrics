@@ -1,4 +1,4 @@
-package net.stakemetrics.integration.stripe.service
+package net.stakemetrics.integration.stripe
 
 import com.stripe.Stripe
 import com.stripe.model.Customer
@@ -6,17 +6,22 @@ import com.stripe.model.CustomerSession
 import com.stripe.model.entitlements.ActiveEntitlement
 import com.stripe.param.CustomerCreateParams
 import com.stripe.param.CustomerSessionCreateParams
+import com.stripe.param.CustomerUpdateParams
+import com.stripe.param.SubscriptionListParams
 import com.stripe.param.entitlements.ActiveEntitlementListParams
+import java.util.Date
 import javax.annotation.PostConstruct
 import net.stakemetrics.application.entities.Subscription
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.SubscriptionDTO
 import net.stakemetrics.application.entities.enums.EntitlementTypes
+import net.stakemetrics.application.entities.enums.SubscriptionStatus
 import net.stakemetrics.application.repositories.ISubscriptionRepository
 import net.stakemetrics.application.service.ISubscriptionService
 import net.stakemetrics.application.service.UserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import com.stripe.model.Subscription as StripeSubscription
 import com.stripe.model.billingportal.Session as BillingPortalSession
 import com.stripe.model.checkout.Session as CheckoutSession
 import com.stripe.param.billingportal.SessionCreateParams as BillingPortalSessionCreateParams
@@ -57,20 +62,49 @@ class SubscriptionService(
         subscriptionRepository.save(subscription)
     }
 
-    override fun updateSubscription(subscription: Subscription) {
-        subscriptionRepository.save(subscription)
+    override fun editSubscription(user: User) {
+        val customer = Customer.retrieve(getIntegrationIdByUserEmail(user.email))
+        val params = CustomerUpdateParams.builder().setName(user.name).setEmail(user.email).build()
+        customer.update(params)
     }
 
-    override fun findByUser(user: User): Subscription {
-        return subscriptionRepository.findByUser(user)
+    override fun getSubscriptionDetails(user: User): SubscriptionDTO.SubscriptionResponse {
+        val subscription = subscriptionRepository.findByUser(user)
+        val status = getStatus(subscription.integrationId)
+        val expiresAt = getExpiresAt(subscription.integrationId)
+        val features = listUserFeatures(subscription.integrationId)
+        return SubscriptionDTO.SubscriptionResponse(
+            subscription.id, subscription.integrationId, status, expiresAt, features
+        )
     }
 
-    override fun findByIntegrationId(integrationId: String): Subscription {
-        return subscriptionRepository.findByIntegrationId(integrationId)
+    fun getStatus(integrationId: String): SubscriptionStatus {
+        val subscriptions = getSubscriptions(integrationId)
+        val isActive = subscriptions.any { it.status == SubscriptionStatus.ACTIVE.integrationValue }
+        return if (isActive) SubscriptionStatus.ACTIVE else SubscriptionStatus.INACTIVE
     }
 
-    override fun listUserFeatures(user: User): Map<String, Int> {
-        val integrationId = getIntegrationIdByUserEmail(user.email)
+    fun getExpiresAt(integrationId: String): Date? {
+        val subscriptions = getSubscriptions(integrationId)
+        if (subscriptions.isEmpty()) return null
+
+        val activeSubscriptions = subscriptions.filter { it.status == SubscriptionStatus.ACTIVE.integrationValue }
+        val maxExpiresAt = activeSubscriptions.maxByOrNull { it.currentPeriodEnd }?.currentPeriodEnd
+        if (maxExpiresAt != null) {
+            return Date(maxExpiresAt * 1000)
+        }
+
+        val maxEndedAt = subscriptions.maxByOrNull { it.endedAt }?.endedAt
+        return maxEndedAt?.let { Date(it * 1000) }
+    }
+
+    private fun getSubscriptions(integrationId: String): List<StripeSubscription> {
+        val customer = Customer.retrieve(integrationId)
+        val params = SubscriptionListParams.builder().setCustomer(customer.id).build()
+        return StripeSubscription.list(params).data
+    }
+
+    private fun listUserFeatures(integrationId: String): Map<String, Int> {
         val params = ActiveEntitlementListParams.builder().setCustomer(integrationId).build()
         val stripeLookupKeys = ActiveEntitlement.list(params).data.map { it.lookupKey }
 
@@ -99,8 +133,7 @@ class SubscriptionService(
 
         return CheckoutSessionCreateParams.Builder().setSuccessUrl(appBaseUrl).setCancelUrl(appBaseUrl)
             .setCustomer(integrationId).setMode(CheckoutSessionCreateParams.Mode.SUBSCRIPTION)
-            .setAllowPromotionCodes(true)
-            .addLineItem(
+            .setAllowPromotionCodes(true).addLineItem(
                 CheckoutSessionCreateParams.LineItem.Builder().setQuantity(1L).setPrice(priceId).build()
             ).build().let { CheckoutSession.create(it) }.let { SubscriptionDTO.CreateSessionResponse(it.url) }
     }
@@ -115,25 +148,16 @@ class SubscriptionService(
     override fun createPricingTable(userEmail: String, darkMode: Boolean): SubscriptionDTO.PricingTableResponse {
         val integrationId = getIntegrationIdByUserEmail(userEmail)
 
-        val params = CustomerSessionCreateParams.builder()
-            .setCustomer(integrationId)
-            .setComponents(
-                CustomerSessionCreateParams.Components.builder()
-                    .setPricingTable(
-                        CustomerSessionCreateParams.Components.PricingTable.builder()
-                            .setEnabled(true)
-                            .build()
-                    )
-                    .build()
-            )
-            .build()
+        val params = CustomerSessionCreateParams.builder().setCustomer(integrationId).setComponents(
+            CustomerSessionCreateParams.Components.builder().setPricingTable(
+                CustomerSessionCreateParams.Components.PricingTable.builder().setEnabled(true).build()
+            ).build()
+        ).build()
 
         val pricingTableId = if (darkMode) stripeDarkModePricingTableId else stripePricingTableId
         val customerSessionClientSecret = CustomerSession.create(params)
         return SubscriptionDTO.PricingTableResponse(
-            pricingTableId,
-            stripePublicKey,
-            customerSessionClientSecret.clientSecret
+            pricingTableId, stripePublicKey, customerSessionClientSecret.clientSecret
         )
     }
 }

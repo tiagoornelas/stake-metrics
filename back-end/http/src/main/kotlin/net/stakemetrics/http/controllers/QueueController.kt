@@ -18,11 +18,26 @@ class QueueController(
 
     @PostMapping("/fifa/save-match-result")
     fun saveMatchResult(@RequestBody payload: FifaDataSourceDTO.FifaMatchRequest) {
-        fifaMatchService.saveMatch(payload)
+        fifaMatchService.buildAndSave(payload)
     }
 
     @PostMapping("/fifa/run-strategy-against-odds")
     fun runStrategyAgainstOdds(@RequestBody payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
         fifaStrategyService.runStrategyAgainstOdds(payload)
     }
+
+//    @PostMapping("/fifa/save-bet")
+//    fun saveBet(@RequestBody payload: FifaDataSourceDTO.FifaBetRequest) {
+//        fifaMatchService.saveBet(payload)
+//    }
+//
+//    @PostMapping("/messenger/send-message")
+//    fun sendMessage(@RequestBody payload: MessengerDTO.SendMessageRequest) {
+//        println("Sending message: $payload")
+//    }
+//
+//    @PostMapping("/messenger/edit-message")
+//    fun editMessage(@RequestBody payload: MessengerDTO.EditMessageRequest) {
+//        println("Editing message: $payload")
+//    }
 }

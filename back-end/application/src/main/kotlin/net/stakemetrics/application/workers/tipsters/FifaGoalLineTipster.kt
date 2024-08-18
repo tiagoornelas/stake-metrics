@@ -6,8 +6,6 @@ import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
-import net.stakemetrics.application.entities.exceptions.IntegrationException
-import net.stakemetrics.application.workers.FifaStrategyBettor
 import net.stakemetrics.application.workers.OddAndLineCalculator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
@@ -16,23 +14,24 @@ import org.springframework.stereotype.Component
 @Component
 class FifaGoalLineTipster(
     private val oddAndLineCalculator: OddAndLineCalculator,
-    private val fifaStrategyBettor: FifaStrategyBettor,
     private val fifaTipsterHelper: FifaTipsterHelper
 ) : FifaTipster {
     val notSupportedErrorMessage = "Market's bet candidate not supported for goal line tipster"
 
-    override fun tip(
+    override fun getTipstersSpecificLines(odds: List<FifaDataSourceDTO.FifaGenericOddRequest>): FifaDataSourceDTO.FifaGenericOddRequest {
+        return odds.filter { it.isGoalLine() }.maxBy { it.oddOfferTime }
+    }
+
+    override fun analyze(
         betCandidate: FifaMarketBetCandidates,
         matchupPlayerNames: Pair<String, String>,
         rules: MutableSet<FifaStrategyRule>,
-        odds: List<FifaDataSourceDTO.FifaGenericOddRequest>,
+        odds: FifaDataSourceDTO.FifaGenericOddRequest,
         results: MutableSet<FifaMatch>
     ) {
-        val goalLine = odds.firstOrNull() { it.isGoalLine() }?.toFifaGoalLine()
-            ?: throw IntegrationException("No goal lines came from the integrated data source.")
-
+        if (results.isEmpty()) return
+        val goalLine = odds.toFifaGoalLine()
         rules.forEach { rule -> checkRule(betCandidate, rule, goalLine, results) }
-        fifaStrategyBettor.bet()
     }
 
     private fun checkRule(
