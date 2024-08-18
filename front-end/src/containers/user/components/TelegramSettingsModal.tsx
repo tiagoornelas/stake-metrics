@@ -36,7 +36,6 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
         delay: chat.delay,
         deliveryProbability: chat.deliveryProbability,
         notDeliveredMessage: chat.notDeliveredMessage,
-        delayedAlertMessage: chat.delayedAlertMessage,
         extraText: chat.extraText
     });
 
@@ -47,19 +46,11 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
             formState.delay !== chat.delay ||
             formState.deliveryProbability !== chat.deliveryProbability ||
             formState.notDeliveredMessage !== chat.notDeliveredMessage ||
-            formState.delayedAlertMessage !== chat.delayedAlertMessage ||
             formState.extraText !== originalChatExtraText;
         setIsFormDirty(isDirty);
     }, [formState, chat]);
 
     useEffect(() => {
-        if (formState.delay === 0) {
-            setFormState((prevState) => ({
-                ...prevState,
-                delayedAlertMessage: ""
-            }));
-        }
-
         if (formState.deliveryProbability === 1) {
             setFormState((prevState) => ({
                 ...prevState,
@@ -97,7 +88,6 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
         formState.delay,
         formState.deliveryProbability,
         formState.notDeliveredMessage,
-        formState.delayedAlertMessage,
         formState.extraText
     ), SUCCESS_TYPES.TELEGRAM_CHAT_EDITED);
 
@@ -167,15 +157,6 @@ const TelegramSettingsModal = ({chat, onCloseCallback}: Props) => {
                         <DefaultSlider handleChange={handleDeliveryProbabilityChange}
                                        value={formState.deliveryProbability}
                                        min={0} max={1} step={0.01} isPercentage/>
-                    </Box>
-                    <Box display="flex" flexDirection="column" gap={2}>
-                        <Heading size="sm">Mensagem prévia
-                            ao atraso</Heading>
-                        <Text fontSize="xs" color="gray">Preencha para enviar uma mensagem antes da mensagem principal
-                            em caso de atraso</Text>
-                        <Input disabled={formState.delay === 0} name="delayedAlertMessage"
-                               value={formState.delayedAlertMessage}
-                               onChange={handleChange}/>
                     </Box>
                     <Box display="flex" flexDirection="column" gap={2}>
                         <Heading size="sm">Aviso de

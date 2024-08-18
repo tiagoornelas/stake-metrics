@@ -18,7 +18,7 @@ class Logger {
     }
 
     fun logError(e: Exception) {
-        logger.error(e.message)
+        logger.error(e.cause?.message)
     }
 
     fun logFifaStrategyRuleBreak(e: FifaStrategyRuleBreakException) {

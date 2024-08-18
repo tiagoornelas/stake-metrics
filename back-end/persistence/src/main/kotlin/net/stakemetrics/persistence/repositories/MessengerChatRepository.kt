@@ -2,6 +2,7 @@ package net.stakemetrics.persistence.repositories
 
 import java.util.UUID
 import net.stakemetrics.application.entities.MessengerChat
+import net.stakemetrics.application.entities.enums.MessengerChatStatus
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IMessengerChatRepository
 import net.stakemetrics.persistence.jpa.MessengerChatJpaRepository
@@ -27,9 +28,7 @@ class MessengerChatRepository(private val messengerChatJpaRepository: MessengerC
 
     override fun findByUserId(userId: UUID): MessengerChat {
         val queriedMessengerChat = messengerChatJpaRepository.findByUserId(userId) ?: throw NotFoundException(
-            "MessengerChat",
-            "userId",
-            userId.toString()
+            "MessengerChat", "userId", userId.toString()
         )
         return queriedMessengerChat.toDomain()
     }
@@ -42,5 +41,9 @@ class MessengerChatRepository(private val messengerChatJpaRepository: MessengerC
     override fun findAllByUserIdAndChatId(userId: UUID, chatId: String): List<MessengerChat> {
         val queriedMessengerChats = messengerChatJpaRepository.findAllByUserIdAndChatId(userId, chatId)
         return queriedMessengerChats.map { it.toDomain() }
+    }
+
+    override fun findAllByUserIdAndStatus(userId: UUID, status: MessengerChatStatus): List<MessengerChat> {
+        return messengerChatJpaRepository.findAllByUserIdAndStatus(userId, status).map { it.toDomain() }
     }
 }

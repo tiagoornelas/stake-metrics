@@ -34,7 +34,7 @@ data class FifaBetModel(
             strategy?.toDomain(),
             match?.toDomain(),
             line!!,
-            messages.map { it.toDomain() },
+            messages.map { it.toDomain() }.toMutableSet(),
             handicap,
             odds,
             status,

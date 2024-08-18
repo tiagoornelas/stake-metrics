@@ -3,6 +3,7 @@ package net.stakemetrics.application.service
 import java.util.UUID
 import kotlin.random.Random
 import net.stakemetrics.application.entities.*
+import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.*
@@ -11,7 +12,6 @@ import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaStrategyRepository
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.workers.FifaPastResultsSearcher
-import net.stakemetrics.application.workers.FifaStrategyBettor
 import net.stakemetrics.application.workers.FifaStrategyResourceValidator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipsterFactory
@@ -21,15 +21,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class FifaStrategyService @Autowired constructor(
+    private val logger: Logger,
     private val userService: UserService,
+    private val queueService: IQueueService,
     private val fifaLeagueService: FifaLeagueService,
     private val fifaPlayerService: FifaPlayerService,
-    private val fifaStrategyBettor: FifaStrategyBettor,
-    private val fifaStrategyRepository: IFifaStrategyRepository,
-    @Lazy private val fifaStrategyResourceValidator: FifaStrategyResourceValidator,
-    private val fifaPastResultsSearcher: FifaPastResultsSearcher,
     private val fifaTipsterFactory: FifaTipsterFactory,
-    private val logger: Logger
+    private val fifaStrategyRepository: IFifaStrategyRepository,
+    private val fifaPastResultsSearcher: FifaPastResultsSearcher,
+    @Lazy private val fifaStrategyResourceValidator: FifaStrategyResourceValidator
 ) {
 
     fun save(userEmail: String, dto: FifaStrategyDTO.FifaStrategyRequest) {
@@ -198,11 +198,24 @@ class FifaStrategyService @Autowired constructor(
                         try {
                             val specificLine = tipster.getTipstersSpecificLines(request.odds.odds)
                             tipster.analyze(candidate, matchupPlayerNames, scope.rules, specificLine, results)
-                            fifaStrategyBettor.buildAndBet(request, candidate, specificLine)
+
+                            queueService.enqueueBetTask(
+                                FifaBetDTO.BetRequest(
+                                    strategy = request.strategy,
+                                    leagueIntegrationId = request.odds.leagueIntegrationId,
+                                    homePlayerName = request.odds.homePlayerName,
+                                    awayPlayerName = request.odds.awayPlayerName,
+                                    matchIntegrationId = request.odds.matchIntegrationId,
+                                    matchTime = specificLine.matchTime,
+                                    candidate = candidate,
+                                    lineOdds = specificLine
+                                )
+                            )
+
                             return@candidatesAnalysis
                         } catch (e: FifaStrategyRuleBreakException) {
                             logger.logFifaStrategyRuleBreak(e)
-                        } catch (e: NotFoundException) {
+                        } catch (e: Exception) {
                             logger.logError(e)
                         }
                     } ?: throw IllegalArgumentException("Scope is null when sending the results to the tipster")

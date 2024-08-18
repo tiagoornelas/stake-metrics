@@ -75,11 +75,8 @@ class FifaMatchService @Autowired constructor(
         fifaMatchRepository.save(match)
     }
 
-    fun findByIntegrationId(integrationId: Long): FifaMatch {
-        return fifaMatchRepository.findByIntegrationId(integrationId) ?: throw NotFoundException(
-            "Match",
-            "integrationId", integrationId.toString()
-        )
+    fun findByIntegrationId(integrationId: Long): FifaMatch? {
+        return fifaMatchRepository.findByIntegrationId(integrationId)
     }
 
     private fun findOrCreatePlayer(name: String, league: FifaLeague): FifaPlayer {

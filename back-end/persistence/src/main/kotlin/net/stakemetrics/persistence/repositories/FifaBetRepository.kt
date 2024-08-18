@@ -1,7 +1,6 @@
 package net.stakemetrics.persistence.repositories
 
 import net.stakemetrics.application.entities.FifaBet
-import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.persistence.jpa.FifaBetJpaRepository
@@ -14,8 +13,10 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         fifaBetJpaRepository.save(fifaBet.toModel())
     }
 
-    override fun existsByStrategyAndMatch(fifaStrategy: FifaStrategy, fifaMatch: FifaMatch): Boolean {
-        return fifaBetJpaRepository.existsByStrategyAndMatch(fifaStrategy.toModel(), fifaMatch.toModel())
+    override fun existsByStrategyAndMatchIntegrationId(
+        fifaStrategy: FifaStrategy, matchIntegrationId: Long
+    ): Boolean {
+        return fifaBetJpaRepository.existsByStrategyAndMatchIntegrationId(fifaStrategy.toModel(), matchIntegrationId)
     }
 
 }

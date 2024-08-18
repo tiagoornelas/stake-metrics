@@ -9,8 +9,10 @@ import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import java.nio.charset.StandardCharsets
 import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
+import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
+import net.stakemetrics.application.entities.dtos.MessengerDTO
 import net.stakemetrics.application.service.IQueueService
 import net.stakemetrics.application.utils.EnvironmentVerifier
 import org.springframework.beans.factory.annotation.Value
@@ -50,11 +52,21 @@ class CloudTaskService(
         }
     }
 
-    override fun enqueueSendMessageTask(payload: Any) {
+    override fun enqueueBetTask(payload: FifaBetDTO.BetRequest) {
         createCloudTaskClient().use { client ->
-            val queuePath = QueueName.of(projectId, locationId, "send-message").toString()
-            val fullUrl = "$baseUrl/telegram/send-message"
+            val queueName = "bet-queue"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
             enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
+        }
+    }
+
+    override fun enqueueMessageTask(payload: MessengerDTO.EnqueueRequest, delay: Int?) {
+        createCloudTaskClient().use { client ->
+            val queueName = "message-queue"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath, delay)
         }
     }
 
@@ -81,7 +93,8 @@ class CloudTaskService(
         fullUrl: String,
         payload: ByteArray,
         client: CloudTasksClient,
-        queuePath: String
+        queuePath: String,
+        delay: Int? = null
     ): Task? {
         val httpRequest = HttpRequest.newBuilder()
             .putHeaders("Content-Type", "application/json")
@@ -90,10 +103,17 @@ class CloudTaskService(
             .setBody(ByteString.copyFrom(payload))
             .build()
 
-        val task = Task.newBuilder()
+        val taskBuilder = Task.newBuilder()
             .setHttpRequest(httpRequest)
-            .build()
 
+        if (delay != null) {
+            val scheduleTime = com.google.protobuf.Timestamp.newBuilder()
+                .setSeconds(System.currentTimeMillis() / 1000 + delay)
+                .build()
+            taskBuilder.setScheduleTime(scheduleTime)
+        }
+
+        val task = taskBuilder.build()
         return client.createTask(queuePath, task)
     }
 }
