@@ -14,7 +14,6 @@ class MessengerDTO {
         val delay: Int,
         val deliveryProbability: Double,
         val notDeliveredMessage: String,
-        val delayedAlertMessage: String,
         val extraText: String
     )
 
@@ -59,7 +58,6 @@ class MessengerDTO {
         val delay: Int?,
         val deliveryProbability: Double?,
         val notDeliveredMessage: String,
-        val delayedAlertMessage: String,
         val extraText: String
     )
 
@@ -69,6 +67,11 @@ class MessengerDTO {
 
     data class DeleteIntegrationResponse(
         val success: Boolean = true
+    )
+
+    data class EnqueueRequest(
+        val messengerChat: MessengerChat,
+        val message: String,
     )
 }
 
@@ -81,7 +84,6 @@ fun MessengerChat.toMessengerChatResponse(): MessengerDTO.MessengerChatResponse 
         this.delay,
         this.deliveryProbability,
         this.notDeliveredMessage,
-        this.delayedAlertMessage,
         this.extraText
     )
 }

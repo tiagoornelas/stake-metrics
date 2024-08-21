@@ -13,7 +13,6 @@ import net.stakemetrics.application.entities.Message
 data class MessageModel(
     @Id
     val id: UUID = UUID.randomUUID(),
-    val integrationId: String? = null,
     @ManyToOne
     @JoinColumn(name = "messenger_chat_id")
     val messengerChat: MessengerChatModel? = null,
@@ -22,7 +21,6 @@ data class MessageModel(
     fun toDomain(): Message {
         return Message(
             id,
-            integrationId,
             messengerChat?.toDomain(),
             text
         )
@@ -32,7 +30,6 @@ data class MessageModel(
 fun Message.toModel(): MessageModel {
     return MessageModel(
         id,
-        integrationId,
         messengerChat?.toModel(),
         text
     )
