@@ -58,7 +58,7 @@ class FifaStrategyDTO {
         val scopes: List<FifaStrategyScopeResponse>
     )
 
-    data class FifaStrategySingleResponse(
+    data class FifaStrategyStatisticSingleResponse(
         val id: UUID,
         val name: String,
         val status: FifaStrategyStatus,
@@ -71,7 +71,7 @@ class FifaStrategyDTO {
     )
 
     data class FifaStrategyListResponse(
-        val strategies: List<FifaStrategySingleResponse> = emptyList(),
+        val strategies: List<FifaStrategyStatisticSingleResponse> = emptyList(),
         val success: Boolean = true
     )
 

@@ -63,7 +63,7 @@ class FifaStrategyController(
     @GetMapping("/strategy/statistics")
     fun listAllStrategies(): ResponseEntity<FifaStrategyDTO.FifaStrategyListResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
-        val strategies = fifaStrategyService.listAllStrategies(userEmail)
+        val strategies = fifaStrategyService.listAllStrategiesStatistics(userEmail)
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyListResponse(strategies))
     }
 
