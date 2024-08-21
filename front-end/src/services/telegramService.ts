@@ -24,7 +24,6 @@ export const editIntegration = (
     delay: number,
     deliveryProbability: number,
     notDeliveredMessage: string,
-    delayedAlertMessage: string,
     extraText: string
 ) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}`, REQUEST_TYPE.PUT, {
     id: messengerChatId,
@@ -33,6 +32,5 @@ export const editIntegration = (
     delay,
     deliveryProbability,
     notDeliveredMessage,
-    delayedAlertMessage,
     extraText
 });

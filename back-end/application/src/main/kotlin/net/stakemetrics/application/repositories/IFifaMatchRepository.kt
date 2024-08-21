@@ -1,13 +1,14 @@
 package net.stakemetrics.application.repositories
 
 import java.util.Date
-import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaLeague
+import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaPlayer
 
 interface IFifaMatchRepository {
     fun save(fifaMatch: FifaMatch)
     fun findLatestMatch(): FifaMatch?
+    fun existsByIntegrationId(integrationId: Long): Boolean
     fun findByIntegrationId(integrationId: Long): FifaMatch?
     fun listFinishedMatchesByPlayerSince(league: FifaLeague, player: FifaPlayer, since: Date): List<FifaMatch>
     fun listLastFinishedMatchesByPlayer(league: FifaLeague, player: FifaPlayer, last: Int): List<FifaMatch>

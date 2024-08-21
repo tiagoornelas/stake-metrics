@@ -97,7 +97,6 @@ export interface TelegramChat {
     delay: number;
     deliveryProbability: number;
     notDeliveredMessage: string;
-    delayedAlertMessage: string;
     extraText: string;
 }
 

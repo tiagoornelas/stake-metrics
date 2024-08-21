@@ -23,6 +23,10 @@ class FifaMatchRepository(private val fifaMatchJpaRepository: FifaMatchJpaReposi
         return if (optionalResult.isPresent) optionalResult.get().toDomain() else null
     }
 
+    override fun existsByIntegrationId(integrationId: Long): Boolean {
+        return fifaMatchJpaRepository.existsByIntegrationId(integrationId)
+    }
+
     override fun findByIntegrationId(integrationId: Long): FifaMatch? {
         val optionalResult = fifaMatchJpaRepository.findByIntegrationId(integrationId)
         return if (optionalResult.isPresent) optionalResult.get().toDomain() else null
