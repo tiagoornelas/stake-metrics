@@ -1,5 +1,5 @@
 import {Badge, Flex, Td, Text, Tr} from "@chakra-ui/react";
-import StrategyTableActions from "containers/strategy/components/StrategyTableActions";
+import StrategyTableActions from "containers/fifa/strategy/components/StrategyTableActions";
 import React from 'react';
 import {strategyStatusDict} from "utils/constants/strategyConstants";
 import {StrategyListItem} from "utils/interfaces";

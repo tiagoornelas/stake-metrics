@@ -12,6 +12,7 @@ export enum REQUEST_TYPE {
 export interface NavigationLinkOnHeaderValue {
     name: string
     path: string
+    beta: boolean
 }
 
 export interface LoginBody {
