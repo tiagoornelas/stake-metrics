@@ -42,6 +42,7 @@ const StrategyTableItem = ({strategy}: { strategy: StrategyListItem }) => {
     return (
         <Tr key={strategy.id}>
             <Td><StrategyNameAndStatus status={strategy.status} name={strategy.name}/></Td>
+            <Td textAlign={"center"}>{strategy.openBets}</Td>
             <Td textAlign={"center"}>{strategy.bets}</Td>
             <ResultData value={Number(strategy.result.toFixed(1))}/>
             <ROIData value={Number(strategy.roi.toFixed(1))}/>
