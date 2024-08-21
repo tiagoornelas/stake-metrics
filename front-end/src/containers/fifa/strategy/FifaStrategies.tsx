@@ -3,7 +3,7 @@ import Modal from "components/Modal";
 import StrategyEmptyState from "containers/fifa/strategy/components/StrategyEmptyState";
 import StrategyForm from "containers/fifa/strategy/components/StrategyForm";
 import StrategyTableItem from "containers/fifa/strategy/components/StrategyTableItem";
-import useStrategyQuery from "containers/fifa/strategy/hooks/useStrategyQuery";
+import useStrategyStatisticsQuery from "containers/fifa/strategy/hooks/useStrategyStatisticsQuery";
 import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
 import {GoTelescope} from 'react-icons/all';
@@ -38,7 +38,7 @@ const Header = ({strategiesLength, isLoaded}: { strategiesLength: number, isLoad
 }
 
 const FifaStrategies = () => {
-    const {data: strategies = [], isLoading} = useStrategyQuery();
+    const {data: strategies = [], isLoading} = useStrategyStatisticsQuery();
     const colors = useThemeColors();
     const shouldRenderEmptyState = !isLoading && strategies.length === 0;
 
@@ -50,6 +50,7 @@ const FifaStrategies = () => {
                     <Thead>
                         <Tr>
                             <Th>Estratégia</Th>
+                            <Th w={"80px"} textAlign={"center"}>Abertas</Th>
                             <Th w={"80px"} textAlign={"center"}>Entradas</Th>
                             <Th w={"80px"} textAlign={"center"}>Unidades</Th>
                             <Th w={"80px"} textAlign={"center"}>ROI</Th>

@@ -116,6 +116,7 @@ export type StrategyListItem = {
     id: string;
     name: string;
     status: StrategyStatus;
+    openBets: number;
     bets: number;
     result: number;
     roi: number;

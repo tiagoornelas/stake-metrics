@@ -17,5 +17,5 @@ export const saveStrategy = (strategy: StrategyCreationBody) =>
 export const getStrategy = (strategyId: string) =>
     makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}/${strategyId}`, REQUEST_TYPE.GET);
 
-export const listStrategies = () =>
-    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}`, REQUEST_TYPE.GET);
+export const listStrategiesStatistics = () =>
+    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.STATISTICS}`, REQUEST_TYPE.GET);

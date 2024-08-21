@@ -165,6 +165,7 @@ class FifaStrategyService @Autowired constructor(
                 strategy.name,
                 strategy.status,
                 Random.nextInt(1, 500),
+                Random.nextInt(1, 500),
                 Random.nextDouble(-100.0, 100.0),
                 Random.nextDouble(-100.0, 100.0),
                 Random.nextDouble(-100.0, 100.0),

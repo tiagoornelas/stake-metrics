@@ -62,6 +62,7 @@ class FifaStrategyDTO {
         val id: UUID,
         val name: String,
         val status: FifaStrategyStatus,
+        val openBets: Int,
         val bets: Int,
         val result: Double,
         val roi: Double,
@@ -77,10 +78,6 @@ class FifaStrategyDTO {
     data class FifaStrategyAgainstOddRequest(
         val strategy: FifaStrategy,
         val odds: FifaDataSourceDTO.FifaOddRequest
-    )
-
-    data class FifaStrategyAgainstOddResponse(
-        val success: Boolean = true
     )
 
     data class FifaStrategyStatusRequest(
