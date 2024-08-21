@@ -3,12 +3,11 @@ import {ErrorBoundary} from "components/ErrorBoundary";
 import PrivateAreaWrapper from "components/PrivateAreaWrapper";
 import PublicAreaWrapper from "components/PublicAreaWrapper";
 import RouterLayout from "components/RouterLayout";
-import Metrics from "containers/metrics/Metrics";
+import FifaModule from "containers/fifa/FifaModule";
 import AccountRecovery from "containers/public/AccountRecovery";
 import CreateAccount from "containers/public/CreateAccount";
 import Login from "containers/public/Login"
 import Subscription from "containers/public/Subscription";
-import Strategy from "containers/strategy/Strategy";
 import {UserProvider, useUserDispatch, useUserState} from "context/UserContext";
 import * as React from "react"
 import {Dispatch, useEffect, useMemo} from "react"
@@ -48,19 +47,13 @@ const appRouter = createBrowserRouter([
         element: <RouterLayout><UserManagement/></RouterLayout>
     },
     {
-        path: "/strategies",
-        element: <RouterLayout><Strategy/></RouterLayout>
-
-    },
-    {
-        path: "/metrics",
-        element: <RouterLayout><Metrics/></RouterLayout>
+        path: "/fifa",
+        element: <RouterLayout><FifaModule/></RouterLayout>
 
     },
     {
         path: "/*",
-        element: <RouterLayout><Strategy/></RouterLayout>
-
+        element: <RouterLayout><FifaModule/></RouterLayout>
     },
 ]);
 

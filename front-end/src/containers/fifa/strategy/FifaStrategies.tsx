@@ -1,9 +1,9 @@
 import {Box, Flex, Skeleton, Spinner, Table, TableContainer, Tbody, Text, Th, Thead, Tr} from "@chakra-ui/react";
 import Modal from "components/Modal";
-import StrategyEmptyState from "containers/strategy/components/StrategyEmptyState";
-import StrategyForm from "containers/strategy/components/StrategyForm";
-import StrategyTableItem from "containers/strategy/components/StrategyTableItem";
-import useStrategyQuery from "containers/strategy/hooks/useStrategyQuery";
+import StrategyEmptyState from "containers/fifa/strategy/components/StrategyEmptyState";
+import StrategyForm from "containers/fifa/strategy/components/StrategyForm";
+import StrategyTableItem from "containers/fifa/strategy/components/StrategyTableItem";
+import useStrategyQuery from "containers/fifa/strategy/hooks/useStrategyQuery";
 import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
 import {GoTelescope} from 'react-icons/all';
@@ -37,13 +37,13 @@ const Header = ({strategiesLength, isLoaded}: { strategiesLength: number, isLoad
     </Flex>)
 }
 
-const Strategy = () => {
+const FifaStrategies = () => {
     const {data: strategies = [], isLoading} = useStrategyQuery();
     const colors = useThemeColors();
     const shouldRenderEmptyState = !isLoading && strategies.length === 0;
 
     return (
-        <Box p={8}>
+        <Box mt={4}>
             <Header strategiesLength={strategies.length} isLoaded={!isLoading}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
@@ -79,4 +79,4 @@ const Strategy = () => {
     )
 };
 
-export default Strategy;
+export default FifaStrategies;
