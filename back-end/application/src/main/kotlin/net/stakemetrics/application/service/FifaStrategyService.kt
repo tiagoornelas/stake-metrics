@@ -1,7 +1,6 @@
 package net.stakemetrics.application.service
 
 import java.util.UUID
-import kotlin.random.Random
 import net.stakemetrics.application.entities.*
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
@@ -149,9 +148,9 @@ class FifaStrategyService @Autowired constructor(
             strategy.scopes.map { it.toResponse() })
     }
 
-    fun listAllStrategies(userEmail: String): List<FifaStrategyDTO.FifaStrategySingleResponse> {
+    fun listAllStrategiesStatistics(userEmail: String): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse> {
         val user = userService.findByEmail(userEmail)
-        val strategies = fifaStrategyRepository.getStrategiesByUser(user.id)
+        val strategies = fifaStrategyRepository.getStrategiesStatisticsByUser(user.id)
 
         val sortedStrategies = strategies.sortedWith(
             compareBy({ it.status == FifaStrategyStatus.INACTIVE },
@@ -160,16 +159,16 @@ class FifaStrategyService @Autowired constructor(
         )
 
         return sortedStrategies.map { strategy ->
-            FifaStrategyDTO.FifaStrategySingleResponse(
+            FifaStrategyDTO.FifaStrategyStatisticSingleResponse(
                 strategy.id,
                 strategy.name,
                 strategy.status,
-                Random.nextInt(1, 500),
-                Random.nextInt(1, 500),
-                Random.nextDouble(-100.0, 100.0),
-                Random.nextDouble(-100.0, 100.0),
-                Random.nextDouble(-100.0, 100.0),
-                Random.nextDouble(-100.0, 100.0)
+                strategy.openBets,
+                strategy.bets,
+                strategy.result,
+                strategy.roi,
+                strategy.activeResult,
+                strategy.activeRoi
             )
         }
     }
