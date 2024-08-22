@@ -1,11 +1,26 @@
-import {IconButton, Tag, Td, Text, Tr} from "@chakra-ui/react";
+import {Tag, Td, Text, Tr} from "@chakra-ui/react";
+import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
+import useInvalidateBetQuery from "containers/fifa/bets/hooks/useInvalidateBetQuery";
 import {format} from "date-fns";
+import {useErrorToast} from "hooks/useErrorToast";
 import React from 'react';
-import {FaTrash} from "react-icons/all";
+import {deleteBet} from "services/betService";
 import {FifaBetStatus, statusColors, statusLabels} from "utils/constants/betConstants";
 import {MARKET_CANDIDATES_DICT} from "utils/constants/marketCandidatesConstants";
+import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {formatProfit} from "utils/helpers/betHelper";
 import {Bet} from "utils/interfaces";
+
+const DeleteButton = ({bet}: { bet: Bet }) => {
+    const invalidateBetQuery = useInvalidateBetQuery();
+
+    const handleDelete = useErrorToast(async () => {
+        await deleteBet(bet.id);
+        invalidateBetQuery();
+    }, SUCCESS_TYPES.STRATEGY_DELETED);
+
+    return <DeleteConfirmationDialog entityName={"entrada"} confirmCallback={handleDelete} variant='outline'/>
+}
 
 type Props = {
     bet: Bet
@@ -35,15 +50,7 @@ const BetTableItem = ({bet}: Props) => {
             <Td>{bet.odds}</Td>
             <Td>{getStatusTag(bet.status)}</Td>
             <Td><Text color={profitColor}>{formattedProfit}</Text></Td>
-            <Td>
-                <IconButton
-                    size="sm"
-                    colorScheme="red"
-                    icon={<FaTrash/>}
-                    variant="outline"
-                    aria-label="Delete bet"
-                />
-            </Td>
+            <Td><DeleteButton bet={bet}/></Td>
         </Tr>
     );
 };
