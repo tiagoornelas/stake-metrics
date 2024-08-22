@@ -230,3 +230,47 @@ export type Option = {
     value: string;
     label: string;
 };
+
+export interface Bet {
+    id: string;
+    strategyName: string;
+    leagueName: string;
+    homePlayerName: string;
+    awayPlayerName: string;
+    matchTime: string;
+    betTime: string;
+    candidate: string;
+    odds: number;
+    status: string;
+    handicap: number | null;
+    profit: number | null;
+}
+
+export interface PaginatedResponse {
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    content: Bet[];
+    number: number;
+    sort: {
+        empty: boolean;
+        sorted: boolean;
+        unsorted: boolean;
+    };
+    first: boolean;
+    last: boolean;
+    numberOfElements: number;
+    pageable: {
+        pageNumber: number;
+        pageSize: number;
+        sort: {
+            empty: boolean;
+            sorted: boolean;
+            unsorted: boolean;
+        };
+        offset: number;
+        paged: boolean;
+        unpaged: boolean;
+    };
+    empty: boolean;
+}
