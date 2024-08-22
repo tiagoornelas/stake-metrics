@@ -173,6 +173,10 @@ class FifaStrategyService @Autowired constructor(
         }
     }
 
+    fun findAllByUserId(userId: UUID): List<FifaStrategy> {
+        return fifaStrategyRepository.getStrategiesByUser(userId)
+    }
+
     fun getAllProneToBetStrategies(): List<FifaStrategy> {
         return fifaStrategyRepository.getAllProneToBetStrategies()
     }
