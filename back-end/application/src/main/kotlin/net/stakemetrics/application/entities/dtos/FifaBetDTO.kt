@@ -35,8 +35,7 @@ class FifaBetDTO {
         val profit: Double?,
     )
 
-    data class BetListResponse(
-        val bets: List<BetResponse>,
+    data class DeleteResponse(
         val success: Boolean = true
     )
 
