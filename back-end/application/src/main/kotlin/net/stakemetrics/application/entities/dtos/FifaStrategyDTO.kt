@@ -58,10 +58,11 @@ class FifaStrategyDTO {
         val scopes: List<FifaStrategyScopeResponse>
     )
 
-    data class FifaStrategySingleResponse(
+    data class FifaStrategyStatisticSingleResponse(
         val id: UUID,
         val name: String,
         val status: FifaStrategyStatus,
+        val openBets: Int,
         val bets: Int,
         val result: Double,
         val roi: Double,
@@ -70,17 +71,13 @@ class FifaStrategyDTO {
     )
 
     data class FifaStrategyListResponse(
-        val strategies: List<FifaStrategySingleResponse> = emptyList(),
+        val strategies: List<FifaStrategyStatisticSingleResponse> = emptyList(),
         val success: Boolean = true
     )
 
     data class FifaStrategyAgainstOddRequest(
         val strategy: FifaStrategy,
         val odds: FifaDataSourceDTO.FifaOddRequest
-    )
-
-    data class FifaStrategyAgainstOddResponse(
-        val success: Boolean = true
     )
 
     data class FifaStrategyStatusRequest(

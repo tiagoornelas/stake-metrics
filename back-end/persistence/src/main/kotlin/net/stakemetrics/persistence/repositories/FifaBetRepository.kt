@@ -1,10 +1,14 @@
 package net.stakemetrics.persistence.repositories
 
+import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.persistence.jpa.FifaBetJpaRepository
 import net.stakemetrics.persistence.models.toModel
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -17,6 +21,11 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         fifaStrategy: FifaStrategy, matchIntegrationId: Long
     ): Boolean {
         return fifaBetJpaRepository.existsByStrategyAndMatchIntegrationId(fifaStrategy.toModel(), matchIntegrationId)
+    }
+
+    override fun listAllByStrategyIds(strategyIds: Collection<UUID>, page: Int, size: Int): Page<FifaBet> {
+        val pageable = PageRequest.of(page, size, Sort.by("matchTime").ascending())
+        return fifaBetJpaRepository.findAllByStrategyIdIn(strategyIds, pageable).map { it.toDomain() }
     }
 
 }

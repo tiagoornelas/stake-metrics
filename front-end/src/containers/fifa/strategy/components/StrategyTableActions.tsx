@@ -15,8 +15,8 @@ import {
     useDisclosure
 } from "@chakra-ui/react";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
-import StrategyForm from "containers/strategy/components/StrategyForm";
-import useInvalidateStrategyQuery from "containers/strategy/hooks/useInvalidateStrategyQuery";
+import StrategyForm from "containers/fifa/strategy/components/StrategyForm";
+import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
 import {useErrorToast} from "hooks/useErrorToast";
 import React from 'react';
 import {BiSpreadsheet, IoMdPower, MdEdit} from "react-icons/all";

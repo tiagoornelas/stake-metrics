@@ -1,14 +1,52 @@
 package net.stakemetrics.persistence.models
 
-import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
-import net.stakemetrics.application.entities.enums.FifaMarketTypes
-import net.stakemetrics.application.entities.enums.FifaStrategyStatus
 import jakarta.persistence.*
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
+import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
+import net.stakemetrics.application.entities.enums.FifaMarketTypes
+import net.stakemetrics.application.entities.enums.FifaStrategyStatus
 
 @Entity
 @Table(name = "fifa_strategies")
+@NamedNativeQuery(
+    name = "find_strategy_statistics_by_user_id",
+    query = """
+        SELECT
+            s.id AS id,
+            s.name AS name,
+            s.status AS status,
+            COUNT(CASE WHEN b.profit IS NULL THEN 1 END) AS openBets,
+            COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END) AS bets,
+            COALESCE(SUM(b.profit), 0) AS result,
+            COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,
+            COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END) AS activeResult,
+            COALESCE(SUM(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN b.profit ELSE 0 END) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi
+        FROM fifa_strategies s
+        LEFT JOIN fifa_bets b ON s.id = b.strategy_id
+        WHERE s.user_id = :userId
+        GROUP BY s.id, s.name, s.status
+    """,
+    resultSetMapping = "fifa_strategy_statistic_singe_response"
+)
+@SqlResultSetMapping(
+    name = "fifa_strategy_statistic_singe_response",
+    classes = [ConstructorResult(
+        targetClass = FifaStrategyDTO.FifaStrategyStatisticSingleResponse::class,
+        columns = [
+            ColumnResult(name = "id", type = UUID::class),
+            ColumnResult(name = "name", type = String::class),
+            ColumnResult(name = "status", type = FifaStrategyStatus::class),
+            ColumnResult(name = "openBets", type = Int::class),
+            ColumnResult(name = "bets", type = Int::class),
+            ColumnResult(name = "result", type = Double::class),
+            ColumnResult(name = "roi", type = Double::class),
+            ColumnResult(name = "activeResult", type = Int::class),
+            ColumnResult(name = "activeRoi", type = Double::class)
+        ]
+    )]
+)
 data class FifaStrategyModel(
     @Id
     val id: UUID = UUID.randomUUID(),

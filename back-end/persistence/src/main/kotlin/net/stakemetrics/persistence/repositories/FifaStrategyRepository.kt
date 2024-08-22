@@ -3,6 +3,7 @@ package net.stakemetrics.persistence.repositories
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.User
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.FifaStrategyStatus
 import net.stakemetrics.application.repositories.IFifaStrategyRepository
 import net.stakemetrics.persistence.jpa.FifaStrategyJpaRepository
@@ -28,6 +29,10 @@ class FifaStrategyRepository(private val fifaStrategyJpaRepository: FifaStrategy
 
     override fun getStrategiesByUser(userId: UUID): List<FifaStrategy> {
         return fifaStrategyJpaRepository.findAllByUserId(userId).map { it.toDomain() }
+    }
+
+    override fun getStrategiesStatisticsByUser(userId: UUID): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse> {
+        return fifaStrategyJpaRepository.findStrategyStatisticsByUserId(userId)
     }
 
     override fun findById(id: UUID): FifaStrategy? {
