@@ -13,6 +13,7 @@ import {
     Thead,
     Tr
 } from "@chakra-ui/react";
+import BetEmptyState from "containers/fifa/bets/components/BetEmptyState";
 import BetTableItem from "containers/fifa/bets/components/BetTableItem";
 import useBetQuery from "containers/fifa/bets/hooks/useBetQuery";
 import useThemeColors from "hooks/useThemeColors";
@@ -101,6 +102,7 @@ const FifaBets = () => {
                     size='xl'
                 />
             </Flex>}
+            {shouldRenderEmptyState && <BetEmptyState/>}
         </Box>
     );
 };
