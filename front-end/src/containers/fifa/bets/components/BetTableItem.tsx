@@ -1,8 +1,10 @@
-import {IconButton, Tag, Td, Tr} from "@chakra-ui/react";
+import {IconButton, Tag, Td, Text, Tr} from "@chakra-ui/react";
 import {format} from "date-fns";
 import React from 'react';
 import {FaTrash} from "react-icons/all";
+import {FifaBetStatus, statusColors, statusLabels} from "utils/constants/betConstants";
 import {MARKET_CANDIDATES_DICT} from "utils/constants/marketCandidatesConstants";
+import {formatProfit} from "utils/helpers/betHelper";
 import {Bet} from "utils/interfaces";
 
 type Props = {
@@ -16,19 +18,12 @@ const BetTableItem = ({bet}: Props) => {
     };
 
     const getStatusTag = (status: string) => {
-        switch (status) {
-            case "WON":
-                return <Tag colorScheme="green">Vencida</Tag>;
-            case "LOST":
-                return <Tag colorScheme="red">Perdida</Tag>;
-            case "PENDING":
-                return <Tag colorScheme="yellow">Pendente</Tag>;
-            default:
-                return <Tag>{status}</Tag>;
-        }
+        const fifaBetStatus = status as FifaBetStatus;
+        return <Tag colorScheme={statusColors[fifaBetStatus]}>{statusLabels[fifaBetStatus]}</Tag>;
     };
 
     const candidate = MARKET_CANDIDATES_DICT[bet.candidate as keyof typeof MARKET_CANDIDATES_DICT];
+    const {text: formattedProfit, color: profitColor} = formatProfit(bet.profit);
 
     return (
         <Tr key={bet.id}>
@@ -39,7 +34,7 @@ const BetTableItem = ({bet}: Props) => {
             <Td>{bet.handicap ? `${candidate} ${bet.handicap}` : candidate}</Td>
             <Td>{bet.odds}</Td>
             <Td>{getStatusTag(bet.status)}</Td>
-            <Td>{bet.profit !== null ? bet.profit : ""}</Td>
+            <Td><Text color={profitColor}>{formattedProfit}</Text></Td>
             <Td>
                 <IconButton
                     size="sm"
