@@ -1,5 +1,5 @@
 import {InfiniteQueryObserverResult, useInfiniteQuery} from "react-query";
-import {listBets} from "services/strategyService";
+import {listBets} from "services/betService";
 import {PaginatedResponse} from "utils/interfaces";
 
 const useBetQuery = (): InfiniteQueryObserverResult<PaginatedResponse> => {
