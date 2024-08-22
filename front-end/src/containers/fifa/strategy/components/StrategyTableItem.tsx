@@ -1,5 +1,5 @@
 import {Badge, Flex, Td, Text, Tr} from "@chakra-ui/react";
-import StrategyTableActions from "containers/strategy/components/StrategyTableActions";
+import StrategyTableActions from "containers/fifa/strategy/components/StrategyTableActions";
 import React from 'react';
 import {strategyStatusDict} from "utils/constants/strategyConstants";
 import {StrategyListItem} from "utils/interfaces";
@@ -42,6 +42,7 @@ const StrategyTableItem = ({strategy}: { strategy: StrategyListItem }) => {
     return (
         <Tr key={strategy.id}>
             <Td><StrategyNameAndStatus status={strategy.status} name={strategy.name}/></Td>
+            <Td textAlign={"center"}>{strategy.openBets}</Td>
             <Td textAlign={"center"}>{strategy.bets}</Td>
             <ResultData value={Number(strategy.result.toFixed(1))}/>
             <ROIData value={Number(strategy.roi.toFixed(1))}/>

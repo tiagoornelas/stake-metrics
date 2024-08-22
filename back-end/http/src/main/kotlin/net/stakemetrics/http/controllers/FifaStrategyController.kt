@@ -9,19 +9,19 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/fifa")
+@RequestMapping("/fifa/strategy")
 class FifaStrategyController(
     private val fifaStrategyService: FifaStrategyService
 ) {
 
-    @PostMapping("/strategy")
+    @PostMapping
     fun saveStrategy(@RequestBody request: FifaStrategyDTO.FifaStrategyRequest): ResponseEntity<FifaStrategyDTO.FifaStrategyWriteResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
         fifaStrategyService.save(userEmail, request)
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyWriteResponse())
     }
 
-    @PutMapping("/strategy/status/{strategyId}")
+    @PutMapping("/status/{strategyId}")
     fun updateStrategyStatus(
         @RequestBody request: FifaStrategyDTO.FifaStrategyStatusRequest,
         @PathVariable strategyId: UUID
@@ -31,14 +31,14 @@ class FifaStrategyController(
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyWriteResponse())
     }
 
-    @DeleteMapping("/strategy/{strategyId}")
+    @DeleteMapping("/{strategyId}")
     fun deleteStrategy(@PathVariable strategyId: UUID): ResponseEntity<FifaStrategyDTO.FifaStrategyWriteResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
         fifaStrategyService.deleteStrategy(userEmail, strategyId)
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyWriteResponse())
     }
 
-    @GetMapping("/strategy/params")
+    @GetMapping("/params")
     fun getStrategyParams(): ResponseEntity<FifaStrategyDTO.FifaStrategyParamsResponse> {
         val (leagues, marketTypes, players, ruleTypes, matchupTypes, scopeTypes) = fifaStrategyService.getStrategyParams()
         val response =
@@ -53,17 +53,17 @@ class FifaStrategyController(
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
-    @GetMapping("/strategy/{strategyId}")
+    @GetMapping("/{strategyId}")
     fun getStrategy(@PathVariable strategyId: UUID): ResponseEntity<FifaStrategyDTO.FifaStrategyReadResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
         val strategy = fifaStrategyService.getStrategy(userEmail, strategyId)
         return ResponseEntity.status(HttpStatus.OK).body(strategy)
     }
 
-    @GetMapping("/strategy")
+    @GetMapping("/statistics")
     fun listAllStrategies(): ResponseEntity<FifaStrategyDTO.FifaStrategyListResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
-        val strategies = fifaStrategyService.listAllStrategies(userEmail)
+        val strategies = fifaStrategyService.listAllStrategiesStatistics(userEmail)
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyListResponse(strategies))
     }
 

@@ -15,8 +15,8 @@ import {
     useColorModeValue
 } from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
-import StrategyRuleValueInput from "containers/strategy/components/StrategyRuleValueInput";
-import useInvalidateStrategyQuery from "containers/strategy/hooks/useInvalidateStrategyQuery";
+import StrategyRuleValueInput from "containers/fifa/strategy/components/StrategyRuleValueInput";
+import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
 import {useErrorToast} from "hooks/useErrorToast";
 import useThemeColors from "hooks/useThemeColors";
 import React, {ChangeEvent, useEffect, useState} from 'react';

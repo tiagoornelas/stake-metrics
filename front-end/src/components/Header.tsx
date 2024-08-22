@@ -15,6 +15,7 @@ import {
     useColorModeValue,
     useMediaQuery
 } from '@chakra-ui/react';
+import BetaTag from "components/BetaTag";
 import ProductLogo from "components/ProductLogo";
 import ProductName from "components/ProductName";
 import {useUserDispatch, useUserState} from "context/UserContext";
@@ -82,8 +83,11 @@ export const Header = () => {
                           cursor="pointer"
                           onClick={goToHomePage}><ProductLogo/><b><ProductName/></b></Flex>
                     <HStack as={'nav'} spacing={4} display={{base: 'none', md: 'flex'}}>
-                        {APP_NAVIGATION.map(({name, path}: NavigationLinkOnHeaderValue) => (
-                            <NavLink key={path} path={path.toLowerCase()}>{name}</NavLink>
+                        {APP_NAVIGATION.map(({name, path, beta}: NavigationLinkOnHeaderValue) => (
+                            <NavLink key={path} path={path.toLowerCase()}>
+                                {name}
+                                {beta && <BetaTag ml={2}/>}
+                            </NavLink>
                         ))}
                     </HStack>
 
@@ -123,11 +127,13 @@ export const Header = () => {
                                         <Fragment>
                                             {APP_NAVIGATION.map(({
                                                                      name,
-                                                                     path
+                                                                     path,
+                                                                     beta
                                                                  }: NavigationLinkOnHeaderValue) => (
                                                 <MenuItem key={path}
                                                           onClick={() => navigate(path.toLowerCase(), {replace: true})}>
                                                     {name}
+                                                    {beta && <BetaTag ml={2}/>}
                                                 </MenuItem>))}
                                             <MenuDivider/>
                                         </Fragment>
