@@ -28,6 +28,9 @@ export const ENDPOINTS = {
     FIFA: {
         BASE: "/fifa"
     },
+    BET: {
+        BASE: "/bet"
+    },
     STRATEGY: {
         BASE: "/strategy",
         PARAMS: "/params",
