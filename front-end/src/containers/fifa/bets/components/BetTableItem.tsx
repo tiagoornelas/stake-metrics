@@ -1,6 +1,7 @@
 import {Tag, Td, Text, Tr} from "@chakra-ui/react";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import useInvalidateBetQuery from "containers/fifa/bets/hooks/useInvalidateBetQuery";
+import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
 import {format} from "date-fns";
 import {useErrorToast} from "hooks/useErrorToast";
 import React from 'react';
@@ -13,10 +14,12 @@ import {Bet} from "utils/interfaces";
 
 const DeleteButton = ({bet}: { bet: Bet }) => {
     const invalidateBetQuery = useInvalidateBetQuery();
+    const invalidateStrategyQuery = useInvalidateStrategyQuery();
 
     const handleDelete = useErrorToast(async () => {
         await deleteBet(bet.id);
         invalidateBetQuery();
+        invalidateStrategyQuery();
     }, SUCCESS_TYPES.STRATEGY_DELETED);
 
     return <DeleteConfirmationDialog entityName={"entrada"} confirmCallback={handleDelete} variant='outline'/>
