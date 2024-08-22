@@ -12,6 +12,7 @@ import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
 import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
 import org.springframework.stereotype.Service
+import org.springframework.data.domain.Page
 
 @Service
 class FifaBetService(
@@ -92,9 +93,9 @@ class FifaBetService(
         }
     }
 
-    fun listBets(userEmail: String): List<FifaBetDTO.BetResponse> {
+    fun listBets(userEmail: String, page: Int, size: Int): Page<FifaBetDTO.BetResponse> {
         val user = userService.findByEmail(userEmail)
         val strategyIds = fifaStrategyService.findAllByUserId(user.id).map { it.id }
-        return fifaBetRepository.listAllByStrategyIds(strategyIds).map { it.toResponse() }
+        return fifaBetRepository.listAllByStrategyIds(strategyIds, page, size).map { it.toResponse() }
     }
 }
