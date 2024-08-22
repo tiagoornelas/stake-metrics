@@ -3,6 +3,7 @@ package net.stakemetrics.persistence.repositories
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.persistence.jpa.FifaBetJpaRepository
 import net.stakemetrics.persistence.models.toModel
@@ -15,6 +16,15 @@ import org.springframework.stereotype.Repository
 class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) : IFifaBetRepository {
     override fun save(fifaBet: FifaBet) {
         fifaBetJpaRepository.save(fifaBet.toModel())
+    }
+
+    override fun delete(fifaBet: FifaBet) {
+        fifaBetJpaRepository.delete(fifaBet.toModel())
+    }
+
+    override fun findById(id: UUID): FifaBet {
+        return fifaBetJpaRepository.findById(id).map { it.toDomain() }
+            .orElseThrow { NotFoundException("FifaBet", "id", id.toString()) }
     }
 
     override fun existsByStrategyAndMatchIntegrationId(

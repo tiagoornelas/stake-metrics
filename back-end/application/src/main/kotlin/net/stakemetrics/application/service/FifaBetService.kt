@@ -1,12 +1,15 @@
 package net.stakemetrics.application.service
 
 import java.util.Date
+import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.Message
 import net.stakemetrics.application.entities.MessengerChat
+import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.toResponse
+import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
@@ -97,5 +100,16 @@ class FifaBetService(
         val user = userService.findByEmail(userEmail)
         val strategyIds = fifaStrategyService.findAllByUserId(user.id).map { it.id }
         return fifaBetRepository.listAllByStrategyIds(strategyIds, page, size).map { it.toResponse() }
+    }
+
+    fun delete(userEmail: String, betId: UUID) {
+        val user = userService.findByEmail(userEmail)
+        val bet = fifaBetRepository.findById(betId)
+        assertBetBelongsToUser(user, bet)
+        fifaBetRepository.delete(bet)
+    }
+
+    private fun assertBetBelongsToUser(user: User, bet: FifaBet) {
+        if (bet.strategy?.user?.id != user.id) throw EntityDoesntBelongToUserException()
     }
 }
