@@ -21,8 +21,8 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END) AS bets,
             COALESCE(SUM(b.profit), 0) AS result,
             COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,
-            COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END) AS activeResult,
-            COALESCE(SUM(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN b.profit ELSE 0 END) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi
+            COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)), 0) AS activeResult,
+            COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi
         FROM fifa_strategies s
         LEFT JOIN fifa_bets b ON s.id = b.strategy_id
         WHERE s.user_id = :userId
@@ -42,7 +42,7 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             ColumnResult(name = "bets", type = Int::class),
             ColumnResult(name = "result", type = Double::class),
             ColumnResult(name = "roi", type = Double::class),
-            ColumnResult(name = "activeResult", type = Int::class),
+            ColumnResult(name = "activeResult", type = Double::class),
             ColumnResult(name = "activeRoi", type = Double::class)
         ]
     )]

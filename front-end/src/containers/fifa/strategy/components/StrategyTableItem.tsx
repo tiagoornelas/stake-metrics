@@ -28,8 +28,9 @@ const ResultData = ({value}: { value: number }) => {
 };
 
 const ROIData = ({value}: { value: number }) => {
-    const color = value > 0 ? "green" : value < 0 ? "red" : "black";
-    const formattedValue = `${value > 0 ? "+" : ""}${value} %`;
+    const percentageValue = value * 100;
+    const color = percentageValue > 0 ? "green" : percentageValue < 0 ? "red" : "black";
+    const formattedValue = `${percentageValue > 0 ? "+" : ""}${percentageValue.toFixed(2)} %`;
 
     return (
         <Td textAlign={"center"} color={color}>

@@ -29,7 +29,7 @@ const Header = ({showingBets, betsLength, isLoaded}: {
     const getLabel = () => {
         if (betsLength === 0) return "";
         if (betsLength === 1) return "1 aposta";
-        if (showingBets === betsLength) return `${betsLength} apostas`;
+        if (showingBets >= betsLength) return `${betsLength} apostas`;
         return `${showingBets} de ${betsLength} apostas`;
     }
 
@@ -47,14 +47,14 @@ const FifaBets = () => {
     const {data, isLoading, fetchNextPage, isFetchingNextPage} = useBetQuery();
     const colors = useThemeColors();
     const totalBets = data?.pages[0]?.totalElements ?? 0;
-    const showingBets = data?.pages.reduce((acc, page) => acc + page.content.length, 0) ?? 0;
+    const maxFetchedLength = data?.pages.reduce((acc, page) => acc + page.content.length, 0) ?? 0;
     const totalPagesFetched = data?.pages.length ?? 0;
     const totalPages = data?.pages[0]?.totalPages ?? 0;
     const shouldRenderEmptyState = !isLoading && data?.pages[0]?.empty;
 
     return (
         <Box mt={4}>
-            <Header showingBets={showingBets} betsLength={totalBets} isLoaded={!isLoading}/>
+            <Header showingBets={maxFetchedLength} betsLength={totalBets} isLoaded={!isLoading}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
                     <Thead>
