@@ -6,6 +6,7 @@ import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.Message
 import net.stakemetrics.application.entities.MessengerChat
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
+import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
@@ -15,14 +16,16 @@ import org.springframework.stereotype.Service
 @Service
 class FifaBetService(
     private val logger: Logger,
+    private val userService: UserService,
+    private val messageService: MessageService,
     private val fifaMatchService: FifaMatchService,
     private val messengerService: IMessengerService,
     private val fifaLeagueService: FifaLeagueService,
     private val fifaPlayerService: FifaPlayerService,
     private val fifaTipsterHelper: FifaTipsterHelper,
     private val fifaBetRepository: IFifaBetRepository,
+    private val fifaStrategyService: FifaStrategyService,
     private val fifaBetMessageBuilder: FifaBetMessageBuilder,
-    private val messageService: MessageService,
 ) {
 
     fun bet(payload: FifaBetDTO.BetRequest) {
@@ -87,5 +90,11 @@ class FifaBetService(
                 fifaBet.messages.add(message)
             }
         }
+    }
+
+    fun listBets(userEmail: String): List<FifaBetDTO.BetResponse> {
+        val user = userService.findByEmail(userEmail)
+        val strategyIds = fifaStrategyService.findAllByUserId(user.id).map { it.id }
+        return fifaBetRepository.listAllByStrategyIds(strategyIds).map { it.toResponse() }
     }
 }
