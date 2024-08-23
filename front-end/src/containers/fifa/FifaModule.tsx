@@ -13,7 +13,7 @@ const FifaModule = () => {
                 <TabList>
                     <Tab>Estratégias</Tab>
                     <Tab>Entradas</Tab>
-                    <Tab>Métricas</Tab>
+                    <Tab>Tendência</Tab>
                 </TabList>
                 <TabIndicator mt="-1.5px" height="2px" bg={colors.product} borderRadius="1px"/>
                 <TabPanels>

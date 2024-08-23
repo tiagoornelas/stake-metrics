@@ -58,5 +58,4 @@ export const FifaMatchupTypesDict: { [key in FifaMatchupTypes]: string } = {
 export const FifaStrategyScopeTypesDict: { [key in FifaStrategyScopeTypes]: string } = {
     [FifaStrategyScopeTypes.HOURS]: "Horas",
     [FifaStrategyScopeTypes.DAYS]: "Dias",
-    [FifaStrategyScopeTypes.MATCHES]: "Partidas"
 };

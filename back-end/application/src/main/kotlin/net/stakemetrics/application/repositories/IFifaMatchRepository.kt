@@ -11,14 +11,8 @@ interface IFifaMatchRepository {
     fun existsByIntegrationId(integrationId: Long): Boolean
     fun findByIntegrationId(integrationId: Long): FifaMatch?
     fun listFinishedMatchesByPlayerSince(league: FifaLeague, player: FifaPlayer, since: Date): List<FifaMatch>
-    fun listLastFinishedMatchesByPlayer(league: FifaLeague, player: FifaPlayer, last: Int): List<FifaMatch>
     fun listFinishedMatchesByMatchupSince(
-        league: FifaLeague, homePlayer: FifaPlayer, awayPlayer: FifaPlayer, since:
-        Date
-    ): List<FifaMatch>
-
-    fun listLastFinishedMatchesByMatchup(
-        league: FifaLeague, homePlayer: FifaPlayer, awayPlayer: FifaPlayer, last:
-        Int
+        league: FifaLeague, homePlayer: FifaPlayer,
+        awayPlayer: FifaPlayer, since: Date
     ): List<FifaMatch>
 }

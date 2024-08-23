@@ -2,7 +2,7 @@ import {NavigationLinkOnHeaderValue} from "utils/interfaces";
 
 export const APP_NAVIGATION: NavigationLinkOnHeaderValue[] = [
     {
-        name: "Apostas em Fifa",
+        name: "Apostas em E-Soccer",
         path: "fifa",
         beta: true
     }
