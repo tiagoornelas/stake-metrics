@@ -3,6 +3,7 @@ package net.stakemetrics.persistence.repositories
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.persistence.jpa.FifaBetJpaRepository
@@ -25,6 +26,10 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
     override fun findById(id: UUID): FifaBet {
         return fifaBetJpaRepository.findById(id).map { it.toDomain() }
             .orElseThrow { NotFoundException("FifaBet", "id", id.toString()) }
+    }
+
+    override fun findOpenBets(): List<FifaBet> {
+        return fifaBetJpaRepository.findAllByStatus(BetStatusTypes.PENDING).map { it.toDomain() }
     }
 
     override fun existsByStrategyAndMatchIntegrationId(

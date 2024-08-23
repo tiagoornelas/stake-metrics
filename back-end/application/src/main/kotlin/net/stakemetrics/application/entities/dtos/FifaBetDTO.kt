@@ -39,6 +39,10 @@ class FifaBetDTO {
         val success: Boolean = true
     )
 
+    data class CloseBetRequest(
+        val bet: FifaBet,
+    )
+
 }
 
 fun FifaBet.toResponse(): FifaBetDTO.BetResponse {
