@@ -170,8 +170,7 @@ export enum FifaMatchupTypes {
 
 export enum FifaStrategyScopeTypes {
     HOURS = "HOURS",
-    DAYS = "DAYS",
-    MATCHES = "MATCHES"
+    DAYS = "DAYS"
 }
 
 export interface MarketType {
