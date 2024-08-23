@@ -42,6 +42,12 @@ class QueueController(
         return ResponseEntity.ok(QueueDTO.Response())
     }
 
+    @PostMapping("/fifa/close-bet")
+    fun closeBet(@RequestBody payload: FifaBetDTO.CloseBetRequest): ResponseEntity<QueueDTO.Response> {
+        fifaBetService.closeBet(payload.bet)
+        return ResponseEntity.ok(QueueDTO.Response())
+    }
+
     @PostMapping("/fifa/message-queue")
     fun enqueueMessageTask(@RequestBody payload: MessengerDTO.EnqueueRequest): ResponseEntity<QueueDTO.Response> {
         messengerService.sendToChat(payload.messengerChat, payload.message)

@@ -12,6 +12,7 @@ import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.utils.Logger
+import net.stakemetrics.application.workers.FifaBetCloser
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
 import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
 import org.springframework.stereotype.Service
@@ -30,6 +31,7 @@ class FifaBetService(
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaStrategyService: FifaStrategyService,
     private val fifaBetMessageBuilder: FifaBetMessageBuilder,
+    private val fifaBetCloser: FifaBetCloser,
 ) {
 
     fun bet(payload: FifaBetDTO.BetRequest) {
@@ -94,6 +96,10 @@ class FifaBetService(
                 fifaBet.messages.add(message)
             }
         }
+    }
+
+    fun closeBet(bet: FifaBet) {
+        fifaBetCloser.close(bet)
     }
 
     fun listBets(userEmail: String, page: Int, size: Int): Page<FifaBetDTO.BetResponse> {
