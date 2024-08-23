@@ -1,4 +1,4 @@
-import {Box, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs} from "@chakra-ui/react";
+import {Box, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Tag} from "@chakra-ui/react";
 import FifaBets from "containers/fifa/bets/FifaBets";
 import FifaStrategies from "containers/fifa/strategy/FifaStrategies";
 import useThemeColors from "hooks/useThemeColors";
@@ -13,7 +13,8 @@ const FifaModule = () => {
                 <TabList>
                     <Tab>Estratégias</Tab>
                     <Tab>Entradas</Tab>
-                    <Tab>Tendência</Tab>
+                    <Tab>Tendência<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
+                    <Tab>Explorador<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
                 </TabList>
                 <TabIndicator mt="-1.5px" height="2px" bg={colors.product} borderRadius="1px"/>
                 <TabPanels>
@@ -22,6 +23,9 @@ const FifaModule = () => {
                     </TabPanel>
                     <TabPanel>
                         <FifaBets/>
+                    </TabPanel>
+                    <TabPanel>
+                        Empty State
                     </TabPanel>
                     <TabPanel>
                         Empty State
