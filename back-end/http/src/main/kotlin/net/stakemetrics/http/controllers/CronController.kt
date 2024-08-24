@@ -23,11 +23,6 @@ class CronController(private val logger: Logger, val cronService: CronService) {
         return runCronAndReturnResponse("mineFifaMatchOdds") { cronService.mineFifaMatchOdds() }
     }
 
-    @PostMapping("/fifa/close-bets")
-    fun closeFifaBets(): ResponseEntity<CronDTO.Response> {
-        return runCronAndReturnResponse("closeFifaBets") { cronService.closeFifaBets() }
-    }
-
     private fun runCronAndReturnResponse(methodName: String, block: () -> Unit): ResponseEntity<CronDTO.Response> {
         val elapsedTime = measureElapsedTimeInSeconds(methodName, block)
         return ResponseEntity.status(HttpStatus.OK).body(CronDTO.Response(elapsedTimeInSeconds = elapsedTime))

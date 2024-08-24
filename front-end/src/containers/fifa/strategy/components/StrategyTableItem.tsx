@@ -29,8 +29,9 @@ const ResultData = ({value}: { value: number }) => {
 
 const ROIData = ({value}: { value: number }) => {
     const percentageValue = value * 100;
-    const color = percentageValue > 0 ? "green" : percentageValue < 0 ? "red" : "black";
-    const formattedValue = `${percentageValue > 0 ? "+" : ""}${percentageValue.toFixed(2)} %`;
+    const roundedValue = Math.round(percentageValue * 100) / 100; // Round to two decimal places
+    const color = roundedValue > 0 ? "green" : roundedValue < 0 ? "red" : "black";
+    const formattedValue = `${roundedValue > 0 ? "+" : ""}${roundedValue.toFixed(2)} %`;
 
     return (
         <Td textAlign={"center"} color={color}>
@@ -38,7 +39,6 @@ const ROIData = ({value}: { value: number }) => {
         </Td>
     );
 };
-
 const StrategyTableItem = ({strategy}: { strategy: StrategyListItem }) => {
     return (
         <Tr key={strategy.id}>
@@ -46,9 +46,9 @@ const StrategyTableItem = ({strategy}: { strategy: StrategyListItem }) => {
             <Td textAlign={"center"}>{strategy.openBets}</Td>
             <Td textAlign={"center"}>{strategy.bets}</Td>
             <ResultData value={Number(strategy.result.toFixed(1))}/>
-            <ROIData value={Number(strategy.roi.toFixed(1))}/>
+            <ROIData value={Number(strategy.roi)}/>
             <ResultData value={Number(strategy.activeResult.toFixed(1))}/>
-            <ROIData value={Number(strategy.activeRoi.toFixed(1))}/>
+            <ROIData value={Number(strategy.activeRoi)}/>
             <Td><StrategyTableActions strategy={strategy}/></Td>
         </Tr>
     );

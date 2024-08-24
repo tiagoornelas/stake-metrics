@@ -12,11 +12,11 @@ import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.utils.Logger
-import net.stakemetrics.application.workers.FifaBetCloser
+import net.stakemetrics.application.workers.FifaBetClosingWorker
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
-import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
-import org.springframework.stereotype.Service
+import net.stakemetrics.application.workers.tipsters.FifaTipsterHelper
 import org.springframework.data.domain.Page
+import org.springframework.stereotype.Service
 
 @Service
 class FifaBetService(
@@ -31,7 +31,7 @@ class FifaBetService(
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaStrategyService: FifaStrategyService,
     private val fifaBetMessageBuilder: FifaBetMessageBuilder,
-    private val fifaBetCloser: FifaBetCloser,
+    private val fifaBetClosingWorker: FifaBetClosingWorker,
 ) {
 
     fun bet(payload: FifaBetDTO.BetRequest) {
@@ -99,7 +99,7 @@ class FifaBetService(
     }
 
     fun closeBet(bet: FifaBet) {
-        fifaBetCloser.close(bet)
+        fifaBetClosingWorker.close(bet)
     }
 
     fun listBets(userEmail: String, page: Int, size: Int): Page<FifaBetDTO.BetResponse> {

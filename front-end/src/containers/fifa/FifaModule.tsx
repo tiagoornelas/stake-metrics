@@ -1,22 +1,27 @@
-import {Box, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Tag} from "@chakra-ui/react";
+import {Box, Tab, TabList, TabPanel, TabPanels, Tabs, Tag} from "@chakra-ui/react";
+import NewFeatureEmptyState from "components/NewFeatureEmptyState";
 import FifaBets from "containers/fifa/bets/FifaBets";
 import FifaStrategies from "containers/fifa/strategy/FifaStrategies";
-import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
 
 const FifaModule = () => {
-    const colors = useThemeColors();
-
     return (
         <Box p={4}>
-            <Tabs position="relative" variant="unstyled">
-                <TabList>
-                    <Tab>Estratégias</Tab>
-                    <Tab>Entradas</Tab>
-                    <Tab>Tendência<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
-                    <Tab>Explorador<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
-                </TabList>
-                <TabIndicator mt="-1.5px" height="2px" bg={colors.product} borderRadius="1px"/>
+            <Tabs variant="enclosed" isLazy>
+                <Box overflow="auto" css={{
+                    "&::-webkit-scrollbar": {
+                        display: "none",
+                    },
+                    "-ms-overflow-style": "none",
+                    "scrollbar-width": "none",
+                }}>
+                    <TabList w='max-content'>
+                        <Tab>Estratégias</Tab>
+                        <Tab>Entradas</Tab>
+                        <Tab>Tendência<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
+                        <Tab>Explorador<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
+                    </TabList>
+                </Box>
                 <TabPanels>
                     <TabPanel>
                         <FifaStrategies/>
@@ -25,10 +30,12 @@ const FifaModule = () => {
                         <FifaBets/>
                     </TabPanel>
                     <TabPanel>
-                        Empty State
+                        <NewFeatureEmptyState
+                            text={"Em breve será possível acompanhar as tendências dos mercados de E-Soccer com informações relevantes para entender como as ligas estão se comportando."}/>
                     </TabPanel>
                     <TabPanel>
-                        Empty State
+                        <NewFeatureEmptyState
+                            text={"Em breve será possível explorar as estatísticas dos jogos passados, ver quais eram as previsões para aquela partida e qual foi, de fato, o resultado, permitindo que você use essas informações para encontrar as estratégias mais lucrativas."}/>
                     </TabPanel>
                 </TabPanels>
             </Tabs>

@@ -19,7 +19,7 @@ class FifaMatchRepository(private val fifaMatchJpaRepository: FifaMatchJpaReposi
     }
 
     override fun findLatestMatch(): FifaMatch? {
-        val optionalResult = fifaMatchJpaRepository.findTopByOrderByTimeDesc()
+        val optionalResult = fifaMatchJpaRepository.findTopByStatusOrderByTimeDesc(FifaMatchStatusTypes.ENDED)
         return if (optionalResult.isPresent) optionalResult.get().toDomain() else null
     }
 

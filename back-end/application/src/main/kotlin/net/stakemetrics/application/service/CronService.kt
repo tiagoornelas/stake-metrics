@@ -14,13 +14,11 @@ class CronService(
 
     fun mineFifaMatchResults() {
         fifaEndedMatchesEnqueuer.mine()
+        fifaOpenBetsEnqueuer.enqueue()
     }
 
     fun mineFifaMatchOdds() {
         fifaUpcomingMatchesEnqueuer.mine()
     }
 
-    fun closeFifaBets() {
-        fifaOpenBetsEnqueuer.enqueue()
-    }
 }
