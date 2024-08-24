@@ -140,26 +140,10 @@ const UserManagement = () => {
         );
     }
 
-    const SupportSection = () => (
-        <Box>
-            <Skeleton isLoaded={isLoaded}>
-                <Flex direction="column" mb={4}>
-                    <Flex gap={4} alignItems="center"><Heading size="md" mb={2}>Suporte</Heading>
-                    </Flex>
-                    <Text>Precisa de ajuda? Entre em contato com o suporte abaixo.</Text>
-                </Flex>
-                <Flex direction="column" gap={4} alignItems="self-start">
-                    <Button>Entrar em contato</Button>
-                </Flex>
-            </Skeleton>
-        </Box>
-    );
-
     return <SimpleGrid columns={columns} spacing={10} p={4}>
         <UserSection/>
         <TelegramSection/>
         <PlanSection/>
-        <SupportSection/>
     </SimpleGrid>
 }
 
