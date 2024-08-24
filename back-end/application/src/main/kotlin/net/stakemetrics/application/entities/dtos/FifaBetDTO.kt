@@ -32,6 +32,7 @@ class FifaBetDTO {
         val candidate: FifaMarketBetCandidates,
         val odds: Double,
         val status: BetStatusTypes,
+        val score: String?,
         val handicap: Double?,
         val profit: Double?,
     )
@@ -47,6 +48,14 @@ class FifaBetDTO {
 }
 
 fun FifaBet.toResponse(): FifaBetDTO.BetResponse {
+    val score = this.match?.let { match ->
+        if (match.homeGoalsAtFullTime != null && match.awayGoalsAtFullTime != null) {
+            "${match.homeGoalsAtFullTime} x ${match.awayGoalsAtFullTime}"
+        } else {
+            null
+        }
+    }
+
     return FifaBetDTO.BetResponse(
         id = this.id,
         isPaperBet = this.isPaperBet,
@@ -59,6 +68,7 @@ fun FifaBet.toResponse(): FifaBetDTO.BetResponse {
         candidate = this.line,
         odds = this.odds,
         status = this.status,
+        score = score,
         handicap = this.handicap,
         profit = this.profit
     )

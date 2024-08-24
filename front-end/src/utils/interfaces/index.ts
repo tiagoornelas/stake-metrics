@@ -242,6 +242,7 @@ export interface Bet {
     candidate: string;
     odds: number;
     status: string;
+    score: string | null;
     handicap: number | null;
     profit: number | null;
 }

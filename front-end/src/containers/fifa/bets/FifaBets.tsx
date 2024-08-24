@@ -47,8 +47,10 @@ const Header = ({showingBets, betsLength, isLoaded, showPaperBets, setShowPaperB
             </Skeleton>
             <Menu>
                 <MenuButton as={Button} colorScheme="blue" rightIcon={<FiFilter/>}>
-                    <Tag mr={2}>{showPaperBets ? "Todas" : "Reais"}</Tag>
-                    Filtrar
+                    <Flex alignItems="center">
+                        <Tag mr={2}>{showPaperBets ? "Todas" : "Reais"}</Tag>
+                        Filtrar
+                    </Flex>
                 </MenuButton>
                 <MenuList>
                     <MenuItem onClick={() => setShowPaperBets(true)}>Mostrar todas</MenuItem>
@@ -81,6 +83,7 @@ const FifaBets = () => {
                             <Th>Estratégia</Th>
                             <Th>Liga</Th>
                             <Th>Confronto</Th>
+                            <Th>Placar</Th>
                             <Th>Aposta</Th>
                             <Th>Odd</Th>
                             <Th>Resultado</Th>

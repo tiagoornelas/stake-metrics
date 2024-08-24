@@ -35,15 +35,11 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
     },
     "User has reached the maximum number of strategies": {
         title: "Limite de estratégias atingido!",
-        description: "Você não pode ter mais do que 30 estratégias criadas."
+        description: "Você não pode ter mais do que 20 estratégias criadas."
     },
-    "User has reached the maximum number of active strategies": {
+    "User has reached the maximum number of running strategies": {
         title: "Limite de estratégias atingido!",
-        description: "Você chegou ao seu limite de estratégias ativas, verifique seu plano."
-    },
-    "User has reached the maximum number of paper bet strategies": {
-        title: "Limite de estratégias atingido!",
-        description: "Você chegou ao seu limite de estratégias no modo Paper Bet, verifique seu plano."
+        description: "Você chegou ao seu limite de estratégias ativas ou em Paper Bet, verifique seu plano."
     },
     "Telegram chat with passphrase not found": {
         title: "Não conseguimos integrar o Telegram!",
