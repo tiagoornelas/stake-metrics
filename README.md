@@ -30,6 +30,7 @@ application-{{dev | prod}}.properties:
 ### .env (Frontend Env)
 Variáveis:
 - REACT_APP_BASE_URL=http://localhost:8080
+- REACT_APP_DISABLE_NEW_USERS=true (para desativar novos usuários)
 
 ## Demais instalações (Local Env)
 - Para identificar o código que é sensível ao ambiente, procure pela anotação @EnvironmentSensitive
