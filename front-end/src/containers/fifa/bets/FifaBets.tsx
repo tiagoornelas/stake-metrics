@@ -2,10 +2,15 @@ import {
     Box,
     Button,
     Flex,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
     Skeleton,
     Spinner,
     Table,
     TableContainer,
+    Tag,
     Tbody,
     Td,
     Text,
@@ -17,20 +22,22 @@ import BetEmptyState from "containers/fifa/bets/components/BetEmptyState";
 import BetTableItem from "containers/fifa/bets/components/BetTableItem";
 import useBetQuery from "containers/fifa/bets/hooks/useBetQuery";
 import useThemeColors from "hooks/useThemeColors";
-import React from 'react';
-import {SiGooglesheets} from "react-icons/all";
+import React, {useState} from 'react';
+import {FiFilter} from "react-icons/all";
 import {Bet} from "utils/interfaces";
 
-const Header = ({showingBets, betsLength, isLoaded}: {
+const Header = ({showingBets, betsLength, isLoaded, showPaperBets, setShowPaperBets}: {
     showingBets: number,
     betsLength: number,
-    isLoaded: boolean
+    isLoaded: boolean,
+    showPaperBets: boolean,
+    setShowPaperBets: (showPaperBets: boolean) => void
 }) => {
     const getLabel = () => {
         if (betsLength === 0) return "";
-        if (betsLength === 1) return "1 aposta";
-        if (showingBets >= betsLength) return `${betsLength} apostas`;
-        return `${showingBets} de ${betsLength} apostas`;
+        if (betsLength === 1) return "1 aposta" + (showPaperBets ? "" : " real");
+        if (showingBets >= betsLength) return `${betsLength} apostas` + (showPaperBets ? "" : " reais");
+        return `${showingBets} de ${betsLength} apostas` + (showPaperBets ? "" : " reais");
     }
 
     return (
@@ -38,13 +45,23 @@ const Header = ({showingBets, betsLength, isLoaded}: {
             <Skeleton isLoaded={isLoaded}>
                 <Text>{getLabel()}</Text>
             </Skeleton>
-            <Button colorScheme="blue" rightIcon={<SiGooglesheets/>}>Baixar relatório</Button>
+            <Menu>
+                <MenuButton as={Button} colorScheme="blue" rightIcon={<FiFilter/>}>
+                    <Tag mr={2}>{showPaperBets ? "Todas" : "Reais"}</Tag>
+                    Filtrar
+                </MenuButton>
+                <MenuList>
+                    <MenuItem onClick={() => setShowPaperBets(true)}>Mostrar todas</MenuItem>
+                    <MenuItem onClick={() => setShowPaperBets(false)}>Ocultar Paper Bet</MenuItem>
+                </MenuList>
+            </Menu>
         </Flex>
     )
 }
 
 const FifaBets = () => {
-    const {data, isLoading, fetchNextPage, isFetchingNextPage} = useBetQuery();
+    const [showPaperBets, setShowPaperBets] = useState<boolean>(false);
+    const {data, isLoading, fetchNextPage, isFetchingNextPage} = useBetQuery(showPaperBets);
     const colors = useThemeColors();
     const totalBets = data?.pages[0]?.totalElements ?? 0;
     const maxFetchedLength = data?.pages.reduce((acc, page) => acc + page.content.length, 0) ?? 0;
@@ -54,7 +71,8 @@ const FifaBets = () => {
 
     return (
         <Box mt={4}>
-            <Header showingBets={maxFetchedLength} betsLength={totalBets} isLoaded={!isLoading}/>
+            <Header showingBets={maxFetchedLength} betsLength={totalBets} isLoaded={!isLoading}
+                    showPaperBets={showPaperBets} setShowPaperBets={setShowPaperBets}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
                     <Thead>

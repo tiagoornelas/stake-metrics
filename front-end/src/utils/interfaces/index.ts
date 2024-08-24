@@ -232,6 +232,7 @@ export type Option = {
 
 export interface Bet {
     id: string;
+    isPaperBet: boolean;
     strategyName: string;
     leagueName: string;
     homePlayerName: string;
