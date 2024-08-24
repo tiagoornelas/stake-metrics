@@ -33,6 +33,10 @@ class UserRepository(private val userJpaRepository: UserJpaRepository) : IUserRe
         return queriedUser.get().toDomain()
     }
 
+    override fun findAll(): List<User> {
+        return userJpaRepository.findAll().map { it.toDomain() }
+    }
+
     override fun save(user: User): User {
         val savedUser = userJpaRepository.save(user.toModel())
         return savedUser.toDomain()

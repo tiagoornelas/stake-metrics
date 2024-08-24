@@ -25,5 +25,4 @@ class SubscriptionDTO {
         val url: String
     )
 
-
 }
