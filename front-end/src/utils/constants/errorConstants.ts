@@ -53,4 +53,16 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
         title: "Ops! Credenciais estão erradas.",
         description: "Verifique e-mail e login e tente novamente."
     },
+    "Name must be at least 2 characters long": {
+        title: "Ops! Nome muito curto.",
+        description: "O nome precisa ter pelo menos 2 caracteres."
+    },
+    "Password must be at least 8 characters long": {
+        title: "Ops! Senha muito curta.",
+        description: "A senha precisa ter pelo menos 8 caracteres."
+    },
+    "Email is not valid": {
+        title: "Ops! E-mail inválido.",
+        description: "O e-mail precisa ser válido."
+    }
 }
