@@ -160,4 +160,11 @@ class SubscriptionService(
             pricingTableId, stripePublicKey, customerSessionClientSecret.clientSecret
         )
     }
+
+    override fun checkUserSubscriptionStatus(user: User): SubscriptionStatus {
+        val integrationId = getIntegrationIdByUserEmail(user.email)
+        val subscriptions = getSubscriptions(integrationId)
+        val activeSubscriptions = subscriptions.filter { it.status == SubscriptionStatus.ACTIVE.integrationValue }
+        return if (activeSubscriptions.isNotEmpty()) SubscriptionStatus.ACTIVE else SubscriptionStatus.INACTIVE
+    }
 }
