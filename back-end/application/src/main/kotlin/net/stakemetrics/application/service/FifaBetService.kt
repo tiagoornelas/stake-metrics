@@ -8,6 +8,7 @@ import net.stakemetrics.application.entities.Message
 import net.stakemetrics.application.entities.MessengerChat
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
+import net.stakemetrics.application.entities.dtos.MessengerDTO
 import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.repositories.IFifaBetRepository
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service
 class FifaBetService(
     private val logger: Logger,
     private val userService: UserService,
+    private val queueService: IQueueService,
     private val messageService: MessageService,
     private val fifaMatchService: FifaMatchService,
     private val messengerService: IMessengerService,
@@ -30,8 +32,8 @@ class FifaBetService(
     private val fifaTipsterHelper: FifaTipsterHelper,
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaStrategyService: FifaStrategyService,
-    private val fifaBetMessageBuilder: FifaBetMessageBuilder,
     private val fifaBetClosingWorker: FifaBetClosingWorker,
+    private val fifaBetMessageBuilder: FifaBetMessageBuilder,
 ) {
 
     fun bet(payload: FifaBetDTO.BetRequest) {
@@ -85,13 +87,10 @@ class FifaBetService(
         val successfulChats = mutableSetOf<MessengerChat>()
 
         activeUserChats.forEach { chat ->
-            val messageSent = messengerService.sendToQueue(chat, betMessage)
+            val message = Message(messengerChat = chat, text = betMessage)
+            val messageSent = messengerService.sendToQueue(chat, betMessage, message.id)
             if (messageSent) {
                 successfulChats.add(chat)
-                val message = Message(
-                    messengerChat = chat,
-                    text = betMessage
-                )
                 messageService.save(message)
                 fifaBet.messages.add(message)
             }
@@ -102,10 +101,10 @@ class FifaBetService(
         fifaBetClosingWorker.close(bet)
     }
 
-    fun listBets(userEmail: String, page: Int, size: Int): Page<FifaBetDTO.BetResponse> {
+    fun listBets(userEmail: String, page: Int, size: Int, showPaperBets: Boolean): Page<FifaBetDTO.BetResponse> {
         val user = userService.findByEmail(userEmail)
         val strategyIds = fifaStrategyService.findAllByUserId(user.id).map { it.id }
-        return fifaBetRepository.listAllByStrategyIds(strategyIds, page, size).map { it.toResponse() }
+        return fifaBetRepository.listAllByStrategyIds(strategyIds, page, size, showPaperBets).map { it.toResponse() }
     }
 
     fun delete(userEmail: String, betId: UUID) {
@@ -113,9 +112,22 @@ class FifaBetService(
         val bet = fifaBetRepository.findById(betId)
         assertBetBelongsToUser(user, bet)
         fifaBetRepository.delete(bet)
+        discardBetMessages(bet)
     }
 
     private fun assertBetBelongsToUser(user: User, bet: FifaBet) {
         if (bet.strategy?.user?.id != user.id) throw EntityDoesntBelongToUserException()
+    }
+
+    private fun discardBetMessages(bet: FifaBet) {
+        bet.messages.forEach { message ->
+            queueService.enqueueEditMessageTask(
+                MessengerDTO.EditMessageEnqueueRequest(
+                    messengerChat = message.messengerChat!!,
+                    integrationMessageId = message.integrationMessageId!!,
+                    newText = fifaBetMessageBuilder.buildDiscard(bet)
+                )
+            )
+        }
     }
 }

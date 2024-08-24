@@ -22,6 +22,7 @@ class FifaBetDTO {
 
     data class BetResponse(
         val id: UUID,
+        val isPaperBet: Boolean,
         val strategyName: String,
         val leagueName: String,
         val homePlayerName: String,
@@ -48,6 +49,7 @@ class FifaBetDTO {
 fun FifaBet.toResponse(): FifaBetDTO.BetResponse {
     return FifaBetDTO.BetResponse(
         id = this.id,
+        isPaperBet = this.isPaperBet,
         strategyName = this.strategy?.name ?: "",
         leagueName = this.match?.league?.name ?: "",
         homePlayerName = this.match?.home?.name ?: "",

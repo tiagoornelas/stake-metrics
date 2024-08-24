@@ -17,7 +17,7 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             s.id AS id,
             s.name AS name,
             s.status AS status,
-            COUNT(CASE WHEN b.profit IS NULL THEN 1 END) AS openBets,
+            COUNT(CASE WHEN b.profit IS NULL AND b.status = 0 THEN 1 END) AS openBets,
             COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END) AS bets,
             COALESCE(SUM(b.profit), 0) AS result,
             COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,

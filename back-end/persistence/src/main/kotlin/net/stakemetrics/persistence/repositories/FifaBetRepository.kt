@@ -37,10 +37,18 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         return fifaBetJpaRepository.existsByStrategyAndMatchIntegrationId(fifaStrategy.toModel(), matchIntegrationId)
     }
 
-    override fun listAllByStrategyIds(strategyIds: Collection<UUID>, page: Int, size: Int): Page<FifaBet> {
+    override fun listAllByStrategyIds(
+        strategyIds: Collection<UUID>,
+        page: Int,
+        size: Int,
+        showPaperBets: Boolean
+    ): Page<FifaBet> {
         val pageable = PageRequest.of(page, size)
-        return fifaBetJpaRepository.findAllByStrategyIdInOrderByMatchTimeDesc(strategyIds, pageable)
-            .map { it.toDomain() }
+        return if (showPaperBets) {
+            fifaBetJpaRepository.findAllByStrategyIdInOrderByMatchTimeDesc(strategyIds, pageable)
+        } else {
+            fifaBetJpaRepository.findAllByStrategyIdInAndIsNotPaperBetOrderByMatchTimeDesc(strategyIds, pageable)
+        }.map { it.toDomain() }
     }
 
 }

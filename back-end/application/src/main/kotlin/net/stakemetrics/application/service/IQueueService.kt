@@ -11,4 +11,5 @@ interface IQueueService {
     fun enqueueBetTask(payload: FifaBetDTO.BetRequest)
     fun enqueueCloseBetTask(payload: FifaBetDTO.CloseBetRequest)
     fun enqueueMessageTask(payload: MessengerDTO.EnqueueRequest, delay: Int?)
+    fun enqueueEditMessageTask(payload: MessengerDTO.EditMessageEnqueueRequest)
 }
