@@ -1,4 +1,4 @@
-import {Badge, Box, Button, Flex, Heading, SimpleGrid, Skeleton, Text, useBreakpointValue} from "@chakra-ui/react";
+import {Badge, Box, Button, Flex, Heading, SimpleGrid, Skeleton, Tag, Text, useBreakpointValue} from "@chakra-ui/react";
 import ChangePasswordModal from "containers/user/components/ChangePasswordModal";
 import EditUserModal from "containers/user/components/EditUserModal";
 import TelegramChannelConnectModal from "containers/user/components/TelegramChannelConnectModal";
@@ -10,7 +10,7 @@ import {useCallback, useEffect, useMemo, useState} from "react";
 import {createPortalSession} from "services/planService";
 import {fetchTelegramChats} from "services/telegramService";
 import {FEATURES} from "utils/constants/featureConstants";
-import {getFeatureAmount} from "utils/helpers/featureHelper";
+import {getFeatureAmount, getFeaturesWithLabels} from "utils/helpers/featureHelper";
 import {applyDateMask} from "utils/helpers/sanitizationHelper";
 import {TelegramChat, UserContext} from "utils/interfaces";
 
@@ -100,29 +100,45 @@ const UserManagement = () => {
         </Box>
     );
 
-    const PlanSection = () => (
-        <Box>
-            <Skeleton isLoaded={isLoaded}>
-                <Flex direction="column" mb={4}>
-                    <Flex gap={4} alignItems="center"><Heading size="md" mb={2}>Plano</Heading>
-                        {userContext.user.isExpired ? <Badge colorScheme='red'>Expirado</Badge> :
-                            <Badge colorScheme='green'>Ativo</Badge>}
+    const PlanSection = () => {
+        const {user} = useUserState();
+        const features = getFeaturesWithLabels(user);
+
+        return (
+            <Box>
+                <Skeleton isLoaded={isLoaded}>
+                    <Flex direction="column" mb={4}>
+                        <Flex gap={4} alignItems="center"><Heading size="md" mb={2}>Plano</Heading>
+                            {userContext.user.isExpired ? <Badge colorScheme='red'>Expirado</Badge> :
+                                <Badge colorScheme='green'>Ativo</Badge>}
+                        </Flex>
+                        {userContext.user.subscription?.expiresAt && (
+                            <Box>
+                                <Heading size="sm">{userContext.user.isExpired ? "Expirou em" : "Expira em"}</Heading>
+                                <Text>{applyDateMask(userContext.user.subscription?.expiresAt)}</Text>
+                            </Box>
+                        )}
+                        <Box mt={2}>
+                            <Heading size="sm">Seu plano inclui</Heading>
+                            {features.map((feature) => (
+                                <Flex alignItems="center" key={feature.label} mb={1}>
+                                    <Text>{feature.label}</Text>
+                                    <Tag colorScheme={feature.amount === 0 ? 'red' : 'green'} ml={2}>
+                                        {feature.amount === 0 ? 'Não' : feature.amount === 1 ? 'Sim' : feature.amount}
+                                    </Tag>
+                                </Flex>
+                            ))}
+                        </Box>
                     </Flex>
-                    {userContext.user.subscription?.expiresAt && (
-                        <>
-                            <Heading size="sm">{userContext.user.isExpired ? "Expirou em" : "Expira em"}</Heading>
-                            <Text>{applyDateMask(userContext.user.subscription?.expiresAt)}</Text>
-                        </>
-                    )}
-                </Flex>
-                <Flex direction="column" gap={4} alignItems="self-start">
-                    <Skeleton isLoaded={isManagementLinkLoaded}>
-                        <Button onClick={handleManagementSubscriptionClick}>Gerenciar assinatura</Button>
-                    </Skeleton>
-                </Flex>
-            </Skeleton>
-        </Box>
-    );
+                    <Flex direction="column" gap={4} alignItems="self-start">
+                        <Skeleton isLoaded={isManagementLinkLoaded}>
+                            <Button onClick={handleManagementSubscriptionClick}>Gerenciar assinatura</Button>
+                        </Skeleton>
+                    </Flex>
+                </Skeleton>
+            </Box>
+        );
+    }
 
     const SupportSection = () => (
         <Box>

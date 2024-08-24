@@ -49,6 +49,7 @@ const BetTableItem = ({bet}: Props) => {
             <Td>{bet.strategyName}{bet.isPaperBet && <Tag ml={2} colorScheme={"yellow"}>Paper Bet</Tag>}</Td>
             <Td>{bet.leagueName}</Td>
             <Td>{`${bet.homePlayerName} x ${bet.awayPlayerName}`}</Td>
+            <Td>{bet.score || ""}</Td>
             <Td>{bet.handicap ? `${candidate} ${bet.handicap}` : candidate}</Td>
             <Td>{bet.odds}</Td>
             <Td>{getStatusTag(bet.status)}</Td>
