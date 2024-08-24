@@ -8,7 +8,6 @@ import net.stakemetrics.application.entities.enums.FifaRuleTypes
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
 import net.stakemetrics.application.workers.OddAndLineCalculator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
-import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
 import org.springframework.stereotype.Component
 
 @Component

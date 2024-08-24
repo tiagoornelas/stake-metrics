@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
     fun existsByStrategyAndMatchIntegrationId(strategy: FifaStrategyModel, matchIntegrationId: Long): Boolean
-    fun findAllByStrategyIdIn(strategyIds: Collection<UUID>, pageable: Pageable): Page<FifaBetModel>
-    fun findAllByStatus(status: BetStatusTypes): List<FifaBetModel>
+    fun findAllByStrategyIdInOrderByMatchTimeDesc(strategyIds: Collection<UUID>, pageable: Pageable): Page<FifaBetModel>
+    fun findAllByStatusOrProfit(status: BetStatusTypes, profit: Double?): List<FifaBetModel>
 }

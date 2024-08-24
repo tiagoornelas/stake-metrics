@@ -45,7 +45,7 @@ const BetTableItem = ({bet}: Props) => {
 
     return (
         <Tr key={bet.id}>
-            <Td>{formatDate(bet.matchTime, "dd/MM/yy HH:mm")}</Td>
+            <Td>{formatDate(bet.matchTime, "dd/MM HH:mm")}</Td>
             <Td>{bet.strategyName}</Td>
             <Td>{bet.leagueName}</Td>
             <Td>{`${bet.homePlayerName} x ${bet.awayPlayerName}`}</Td>
