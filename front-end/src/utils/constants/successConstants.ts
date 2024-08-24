@@ -53,4 +53,8 @@ export const SUCCESS_TYPES: Record<string, SuccessDictionary> = {
         title: "Ok!",
         description: "Estratégia excluída com sucesso."
     },
+    BET_DELETED: {
+        title: "Ok!",
+        description: "Entrada excluída com sucesso."
+    },
 }

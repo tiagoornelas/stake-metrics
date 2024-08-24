@@ -20,7 +20,7 @@ const DeleteButton = ({bet}: { bet: Bet }) => {
         await deleteBet(bet.id);
         invalidateBetQuery();
         invalidateStrategyQuery();
-    }, SUCCESS_TYPES.STRATEGY_DELETED);
+    }, SUCCESS_TYPES.BET_DELETED);
 
     return <DeleteConfirmationDialog entityName={"entrada"} confirmCallback={handleDelete} variant='outline'/>
 }
