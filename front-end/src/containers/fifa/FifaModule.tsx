@@ -19,7 +19,7 @@ const FifaModule = () => {
                         <Tab>Estratégias</Tab>
                         <Tab>Entradas</Tab>
                         <Tab>Tendência<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
-                        <Tab>Explorador<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
+                        <Tab>Monitoramento<Tag ml={2} colorScheme={"blue"}>Em breve</Tag></Tab>
                     </TabList>
                 </Box>
                 <TabPanels>
@@ -35,7 +35,7 @@ const FifaModule = () => {
                     </TabPanel>
                     <TabPanel>
                         <NewFeatureEmptyState
-                            text={"Em breve será possível explorar as estatísticas dos jogos passados, ver quais eram as previsões para aquela partida e qual foi, de fato, o resultado, permitindo que você use essas informações para encontrar as estratégias mais lucrativas."}/>
+                            text={"Em breve será possível monitorar os jogos que ocorreram e as suas estatísticas, ver quais eram as previsões para aquela partida e qual foi, de fato, o resultado, permitindo que você use essas informações para encontrar as estratégias mais lucrativas."}/>
                     </TabPanel>
                 </TabPanels>
             </Tabs>

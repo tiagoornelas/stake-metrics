@@ -14,10 +14,12 @@ class FifaBetController(private val fifaBetService: FifaBetService) {
 
     @GetMapping
     fun listBets(
-        @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "30") size: Int
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "30") size: Int,
+        @RequestParam(defaultValue = "true") showPaperBets: Boolean
     ): ResponseEntity<Page<FifaBetDTO.BetResponse>> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
-        val bets = fifaBetService.listBets(userEmail, page, size)
+        val bets = fifaBetService.listBets(userEmail, page, size, showPaperBets)
         return ResponseEntity.ok(bets)
     }
 

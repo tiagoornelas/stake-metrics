@@ -46,7 +46,7 @@ const BetTableItem = ({bet}: Props) => {
     return (
         <Tr key={bet.id}>
             <Td>{formatDate(bet.matchTime, "dd/MM HH:mm")}</Td>
-            <Td>{bet.strategyName}</Td>
+            <Td>{bet.strategyName}{bet.isPaperBet && <Tag ml={2} colorScheme={"yellow"}>Paper Bet</Tag>}</Td>
             <Td>{bet.leagueName}</Td>
             <Td>{`${bet.homePlayerName} x ${bet.awayPlayerName}`}</Td>
             <Td>{bet.handicap ? `${candidate} ${bet.handicap}` : candidate}</Td>

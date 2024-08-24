@@ -9,40 +9,38 @@ import org.springframework.stereotype.Service
 
 @Service
 class FifaGoalLineBetCloser(private val fifaBetRepository: IFifaBetRepository) : FifaBetCloser {
-    override fun closeBet(fifaBet: FifaBet) {
+    override fun closeBet(fifaBet: FifaBet): FifaBet {
         val candidate = fifaBet.line
-        val match = fifaBet.match ?: return
-        val handicap = fifaBet.handicap ?: return
-        val totalGoals = match.totalGoalsAtFullTime?.toDouble() ?: return
-
-        val updatedFifaBet = fifaBet.copy()
+        val match = fifaBet.match!!
+        val handicap = fifaBet.handicap
+        val totalGoals = match.totalGoalsAtFullTime?.toDouble()
 
         when (candidate) {
             FifaMarketBetCandidates.OVER -> {
                 when {
-                    totalGoals > handicap -> {
+                    totalGoals!! > handicap!! -> {
                         if (totalGoals == handicap + 0.25) {
-                            updatedFifaBet.status = BetStatusTypes.HALF_WON
-                            updatedFifaBet.profit = (updatedFifaBet.odds - 1.0) / 2
+                            fifaBet.status = BetStatusTypes.HALF_WON
+                            fifaBet.profit = (fifaBet.odds - 1.0) / 2
                         } else {
-                            updatedFifaBet.status = BetStatusTypes.WON
-                            updatedFifaBet.profit = updatedFifaBet.odds - 1.0
+                            fifaBet.status = BetStatusTypes.WON
+                            fifaBet.profit = fifaBet.odds - 1.0
                         }
                     }
 
                     totalGoals < handicap -> {
                         if (totalGoals == handicap - 0.25) {
-                            updatedFifaBet.status = BetStatusTypes.HALF_LOST
-                            updatedFifaBet.profit = -0.5
+                            fifaBet.status = BetStatusTypes.HALF_LOST
+                            fifaBet.profit = -0.5
                         } else {
-                            updatedFifaBet.status = BetStatusTypes.LOST
-                            updatedFifaBet.profit = -1.0
+                            fifaBet.status = BetStatusTypes.LOST
+                            fifaBet.profit = -1.0
                         }
                     }
 
                     totalGoals == handicap -> {
-                        updatedFifaBet.status = BetStatusTypes.VOID
-                        updatedFifaBet.profit = 0.0
+                        fifaBet.status = BetStatusTypes.VOID
+                        fifaBet.profit = 0.0
                     }
 
                 }
@@ -50,38 +48,39 @@ class FifaGoalLineBetCloser(private val fifaBetRepository: IFifaBetRepository) :
 
             FifaMarketBetCandidates.UNDER -> {
                 when {
-                    totalGoals < handicap -> {
+                    totalGoals!! < handicap!! -> {
                         if (totalGoals == handicap - 0.25) {
-                            updatedFifaBet.status = BetStatusTypes.HALF_WON
-                            updatedFifaBet.profit = (updatedFifaBet.odds - 1.0) / 2
+                            fifaBet.status = BetStatusTypes.HALF_WON
+                            fifaBet.profit = (fifaBet.odds - 1.0) / 2
                         } else {
-                            updatedFifaBet.status = BetStatusTypes.WON
-                            updatedFifaBet.profit = updatedFifaBet.odds - 1.0
+                            fifaBet.status = BetStatusTypes.WON
+                            fifaBet.profit = fifaBet.odds - 1.0
                         }
                     }
 
                     totalGoals > handicap -> {
                         if (totalGoals == handicap + 0.25) {
-                            updatedFifaBet.status = BetStatusTypes.HALF_LOST
-                            updatedFifaBet.profit = -0.5
+                            fifaBet.status = BetStatusTypes.HALF_LOST
+                            fifaBet.profit = -0.5
                         } else {
-                            updatedFifaBet.status = BetStatusTypes.LOST
-                            updatedFifaBet.profit = -1.0
+                            fifaBet.status = BetStatusTypes.LOST
+                            fifaBet.profit = -1.0
                         }
                     }
 
                     totalGoals == handicap -> {
-                        updatedFifaBet.status = BetStatusTypes.VOID
-                        updatedFifaBet.profit = 0.0
+                        fifaBet.status = BetStatusTypes.VOID
+                        fifaBet.profit = 0.0
                     }
 
                 }
             }
 
-            else -> return
+            else -> throw IllegalArgumentException("Invalid candidate for goal line bet: $candidate")
         }
 
-        fifaBetRepository.save(updatedFifaBet)
+        fifaBetRepository.save(fifaBet)
+        return fifaBet
     }
 
 }

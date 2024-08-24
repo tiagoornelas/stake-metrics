@@ -3,6 +3,7 @@ package net.stakemetrics.application.workers
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import net.stakemetrics.application.entities.FifaBet
+import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import org.springframework.stereotype.Component
 
@@ -10,12 +11,47 @@ import org.springframework.stereotype.Component
 class FifaBetMessageBuilder {
 
     fun build(fifaBet: FifaBet): String {
+        val commonMessage = buildCommonMessage(fifaBet)
+        return """
+            |$commonMessage
+            |
+            |${fifaBet.match?.league?.link}
+        """.trimMargin()
+    }
+
+    fun buildResult(fifaBet: FifaBet): String {
+        val commonMessage = buildCommonMessage(fifaBet)
+        val score = "${fifaBet.match?.homeGoalsAtFullTime}x${fifaBet.match?.awayGoalsAtFullTime}"
+        val result = when (fifaBet.status) {
+            BetStatusTypes.PENDING -> "🕒 Pendente"
+            BetStatusTypes.WON -> "✅ Vencida"
+            BetStatusTypes.HALF_WON -> "✅\uD83D\uDD04 Meio Ganho"
+            BetStatusTypes.VOID -> "\uD83D\uDD04 Devolvida"
+            BetStatusTypes.HALF_LOST -> "❌\uD83D\uDD04 Meia Perca"
+            BetStatusTypes.LOST -> "❌ Perdida"
+        }
+        return """
+            |$commonMessage
+            |
+            |$result - Placar: $score
+        """.trimMargin()
+    }
+
+    fun buildDiscard(fifaBet: FifaBet): String {
+        val commonMessage = buildCommonMessage(fifaBet)
+        return """
+            |$commonMessage
+            |
+            |🗑️ Descartada
+        """.trimMargin()
+    }
+
+    private fun buildCommonMessage(fifaBet: FifaBet): String {
         val homePlayerName = fifaBet.match?.home?.name
         val awayPlayerName = fifaBet.match?.away?.name
         val line = parseLine(fifaBet)
         val odd = fifaBet.odds
         val leagueName = fifaBet.match?.league?.name
-        val leagueLink = fifaBet.match?.league?.link
         val matchTime: String? = formatMatchTime(fifaBet)
 
         return """
@@ -24,8 +60,6 @@ class FifaBetMessageBuilder {
             |🔭 $line @ $odd
             |
             |🏆 $leagueName
-            |
-            |$leagueLink
         """.trimMargin()
     }
 
