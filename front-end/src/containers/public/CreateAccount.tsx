@@ -4,6 +4,7 @@ import UseTerms from "components/UseTerms";
 import {useErrorToast} from "hooks/useErrorToast";
 import * as React from "react";
 import {ChangeEvent, Fragment, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {createUser} from "services/userService";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {UserCreationBody} from "utils/interfaces";
@@ -19,6 +20,7 @@ const WaitingListComponent = () => {
 }
 
 const CreateAccount = () => {
+    const navigate = useNavigate();
     const acceptingNewCustomers = process.env.REACT_APP_DISABLE_NEW_USERS !== "true";
 
     const [form, setForm] = useState<UserCreationBody>({
@@ -36,9 +38,8 @@ const CreateAccount = () => {
     }
 
     const handleSubmit = useErrorToast(async () => {
-
-        await createUser(form)
-        window.location.assign("/");
+        await createUser(form);
+        navigate('/login', {replace: true});
     }, SUCCESS_TYPES.USER_CREATED)
 
     return (<Stack spacing="6">

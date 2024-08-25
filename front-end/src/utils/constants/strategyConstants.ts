@@ -10,7 +10,7 @@ import {
 export const strategyStatusDict = {
     ACTIVE: {
         color: "green",
-        name: "Ativo",
+        name: "Ativa",
         actionText: "Ativar"
     },
     PAPER_BET: {
@@ -20,7 +20,7 @@ export const strategyStatusDict = {
     },
     INACTIVE: {
         color: "red",
-        name: "Inativo",
+        name: "Inativa",
         actionText: "Desativar"
     },
 };

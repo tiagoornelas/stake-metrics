@@ -5,9 +5,13 @@ export const SUCCESS_TYPES: Record<string, SuccessDictionary> = {
         title: "Ok!",
         description: "Operação realizada com sucesso."
     },
+    USER_LOGGED_IN: {
+        title: "Seja bem-vindo! 🎉",
+        description: "Você foi logado com sucesso."
+    },
     USER_CREATED: {
-        title: "Ok!",
-        description: "Usuário criado com sucesso."
+        title: "Tudo certo! 👍",
+        description: "Seu usuário foi criado, agora é só fazer login."
     },
     USER_EDITED: {
         title: "Ok!",

@@ -15,8 +15,8 @@ const PrivateAreaWrapper = ({children}: Props) => {
     const isContextLoaded: boolean = useMemo(() => Object.keys(userContext.user).length !== 0, [userContext]);
 
     useEffect(() => {
-        if (isContextLoaded && userContext.user.isExpired && window.location.pathname !== "/user-management") {
-            window.location.assign("/user-management")
+        if (isContextLoaded && userContext.user.isExpired && window.location.pathname !== "/app/user-management") {
+            window.location.assign("/app/user-management")
         }
     }, [userContext.user.isExpired, isContextLoaded]);
 
