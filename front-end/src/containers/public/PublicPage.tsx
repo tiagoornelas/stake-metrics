@@ -4,9 +4,12 @@ import SettingsWireframe from "assets/SettingsWireframe.png";
 import TelegramWireframe from "assets/TelegramWireframe.png";
 import ProductFooter from "components/ProductFooter";
 import PublicHeader from "containers/public/components/PublicHeader";
+import {differenceInDays} from 'date-fns';
 import React, {Fragment} from 'react';
 import {GoTelescope} from "react-icons/all";
 import {useNavigate} from "react-router-dom";
+
+const daysValidatingDataBase = differenceInDays(new Date(), new Date(2023, 12, 5));
 
 const firstSectionFeatures = [
     {
@@ -61,7 +64,7 @@ const secondSessionFeatures = [
         emoji: "🔒"
     },
     {
-        text: "Saia da manada com nossa base de dados própria validada há mais de 500 dias!",
+        text: `Saia da manada com nossos dados próprios já validados por ${daysValidatingDataBase} dias!`,
         emoji: "🐘"
     },
 ];
