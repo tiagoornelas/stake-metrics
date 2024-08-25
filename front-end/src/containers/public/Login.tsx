@@ -29,7 +29,17 @@ const Login = () => {
 
     const handleSubmit = useErrorToast(async () => {
         setIsLoading(true);
-        const {token, userId} = await login(form);
+        let token: string;
+        let userId: string;
+        try {
+            const data = await login(form);
+            token = data.token;
+            userId = data.userId;
+        } catch (e) {
+            setIsLoading(false);
+            throw e;
+        }
+
         setCookies("token", token);
         setCookies("userId", userId);
         setTimeout(() => {
