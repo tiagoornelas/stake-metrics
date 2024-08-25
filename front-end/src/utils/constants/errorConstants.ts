@@ -64,5 +64,9 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
     "Email is not valid": {
         title: "Ops! E-mail inválido.",
         description: "O e-mail precisa ser válido."
-    }
+    },
+    "Failed to retrieve authentication tokens. Please try again.": {
+        title: "Ops! Falha na autenticação.",
+        description: "Não conseguimos recuperar os tokens de autenticação. Tente novamente."
+    },
 }

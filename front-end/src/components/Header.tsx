@@ -16,8 +16,7 @@ import {
     useMediaQuery
 } from '@chakra-ui/react';
 import BetaTag from "components/BetaTag";
-import ProductLogo from "components/ProductLogo";
-import ProductName from "components/ProductName";
+import ProductOnHeader from "components/ProductOnHeader";
 import {useUserDispatch, useUserState} from "context/UserContext";
 import {Dispatch, Fragment, ReactNode} from "react";
 import {useCookies} from "react-cookie";
@@ -47,7 +46,7 @@ const NavLink = (props: Props) => {
                 bg: useColorModeValue('gray.200', 'gray.700'),
             }}
             cursor={"pointer"}
-            onClick={() => navigate(path.toLowerCase(), {replace: true})}>
+            onClick={() => navigate(`/${path.toLowerCase()}`, {replace: true})}>
             {children}
         </Box>
     )
@@ -73,15 +72,12 @@ export const Header = () => {
         window.location.reload();
     };
 
-    const goToHomePage = () => navigate("/", {replace: true});
 
     return (
         <>
             <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
                 <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-                    <Flex direction="row" alignItems={'center'} gap={2}
-                          cursor="pointer"
-                          onClick={goToHomePage}><ProductLogo/><b><ProductName/></b></Flex>
+                    <ProductOnHeader path={"/app"}/>
                     <HStack as={'nav'} spacing={4} display={{base: 'none', md: 'flex'}}>
                         {APP_NAVIGATION.map(({name, path, beta}: NavigationLinkOnHeaderValue) => (
                             <NavLink key={path} path={path.toLowerCase()}>
@@ -138,7 +134,7 @@ export const Header = () => {
                                             <MenuDivider/>
                                         </Fragment>
                                     }
-                                    <MenuItem onClick={() => navigate("/user-management")}>Minha conta</MenuItem>
+                                    <MenuItem onClick={() => navigate("/app/user-management")}>Minha conta</MenuItem>
                                     <MenuItem onClick={logOut}>Sair</MenuItem>
                                 </MenuList>
                             </Menu>

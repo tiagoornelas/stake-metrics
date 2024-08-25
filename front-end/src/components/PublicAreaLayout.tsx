@@ -1,20 +1,14 @@
-import {
-    Box,
-    Container,
-    Grid,
-    Heading,
-    Stack,
-} from '@chakra-ui/react'
+import {Box, Container, Grid, Heading, Stack,} from '@chakra-ui/react'
+import {ColorModeSwitcher} from "ColorModeSwitcher";
 import ProductLogo from 'components/ProductLogo'
 import ProductName from "components/ProductName";
-import {ColorModeSwitcher} from "ColorModeSwitcher";
 import * as React from "react";
 
 interface Props {
     children: React.ReactNode;
 }
 
-const PublicAreaWrapper = ({children}: Props) => {
+const PublicAreaLayout = ({children}: Props) => {
     return (
         <Box textAlign="center" fontSize="xl">
             <Grid minH="100vh" p={3}>
@@ -43,4 +37,4 @@ const PublicAreaWrapper = ({children}: Props) => {
     );
 }
 
-export default PublicAreaWrapper;
+export default PublicAreaLayout;
