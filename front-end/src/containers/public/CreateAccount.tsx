@@ -2,6 +2,7 @@ import {Button, Flex, FormControl, FormLabel, Heading, HStack, Input, Stack, Tex
 import PasswordField from "components/PasswordField";
 import UseTerms from "components/UseTerms";
 import {useErrorToast} from "hooks/useErrorToast";
+import useThemeColors from "hooks/useThemeColors";
 import * as React from "react";
 import {ChangeEvent, Fragment, useState} from "react";
 import {HiHome} from "react-icons/all";
@@ -11,6 +12,7 @@ import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {UserCreationBody} from "utils/interfaces";
 
 const WaitingListComponent = () => {
+    const colors = useThemeColors();
     const navigate = useNavigate();
     const goToHome = () => navigate('/', {replace: true});
 
@@ -20,7 +22,8 @@ const WaitingListComponent = () => {
             seleção de clientes que estão testando o produto.</Text>
         <Text fontSize="md">Caso tenha interesse de participar dos testes, envie e-mail para
             <b> support@stakemetrics.net</b> que avaliaremos a sua solicitação.</Text>
-        <Button colorScheme={"yellow"} onClick={goToHome} rightIcon={<HiHome/>}>Voltar para página Inicial</Button>
+        <Button bgColor={colors.product} color={colors.productContrast} onClick={goToHome} rightIcon={<HiHome/>}>Voltar
+            para página Inicial</Button>
     </Flex>)
 }
 
@@ -47,6 +50,9 @@ const CreateAccount = () => {
         navigate('/login', {replace: true});
     }, SUCCESS_TYPES.USER_CREATED)
 
+    const handleGoToLogin = () => navigate('/login', {replace: true});
+    const handleGoToRecoverPassword = () => navigate('/recover-account', {replace: true});
+
     return (<Stack spacing="6">
             {acceptingNewCustomers ? <Fragment><Stack spacing="5">
                 <FormControl>
@@ -64,11 +70,11 @@ const CreateAccount = () => {
                     <UseTerms buttonText={"Criar conta"} confirmAction={handleSubmit}/>
                 </Stack></Fragment> : <WaitingListComponent/>}
             <HStack justify="space-between">
-                <Button variant="text" size="sm">
-                    <a href="/">Já tenho conta</a>
+                <Button variant="text" size="sm" onClick={handleGoToLogin}>
+                    Já tenho conta
                 </Button>
-                <Button variant="text" size="sm">
-                    <a href="/recover-account">Esqueci a senha</a>
+                <Button variant="text" size="sm" onClick={handleGoToRecoverPassword}>
+                    Esqueci a senha
                 </Button>
             </HStack>
         </Stack>

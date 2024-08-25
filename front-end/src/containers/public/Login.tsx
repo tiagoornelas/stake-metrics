@@ -46,7 +46,10 @@ const Login = () => {
             navigate("/app", {replace: true});
             setIsLoading(false)
         }, 1500);
-    }, SUCCESS_TYPES.USER_LOGGED_IN)
+    }, SUCCESS_TYPES.USER_LOGGED_IN);
+
+    const handleGoToCreateAccount = () => navigate('/create-account', {replace: true});
+    const handleGoToRecoverPassword = () => navigate('/recover-account', {replace: true});
 
     return (
         <Stack spacing="6">
@@ -62,11 +65,11 @@ const Login = () => {
                         onClick={handleSubmit} isLoading={isLoading}>Entrar</Button>
             </Stack>
             <HStack justify="space-between">
-                <Button variant="text" size="sm">
-                    <a href="/create-account">Criar conta</a>
+                <Button variant="text" size="sm" onClick={handleGoToCreateAccount}>
+                    Criar conta
                 </Button>
-                <Button variant="text" size="sm">
-                    <a href="/recover-account">Esqueci a senha</a>
+                <Button variant="text" size="sm" onClick={handleGoToRecoverPassword}>
+                    Esqueci a senha
                 </Button>
             </HStack>
         </Stack>
