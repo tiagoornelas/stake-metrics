@@ -18,11 +18,13 @@ import {
 import BetaTag from "components/BetaTag";
 import ProductOnHeader from "components/ProductOnHeader";
 import {useUserDispatch, useUserState} from "context/UserContext";
+import {useErrorToast} from "hooks/useErrorToast";
 import {Dispatch, Fragment, ReactNode} from "react";
 import {useCookies} from "react-cookie";
 import {FaMoon, FaSun} from "react-icons/fa";
 import {useNavigate} from 'react-router-dom';
 import {APP_NAVIGATION} from "utils/constants/navigationConstants";
+import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {cleanUser} from "utils/helpers/contextHelper";
 import {NavigationLinkOnHeaderValue, UserContext, UserReducerAction} from "utils/interfaces";
 
@@ -65,12 +67,14 @@ export const Header = () => {
 
     const getAvatarSource = (): string => `https://ui-avatars.com/api/?name=${getLoggedUserNames().join("+")}`
 
-    const logOut = () => {
+    const logOut = useErrorToast(async () => {
         cleanUser(userDispatch);
         removeCookie("userId");
         removeCookie("token");
-        window.location.reload();
-    };
+        setTimeout(() => {
+            navigate("/", {replace: true});
+        }, 500);
+    }, SUCCESS_TYPES.USER_LOGGED_OUT);
 
 
     return (
