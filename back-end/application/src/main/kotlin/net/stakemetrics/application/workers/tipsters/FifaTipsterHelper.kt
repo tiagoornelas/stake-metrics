@@ -1,4 +1,4 @@
-package net.stakemetrics.application.workers.tipsters.helpers
+package net.stakemetrics.application.workers.tipsters
 
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategyRule

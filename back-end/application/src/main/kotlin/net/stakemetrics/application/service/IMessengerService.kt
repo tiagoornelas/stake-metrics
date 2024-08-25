@@ -7,8 +7,9 @@ import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.MessengerDTO
 
 interface IMessengerService {
-    fun sendToQueue(messengerChat: MessengerChat, message: String): Boolean
-    fun sendToChat(messengerChat: MessengerChat, message: String)
+    fun sendToQueue(messengerChat: MessengerChat, message: String, messageId: UUID?): Boolean
+    fun sendToChat(messengerChat: MessengerChat, message: String, messageId: UUID?)
+    fun editMessage(dto: MessengerDTO.EditMessageEnqueueRequest)
     fun sendTestMessage(messengerChatId: UUID)
     fun listIntegrationsForUser(userId: UUID): List<MessengerChat>
     fun listActiveUserChats(user: User): List<MessengerChat>

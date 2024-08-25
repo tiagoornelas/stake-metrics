@@ -10,7 +10,6 @@ import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakExc
 import net.stakemetrics.application.service.FifaPlayerService
 import net.stakemetrics.application.workers.OddAndLineCalculator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
-import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
 import org.springframework.stereotype.Component
 
 @Component

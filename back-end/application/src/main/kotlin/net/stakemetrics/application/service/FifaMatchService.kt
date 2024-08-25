@@ -101,22 +101,11 @@ class FifaMatchService @Autowired constructor(
         return fifaMatchRepository.listFinishedMatchesByPlayerSince(league, player, since)
     }
 
-    fun listLastFinishedMatchesByPlayer(league: FifaLeague, player: FifaPlayer, last: Int): List<FifaMatch> {
-        return fifaMatchRepository.listLastFinishedMatchesByPlayer(league, player, last)
-    }
-
     fun listFinishedMatchesByMatchupSince(
         league: FifaLeague, homePlayer: FifaPlayer, awayPlayer: FifaPlayer, since:
         Date
     ): List<FifaMatch> {
         return fifaMatchRepository.listFinishedMatchesByMatchupSince(league, homePlayer, awayPlayer, since)
-    }
-
-    fun listLastFinishedMatchesByMatchup(
-        league: FifaLeague, homePlayer: FifaPlayer, awayPlayer: FifaPlayer, last:
-        Int
-    ): List<FifaMatch> {
-        return fifaMatchRepository.listLastFinishedMatchesByMatchup(league, homePlayer, awayPlayer, last)
     }
 
 }

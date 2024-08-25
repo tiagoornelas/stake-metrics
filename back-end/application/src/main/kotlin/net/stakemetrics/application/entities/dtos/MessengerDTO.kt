@@ -72,6 +72,13 @@ class MessengerDTO {
     data class EnqueueRequest(
         val messengerChat: MessengerChat,
         val message: String,
+        val messageId: UUID?
+    )
+
+    data class EditMessageEnqueueRequest(
+        val messengerChat: MessengerChat,
+        val integrationMessageId: Int,
+        val newText: String
     )
 }
 

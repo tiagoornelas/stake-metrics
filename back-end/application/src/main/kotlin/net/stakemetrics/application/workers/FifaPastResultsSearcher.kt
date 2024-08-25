@@ -66,11 +66,7 @@ class FifaPastResultsSearcher(
                 val isSameMatchup = matchup == FifaMatchupTypes.VS_EACH_OTHER
                 searchMatchupSinceDate(getSinceDate(value, type), match, isSameMatchup)
             }
-
-            FifaStrategyScopeTypes.MATCHES -> {
-                val isSameMatchup = matchup == FifaMatchupTypes.VS_EACH_OTHER
-                searchMatchupLastMatches(value, match, isSameMatchup)
-            }
+            else -> throw IllegalArgumentException("Matchup type not supported.")
         }
     }
 
@@ -126,45 +122,11 @@ class FifaPastResultsSearcher(
         return results
     }
 
-    private fun searchMatchupLastMatches(
-        last: Int,
-        match: FifaStrategyDTO.FifaMatchQuickIdentifier,
-        isSameMatchup: Boolean
-    ): MutableSet<FifaMatch> {
-        if (match.league == null || match.home == null || match.away == null)
-            throw FifaMatchIntegrationDataException(
-                "Match sent by odd provider is missing league, home or away " +
-                        "player."
-            )
-
-        val results = mutableSetOf<FifaMatch>()
-
-        if (isSameMatchup) {
-            val firstLegResults =
-                fifaMatchService.listLastFinishedMatchesByMatchup(match.league, match.home, match.away, last)
-            results.addAll(firstLegResults)
-
-            val secondLegResults =
-                fifaMatchService.listLastFinishedMatchesByMatchup(match.league, match.away, match.home, last)
-            results.addAll(secondLegResults)
-        } else {
-            val homePlayerResults =
-                fifaMatchService.listLastFinishedMatchesByPlayer(match.league, match.home, last)
-            results.addAll(homePlayerResults)
-
-            val awayPlayerResults =
-                fifaMatchService.listLastFinishedMatchesByPlayer(match.league, match.away, last)
-            results.addAll(awayPlayerResults)
-        }
-
-        return results
-    }
-
     private fun getSinceDate(value: Int, type: FifaStrategyScopeTypes): Date {
         return when (type) {
             FifaStrategyScopeTypes.HOURS -> Calendar.getInstance().apply { add(Calendar.HOUR, -value) }.time
             FifaStrategyScopeTypes.DAYS -> Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -value) }.time
-            FifaStrategyScopeTypes.MATCHES -> throw IllegalArgumentException("Matchup type MATCHES is not supported for since date.")
+            else -> throw IllegalArgumentException("Matchup type MATCHES is not supported for since date.")
         }
     }
 }

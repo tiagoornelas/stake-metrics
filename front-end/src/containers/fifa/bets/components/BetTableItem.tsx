@@ -1,9 +1,29 @@
-import {IconButton, Tag, Td, Tr} from "@chakra-ui/react";
+import {Tag, Td, Text, Tr} from "@chakra-ui/react";
+import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
+import useInvalidateBetQuery from "containers/fifa/bets/hooks/useInvalidateBetQuery";
+import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
 import {format} from "date-fns";
+import {useErrorToast} from "hooks/useErrorToast";
 import React from 'react';
-import {FaTrash} from "react-icons/all";
+import {deleteBet} from "services/betService";
+import {FifaBetStatus, statusColors, statusLabels} from "utils/constants/betConstants";
 import {MARKET_CANDIDATES_DICT} from "utils/constants/marketCandidatesConstants";
+import {SUCCESS_TYPES} from "utils/constants/successConstants";
+import {formatProfit} from "utils/helpers/betHelper";
 import {Bet} from "utils/interfaces";
+
+const DeleteButton = ({bet}: { bet: Bet }) => {
+    const invalidateBetQuery = useInvalidateBetQuery();
+    const invalidateStrategyQuery = useInvalidateStrategyQuery();
+
+    const handleDelete = useErrorToast(async () => {
+        await deleteBet(bet.id);
+        invalidateBetQuery();
+        invalidateStrategyQuery();
+    }, SUCCESS_TYPES.BET_DELETED);
+
+    return <DeleteConfirmationDialog entityName={"entrada"} confirmCallback={handleDelete} variant='outline'/>
+}
 
 type Props = {
     bet: Bet
@@ -16,39 +36,25 @@ const BetTableItem = ({bet}: Props) => {
     };
 
     const getStatusTag = (status: string) => {
-        switch (status) {
-            case "WON":
-                return <Tag colorScheme="green">Vencida</Tag>;
-            case "LOST":
-                return <Tag colorScheme="red">Perdida</Tag>;
-            case "PENDING":
-                return <Tag colorScheme="yellow">Pendente</Tag>;
-            default:
-                return <Tag>{status}</Tag>;
-        }
+        const fifaBetStatus = status as FifaBetStatus;
+        return <Tag colorScheme={statusColors[fifaBetStatus]}>{statusLabels[fifaBetStatus]}</Tag>;
     };
 
     const candidate = MARKET_CANDIDATES_DICT[bet.candidate as keyof typeof MARKET_CANDIDATES_DICT];
+    const {text: formattedProfit, color: profitColor} = formatProfit(bet.profit);
 
     return (
         <Tr key={bet.id}>
-            <Td>{formatDate(bet.matchTime, "dd/MM/yy HH:mm")}</Td>
-            <Td>{bet.strategyName}</Td>
+            <Td>{formatDate(bet.matchTime, "dd/MM HH:mm")}</Td>
+            <Td>{bet.strategyName}{bet.isPaperBet && <Tag ml={2} colorScheme={"yellow"}>Paper Bet</Tag>}</Td>
             <Td>{bet.leagueName}</Td>
             <Td>{`${bet.homePlayerName} x ${bet.awayPlayerName}`}</Td>
+            <Td>{bet.score || ""}</Td>
             <Td>{bet.handicap ? `${candidate} ${bet.handicap}` : candidate}</Td>
             <Td>{bet.odds}</Td>
             <Td>{getStatusTag(bet.status)}</Td>
-            <Td>{bet.profit !== null ? bet.profit : ""}</Td>
-            <Td>
-                <IconButton
-                    size="sm"
-                    colorScheme="red"
-                    icon={<FaTrash/>}
-                    variant="outline"
-                    aria-label="Delete bet"
-                />
-            </Td>
+            <Td><Text color={profitColor}>{formattedProfit}</Text></Td>
+            <Td><DeleteButton bet={bet}/></Td>
         </Tr>
     );
 };

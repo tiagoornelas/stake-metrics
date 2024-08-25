@@ -14,8 +14,8 @@ data class FifaBet(
     val messages: MutableSet<Message> = mutableSetOf(),
     val handicap: Double? = null,
     val odds: Double,
-    val status: BetStatusTypes = BetStatusTypes.PENDING,
-    val profit: Double? = null,
+    var status: BetStatusTypes = BetStatusTypes.PENDING,
+    var profit: Double? = null,
     val oddOfferTime: Date,
     val betTime: Date
 )

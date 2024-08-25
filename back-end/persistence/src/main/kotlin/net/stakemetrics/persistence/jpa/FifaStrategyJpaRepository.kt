@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param
 interface FifaStrategyJpaRepository : JpaRepository<FifaStrategyModel, UUID> {
     fun findAllByStatusIn(statuses: List<FifaStrategyStatus>): List<FifaStrategyModel>
     fun findAllByUserId(userId: UUID): List<FifaStrategyModel>
+    fun findAllByUserIdAndStatusIn(userId: UUID, statuses: List<FifaStrategyStatus>): List<FifaStrategyModel>
     fun countByUserId(userId: UUID): Int
     fun countByUserIdAndStatus(userId: UUID, status: FifaStrategyStatus): Int
 

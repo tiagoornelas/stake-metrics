@@ -28,11 +28,14 @@ class BetsApiService(
     }
 
     private fun getMiningDateRange(sinceDate: Date): List<Date> {
-        val today = Calendar.getInstance().time
+        val today = Calendar.getInstance().apply {
+            setToMidnight(this)
+        }.time
 
         val dateList = mutableListOf<Date>()
         val calendar = Calendar.getInstance().apply {
             time = sinceDate
+            setToMidnight(this)
         }
 
         while (!calendar.time.after(today)) {
@@ -43,9 +46,17 @@ class BetsApiService(
         return dateList
     }
 
+    private fun setToMidnight(calendar: Calendar) {
+        calendar.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+    }
+
     override fun getUpcomingFifaMatchesWithOddsForLeague(league: FifaLeague): List<FifaDataSourceDTO.FifaOddRequest> {
         return fifaUpcomingMatchesMiner.getUpcomingFifaMatchesWithOddsForLeague(league)
     }
-
 
 }

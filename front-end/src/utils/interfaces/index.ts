@@ -170,8 +170,7 @@ export enum FifaMatchupTypes {
 
 export enum FifaStrategyScopeTypes {
     HOURS = "HOURS",
-    DAYS = "DAYS",
-    MATCHES = "MATCHES"
+    DAYS = "DAYS"
 }
 
 export interface MarketType {
@@ -233,6 +232,7 @@ export type Option = {
 
 export interface Bet {
     id: string;
+    isPaperBet: boolean;
     strategyName: string;
     leagueName: string;
     homePlayerName: string;
@@ -242,6 +242,7 @@ export interface Bet {
     candidate: string;
     odds: number;
     status: string;
+    score: string | null;
     handicap: number | null;
     profit: number | null;
 }

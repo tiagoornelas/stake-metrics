@@ -9,5 +9,7 @@ interface IQueueService {
     fun enqueueSaveMatchResultTask(payload: FifaDataSourceDTO.FifaMatchRequest)
     fun enqueueRunStrategyAgainstOddTask(payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest)
     fun enqueueBetTask(payload: FifaBetDTO.BetRequest)
+    fun enqueueCloseBetTask(payload: FifaBetDTO.CloseBetRequest)
     fun enqueueMessageTask(payload: MessengerDTO.EnqueueRequest, delay: Int?)
+    fun enqueueEditMessageTask(payload: MessengerDTO.EditMessageEnqueueRequest)
 }
