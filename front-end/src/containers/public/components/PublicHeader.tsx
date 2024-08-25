@@ -18,8 +18,8 @@ export const PublicHeader = () => {
 
                     <Flex alignItems={'center'} gap={2}>
                         {isUserLoggedIn ?
-                            <Button colorScheme="yellow" onClick={() => navigate('/app', {replace: true})}>Acessar o
-                                app</Button> :
+                            <Button colorScheme="yellow" onClick={() => navigate('/app', {replace: true})}>Acessar
+                                plataforma</Button> :
                             <Fragment>
                                 <Button variant="outline" colorScheme="yellow"
                                         onClick={() => navigate('/create-account', {replace: true})}>
