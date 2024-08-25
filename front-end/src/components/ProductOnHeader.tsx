@@ -7,13 +7,13 @@ import {useNavigate} from "react-router-dom";
 const ProductOnHeader = ({path = "/"}: { path?: string }) => {
     const BETA_STATE = "Closed Beta";
     const navigate = useNavigate();
-    const tagText = useBreakpointValue({base: 'Beta', sm: BETA_STATE});
+    const tagText = useBreakpointValue({base: 'Beta', md: BETA_STATE});
     const handleClick = () => navigate(path, {replace: true});
 
     return (
         <Flex direction="row" alignItems={'center'} gap={2} cursor="pointer" onClick={handleClick}>
             <ProductLogo/>
-            <Text as={"b"} display={{base: "none", sm: "flex"}}>
+            <Text as={"b"} display={{base: "none", md: "flex"}}>
                 <ProductName/>
             </Text>
             {BETA_STATE && <Tag colorScheme={"yellow"}>{tagText}</Tag>}
