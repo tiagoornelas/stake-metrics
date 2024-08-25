@@ -1,14 +1,16 @@
-import useThemeColors from "hooks/useThemeColors";
-import {ChangeEvent, useState} from "react";
-import {UserRecoveryBody} from "utils/interfaces";
-import {useErrorToast} from "hooks/useErrorToast";
 import {Button, FormControl, FormLabel, HStack, Input, Stack} from "@chakra-ui/react";
 import PasswordField from "components/PasswordField";
+import {useErrorToast} from "hooks/useErrorToast";
+import useThemeColors from "hooks/useThemeColors";
 import * as React from "react";
+import {ChangeEvent, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {changePasswordWithRecoveryCode, sendRecoveryCode} from "services/recoveryService";
-import {SUCCESS_TYPES} from "../../utils/constants/successConstants";
+import {SUCCESS_TYPES} from "utils/constants/successConstants";
+import {UserRecoveryBody} from "utils/interfaces";
 
 const AccountRecovery = () => {
+    const navigate = useNavigate();
     const colors = useThemeColors();
     const [recoveryCodeSent, setRecoveryCodeSent] = useState(false);
     const [isSendButtonDisabled, setIsSendButtonDisabled] = useState(false);
@@ -57,6 +59,8 @@ const AccountRecovery = () => {
         await changePasswordWithRecoveryCode(form)
     }, null, () => window.location.assign("/"));
 
+    const handleGoToLogin = () => navigate('/login', {replace: true});
+    const handleGoToCreateAccount = () => navigate('/create-account', {replace: true});
 
     return (
         <Stack spacing="6">
@@ -95,11 +99,11 @@ const AccountRecovery = () => {
                             disabled={isSendButtonDisabled}>{sendCodeSubmitText}</Button>
                 </Stack>
                 <HStack justify="space-between">
-                    <Button variant="text" size="sm">
-                        <a href="/create-account">Criar conta</a>
+                    <Button variant="text" size="sm" onClick={handleGoToCreateAccount}>
+                        Criar conta
                     </Button>
-                    <Button variant="text" size="sm">
-                        <a href="/">Lembrei minha senha</a>
+                    <Button variant="text" size="sm" onClick={handleGoToLogin}>
+                        Lembrei minha senha
                     </Button>
                 </HStack>
             </>}
