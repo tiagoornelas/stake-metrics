@@ -4,18 +4,23 @@ import UseTerms from "components/UseTerms";
 import {useErrorToast} from "hooks/useErrorToast";
 import * as React from "react";
 import {ChangeEvent, Fragment, useState} from "react";
+import {HiHome} from "react-icons/all";
 import {useNavigate} from "react-router-dom";
 import {createUser} from "services/userService";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {UserCreationBody} from "utils/interfaces";
 
 const WaitingListComponent = () => {
+    const navigate = useNavigate();
+    const goToHome = () => navigate('/', {replace: true});
+
     return (<Flex direction="column" gap={4} mb={4}>
         <Heading>Calma aí! ✋</Heading>
         <Text fontSize="md">Não estamos aceitando novos clientes no momento! Por enquanto estamos trabalhando com uma
             seleção de clientes que estão testando o produto.</Text>
         <Text fontSize="md">Caso tenha interesse de participar dos testes, envie e-mail para
             <b> support@stakemetrics.net</b> que avaliaremos a sua solicitação.</Text>
+        <Button colorScheme={"yellow"} onClick={goToHome} rightIcon={<HiHome/>}>Voltar para página Inicial</Button>
     </Flex>)
 }
 

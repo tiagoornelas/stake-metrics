@@ -1,11 +1,22 @@
-import {Box, Button, Flex, Heading, Highlight, Image, Tag, Text, useBreakpointValue} from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Flex,
+    Heading,
+    Highlight,
+    Image,
+    Tag,
+    Text,
+    useBreakpointValue,
+    useColorMode
+} from "@chakra-ui/react";
 import PublicBanner from "assets/PublicBanner.png";
 import SettingsWireframe from "assets/SettingsWireframe.png";
 import TelegramWireframe from "assets/TelegramWireframe.png";
 import ProductFooter from "components/ProductFooter";
 import PublicHeader from "containers/public/components/PublicHeader";
 import {differenceInDays} from 'date-fns';
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {GoTelescope} from "react-icons/all";
 import {useNavigate} from "react-router-dom";
 
@@ -100,6 +111,11 @@ const FeatureList = ({features}: {
 const PublicPage = () => {
     const navigate = useNavigate();
     const goToAccountCreation = () => navigate("/create-account", {replace: true});
+    const {setColorMode} = useColorMode();
+
+    useEffect(() => {
+        setColorMode("light");
+    }, [setColorMode]);
 
     return (
         <Fragment>
