@@ -55,7 +55,7 @@ const secondSessionFeatures = [
     },
     {
         text: "Evite a pirataria: sistema próprio anti-repasse!",
-        emoji: "�?‍☠️",
+        emoji: "🏴‍☠️",
         tagColor: "blue",
         tagText: "Em breve"
     },
