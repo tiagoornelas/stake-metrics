@@ -1,6 +1,8 @@
 package net.stakemetrics.application.entities.dtos
 
 import java.util.Date
+import java.util.UUID
+import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 

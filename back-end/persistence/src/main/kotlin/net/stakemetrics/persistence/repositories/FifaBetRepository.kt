@@ -3,12 +3,13 @@ package net.stakemetrics.persistence.repositories
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.enums.BetStatusTypes
+import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.persistence.jpa.FifaBetJpaRepository
 import net.stakemetrics.persistence.models.toModel
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -17,15 +18,37 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         fifaBetJpaRepository.save(fifaBet.toModel())
     }
 
+    override fun delete(fifaBet: FifaBet) {
+        fifaBetJpaRepository.delete(fifaBet.toModel())
+    }
+
+    override fun findById(id: UUID): FifaBet {
+        return fifaBetJpaRepository.findById(id).map { it.toDomain() }
+            .orElseThrow { NotFoundException("FifaBet", "id", id.toString()) }
+    }
+
+    override fun findOpenBets(): List<FifaBet> {
+        return fifaBetJpaRepository.findAllByStatusOrProfit(BetStatusTypes.PENDING, null).map { it.toDomain() }
+    }
+
     override fun existsByStrategyAndMatchIntegrationId(
         fifaStrategy: FifaStrategy, matchIntegrationId: Long
     ): Boolean {
         return fifaBetJpaRepository.existsByStrategyAndMatchIntegrationId(fifaStrategy.toModel(), matchIntegrationId)
     }
 
-    override fun listAllByStrategyIds(strategyIds: Collection<UUID>, page: Int, size: Int): Page<FifaBet> {
-        val pageable = PageRequest.of(page, size, Sort.by("matchTime").ascending())
-        return fifaBetJpaRepository.findAllByStrategyIdIn(strategyIds, pageable).map { it.toDomain() }
+    override fun listAllByStrategyIds(
+        strategyIds: Collection<UUID>,
+        page: Int,
+        size: Int,
+        showPaperBets: Boolean
+    ): Page<FifaBet> {
+        val pageable = PageRequest.of(page, size)
+        return if (showPaperBets) {
+            fifaBetJpaRepository.findAllByStrategyIdInOrderByMatchTimeDesc(strategyIds, pageable)
+        } else {
+            fifaBetJpaRepository.findAllByStrategyIdInAndIsNotPaperBetOrderByMatchTimeDesc(strategyIds, pageable)
+        }.map { it.toDomain() }
     }
 
 }

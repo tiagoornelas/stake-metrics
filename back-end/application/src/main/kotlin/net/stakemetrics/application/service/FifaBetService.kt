@@ -1,23 +1,29 @@
 package net.stakemetrics.application.service
 
 import java.util.Date
+import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.Message
 import net.stakemetrics.application.entities.MessengerChat
+import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
+import net.stakemetrics.application.entities.dtos.MessengerDTO
 import net.stakemetrics.application.entities.dtos.toResponse
+import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.utils.Logger
+import net.stakemetrics.application.workers.FifaBetClosingWorker
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
-import net.stakemetrics.application.workers.tipsters.helpers.FifaTipsterHelper
-import org.springframework.stereotype.Service
+import net.stakemetrics.application.workers.tipsters.FifaTipsterHelper
 import org.springframework.data.domain.Page
+import org.springframework.stereotype.Service
 
 @Service
 class FifaBetService(
     private val logger: Logger,
     private val userService: UserService,
+    private val queueService: IQueueService,
     private val messageService: MessageService,
     private val fifaMatchService: FifaMatchService,
     private val messengerService: IMessengerService,
@@ -26,6 +32,7 @@ class FifaBetService(
     private val fifaTipsterHelper: FifaTipsterHelper,
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaStrategyService: FifaStrategyService,
+    private val fifaBetClosingWorker: FifaBetClosingWorker,
     private val fifaBetMessageBuilder: FifaBetMessageBuilder,
 ) {
 
@@ -80,22 +87,47 @@ class FifaBetService(
         val successfulChats = mutableSetOf<MessengerChat>()
 
         activeUserChats.forEach { chat ->
-            val messageSent = messengerService.sendToQueue(chat, betMessage)
+            val message = Message(messengerChat = chat, text = betMessage)
+            val messageSent = messengerService.sendToQueue(chat, betMessage, message.id)
             if (messageSent) {
                 successfulChats.add(chat)
-                val message = Message(
-                    messengerChat = chat,
-                    text = betMessage
-                )
                 messageService.save(message)
                 fifaBet.messages.add(message)
             }
         }
     }
 
-    fun listBets(userEmail: String, page: Int, size: Int): Page<FifaBetDTO.BetResponse> {
+    fun closeBet(bet: FifaBet) {
+        fifaBetClosingWorker.close(bet)
+    }
+
+    fun listBets(userEmail: String, page: Int, size: Int, showPaperBets: Boolean): Page<FifaBetDTO.BetResponse> {
         val user = userService.findByEmail(userEmail)
         val strategyIds = fifaStrategyService.findAllByUserId(user.id).map { it.id }
-        return fifaBetRepository.listAllByStrategyIds(strategyIds, page, size).map { it.toResponse() }
+        return fifaBetRepository.listAllByStrategyIds(strategyIds, page, size, showPaperBets).map { it.toResponse() }
+    }
+
+    fun delete(userEmail: String, betId: UUID) {
+        val user = userService.findByEmail(userEmail)
+        val bet = fifaBetRepository.findById(betId)
+        assertBetBelongsToUser(user, bet)
+        fifaBetRepository.delete(bet)
+        discardBetMessages(bet)
+    }
+
+    private fun assertBetBelongsToUser(user: User, bet: FifaBet) {
+        if (bet.strategy?.user?.id != user.id) throw EntityDoesntBelongToUserException()
+    }
+
+    private fun discardBetMessages(bet: FifaBet) {
+        bet.messages.forEach { message ->
+            queueService.enqueueEditMessageTask(
+                MessengerDTO.EditMessageEnqueueRequest(
+                    messengerChat = message.messengerChat!!,
+                    integrationMessageId = message.integrationMessageId!!,
+                    newText = fifaBetMessageBuilder.buildDiscard(bet)
+                )
+            )
+        }
     }
 }

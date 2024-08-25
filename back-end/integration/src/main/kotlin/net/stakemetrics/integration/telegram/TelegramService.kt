@@ -14,6 +14,7 @@ import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IMessengerChatRepository
 import net.stakemetrics.application.service.IMessengerService
 import net.stakemetrics.application.service.IQueueService
+import net.stakemetrics.application.service.MessageService
 import net.stakemetrics.application.service.UserService
 import net.stakemetrics.application.utils.Logger
 import org.springframework.beans.factory.annotation.Value
@@ -21,12 +22,14 @@ import org.springframework.stereotype.Service
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updates.GetUpdates
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 
 @Service
 class TelegramService(
     private val logger: Logger,
     private val userService: UserService,
     private val queueService: IQueueService,
+    private val messageService: MessageService,
     private val messengerChatRepository: IMessengerChatRepository
 ) : IMessengerService {
 
@@ -34,7 +37,7 @@ class TelegramService(
     private val token: String = ""
     private val telegramClient by lazy { OkHttpTelegramClient(token) }
 
-    override fun sendToQueue(messengerChat: MessengerChat, message: String): Boolean {
+    override fun sendToQueue(messengerChat: MessengerChat, message: String, messageId: UUID?): Boolean {
         try {
             val delayInSeconds = messengerChat.delay.coerceAtMost(120)
 
@@ -43,12 +46,12 @@ class TelegramService(
 
             if (Random.nextDouble() <= deliveryProbability) {
                 val finalMessage = getFinalMessage(messengerChat, message)
-                val payload = MessengerDTO.EnqueueRequest(messengerChat, finalMessage)
+                val payload = MessengerDTO.EnqueueRequest(messengerChat, finalMessage, messageId)
                 queueService.enqueueMessageTask(payload, delayInSeconds)
                 return true
             } else {
                 if (hasNotDeliveredMessage) {
-                    val payload = MessengerDTO.EnqueueRequest(messengerChat, messengerChat.notDeliveredMessage)
+                    val payload = MessengerDTO.EnqueueRequest(messengerChat, messengerChat.notDeliveredMessage, null)
                     queueService.enqueueMessageTask(payload, null)
                 }
                 return false
@@ -59,16 +62,32 @@ class TelegramService(
         }
     }
 
-    override fun sendToChat(messengerChat: MessengerChat, message: String) {
-        telegramClient.execute(
+    override fun sendToChat(messengerChat: MessengerChat, message: String, messageId: UUID?) {
+        val telegramMessage = telegramClient.execute(
             SendMessage.builder().chatId(messengerChat.chatId!!).text(message).disableWebPagePreview(true).build()
         )
+
+        if (messageId != null) messageService.setIntegrationMessageId(messageId, telegramMessage.messageId)
+    }
+
+    override fun editMessage(dto: MessengerDTO.EditMessageEnqueueRequest) {
+        try {
+            val editMessage = EditMessageText.builder()
+                .chatId(dto.messengerChat.chatId!!)
+                .messageId(dto.integrationMessageId)
+                .text(dto.newText)
+                .build()
+
+            telegramClient.execute(editMessage)
+        } catch (e: Exception) {
+            logger.logError(e)
+        }
     }
 
     override fun sendTestMessage(messengerChatId: UUID) {
         val messengerChat = messengerChatRepository.findById(messengerChatId)
         val testMessage = "Esta é uma mensagem de teste do Stake Metrics. Seu chat está funcionando! ✅"
-        sendToQueue(messengerChat, testMessage)
+        sendToQueue(messengerChat, testMessage, null)
     }
 
     override fun beginPrivateChatIntegration(userId: UUID): UUID {

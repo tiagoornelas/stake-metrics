@@ -19,7 +19,7 @@ import StrategyForm from "containers/fifa/strategy/components/StrategyForm";
 import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
 import {useErrorToast} from "hooks/useErrorToast";
 import React from 'react';
-import {BiSpreadsheet, IoMdPower, MdEdit} from "react-icons/all";
+import {IoMdPower, MdEdit} from "react-icons/all";
 import {changeStrategyStatus, deleteStrategy} from "services/strategyService";
 import {strategyStatusDict} from "utils/constants/strategyConstants";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
@@ -48,10 +48,6 @@ const StatusMenu = ({strategy}: { strategy: StrategyListItem }) => {
         </Menu>
     );
 };
-
-const ReportButton = () => {
-    return <IconButton aria-label="Baixar relatório" icon={<BiSpreadsheet/>} variant='outline'/>
-}
 
 const EditButton = ({strategyId}: { strategyId: string }) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
@@ -89,9 +85,6 @@ const StrategyTableActions = ({strategy}: { strategy: StrategyListItem }) => {
     return (
         <ButtonGroup isAttached>
             <StatusMenu strategy={strategy}/>
-            <Tooltip label={"Baixar relatório"} placement={"top"}>
-                <ReportButton/>
-            </Tooltip>
             <Tooltip label={"Editar"} placement={"top"}>
                 <EditButton strategyId={strategy.id}/>
             </Tooltip>

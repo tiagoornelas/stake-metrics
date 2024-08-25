@@ -11,6 +11,7 @@ import net.stakemetrics.application.service.FifaStrategyService
 import net.stakemetrics.application.service.IMessengerService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -42,9 +43,21 @@ class QueueController(
         return ResponseEntity.ok(QueueDTO.Response())
     }
 
+    @PostMapping("/fifa/close-bet")
+    fun closeBet(@RequestBody payload: FifaBetDTO.CloseBetRequest): ResponseEntity<QueueDTO.Response> {
+        fifaBetService.closeBet(payload.bet)
+        return ResponseEntity.ok(QueueDTO.Response())
+    }
+
     @PostMapping("/fifa/message-queue")
     fun enqueueMessageTask(@RequestBody payload: MessengerDTO.EnqueueRequest): ResponseEntity<QueueDTO.Response> {
-        messengerService.sendToChat(payload.messengerChat, payload.message)
+        messengerService.sendToChat(payload.messengerChat, payload.message, payload.messageId)
+        return ResponseEntity.ok(QueueDTO.Response())
+    }
+
+    @PutMapping("/fifa/message-queue")
+    fun enqueueEditMessageTask(@RequestBody payload: MessengerDTO.EditMessageEnqueueRequest): ResponseEntity<QueueDTO.Response> {
+        messengerService.editMessage(payload)
         return ResponseEntity.ok(QueueDTO.Response())
     }
 

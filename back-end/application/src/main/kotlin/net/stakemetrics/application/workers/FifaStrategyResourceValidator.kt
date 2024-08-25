@@ -16,7 +16,7 @@ class FifaStrategyResourceValidator(
     private val subscriptionService: ISubscriptionService,
     private val fifaStrategyService: FifaStrategyService
 ) {
-    private val globalMaxStrategies = 30
+    private val globalMaxStrategies = 20
 
     fun validate(dto: FifaStrategyDTO.FifaStrategyRequest) {
         if (dto.name.isBlank() || dto.marketSubTypes.isEmpty() || dto.leagues.isEmpty()) {
@@ -59,31 +59,17 @@ class FifaStrategyResourceValidator(
 
     fun canUserChangeStatus(user: User, status: FifaStrategyStatus) {
         when (status) {
-            FifaStrategyStatus.ACTIVE -> checkIfUserCanActivate(user)
-            FifaStrategyStatus.PAPER_BET -> checkIfUserCanPaperBet(user)
+            FifaStrategyStatus.ACTIVE, FifaStrategyStatus.PAPER_BET -> checkIfUserCanActivate(user)
             else -> {}
         }
     }
 
     private fun checkIfUserCanActivate(user: User) {
-        val errorMessage = "User has reached the maximum number of active strategies"
+        val errorMessage = "User has reached the maximum number of running strategies"
         val count = fifaStrategyService.countByUserAndStatus(user, FifaStrategyStatus.ACTIVE)
         val userFeatures = subscriptionService.getSubscriptionDetails(user).features
 
-        val maxActiveStrategies = userFeatures[FeatureTypes.ACTIVE_STRATEGY.identifier]
-            ?: throw NotAllowedException(errorMessage)
-
-        if (count >= maxActiveStrategies) {
-            throw NotAllowedException(errorMessage)
-        }
-    }
-
-    private fun checkIfUserCanPaperBet(user: User) {
-        val errorMessage = "User has reached the maximum number of paper bet strategies"
-        val count = fifaStrategyService.countByUserAndStatus(user, FifaStrategyStatus.PAPER_BET)
-        val userFeatures = subscriptionService.getSubscriptionDetails(user).features
-
-        val maxActiveStrategies = userFeatures[FeatureTypes.TEST_STRATEGY.identifier]
+        val maxActiveStrategies = userFeatures[FeatureTypes.FIFA_STRATEGY.identifier]
             ?: throw NotAllowedException(errorMessage)
 
         if (count >= maxActiveStrategies) {

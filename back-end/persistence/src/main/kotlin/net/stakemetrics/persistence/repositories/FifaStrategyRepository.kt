@@ -39,6 +39,12 @@ class FifaStrategyRepository(private val fifaStrategyJpaRepository: FifaStrategy
         return fifaStrategyJpaRepository.findById(id).map { it.toDomain() }.orElse(null)
     }
 
+    override fun findActiveByUser(user: User): List<FifaStrategy> {
+        return fifaStrategyJpaRepository.findAllByUserIdAndStatusIn(
+            user.id, listOf(FifaStrategyStatus.ACTIVE, FifaStrategyStatus.PAPER_BET)
+        ).map { it.toDomain() }
+    }
+
     @CacheEvict(value = ["strategies"], allEntries = true)
     override fun delete(strategy: FifaStrategy) {
         return fifaStrategyJpaRepository.delete(strategy.toModel())

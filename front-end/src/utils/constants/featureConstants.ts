@@ -1,11 +1,13 @@
 export enum FEATURES {
-    ACTIVE_STRATEGY = "active-strategy",
-    TEST_STRATEGY = "test-strategy",
-    MESSENGER_CHAT = "messenger-chat"
+    FIFA_STRATEGY = "fifa-strategy",
+    FIFA_WATCHER = "fifa-watcher",
+    MESSENGER_CHAT = "messenger-chat",
+    TREND_MODULE = "trend-module",
 }
 
 export const FEATURE_LABELS = {
-    [FEATURES.ACTIVE_STRATEGY]: "Estratégia ativa",
-    [FEATURES.TEST_STRATEGY]: "Estratégia em teste",
-    [FEATURES.MESSENGER_CHAT]: "Chat do Telegram"
+    [FEATURES.FIFA_STRATEGY]: "Estratégia de E-Soccer",
+    [FEATURES.FIFA_WATCHER]: "Monitor de E-Soccer",
+    [FEATURES.MESSENGER_CHAT]: "Chat do Telegram",
+    [FEATURES.TREND_MODULE]: "Módulo de Tendências"
 };

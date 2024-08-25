@@ -1,12 +1,13 @@
 import {ChakraProvider, extendTheme} from "@chakra-ui/react"
 import {ErrorBoundary} from "components/ErrorBoundary";
 import PrivateAreaWrapper from "components/PrivateAreaWrapper";
-import PublicAreaWrapper from "components/PublicAreaWrapper";
-import RouterLayout from "components/RouterLayout";
+import PrivateRouterLayout from "components/PrivateRouterLayout";
+import PublicAreaLayout from "components/PublicAreaLayout";
 import FifaModule from "containers/fifa/FifaModule";
 import AccountRecovery from "containers/public/AccountRecovery";
 import CreateAccount from "containers/public/CreateAccount";
 import Login from "containers/public/Login"
+import PublicPage from "containers/public/PublicPage";
 import Subscription from "containers/public/Subscription";
 import {UserProvider, useUserDispatch, useUserState} from "context/UserContext";
 import * as React from "react"
@@ -22,15 +23,19 @@ import UserManagement from "./containers/user/UserManagement";
 const publicRouter = createBrowserRouter([
     {
         path: "/create-account",
-        element: <CreateAccount/>,
+        element: <PublicAreaLayout><CreateAccount/></PublicAreaLayout>,
     },
     {
         path: "/recover-account",
-        element: <AccountRecovery/>,
+        element: <PublicAreaLayout><AccountRecovery/></PublicAreaLayout>,
+    },
+    {
+        path: "/login",
+        element: <PublicAreaLayout><Login/></PublicAreaLayout>,
     },
     {
         path: "/*",
-        element: <Login/>,
+        element: <PublicPage/>,
     }
 ]);
 
@@ -43,18 +48,22 @@ const unsubscribedRouter = createBrowserRouter([
 
 const appRouter = createBrowserRouter([
     {
-        path: "/user-management",
-        element: <RouterLayout><UserManagement/></RouterLayout>
+        path: "/app/user-management",
+        element: <PrivateRouterLayout><UserManagement/></PrivateRouterLayout>
     },
     {
-        path: "/fifa",
-        element: <RouterLayout><FifaModule/></RouterLayout>
+        path: "/app/fifa",
+        element: <PrivateRouterLayout><FifaModule/></PrivateRouterLayout>
 
     },
     {
-        path: "/*",
-        element: <RouterLayout><FifaModule/></RouterLayout>
+        path: "/app/*",
+        element: <PrivateRouterLayout><FifaModule/></PrivateRouterLayout>
     },
+    {
+        path: "/*",
+        element: <PublicPage/>,
+    }
 ]);
 
 const AppContent = () => {
@@ -79,9 +88,7 @@ const AppContent = () => {
         if (isLoggedIn) saveUserDetailsToContext();
     }, [cookies, dispatch, isLoggedIn]);
 
-    if (!isLoggedIn) return (<PublicAreaWrapper>
-        <RouterProvider router={publicRouter}/>
-    </PublicAreaWrapper>);
+    if (!isLoggedIn) return <RouterProvider router={publicRouter}/>;
 
     if (userContext.user.isExpired) return (
         <PrivateAreaWrapper>

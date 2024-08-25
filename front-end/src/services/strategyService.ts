@@ -19,8 +19,3 @@ export const getStrategy = (strategyId: string) =>
 
 export const listStrategiesStatistics = () =>
     makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.STATISTICS}`, REQUEST_TYPE.GET);
-
-export const listBets = (page: number, size: number) =>
-    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.BET.BASE}`, REQUEST_TYPE.GET, {
-        params: {size, page}
-    });

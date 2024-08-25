@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import Header from './Header';
 
-const RouterLayout = ({children}: { children: React.ReactNode }) => {
+const PrivateRouterLayout = ({children}: { children: React.ReactNode }) => {
     return (
         <Fragment>
             <Header/>
@@ -10,4 +10,4 @@ const RouterLayout = ({children}: { children: React.ReactNode }) => {
     );
 };
 
-export default RouterLayout;
+export default PrivateRouterLayout;

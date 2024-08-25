@@ -12,6 +12,7 @@ interface IFifaStrategyRepository {
     fun getStrategiesByUser(userId: UUID): List<FifaStrategy>
     fun getStrategiesStatisticsByUser(userId: UUID): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse>
     fun findById(id: UUID): FifaStrategy?
+    fun findActiveByUser(user: User): List<FifaStrategy>
     fun delete(strategy: FifaStrategy)
     fun countByUser(user: User): Int
     fun countByUserAndStatus(user: User, status: FifaStrategyStatus): Int

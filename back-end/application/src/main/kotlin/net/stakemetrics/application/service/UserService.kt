@@ -1,12 +1,14 @@
 package net.stakemetrics.application.service
 
 import java.util.UUID
+import java.util.regex.Pattern
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.UserDTO
 import net.stakemetrics.application.entities.exceptions.AlreadyExistsException
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.entities.exceptions.PasswordConfirmationException
 import net.stakemetrics.application.entities.exceptions.PasswordDoesNotMatchException
+import net.stakemetrics.application.entities.exceptions.InvalidFieldException
 import net.stakemetrics.application.repositories.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -20,11 +22,17 @@ class UserService @Autowired constructor(
     @Lazy private val subscriptionService: ISubscriptionService
 ) {
 
+    private val emailPattern = Pattern.compile(
+        "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+    )
+
     fun save(user: User) {
         userRepository.save(user)
     }
 
     fun create(dto: UserDTO.CreateRequest) {
+        validateCreateRequest(dto)
+
         val userExists = checkUserExistence(dto.email)
         if (userExists) throw AlreadyExistsException("User", dto.email)
 
@@ -36,6 +44,12 @@ class UserService @Autowired constructor(
 
         userRepository.save(user)
         subscriptionService.createSubscription(user)
+    }
+
+    private fun validateCreateRequest(dto: UserDTO.CreateRequest) {
+        if (dto.name.length < 2) throw IllegalArgumentException("Name must be at least 2 characters long")
+        if (dto.password.length < 8) throw IllegalArgumentException("Password must be at least 8 characters long")
+        if (!emailPattern.matcher(dto.email).matches()) throw IllegalArgumentException("Email is not valid")
     }
 
     private fun checkUserExistence(email: String): Boolean {

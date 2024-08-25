@@ -35,15 +35,11 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
     },
     "User has reached the maximum number of strategies": {
         title: "Limite de estratégias atingido!",
-        description: "Você não pode ter mais do que 30 estratégias criadas."
+        description: "Você não pode ter mais do que 20 estratégias criadas."
     },
-    "User has reached the maximum number of active strategies": {
+    "User has reached the maximum number of running strategies": {
         title: "Limite de estratégias atingido!",
-        description: "Você chegou ao seu limite de estratégias ativas, verifique seu plano."
-    },
-    "User has reached the maximum number of paper bet strategies": {
-        title: "Limite de estratégias atingido!",
-        description: "Você chegou ao seu limite de estratégias no modo Paper Bet, verifique seu plano."
+        description: "Você chegou ao seu limite de estratégias ativas ou em Paper Bet, verifique seu plano."
     },
     "Telegram chat with passphrase not found": {
         title: "Não conseguimos integrar o Telegram!",
@@ -56,5 +52,21 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
     "Password does not match for specific account.": {
         title: "Ops! Credenciais estão erradas.",
         description: "Verifique e-mail e login e tente novamente."
+    },
+    "Name must be at least 2 characters long": {
+        title: "Ops! Nome muito curto.",
+        description: "O nome precisa ter pelo menos 2 caracteres."
+    },
+    "Password must be at least 8 characters long": {
+        title: "Ops! Senha muito curta.",
+        description: "A senha precisa ter pelo menos 8 caracteres."
+    },
+    "Email is not valid": {
+        title: "Ops! E-mail inválido.",
+        description: "O e-mail precisa ser válido."
+    },
+    "Failed to retrieve authentication tokens. Please try again.": {
+        title: "Ops! Falha na autenticação.",
+        description: "Não conseguimos recuperar os tokens de autenticação. Tente novamente."
     },
 }

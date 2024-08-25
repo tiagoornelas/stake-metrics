@@ -16,14 +16,15 @@ import {
     useMediaQuery
 } from '@chakra-ui/react';
 import BetaTag from "components/BetaTag";
-import ProductLogo from "components/ProductLogo";
-import ProductName from "components/ProductName";
+import ProductOnHeader from "components/ProductOnHeader";
 import {useUserDispatch, useUserState} from "context/UserContext";
+import {useErrorToast} from "hooks/useErrorToast";
 import {Dispatch, Fragment, ReactNode} from "react";
 import {useCookies} from "react-cookie";
 import {FaMoon, FaSun} from "react-icons/fa";
 import {useNavigate} from 'react-router-dom';
 import {APP_NAVIGATION} from "utils/constants/navigationConstants";
+import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {cleanUser} from "utils/helpers/contextHelper";
 import {NavigationLinkOnHeaderValue, UserContext, UserReducerAction} from "utils/interfaces";
 
@@ -47,7 +48,7 @@ const NavLink = (props: Props) => {
                 bg: useColorModeValue('gray.200', 'gray.700'),
             }}
             cursor={"pointer"}
-            onClick={() => navigate(path.toLowerCase(), {replace: true})}>
+            onClick={() => navigate(`/${path.toLowerCase()}`, {replace: true})}>
             {children}
         </Box>
     )
@@ -66,22 +67,21 @@ export const Header = () => {
 
     const getAvatarSource = (): string => `https://ui-avatars.com/api/?name=${getLoggedUserNames().join("+")}`
 
-    const logOut = () => {
+    const logOut = useErrorToast(async () => {
         cleanUser(userDispatch);
         removeCookie("userId");
         removeCookie("token");
-        window.location.reload();
-    };
+        setTimeout(() => {
+            navigate("/", {replace: true});
+        }, 500);
+    }, SUCCESS_TYPES.USER_LOGGED_OUT);
 
-    const goToHomePage = () => navigate("/", {replace: true});
 
     return (
         <>
             <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
                 <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-                    <Flex direction="row" alignItems={'center'} gap={2}
-                          cursor="pointer"
-                          onClick={goToHomePage}><ProductLogo/><b><ProductName/></b></Flex>
+                    <ProductOnHeader path={"/app"}/>
                     <HStack as={'nav'} spacing={4} display={{base: 'none', md: 'flex'}}>
                         {APP_NAVIGATION.map(({name, path, beta}: NavigationLinkOnHeaderValue) => (
                             <NavLink key={path} path={path.toLowerCase()}>
@@ -138,7 +138,7 @@ export const Header = () => {
                                             <MenuDivider/>
                                         </Fragment>
                                     }
-                                    <MenuItem onClick={() => navigate("/user-management")}>Minha conta</MenuItem>
+                                    <MenuItem onClick={() => navigate("/app/user-management")}>Minha conta</MenuItem>
                                     <MenuItem onClick={logOut}>Sair</MenuItem>
                                 </MenuList>
                             </Menu>
