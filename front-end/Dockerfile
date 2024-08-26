@@ -1,15 +1,13 @@
-FROM node:20-alpine as build
+FROM node:20-slim
 
-WORKDIR /app
-
-COPY package.json .
-RUN npm install
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 COPY . .
+ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+ENV PORT 3000
+RUN npm install -g serve
+
+RUN npm install
 RUN npm run build
 
-FROM nginx:latest
-
-ENV PORT=3000
-
-COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /app/build /usr/share/nginx/html
+CMD ["serve", "-s", "-l", "3000", "./build"]
