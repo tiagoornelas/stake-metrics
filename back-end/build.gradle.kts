@@ -5,15 +5,15 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
 }
 
-tasks.bootJar { enabled = false }
-tasks.jar { enabled = true }
+tasks.bootJar { enabled = true }
+tasks.jar { enabled = false }
 
 group = "net.stakemetrics"
 version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
