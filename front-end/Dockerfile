@@ -1,13 +1,13 @@
-FROM node:20-alpine
+FROM node:20-alpine as build
 
 WORKDIR /app
 
 COPY package.json .
-
 RUN npm install
-
 COPY . .
+RUN npm run build
 
-EXPOSE ${PORT}
+FROM nginx:latest
 
-CMD ["sh", "-c", "npm run start:prod"]
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /app/build /usr/share/nginx/html
