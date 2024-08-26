@@ -28,9 +28,3 @@ crashlytics-build.properties
 fabric.properties
 
 package-lock.json
-
-#.env
-back-end/src/main/resources/application.properties
-back-end/src/main/resources/application-dev.properties
-back-end/src/main/resources/application-prod.properties
-back-end/.env
