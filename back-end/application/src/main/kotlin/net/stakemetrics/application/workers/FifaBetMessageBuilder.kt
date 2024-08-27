@@ -66,7 +66,7 @@ class FifaBetMessageBuilder {
     private fun formatMatchTime(fifaBet: FifaBet): String? {
         return try {
             fifaBet.match?.time?.let { date ->
-                val localTime = LocalTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault())
+                val localTime = LocalTime.ofInstant(date.toInstant(), java.time.ZoneId.of("UTC-3"))
                 localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
             }
         } catch (e: Exception) {
