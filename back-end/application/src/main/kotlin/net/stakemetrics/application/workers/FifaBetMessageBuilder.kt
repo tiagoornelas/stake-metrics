@@ -55,11 +55,11 @@ class FifaBetMessageBuilder {
         val matchTime: String? = formatMatchTime(fifaBet)
 
         return """
-            |$homePlayerName x $awayPlayerName às $matchTime
+            |📅 $homePlayerName x $awayPlayerName às $matchTime
             |
-            |$line @ $odd
+            |🔭 $line @ $odd
             |
-            |$leagueName
+            |🏆 $leagueName
         """.trimMargin()
     }
 
