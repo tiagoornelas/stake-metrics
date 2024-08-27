@@ -197,32 +197,36 @@ class FifaStrategyService @Autowired constructor(
 
         run candidatesAnalysis@{
             betCandidates.forEach { candidate ->
+                val ruleBreakErrors = mutableListOf<FifaStrategyRuleBreakException>()
                 resultsByScopes.forEach { (scope, results) ->
                     scope?.let {
                         try {
                             val specificLine = tipster.getTipstersSpecificLines(request.odds.odds)
                             tipster.analyze(candidate, matchupPlayerNames, scope.rules, specificLine, results)
-
-                            queueService.enqueueBetTask(
-                                FifaBetDTO.BetRequest(
-                                    strategy = request.strategy,
-                                    leagueIntegrationId = request.odds.leagueIntegrationId,
-                                    homePlayerName = request.odds.homePlayerName,
-                                    awayPlayerName = request.odds.awayPlayerName,
-                                    matchIntegrationId = request.odds.matchIntegrationId,
-                                    matchTime = specificLine.matchTime,
-                                    candidate = candidate,
-                                    lineOdds = specificLine
-                                )
-                            )
-
-                            return@candidatesAnalysis
                         } catch (e: FifaStrategyRuleBreakException) {
                             logger.logFifaStrategyRuleBreak(e)
+                            ruleBreakErrors.add(e)
                         } catch (e: Exception) {
                             logger.logError(e)
                         }
                     } ?: throw IllegalArgumentException("Scope is null when sending the results to the tipster")
+                }
+
+                if (ruleBreakErrors.isEmpty()) {
+                    val specificLine = tipster.getTipstersSpecificLines(request.odds.odds)
+                    queueService.enqueueBetTask(
+                        FifaBetDTO.BetRequest(
+                            strategy = request.strategy,
+                            leagueIntegrationId = request.odds.leagueIntegrationId,
+                            homePlayerName = request.odds.homePlayerName,
+                            awayPlayerName = request.odds.awayPlayerName,
+                            matchIntegrationId = request.odds.matchIntegrationId,
+                            matchTime = specificLine.matchTime,
+                            candidate = candidate,
+                            lineOdds = specificLine
+                        )
+                    )
+                    return@candidatesAnalysis
                 }
             }
         }
