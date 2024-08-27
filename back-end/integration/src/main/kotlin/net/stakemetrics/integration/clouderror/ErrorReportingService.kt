@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 class ErrorReportingService : IErrorReportingService {
 
     @Value("\${app.gcp.project.id}")
-    private val projectId: String = "stakemetrics"
+    private val projectId: String = "stakemetrics-project"
 
     @Value("\${spring.profiles.active}")
     private val environment: String = "dev"

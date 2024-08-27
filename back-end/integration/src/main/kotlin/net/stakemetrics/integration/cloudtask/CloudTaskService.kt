@@ -24,6 +24,9 @@ class CloudTaskService(
     private val objectMapper: ObjectMapper, private val environmentVerifier: EnvironmentVerifier
 ) : IQueueService {
 
+    @Value("\${service.api.key}")
+    private val serviceApiKey = ""
+
     @Value("\${app.backend.queue.base.url}")
     private val baseUrl: String = ""
 
@@ -110,8 +113,13 @@ class CloudTaskService(
         delay: Int? = null,
         method: HttpMethod = HttpMethod.POST
     ): Task? {
-        val httpRequest = HttpRequest.newBuilder().putHeaders("Content-Type", "application/json").setHttpMethod(method)
-            .setUrl(fullUrl).setBody(ByteString.copyFrom(payload)).build()
+        val httpRequest = HttpRequest.newBuilder()
+            .putHeaders("Content-Type", "application/json")
+            .putHeaders("X-API-KEY", serviceApiKey)
+            .setHttpMethod(method)
+            .setUrl(fullUrl)
+            .setBody(ByteString.copyFrom(payload))
+            .build()
 
         val taskBuilder = Task.newBuilder().setHttpRequest(httpRequest)
 

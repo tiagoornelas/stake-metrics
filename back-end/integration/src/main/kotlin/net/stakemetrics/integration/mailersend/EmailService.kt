@@ -3,17 +3,18 @@ package net.stakemetrics.integration.mailersend
 import com.mailersend.sdk.MailerSend
 import com.mailersend.sdk.emails.Email
 import net.stakemetrics.application.service.IEmailService
+import net.stakemetrics.application.utils.Logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class EmailService() : IEmailService {
+class EmailService(private val logger: Logger) : IEmailService {
 
     @Value("\${mailersend.api.key}")
     private val mailerSendApiKey: String = ""
 
     @Value("\${mailersend.domain.email}")
-    private val domainEmail: String = ""
+    private val domainEmail: String = "noreply@stakemetrics.net"
 
     override fun sendRecoveryCodeEmail(username: String, userEmail: String, code: String) {
         val email = Email()
@@ -22,8 +23,10 @@ class EmailService() : IEmailService {
 
         email.setFrom("Stake Metrics", domainEmail)
         email.addRecipient(username, userEmail)
-        email.setSubject("Recuperação de Conta")
-        email.setPlain("O seu código de recuperação de conta para o Stake Metrics é: $code")
+        email.setTemplateId("jy7zpl90reol5vx6")
+        email.addPersonalization("code", code)
+        email.addPersonalization("name", username)
+        email.setSubject("Seu código de recuperação do Stake Metrics")
         ms.emails().send(email)
     }
 
