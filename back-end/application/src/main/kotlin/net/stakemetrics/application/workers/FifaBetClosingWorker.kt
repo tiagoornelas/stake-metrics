@@ -42,7 +42,8 @@ class FifaBetClosingWorker(
         }
 
         val messages = fifaBet.messages
-        messages.forEach { message ->
+        val integratedMessages = messages.filter { it.integrationMessageId != null }
+        integratedMessages.forEach { message ->
             queueService.enqueueEditMessageTask(
                 MessengerDTO.EditMessageEnqueueRequest(
                     messengerChat = message.messengerChat!!,
