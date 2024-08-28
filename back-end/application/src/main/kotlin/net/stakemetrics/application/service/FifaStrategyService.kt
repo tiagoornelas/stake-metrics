@@ -197,12 +197,17 @@ class FifaStrategyService @Autowired constructor(
 
         run candidatesAnalysis@{
             betCandidates.forEach { candidate ->
-                val ruleBreakErrors = mutableListOf<FifaStrategyRuleBreakException>()
+                val ruleBreakErrors = mutableListOf<Exception>()
                 resultsByScopes.forEach { (scope, results) ->
                     scope?.let {
                         try {
                             val specificLine = tipster.getTipstersSpecificLines(request.odds.odds)
-                            tipster.analyze(candidate, matchupPlayerNames, scope.rules, specificLine, results)
+                            if (specificLine == null) {
+                                logger.log("No specific line found for tipster")
+                                return@candidatesAnalysis
+                            } else {
+                                tipster.analyze(candidate, matchupPlayerNames, scope.rules, specificLine, results)
+                            }
                         } catch (e: FifaStrategyRuleBreakException) {
                             logger.logFifaStrategyRuleBreak(e)
                             ruleBreakErrors.add(e)
@@ -214,19 +219,25 @@ class FifaStrategyService @Autowired constructor(
 
                 if (ruleBreakErrors.isEmpty()) {
                     val specificLine = tipster.getTipstersSpecificLines(request.odds.odds)
-                    queueService.enqueueBetTask(
-                        FifaBetDTO.BetRequest(
-                            strategy = request.strategy,
-                            leagueIntegrationId = request.odds.leagueIntegrationId,
-                            homePlayerName = request.odds.homePlayerName,
-                            awayPlayerName = request.odds.awayPlayerName,
-                            matchIntegrationId = request.odds.matchIntegrationId,
-                            matchTime = specificLine.matchTime,
-                            candidate = candidate,
-                            lineOdds = specificLine
+                    if (specificLine == null) {
+                        logger.log("No specific line found for tipster")
+                        return@candidatesAnalysis
+                    } else {
+                        queueService.enqueueBetTask(
+                            FifaBetDTO.BetRequest(
+                                strategy = request.strategy,
+                                leagueIntegrationId = request.odds.leagueIntegrationId,
+                                homePlayerName = request.odds.homePlayerName,
+                                awayPlayerName = request.odds.awayPlayerName,
+                                matchIntegrationId = request.odds.matchIntegrationId,
+                                matchTime = specificLine.matchTime,
+                                candidate = candidate,
+                                lineOdds = specificLine
+                            )
                         )
-                    )
-                    return@candidatesAnalysis
+                        return@candidatesAnalysis
+                    }
+
                 }
             }
         }
