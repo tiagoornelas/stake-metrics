@@ -83,10 +83,11 @@ class FifaBetService(
 
     fun sendBetMessagesToUserChats(fifaBet: FifaBet) {
         val activeUserChats = messengerService.listActiveUserChats(fifaBet.strategy?.user!!)
+        val integratedActiveUserChats = activeUserChats.filter { it.chatId != null }
         val betMessage = fifaBetMessageBuilder.build(fifaBet)
         val successfulChats = mutableSetOf<MessengerChat>()
 
-        activeUserChats.forEach { chat ->
+        integratedActiveUserChats.forEach { chat ->
             val message = Message(messengerChat = chat, text = betMessage)
             val messageSent = messengerService.sendToQueue(chat, betMessage, message.id)
             if (messageSent) {
