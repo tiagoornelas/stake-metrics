@@ -1,5 +1,12 @@
 ![Novo Projeto (2)](https://github.com/user-attachments/assets/9fe96670-10e2-4716-89fd-71dd420f4ac1)
 
+### Deploy Infra
+- Front-end: Google Cloud Run 🏃
+- Back-end: Google Cloud Run 🏃
+- Database: AWS RDS 🗂️
+- Queues: Google Cloud Tasks ➡️
+- Scheduler: Google Cloud Scheduler ⏱️
+
 ### Application Properties (Backend Env)
 application-properties:
 - spring.application.name=back-end
