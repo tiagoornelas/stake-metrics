@@ -8,7 +8,7 @@ import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 interface FifaTipster {
     fun getTipstersSpecificLines(
         odds: List<FifaDataSourceDTO.FifaGenericOddRequest>,
-    ): FifaDataSourceDTO.FifaGenericOddRequest
+    ): FifaDataSourceDTO.FifaGenericOddRequest?
 
     fun analyze(
         betCandidate: FifaMarketBetCandidates,

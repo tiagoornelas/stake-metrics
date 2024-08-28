@@ -20,8 +20,8 @@ class FifaMatchOddsTipster(
 ) : FifaTipster {
     val notSupportedErrorMessage = "Market's bet candidate not supported for match odds tipster"
 
-    override fun getTipstersSpecificLines(odds: List<FifaDataSourceDTO.FifaGenericOddRequest>): FifaDataSourceDTO.FifaGenericOddRequest {
-        return odds.filter { it.isMatchOdds() }.maxBy { it.oddOfferTime }
+    override fun getTipstersSpecificLines(odds: List<FifaDataSourceDTO.FifaGenericOddRequest>): FifaDataSourceDTO.FifaGenericOddRequest? {
+        return odds.filter { it.isMatchOdds() }.maxByOrNull { it.oddOfferTime }
     }
 
     override fun analyze(

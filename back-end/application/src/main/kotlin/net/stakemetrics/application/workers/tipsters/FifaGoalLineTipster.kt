@@ -17,8 +17,8 @@ class FifaGoalLineTipster(
 ) : FifaTipster {
     val notSupportedErrorMessage = "Market's bet candidate not supported for goal line tipster"
 
-    override fun getTipstersSpecificLines(odds: List<FifaDataSourceDTO.FifaGenericOddRequest>): FifaDataSourceDTO.FifaGenericOddRequest {
-        return odds.filter { it.isGoalLine() }.maxBy { it.oddOfferTime }
+    override fun getTipstersSpecificLines(odds: List<FifaDataSourceDTO.FifaGenericOddRequest>): FifaDataSourceDTO.FifaGenericOddRequest? {
+        return odds.filter { it.isGoalLine() }.maxByOrNull { it.oddOfferTime }
     }
 
     override fun analyze(
