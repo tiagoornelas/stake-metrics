@@ -18,6 +18,11 @@ class CronController(private val logger: Logger, val cronService: CronService) {
         return runCronAndReturnResponse("mineFifaMatchResults") { cronService.mineFifaMatchResults() }
     }
 
+    @PostMapping("/fifa/close-bets")
+    fun closeFifaBets(): ResponseEntity<CronDTO.Response> {
+        return runCronAndReturnResponse("closeFifaMatchBets") { cronService.closeFifaMatchBets() }
+    }
+
     @PostMapping("/fifa/mine-odds")
     fun mineFifaMatchOdds(): ResponseEntity<CronDTO.Response> {
         return runCronAndReturnResponse("mineFifaMatchOdds") { cronService.mineFifaMatchOdds() }
