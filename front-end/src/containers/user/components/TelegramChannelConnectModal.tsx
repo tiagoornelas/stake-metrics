@@ -30,8 +30,8 @@ const TelegramChannelConnectModal = ({onCloseCallback}: Props) => {
         await integrateChannel(userContext.user.id, channelId);
     }, SUCCESS_TYPES.TELEGRAM_CHAT_CONNECTED);
 
-    const validateUrl = (url : string) => {
-        const regex = /^https:\/\/web\.telegram\.org\/a\/#-100\d+$/;
+    const validateUrl = (url: string) => {
+        const regex = /^https:\/\/(?:web|desktop|macos|windows)\.telegram\.org\/[a-z]\/#-100\d+$/;
         const isValid = regex.test(url);
         const id = url.split("#")[1];
         setChannelId(id);
