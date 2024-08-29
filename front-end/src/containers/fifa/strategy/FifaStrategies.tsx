@@ -1,17 +1,4 @@
-import {
-    Box,
-    Flex,
-    IconButton,
-    Skeleton,
-    Spinner,
-    Table,
-    TableContainer,
-    Tbody,
-    Text,
-    Th,
-    Thead,
-    Tr
-} from "@chakra-ui/react";
+import {Box, Flex, Skeleton, Spinner, Table, TableContainer, Tbody, Text, Th, Thead, Tr} from "@chakra-ui/react";
 import Modal from "components/Modal";
 import StrategyEmptyState from "containers/fifa/strategy/components/StrategyEmptyState";
 import StrategyForm from "containers/fifa/strategy/components/StrategyForm";
@@ -19,8 +6,7 @@ import StrategyTableItem from "containers/fifa/strategy/components/StrategyTable
 import useStrategyStatisticsQuery from "containers/fifa/strategy/hooks/useStrategyStatisticsQuery";
 import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
-import {FiRefreshCcw, GoTelescope} from 'react-icons/all';
-import {useQueryClient} from "react-query";
+import {GoTelescope} from 'react-icons/all';
 import {StrategyListItem} from "utils/interfaces";
 
 const NewStrategyButton = () => {
@@ -31,10 +17,9 @@ const NewStrategyButton = () => {
     )
 }
 
-const Header = ({strategiesLength, isLoaded, refreshAction}: {
+const Header = ({strategiesLength, isLoaded}: {
     strategiesLength: number,
-    isLoaded: boolean,
-    refreshAction: () => void
+    isLoaded: boolean
 }) => {
     const getLabel = () => {
         switch (strategiesLength) {
@@ -52,7 +37,6 @@ const Header = ({strategiesLength, isLoaded, refreshAction}: {
             <Text>{getLabel()}</Text>
         </Skeleton>
         <Flex gap={2}>
-            <IconButton icon={<FiRefreshCcw/>} onClick={refreshAction} variant={"outline"} aria-label={"Update"}/>
             <NewStrategyButton/>
         </Flex>
     </Flex>)
@@ -60,15 +44,12 @@ const Header = ({strategiesLength, isLoaded, refreshAction}: {
 
 const FifaStrategies = () => {
     const {data: strategies = [], isLoading} = useStrategyStatisticsQuery();
-    const queryClient = useQueryClient();
     const colors = useThemeColors();
     const shouldRenderEmptyState = !isLoading && strategies.length === 0;
 
-    const onRefresh = () => queryClient.invalidateQueries("strategies");
-
     return (
         <Box mt={4}>
-            <Header strategiesLength={strategies.length} isLoaded={!isLoading} refreshAction={onRefresh}/>
+            <Header strategiesLength={strategies.length} isLoaded={!isLoading}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
                     <Thead>
