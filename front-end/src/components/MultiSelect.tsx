@@ -10,7 +10,8 @@ import {
     MenuList,
     MenuOptionGroup,
     Tag,
-    Text
+    Text,
+    useColorMode
 } from "@chakra-ui/react";
 import React, {useEffect, useState} from "react";
 import {BiListCheck, BiSearch} from "react-icons/all";
@@ -47,6 +48,10 @@ const MultiSelect = ({
                      }: Props) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>(defaultSelected);
     const [searchInput, setSearchInput] = useState<string>("");
+
+    const {colorMode} = useColorMode();
+    const focusBg = colorMode === "dark" ? "gray.900" : "gray.100";
+    const hoverBg = colorMode === "dark" ? "gray.900" : "gray.100";
 
     const normalizedOptions: Option[] = Array.isArray(options) && typeof options[0] === "string"
         ? (options as string[]).map(opt => ({value: opt, label: opt}))
@@ -162,8 +167,8 @@ const MultiSelect = ({
                                 <MenuItemOption
                                     key={option.value}
                                     value={option.value}
-                                    _focus={{bg: "gray.100"}}
-                                    _hover={{bg: "gray.100"}}
+                                    _focus={{bg: focusBg}}
+                                    _hover={{bg: hoverBg}}
                                 >
                                     {option.label}
                                 </MenuItemOption>
