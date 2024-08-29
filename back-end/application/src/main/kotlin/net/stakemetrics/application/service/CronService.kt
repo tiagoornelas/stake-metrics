@@ -16,6 +16,9 @@ class CronService(
 
     fun mineFifaMatchResults() {
         fifaEndedMatchesEnqueuer.mine()
+    }
+
+    fun closeFifaMatchBets() {
         fifaOpenBetsEnqueuer.enqueue()
     }
 
