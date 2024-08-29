@@ -78,7 +78,8 @@ const DeleteButton = ({strategy}: { strategy: StrategyListItem }) => {
         invalidateStrategyQuery();
     }, SUCCESS_TYPES.STRATEGY_DELETED);
 
-    return <DeleteConfirmationDialog entityName={"estratégia"} confirmCallback={handleDelete} variant='outline'/>
+    return <DeleteConfirmationDialog entityName={"estratégia"} confirmCallback={handleDelete} variant="outline"
+                                     text={"Ao excluir a estratégia, todas as apostas serão excluídas e as mensagens permanecerão como estão, sem serem editadas com os resultados."}/>
 }
 
 const StrategyTableActions = ({strategy}: { strategy: StrategyListItem }) => {

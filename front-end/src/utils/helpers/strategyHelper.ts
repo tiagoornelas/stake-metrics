@@ -11,8 +11,6 @@ export const validateForm = (form: StrategyCreationBody, formParams: StrategyPar
         errors.scopes = true;
     } else {
         form.scopes.forEach((scope, index) => {
-            errors[`scope-${index}-value`] = scope.value <= 0;
-
             scope.rules.forEach((rule, ruleIndex) => {
                 const ruleDetails = formParams.ruleTypes.find(r => r.type === rule.type);
                 if (ruleDetails) {

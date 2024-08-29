@@ -48,7 +48,7 @@ class FifaPastResultsSearcher(
         val matchQuickIdentifier = FifaStrategyDTO.FifaMatchQuickIdentifier(homePlayer, awayPlayer, league)
 
         strategy.scopes.forEach { scope ->
-            val pastResults = searchScope(scope.matchup!!, scope.type!!, scope.value!!, matchQuickIdentifier)
+            val pastResults = searchScope(scope.matchup!!, scope.type!!, matchQuickIdentifier)
             results.add(FifaStrategyDTO.FifaStrategyScopePastResults(scope, pastResults))
         }
 
@@ -58,15 +58,11 @@ class FifaPastResultsSearcher(
     private fun searchScope(
         matchup: FifaMatchupTypes,
         type: FifaStrategyScopeTypes,
-        value: Int,
         match: FifaStrategyDTO.FifaMatchQuickIdentifier
     ): MutableSet<FifaMatch> {
-        return when (type) {
-            FifaStrategyScopeTypes.HOURS, FifaStrategyScopeTypes.DAYS -> {
-                val isSameMatchup = matchup == FifaMatchupTypes.VS_EACH_OTHER
-                searchMatchupSinceDate(getSinceDate(value, type), match, isSameMatchup)
-            }
-            else -> throw IllegalArgumentException("Matchup type not supported.")
+        return when (matchup) {
+            FifaMatchupTypes.VS_EACH_OTHER -> searchMatchupSinceDate(getSinceDate(type), match, true)
+            FifaMatchupTypes.VS_ANYONE -> searchMatchupSinceDate(getSinceDate(type), match, false)
         }
     }
 
@@ -122,11 +118,7 @@ class FifaPastResultsSearcher(
         return results
     }
 
-    private fun getSinceDate(value: Int, type: FifaStrategyScopeTypes): Date {
-        return when (type) {
-            FifaStrategyScopeTypes.HOURS -> Calendar.getInstance().apply { add(Calendar.HOUR, -value) }.time
-            FifaStrategyScopeTypes.DAYS -> Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -value) }.time
-            else -> throw IllegalArgumentException("Matchup type MATCHES is not supported for since date.")
-        }
+    private fun getSinceDate(type: FifaStrategyScopeTypes): Date {
+        return Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -type.daysValue) }.time
     }
 }

@@ -7,6 +7,7 @@ import {
     AlertDialogOverlay,
     Button,
     IconButton,
+    Text,
     useDisclosure
 } from "@chakra-ui/react";
 import React, {Fragment} from 'react';
@@ -15,10 +16,11 @@ import {MdDelete} from "react-icons/all";
 type Props = {
     confirmCallback: () => void;
     entityName: string;
+    text?: string | undefined;
     [key: string]: any;
 }
 
-const DeleteConfirmationDialog = ({confirmCallback, entityName, ...props}: Props) => {
+const DeleteConfirmationDialog = ({confirmCallback, entityName, text, ...props}: Props) => {
     const {isOpen, onOpen, onClose} = useDisclosure()
     const cancelRef = React.useRef<HTMLButtonElement>(null)
 
@@ -39,7 +41,8 @@ const DeleteConfirmationDialog = ({confirmCallback, entityName, ...props}: Props
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
-                            Tem certeza? Essa ação não pode ser desfeita.
+                            <Text>Tem certeza? Essa ação não pode ser desfeita.</Text>
+                            {text && <Text>{text}</Text>}
                         </AlertDialogBody>
 
                         <AlertDialogFooter>

@@ -20,7 +20,7 @@ import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvali
 import {useErrorToast} from "hooks/useErrorToast";
 import useThemeColors from "hooks/useThemeColors";
 import React, {ChangeEvent, useEffect, useState} from 'react';
-import {FaMagic, MdAdd, MdContentCopy, MdDelete} from "react-icons/all";
+import {FaRegHourglass, MdAdd, MdContentCopy, MdDelete} from "react-icons/all";
 import {getFifaStrategyParams, getStrategy, saveStrategy} from "services/strategyService";
 import {
     FifaMarketSubTypesDict,
@@ -204,9 +204,8 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
     const addScope = () => {
         if (formParams) {
             const defaultScope: Scope = {
-                type: formParams.scopeTypes[1] || "",
-                matchup: formParams.matchupTypes[0] || "",
-                value: 7,
+                type: formParams.scopeTypes[4] || "",
+                matchup: formParams.matchupTypes[1] || "",
                 rules: formParams.ruleTypes.map(ruleType => ({
                     type: ruleType.type,
                     value: ruleType.defaultValue
@@ -248,7 +247,7 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
     }
 
     const getScopeLabel = (count: number) => {
-        return count === 1 ? "1 regra" : `${count} regras`;
+        return count === 1 ? "1 janela" : `${count} janelas`;
     }
 
     const handleSave = useErrorToast(async () => {
@@ -318,13 +317,13 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
                 <Button
                     onClick={addScope}
                     colorScheme={"blue"}
-                    rightIcon={<FaMagic/>}
+                    rightIcon={<FaRegHourglass/>}
                     w={"100%"}
                 >
                     {validationErrors.scopes && (form.scopes.length > 0 ?
                         <Tag m="2">{getScopeLabel(form.scopes.length)}</Tag> :
-                        <Tag colorScheme="red" m="2">Sem regras</Tag>)}
-                    Adicionar regra
+                        <Tag colorScheme="red" m="2">Sem janelas</Tag>)}
+                    Adicionar janela de análise
                 </Button>
             </Skeleton>
 
@@ -350,25 +349,16 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
 
                             <GridItem colSpan={6}>
                                 <FormControl>
-                                    <FormLabel htmlFor={`value-${index}`}>Período</FormLabel>
-                                    <Grid templateColumns="repeat(6, 1fr)" gap={4}>
-                                        <GridItem colSpan={3}>
-                                            <Input id="value" type="number" onChange={(e) => handleScopeInput(index, e)}
-                                                   value={scope.value}
-                                                   isInvalid={validationErrors[`scope-${index}-value`]}/>
-                                        </GridItem>
-                                        <GridItem colSpan={3}>
-                                            <Select id="type" onChange={(e) => handleScopeInput(index, e)}
-                                                    value={scope.type}
-                                                    isInvalid={validationErrors[`scope-${index}-type`]}>
-                                                {formParams.scopeTypes.map(scopeType => (
-                                                    <option key={scopeType} value={scopeType}>
-                                                        {FifaStrategyScopeTypesDict[scopeType]}
-                                                    </option>
-                                                ))}
-                                            </Select>
-                                        </GridItem>
-                                    </Grid>
+                                    <FormLabel htmlFor={`type-${index}`}>Período</FormLabel>
+                                    <Select id="type" onChange={(e) => handleScopeInput(index, e)}
+                                            value={scope.type}
+                                            isInvalid={validationErrors[`scope-${index}-type`]}>
+                                        {formParams.scopeTypes.map(scopeType => (
+                                            <option key={scopeType} value={scopeType}>
+                                                {FifaStrategyScopeTypesDict[scopeType]}
+                                            </option>
+                                        ))}
+                                    </Select>
                                 </FormControl>
                             </GridItem>
                         </Grid>
@@ -384,7 +374,7 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
                                     <GridItem colSpan={6}>
                                         <FormControl>
                                             {ruleIndex === 0 && <FormLabel
-                                                htmlFor={`ruleType-${index}-${ruleIndex}`}>Critério</FormLabel>}
+                                                htmlFor={`ruleType-${index}-${ruleIndex}`}>Regras</FormLabel>}
                                             <Select id="type" onChange={(e) => handleRuleTypeInput(index, ruleIndex, e)}
                                                     value={rule.type}
                                                     isInvalid={validationErrors[`scope-${index}-rule-${ruleIndex}-type`]}>
