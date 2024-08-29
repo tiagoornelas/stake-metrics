@@ -1,4 +1,17 @@
-import {Box, Flex, Skeleton, Spinner, Table, TableContainer, Tbody, Text, Th, Thead, Tr} from "@chakra-ui/react";
+import {
+    Box,
+    Flex,
+    IconButton,
+    Skeleton,
+    Spinner,
+    Table,
+    TableContainer,
+    Tbody,
+    Text,
+    Th,
+    Thead,
+    Tr
+} from "@chakra-ui/react";
 import Modal from "components/Modal";
 import StrategyEmptyState from "containers/fifa/strategy/components/StrategyEmptyState";
 import StrategyForm from "containers/fifa/strategy/components/StrategyForm";
@@ -6,7 +19,8 @@ import StrategyTableItem from "containers/fifa/strategy/components/StrategyTable
 import useStrategyStatisticsQuery from "containers/fifa/strategy/hooks/useStrategyStatisticsQuery";
 import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
-import {GoTelescope} from 'react-icons/all';
+import {FiRefreshCcw, GoTelescope} from 'react-icons/all';
+import {useQueryClient} from "react-query";
 import {StrategyListItem} from "utils/interfaces";
 
 const NewStrategyButton = () => {
@@ -17,7 +31,11 @@ const NewStrategyButton = () => {
     )
 }
 
-const Header = ({strategiesLength, isLoaded}: { strategiesLength: number, isLoaded: boolean }) => {
+const Header = ({strategiesLength, isLoaded, refreshAction}: {
+    strategiesLength: number,
+    isLoaded: boolean,
+    refreshAction: () => void
+}) => {
     const getLabel = () => {
         switch (strategiesLength) {
             case 0:
@@ -33,18 +51,24 @@ const Header = ({strategiesLength, isLoaded}: { strategiesLength: number, isLoad
         <Skeleton isLoaded={isLoaded}>
             <Text>{getLabel()}</Text>
         </Skeleton>
-        <NewStrategyButton/>
+        <Flex gap={2}>
+            <IconButton icon={<FiRefreshCcw/>} onClick={refreshAction} variant={"outline"} aria-label={"Update"}/>
+            <NewStrategyButton/>
+        </Flex>
     </Flex>)
 }
 
 const FifaStrategies = () => {
     const {data: strategies = [], isLoading} = useStrategyStatisticsQuery();
+    const queryClient = useQueryClient();
     const colors = useThemeColors();
     const shouldRenderEmptyState = !isLoading && strategies.length === 0;
 
+    const onRefresh = () => queryClient.invalidateQueries("strategies");
+
     return (
         <Box mt={4}>
-            <Header strategiesLength={strategies.length} isLoaded={!isLoading}/>
+            <Header strategiesLength={strategies.length} isLoaded={!isLoading} refreshAction={onRefresh}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
                     <Thead>
