@@ -51,7 +51,6 @@ class FifaStrategyService @Autowired constructor(
                 id = scopeRequest.id ?: UUID.randomUUID(),
                 matchup = scopeRequest.matchup,
                 type = scopeRequest.type,
-                value = scopeRequest.value,
                 rules = rules
             )
         }.toMutableSet()

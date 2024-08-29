@@ -169,8 +169,12 @@ export enum FifaMatchupTypes {
 }
 
 export enum FifaStrategyScopeTypes {
-    HOURS = "HOURS",
-    DAYS = "DAYS"
+    TWENTY_FOUR_HOURS = "TWENTY_FOUR_HOURS",
+    THREE_DAYS = "THREE_DAYS",
+    ONE_WEEK = "ONE_WEEK",
+    TWO_WEEKS = "TWO_WEEKS",
+    ONE_MONTH = "ONE_MONTH",
+    TWO_MONTHS = "TWO_MONTHS"
 }
 
 export interface MarketType {
@@ -211,7 +215,6 @@ export interface Scope {
     id?: string;
     matchup: string;
     type: string;
-    value: number;
     rules: Rule[];
 }
 

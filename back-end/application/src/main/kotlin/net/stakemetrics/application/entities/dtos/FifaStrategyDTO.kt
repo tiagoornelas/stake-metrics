@@ -22,7 +22,6 @@ class FifaStrategyDTO {
         val id: UUID?,
         val matchup: FifaMatchupTypes? = null,
         val type: FifaStrategyScopeTypes? = null,
-        val value: Int,
         val rules: List<FifaStrategyRuleRequest>
     )
 
@@ -30,7 +29,6 @@ class FifaStrategyDTO {
         val id: UUID,
         val matchup: FifaMatchupTypes? = null,
         val type: FifaStrategyScopeTypes? = null,
-        val value: Int? = null,
         val rules: List<FifaStrategyRuleResponse>
     )
 
@@ -124,7 +122,6 @@ fun FifaStrategyScope.toResponse(): FifaStrategyDTO.FifaStrategyScopeResponse {
         this.id,
         this.matchup,
         this.type,
-        this.value,
         this.rules.map { it.toResponse() }
     )
 }
