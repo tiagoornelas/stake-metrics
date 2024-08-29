@@ -29,7 +29,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.telegram:telegrambots-client:7.4.2")
     implementation("com.stripe:stripe-java:26.0.0")
-    implementation("com.mailersend:java-sdk:1.0.0")
+    implementation("com.sendinblue:sib-api-v3-sdk:7.0.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.0")
     implementation("com.fasterxml.jackson.core:jackson-core:2.15.0")
