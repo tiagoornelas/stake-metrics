@@ -1,5 +1,6 @@
 import {Badge, Flex, Td, Text, Tr} from "@chakra-ui/react";
 import StrategyTableActions from "containers/fifa/strategy/components/StrategyTableActions";
+import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
 import {strategyStatusDict} from "utils/constants/strategyConstants";
 import {StrategyListItem} from "utils/interfaces";
@@ -17,7 +18,8 @@ const StrategyNameAndStatus = ({status, name}: StrategyNameAndStatusProps) => {
 }
 
 const ResultData = ({value}: { value: number }) => {
-    const color = value > 0 ? "green" : value < 0 ? "red" : "black";
+    const colors = useThemeColors();
+    const color = value > 0 ? "green" : value < 0 ? "red" : colors.contrast;
     const formattedValue = `${value > 0 ? "+" : ""}${value} u`;
 
     return (
@@ -28,9 +30,10 @@ const ResultData = ({value}: { value: number }) => {
 };
 
 const ROIData = ({value}: { value: number }) => {
+    const colors = useThemeColors();
+    const color = value > 0 ? "green" : value < 0 ? "red" : colors.contrast;
     const percentageValue = value * 100;
-    const roundedValue = Math.round(percentageValue * 100) / 100; // Round to two decimal places
-    const color = roundedValue > 0 ? "green" : roundedValue < 0 ? "red" : "black";
+    const roundedValue = Math.round(percentageValue * 100) / 100;
     const formattedValue = `${roundedValue > 0 ? "+" : ""}${roundedValue.toFixed(2)} %`;
 
     return (
