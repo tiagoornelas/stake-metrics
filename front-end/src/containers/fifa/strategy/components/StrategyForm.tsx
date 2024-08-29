@@ -207,10 +207,10 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
                 type: formParams.scopeTypes[1] || "",
                 matchup: formParams.matchupTypes[0] || "",
                 value: 7,
-                rules: [{
-                    type: formParams.ruleTypes[0].type || "",
-                    value: formParams.ruleTypes[0].defaultValue || 0
-                }]
+                rules: formParams.ruleTypes.map(ruleType => ({
+                    type: ruleType.type,
+                    value: ruleType.defaultValue
+                }))
             };
             setScopes([...form.scopes, defaultScope]);
         }
