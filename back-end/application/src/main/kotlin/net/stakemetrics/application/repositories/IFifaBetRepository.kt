@@ -12,4 +12,5 @@ interface IFifaBetRepository {
     fun findOpenBets(): List<FifaBet>
     fun existsByStrategyAndMatchIntegrationId(fifaStrategy: FifaStrategy, matchIntegrationId: Long): Boolean
     fun listAllByStrategyIds(strategyIds: Collection<UUID>, page: Int, size: Int, showPaperBets: Boolean): Page<FifaBet>
+    fun deleteAllByStrategyId(strategyId: UUID)
 }

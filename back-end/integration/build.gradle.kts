@@ -26,6 +26,7 @@ the<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension>().a
 
 dependencies {
     implementation("org.springframework.boot:spring-boot")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.telegram:telegrambots-client:7.4.2")
     implementation("com.stripe:stripe-java:26.0.0")

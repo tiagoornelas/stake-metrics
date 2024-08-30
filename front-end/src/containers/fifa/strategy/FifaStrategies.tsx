@@ -61,7 +61,7 @@ const FifaStrategies = () => {
                             <Th w={"80px"} textAlign={"center"}>ROI</Th>
                             <Th w={"80px"} textAlign={"center"}>Unidades Ativas</Th>
                             <Th w={"80px"} textAlign={"center"}>ROI Ativo</Th>
-                            <Th w={"160px"}/>
+                            <Th w={"210px"}/>
                         </Tr>
                     </Thead>
                     {!isLoading && <Tbody>
