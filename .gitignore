@@ -31,3 +31,22 @@ package-lock.json
 
 #.env
 back-end/src/main/resources/application.properties
+
+# Ignorar diretórios e arquivos do Gradle
+back-end/.gradle/
+back-end/application/.gradle/
+back-end/application/build/
+back-end/application/gradle/
+back-end/build/
+back-end/http/.gradle/
+back-end/http/build/
+back-end/http/gradle/
+back-end/integration/.gradle/
+back-end/integration/build/
+back-end/integration/gradle/
+back-end/persistence/build/
+back-end/persistence/gradle/
+back-end/persistence/persistence.iml
+
+# Ignorar diretório node_modules
+front-end/node_modules/
