@@ -1,5 +1,6 @@
 package net.stakemetrics.integration.telegram
 
+import jakarta.transaction.Transactional
 import java.util.UUID
 import kotlin.random.Random
 import net.stakemetrics.application.entities.ChatDetails
@@ -11,6 +12,7 @@ import net.stakemetrics.application.entities.exceptions.AlreadyIntegratedExcepti
 import net.stakemetrics.application.entities.exceptions.IntegrationException
 import net.stakemetrics.application.entities.exceptions.InvalidFieldException
 import net.stakemetrics.application.entities.exceptions.NotFoundException
+import net.stakemetrics.application.repositories.IMessageRepository
 import net.stakemetrics.application.repositories.IMessengerChatRepository
 import net.stakemetrics.application.service.IMessengerService
 import net.stakemetrics.application.service.IQueueService
@@ -30,6 +32,7 @@ class TelegramService(
     private val userService: UserService,
     private val queueService: IQueueService,
     private val messageService: MessageService,
+    private val messageRepository: IMessageRepository,
     private val messengerChatRepository: IMessengerChatRepository
 ) : IMessengerService {
 
@@ -140,8 +143,10 @@ class TelegramService(
         messengerChatRepository.save(editedMessengerChat)
     }
 
+    @Transactional
     override fun deleteIntegration(telegramChatId: UUID) {
         val queriedMessengerChat = messengerChatRepository.findById(telegramChatId)
+        messageRepository.deleteAllByMessengerChatId(telegramChatId)
         messengerChatRepository.delete(queriedMessengerChat)
     }
 

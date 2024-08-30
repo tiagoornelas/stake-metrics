@@ -1,5 +1,6 @@
 package net.stakemetrics.application.service
 
+import jakarta.transaction.Transactional
 import java.util.UUID
 import net.stakemetrics.application.entities.*
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
@@ -8,6 +9,7 @@ import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.*
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
 import net.stakemetrics.application.entities.exceptions.NotFoundException
+import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.repositories.IFifaStrategyRepository
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.workers.FifaPastResultsSearcher
@@ -25,6 +27,7 @@ class FifaStrategyService @Autowired constructor(
     private val queueService: IQueueService,
     private val fifaLeagueService: FifaLeagueService,
     private val fifaPlayerService: FifaPlayerService,
+    private val fifaBetRepository: IFifaBetRepository,
     private val fifaTipsterFactory: FifaTipsterFactory,
     private val fifaStrategyRepository: IFifaStrategyRepository,
     private val fifaPastResultsSearcher: FifaPastResultsSearcher,
@@ -51,7 +54,6 @@ class FifaStrategyService @Autowired constructor(
                 id = scopeRequest.id ?: UUID.randomUUID(),
                 matchup = scopeRequest.matchup,
                 type = scopeRequest.type,
-                value = scopeRequest.value,
                 rules = rules
             )
         }.toMutableSet()
@@ -105,10 +107,20 @@ class FifaStrategyService @Autowired constructor(
         fifaStrategyRepository.save(strategy)
     }
 
+    @Transactional
+    fun restartStrategy(userEmail: String, strategyId: UUID) {
+        val strategy = findById(strategyId)
+        val user = userService.findByEmail(userEmail)
+        fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy, user)
+        fifaBetRepository.deleteAllByStrategyId(strategy.id)
+    }
+
+    @Transactional
     fun deleteStrategy(userEmail: String, strategyId: UUID) {
         val strategy = findById(strategyId)
         val user = userService.findByEmail(userEmail)
         fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy, user)
+        fifaBetRepository.deleteAllByStrategyId(strategy.id)
         fifaStrategyRepository.delete(strategy)
     }
 

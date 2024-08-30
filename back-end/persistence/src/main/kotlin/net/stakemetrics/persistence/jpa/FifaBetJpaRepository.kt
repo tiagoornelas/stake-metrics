@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query
 interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
     fun existsByStrategyAndMatchIntegrationId(strategy: FifaStrategyModel, matchIntegrationId: Long): Boolean
     fun findAllByStrategyIdInOrderByMatchTimeDesc(strategyIds: Collection<UUID>, pageable: Pageable): Page<FifaBetModel>
+    fun deleteAllByStrategyId(strategyId: UUID)
 
     @Query("SELECT f FROM FifaBetModel f WHERE f.strategy.id IN :strategyIds AND f.isPaperBet = false ORDER BY f.match.time DESC")
     fun findAllByStrategyIdInAndIsNotPaperBetOrderByMatchTimeDesc(

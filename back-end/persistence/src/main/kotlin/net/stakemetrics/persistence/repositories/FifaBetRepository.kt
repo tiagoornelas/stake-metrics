@@ -51,4 +51,8 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         }.map { it.toDomain() }
     }
 
+    override fun deleteAllByStrategyId(strategyId: UUID) {
+        fifaBetJpaRepository.deleteAllByStrategyId(strategyId)
+    }
+
 }
