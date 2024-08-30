@@ -22,7 +22,8 @@ const DeleteButton = ({bet}: { bet: Bet }) => {
         invalidateStrategyQuery();
     }, SUCCESS_TYPES.BET_DELETED);
 
-    return <DeleteConfirmationDialog entityName={"entrada"} confirmCallback={handleDelete} variant='outline'/>
+    return <DeleteConfirmationDialog entityName={"entrada"} confirmCallback={handleDelete} variant="outline"
+                                     text={"Ao excluir a aposta, se houver mensagens correspondentes, elas serão editadas e marcadas como aposta descartada."}/>
 }
 
 type Props = {

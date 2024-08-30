@@ -56,6 +56,10 @@ export const FifaMatchupTypesDict: { [key in FifaMatchupTypes]: string } = {
 };
 
 export const FifaStrategyScopeTypesDict: { [key in FifaStrategyScopeTypes]: string } = {
-    [FifaStrategyScopeTypes.HOURS]: "Horas",
-    [FifaStrategyScopeTypes.DAYS]: "Dias",
+    [FifaStrategyScopeTypes.TWENTY_FOUR_HOURS]: "Últimas 24 horas",
+    [FifaStrategyScopeTypes.THREE_DAYS]: "Últimos 3 dias",
+    [FifaStrategyScopeTypes.ONE_WEEK]: "Última semana",
+    [FifaStrategyScopeTypes.TWO_WEEKS]: "Últimas 2 semanas",
+    [FifaStrategyScopeTypes.ONE_MONTH]: "Último mês",
+    [FifaStrategyScopeTypes.TWO_MONTHS]: "Últimos 2 meses",
 };

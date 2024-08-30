@@ -8,6 +8,5 @@ data class FifaStrategyScope(
     val id: UUID = UUID.randomUUID(),
     val matchup: FifaMatchupTypes? = null,
     val type: FifaStrategyScopeTypes? = null,
-    val value: Int? = null,
     val rules: MutableSet<FifaStrategyRule> = mutableSetOf()
 )

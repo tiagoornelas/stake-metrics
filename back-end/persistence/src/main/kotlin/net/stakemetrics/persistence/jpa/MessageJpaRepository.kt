@@ -5,4 +5,5 @@ import net.stakemetrics.persistence.models.MessageModel
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface MessageJpaRepository : JpaRepository<MessageModel, UUID> {
+    fun deleteAllByMessengerChatId(messengerChatId: UUID)
 }
