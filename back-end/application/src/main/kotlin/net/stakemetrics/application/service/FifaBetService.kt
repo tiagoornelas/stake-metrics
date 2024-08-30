@@ -2,11 +2,7 @@ package net.stakemetrics.application.service
 
 import java.util.Date
 import java.util.UUID
-import net.stakemetrics.application.entities.FifaBet
-import net.stakemetrics.application.entities.FifaMatch
-import net.stakemetrics.application.entities.Message
-import net.stakemetrics.application.entities.MessengerChat
-import net.stakemetrics.application.entities.User
+import net.stakemetrics.application.entities.*
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.MessengerDTO
 import net.stakemetrics.application.entities.dtos.toResponse

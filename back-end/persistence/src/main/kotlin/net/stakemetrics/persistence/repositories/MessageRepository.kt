@@ -16,4 +16,8 @@ class MessageRepository(private val messageJpaRepository: MessageJpaRepository) 
     override fun findById(messageId: UUID): Message {
         return messageJpaRepository.findById(messageId).map { it.toDomain() }.orElseThrow()
     }
+
+    override fun deleteAllByMessengerChatId(messengerChatId: UUID) {
+        messageJpaRepository.deleteAllByMessengerChatId(messengerChatId)
+    }
 }

@@ -47,6 +47,7 @@ class FifaStrategyRepository(private val fifaStrategyJpaRepository: FifaStrategy
 
     @CacheEvict(value = ["strategies"], allEntries = true)
     override fun delete(strategy: FifaStrategy) {
+
         return fifaStrategyJpaRepository.delete(strategy.toModel())
     }
 

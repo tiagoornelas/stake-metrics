@@ -11,6 +11,9 @@ export const changeStrategyStatus = (strategyId: string, status: StrategyStatus)
 export const deleteStrategy = (strategyId: string) =>
     makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}/${strategyId}`, REQUEST_TYPE.DELETE);
 
+export const restartStrategy = (strategyId: string) =>
+    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.RESTART}/${strategyId}`, REQUEST_TYPE.POST);
+
 export const saveStrategy = (strategy: StrategyCreationBody) =>
     makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}`, REQUEST_TYPE.POST, strategy);
 

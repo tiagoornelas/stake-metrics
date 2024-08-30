@@ -38,8 +38,8 @@ export const SUCCESS_TYPES: Record<string, SuccessDictionary> = {
         description: "Chat do Telegram conectado com sucesso."
     },
     TELEGRAM_CHAT_DELETED: {
-        title: "Ok!",
-        description: "Chat do Telegram excluído com sucesso."
+        title: "Chat excluído!",
+        description: "As mensagens enviadas a ele não serão mais editadas."
     },
     TELEGRAM_CHAT_EDITED: {
         title: "Ok!",
@@ -60,6 +60,10 @@ export const SUCCESS_TYPES: Record<string, SuccessDictionary> = {
     STRATEGY_DELETED: {
         title: "Ok!",
         description: "Estratégia excluída com sucesso."
+    },
+    STRATEGY_RESTARTED: {
+        title: "Um novo começo! ✨",
+        description: "Estratégia reiniciada com sucesso."
     },
     BET_DELETED: {
         title: "Ok!",

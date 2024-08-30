@@ -35,6 +35,7 @@ export const ENDPOINTS = {
         BASE: "/strategy",
         PARAMS: "/params",
         STATUS: "/status",
-        STATISTICS: "/statistics"
+        STATISTICS: "/statistics",
+        RESTART: "/restart"
     }
 }
