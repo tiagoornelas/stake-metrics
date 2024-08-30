@@ -1,6 +1,7 @@
 package net.stakemetrics.application.entities.dtos
 
 import java.util.UUID
+import net.stakemetrics.application.entities.GenericScope
 import net.stakemetrics.application.entities.*
 import net.stakemetrics.application.entities.enums.*
 
@@ -20,15 +21,15 @@ class FifaStrategyDTO {
 
     data class FifaStrategyScopeRequest(
         val id: UUID?,
-        val matchup: FifaMatchupTypes? = null,
-        val type: FifaStrategyScopeTypes? = null,
+        val matchup: MatchupTypes? = null,
+        val type: StrategyScopeTypes? = null,
         val rules: List<FifaStrategyRuleRequest>
     )
 
     data class FifaStrategyScopeResponse(
         val id: UUID,
-        val matchup: FifaMatchupTypes? = null,
-        val type: FifaStrategyScopeTypes? = null,
+        val matchup: MatchupTypes? = null,
+        val type: StrategyScopeTypes? = null,
         val rules: List<FifaStrategyRuleResponse>
     )
 
@@ -100,8 +101,13 @@ class FifaStrategyDTO {
         val marketTypes: List<FifaMarketTypeResponse>,
         val players: List<FifaPlayerDTO.FifaPlayerResponse>,
         val ruleTypes: List<FifaRuleTypesResponse>,
-        val matchupTypes: List<FifaMatchupTypes>,
-        val scopeTypes: List<FifaStrategyScopeTypes>
+        val matchupTypes: List<MatchupTypes>,
+        val scopeTypes: List<StrategyScopeTypes>
+    )
+
+    data class GenericScopePastResults(
+        val scope: GenericScope? = null,
+        val pastResults: MutableSet<FifaMatch> = mutableSetOf()
     )
 
     data class FifaStrategyScopePastResults(

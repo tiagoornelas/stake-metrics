@@ -1,6 +1,6 @@
 package net.stakemetrics.application.entities.enums
 
-enum class FifaStrategyScopeTypes(val daysValue: Int) {
+enum class StrategyScopeTypes(val daysValue: Int) {
     TWENTY_FOUR_HOURS(1),
     THREE_DAYS(3),
     ONE_WEEK(7),
