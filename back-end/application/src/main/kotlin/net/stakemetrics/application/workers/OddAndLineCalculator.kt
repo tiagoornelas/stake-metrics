@@ -21,6 +21,6 @@ class OddAndLineCalculator {
     }
 
     fun getBettorsJuice(givenOdds: Double, fairLine: Double): Double {
-        return (fairLine / givenOdds) - 1
+        return (givenOdds / fairLine) - 1
     }
 }
