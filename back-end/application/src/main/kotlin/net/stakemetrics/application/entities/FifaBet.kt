@@ -16,6 +16,6 @@ data class FifaBet(
     val odds: Double,
     var status: BetStatusTypes = BetStatusTypes.PENDING,
     var profit: Double? = null,
-    val oddOfferTime: Date,
-    val betTime: Date
+    val betTime: Date = Date(),
+    val oddSnapshotId: UUID
 )

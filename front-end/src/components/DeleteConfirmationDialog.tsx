@@ -20,9 +20,10 @@ type Props = {
     entityName: string;
     text?: string | undefined;
     [key: string]: any;
+    isLoading?: boolean;
 }
 
-const DeleteConfirmationDialog = ({tooltip = false, confirmCallback, entityName, text, ...props}: Props) => {
+const DeleteConfirmationDialog = ({tooltip = false, confirmCallback, entityName, text, isLoading, ...props}: Props) => {
         const {isOpen, onOpen, onClose} = useDisclosure()
         const cancelRef = React.useRef<HTMLButtonElement>(null)
 
@@ -50,10 +51,10 @@ const DeleteConfirmationDialog = ({tooltip = false, confirmCallback, entityName,
                             </AlertDialogBody>
 
                             <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
+                                <Button ref={cancelRef} onClick={onClose} isDisabled={isLoading}>
                                     Cancelar
                                 </Button>
-                                <Button colorScheme='red' onClick={handleConfirm} ml={3}>
+                                <Button colorScheme='red' onClick={handleConfirm} ml={3} isLoading={isLoading}>
                                     Excluir
                                 </Button>
                             </AlertDialogFooter>

@@ -3,21 +3,19 @@ package net.stakemetrics.application.entities.dtos
 import java.util.Date
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
+import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
+import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
 
 class FifaBetDTO {
 
     data class BetRequest(
         val strategy: FifaStrategy,
-        val leagueIntegrationId: Long,
-        val homePlayerName: String,
-        val awayPlayerName: String,
-        val matchIntegrationId: Long,
-        val matchTime: Date,
+        val fifaMatchId: UUID,
         val candidate: FifaMarketBetCandidates,
-        val lineOdds: FifaDataSourceDTO.FifaGenericOddRequest
+        val oddSnapshot: FifaOddSnapshot
     )
 
     data class BetResponse(
@@ -43,6 +41,12 @@ class FifaBetDTO {
 
     data class CloseBetRequest(
         val bet: FifaBet,
+    )
+
+    data class BetResult(
+        val winnerSubType: FifaMarketSubTypes?,
+        val profit: Double,
+        val status: BetStatusTypes
     )
 
 }

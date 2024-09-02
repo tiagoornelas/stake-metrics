@@ -1,15 +1,13 @@
 package net.stakemetrics.application.workers
 
+import net.stakemetrics.application.utils.MathHelper
 import org.springframework.stereotype.Service
 
 @Service
-class OddAndLineCalculator {
-    fun getProbability(odds: Double): Double {
-        return 1 / odds
-    }
+class OddAndLineCalculator(private val mathHelper: MathHelper) {
 
-    fun getFairLine(odds: Double): Double {
-        return 1 / odds
+    fun getFairLine(probability: Double): Double {
+        return mathHelper.safeDivide(1.0, probability)
     }
 
     fun getScoreThreshold(handicapLine: Double): Double {
@@ -21,6 +19,6 @@ class OddAndLineCalculator {
     }
 
     fun getBettorsJuice(givenOdds: Double, fairLine: Double): Double {
-        return (givenOdds / fairLine) - 1
+        return mathHelper.safeDivide(givenOdds, fairLine) - 1
     }
 }
