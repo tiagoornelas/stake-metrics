@@ -1,6 +1,7 @@
 package net.stakemetrics.persistence.repositories
 
 import java.util.Date
+import java.util.UUID
 import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaPlayer
@@ -8,7 +9,6 @@ import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.persistence.jpa.FifaMatchJpaRepository
 import net.stakemetrics.persistence.models.toModel
-import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -16,6 +16,10 @@ class FifaMatchRepository(private val fifaMatchJpaRepository: FifaMatchJpaReposi
 
     override fun save(fifaMatch: FifaMatch) {
         fifaMatchJpaRepository.save(fifaMatch.toModel())
+    }
+
+    override fun findById(id: UUID): FifaMatch? {
+        return fifaMatchJpaRepository.findById(id).orElse(null)?.toDomain()
     }
 
     override fun findLatestMatch(): FifaMatch? {

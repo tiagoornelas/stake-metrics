@@ -2,6 +2,7 @@ package net.stakemetrics.integration.betsapi.worker.miner
 
 import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.integration.betsapi.entities.dtos.BetsApiDTO
 import net.stakemetrics.integration.betsapi.utils.BetsApiHelper
@@ -39,19 +40,21 @@ class FifaUpcomingMatchesMiner(
     private fun convertResultListToFifaDtoList(results: List<BetsApiDTO.MatchResponse.Result>): List<FifaDataSourceDTO.FifaOddRequest> {
         val filteredResults = filterResultsWithinOneHour(results)
 
-        return filteredResults.map { result ->
+        return filteredResults.mapNotNull { result ->
             logger.log("[BetsAPI] Fetching Event Odds for match ${result.id}")
             val response = betsApiRequester.fetchOddsForMatch(result.id.toInt())
             val oddResponse = oddDeserializer.parseJsonToOddResponse(response)
             val odds = convertResultListToFifaGenericOddsList(oddResponse, result.time)
 
-            FifaDataSourceDTO.FifaOddRequest(
-                leagueIntegrationId = result.league.id.toLong(),
-                matchIntegrationId = result.id.toLong(),
-                homePlayerName = fifaMarketHelper.getPlayerName(result.home.name),
-                awayPlayerName = fifaMarketHelper.getPlayerName(result.away.name),
-                odds = odds
-            )
+            odds?.let {
+                FifaDataSourceDTO.FifaOddRequest(
+                    leagueIntegrationId = result.league.id.toLong(),
+                    matchIntegrationId = result.id.toLong(),
+                    homePlayerName = fifaMarketHelper.getPlayerName(result.home.name),
+                    awayPlayerName = fifaMarketHelper.getPlayerName(result.away.name),
+                    odds = it
+                )
+            }
         }
     }
 
@@ -65,34 +68,50 @@ class FifaUpcomingMatchesMiner(
     }
 
     private fun convertResultListToFifaGenericOddsList(oddResponse: BetsApiDTO.EventOddsResponse, matchTime: String):
-            List<FifaDataSourceDTO.FifaGenericOddRequest> {
-        val fifaGenericOddRequests = mutableListOf<FifaDataSourceDTO.FifaGenericOddRequest>()
+            FifaDataSourceDTO.FifaGenericOddRequest? {
+        val applicationMarketTypes = oddResponse.odds.keys.filter { it.applicationType != null }
 
-        oddResponse.odds.forEach { (marketType, oddsList) ->
-            val updateTime = oddResponse.stats.odds_update[marketType]
-            val fifaMarketTypeOnApplication = marketType.applicationType
+        val validMarketTypes = applicationMarketTypes.filter { marketType ->
+            oddResponse.odds[marketType]?.isNotEmpty() == true
+        }
 
-            if (fifaMarketTypeOnApplication != null) {
-                oddsList.forEach { odd ->
-                    fifaGenericOddRequests.add(
-                        FifaDataSourceDTO.FifaGenericOddRequest(
-                            marketType = fifaMarketTypeOnApplication,
-                            lastCheckedTime = updateTime?.let { betsApiHelper.convertTimestampToDate(it) },
-                            oddOfferTime = betsApiHelper.convertTimestampToDate(odd.add_time),
-                            matchTime = betsApiHelper.convertTimestampToDate(matchTime),
-                            handicap = odd.handicap?.let { fifaMarketHelper.getHandicap(it) },
-                            over = odd.over_od?.toDouble(),
-                            under = odd.under_od?.toDouble(),
-                            home = odd.home_od?.toDouble(),
-                            draw = odd.draw_od?.toDouble(),
-                            away = odd.away_od?.toDouble()
-                        )
+        if (validMarketTypes.isNotEmpty()) {
+            val latestOdds = validMarketTypes.mapNotNull { marketType ->
+                val oddsList = oddResponse.odds[marketType] ?: return@mapNotNull null
+                val latestOdd = oddsList.maxByOrNull { it.add_time.toLong() } ?: return@mapNotNull null
+                marketType.applicationType to latestOdd
+            }.toMap()
+
+            val matchOdds = latestOdds[FifaMarketTypes.MATCH_ODDS]
+            val goalLineOdds = latestOdds[FifaMarketTypes.GOAL_LINE]
+
+            if (matchOdds != null && goalLineOdds != null) {
+                val home = matchOdds.home_od?.toDouble()
+                val draw = matchOdds.draw_od?.toDouble()
+                val away = matchOdds.away_od?.toDouble()
+                val over = goalLineOdds.over_od?.toDouble()
+                val under = goalLineOdds.under_od?.toDouble()
+                val handicap = goalLineOdds.handicap?.let { fifaMarketHelper.getHandicap(it) }
+
+                if (home != null && draw != null && away != null && over != null && under != null && handicap != null) {
+                    return FifaDataSourceDTO.FifaGenericOddRequest(
+                        matchTime = betsApiHelper.convertTimestampToDate(matchTime),
+                        home = home,
+                        draw = draw,
+                        away = away,
+                        overGoals = over,
+                        underGoals = under,
+                        goalsHandicap = handicap
+                    )
+                } else {
+                    logger.log(
+                        "[UpcomingMatchesMiner] Missing required odds for match $matchTime: home=$home, " +
+                                "draw=$draw, away=$away, over=$over, under=$under, handicap=$handicap"
                     )
                 }
             }
-
         }
 
-        return fifaGenericOddRequests
+        return null
     }
 }
