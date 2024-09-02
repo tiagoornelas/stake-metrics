@@ -9,6 +9,8 @@ import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.MessengerDTO
 import net.stakemetrics.application.entities.dtos.toResponse
+import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
+import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.repositories.IFifaMatchRepository
@@ -38,20 +40,21 @@ class FifaBetService(
         val fifaMatch = fifaMatchRepository.findById(payload.fifaMatchId)
             ?: throw InternalError("Match not found when trying to bet on it")
 
-        val alreadyBet =
-            fifaBetRepository.existsByStrategyAndMatch(payload.strategy, fifaMatch)
+        val alreadyBet = fifaBetRepository.existsByStrategyAndMatch(payload.strategy, fifaMatch)
 
         if (alreadyBet) {
             logger.log("Already bet on the match ${fifaMatch.integrationId} with the strategy ${payload.strategy.id}")
             return
         }
 
+        val handicap = if (isGoalLineMarket(payload.candidate)) payload.oddSnapshot.goalsHandicap else null
+
         val fifaBet = FifaBet(
             isPaperBet = payload.strategy.isPaperBetting,
             strategy = payload.strategy,
             match = fifaMatch,
             line = payload.candidate,
-            handicap = payload.oddSnapshot.goalsHandicap,
+            handicap = handicap,
             odds = fifaTipsterHelper.getOddForCandidate(payload.candidate, payload.oddSnapshot),
             betTime = Date(),
             oddSnapshotId = payload.oddSnapshot.id,
@@ -59,6 +62,12 @@ class FifaBetService(
 
         if (!fifaBet.isPaperBet) sendBetMessagesToUserChats(fifaBet)
         fifaBetRepository.save(fifaBet)
+    }
+
+    private fun isGoalLineMarket(candidate: FifaMarketBetCandidates): Boolean {
+        return FifaMarketTypes.GOAL_LINE.subTypes.any { subtype ->
+            subtype.betCandidates.contains(candidate)
+        }
     }
 
     fun sendBetMessagesToUserChats(fifaBet: FifaBet) {
