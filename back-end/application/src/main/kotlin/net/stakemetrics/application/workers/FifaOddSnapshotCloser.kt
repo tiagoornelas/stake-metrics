@@ -4,6 +4,7 @@ import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
+import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.entities.enums.OddSnapshotTypes
 import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
 import org.springframework.stereotype.Service
@@ -16,6 +17,7 @@ class FifaOddSnapshotCloser(
 
     fun close(fifaOddSnapshot: FifaOddSnapshot) {
         val match = fifaOddSnapshot.fifaMatch
+        if (match.status != FifaMatchStatusTypes.ENDED || match.totalGoalsAtFullTime == null) return
 
         val homeResult = fifaBetWinnerDeterminer.determineMatchOddsWinner(
             match, FifaMarketBetCandidates.HOME,
