@@ -1,5 +1,6 @@
 package net.stakemetrics.application.workers.enqueuers
 
+import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
 import net.stakemetrics.application.service.IQueueService
 import org.springframework.stereotype.Service
@@ -12,7 +13,9 @@ class FifaOpenOddSnapshotEnqueuer(
 
     fun enqueue() {
         val pendingOddSnapshots = fifaOddSnapshotRepository.findAllPending()
-        pendingOddSnapshots.forEach(queueService::enqueueCloseOddSnapshotTask)
+        pendingOddSnapshots
+            .filter { it.fifaMatch.status == FifaMatchStatusTypes.ENDED }
+            .forEach(queueService::enqueueCloseOddSnapshotTask)
     }
 
 }
