@@ -19,16 +19,16 @@ class FifaOddSnapshotCloser(
 
         val homeResult = fifaBetWinnerDeterminer.determineMatchOddsWinner(
             match, FifaMarketBetCandidates.HOME,
-            fifaOddSnapshot.value.home!!
+            fifaOddSnapshot.homeOdd!!
         )
         val drawResult = fifaBetWinnerDeterminer.determineMatchOddsWinner(
             match, FifaMarketBetCandidates.DRAW,
-            fifaOddSnapshot.value.draw!!
+            fifaOddSnapshot.drawOdd!!
         )
         val awayResult = fifaBetWinnerDeterminer.determineMatchOddsWinner(
             match,
             FifaMarketBetCandidates.AWAY,
-            fifaOddSnapshot.value.away!!
+            fifaOddSnapshot.awayOdd!!
         )
 
         fifaOddSnapshot.homeProfit = homeResult.profit
@@ -44,13 +44,13 @@ class FifaOddSnapshotCloser(
 
         val overResult = fifaBetWinnerDeterminer.determineGoalLineWinner(
             match, FifaMarketBetCandidates.OVER,
-            fifaOddSnapshot.value.overGoals!!,
-            fifaOddSnapshot.value.goalsHandicap!!
+            fifaOddSnapshot.overGoalsOdd!!,
+            fifaOddSnapshot.goalsHandicap!!
         )
         val underResult = fifaBetWinnerDeterminer.determineGoalLineWinner(
             match, FifaMarketBetCandidates.UNDER,
-            fifaOddSnapshot.value.underGoals!!,
-            fifaOddSnapshot.value.goalsHandicap
+            fifaOddSnapshot.underGoalsOdd!!,
+            fifaOddSnapshot.goalsHandicap
         )
 
         fifaOddSnapshot.overProfit = overResult.profit

@@ -1,8 +1,8 @@
 package net.stakemetrics.application.workers.tipsters
 
+import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaStrategyRule
 import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
-import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
@@ -16,7 +16,7 @@ class FifaGoalLineTipster(private val fifaTipsterHelper: FifaTipsterHelper) : Fi
     override fun analyze(
         betCandidate: FifaMarketBetCandidates,
         rules: MutableSet<FifaStrategyRule>,
-        odds: FifaDataSourceDTO.FifaGenericOddRequest,
+        odds: FifaOddSnapshot,
         analysis: FifaTrendScopeAnalysis
     ) {
         rules.forEach { rule ->
@@ -30,21 +30,21 @@ class FifaGoalLineTipster(private val fifaTipsterHelper: FifaTipsterHelper) : Fi
     }
 
     private fun checkMinimumOddsRule(
-        betCandidate: FifaMarketBetCandidates, rule: FifaStrategyRule, odds: FifaDataSourceDTO.FifaGenericOddRequest
+        betCandidate: FifaMarketBetCandidates, rule: FifaStrategyRule, odds: FifaOddSnapshot
     ) {
         when (betCandidate) {
             FifaMarketBetCandidates.OVER -> {
-                if (odds.overGoals!! < rule.value) {
+                if (odds.overGoalsOdd!! < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for over market: ${odds.overGoals} < ${rule.value}"
+                        "Minimum odds rule break for over market: ${odds.overGoalsOdd} < ${rule.value}"
                     )
                 }
             }
 
             FifaMarketBetCandidates.UNDER -> {
-                if (odds.underGoals!! < rule.value) {
+                if (odds.underGoalsOdd!! < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for under market: ${odds.underGoals} < ${rule.value}"
+                        "Minimum odds rule break for under market: ${odds.underGoalsOdd} < ${rule.value}"
                     )
                 }
             }
