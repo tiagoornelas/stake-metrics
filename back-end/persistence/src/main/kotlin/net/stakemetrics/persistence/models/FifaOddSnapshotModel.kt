@@ -4,7 +4,6 @@ import jakarta.persistence.*
 import java.util.Date
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaOddSnapshot
-import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
 import net.stakemetrics.application.entities.enums.OddSnapshotTypes
 
@@ -16,8 +15,12 @@ data class FifaOddSnapshotModel(
     @ManyToOne
     @JoinColumn(name = "match_id")
     val fifaMatch: FifaMatchModel? = null,
-    @Embedded
-    val value: FifaDataSourceDTO.FifaGenericOddRequest? = null,
+    val goalsHandicap: Double? = null,
+    val overGoalsOdd: Double? = null,
+    val underGoalsOdd: Double? = null,
+    val homeOdd: Double? = null,
+    val drawOdd: Double? = null,
+    val awayOdd: Double? = null,
     @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
     val trendScopeAnalysis: MutableSet<FifaTrendScopeAnalysisModel> = mutableSetOf(),
     val status: OddSnapshotTypes = OddSnapshotTypes.PENDING,
@@ -34,7 +37,12 @@ data class FifaOddSnapshotModel(
         return FifaOddSnapshot(
             id,
             fifaMatch?.toDomain()!!,
-            value!!,
+            goalsHandicap,
+            overGoalsOdd,
+            underGoalsOdd,
+            homeOdd,
+            drawOdd,
+            awayOdd,
             trendScopeAnalysis.map { it.toDomain() }.toMutableSet(),
             status,
             homeProfit,
@@ -53,7 +61,12 @@ fun FifaOddSnapshot.toModel(): FifaOddSnapshotModel {
     return FifaOddSnapshotModel(
         this.id,
         this.fifaMatch.toModel(),
-        this.value,
+        this.goalsHandicap,
+        this.overGoalsOdd,
+        this.underGoalsOdd,
+        this.homeOdd,
+        this.drawOdd,
+        this.awayOdd,
         this.trendScopeAnalysis.map { it.toModel() }.toMutableSet(),
         this.status,
         this.homeProfit,

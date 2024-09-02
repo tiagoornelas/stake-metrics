@@ -30,7 +30,7 @@ class FifaStrategyOpportunityIterator(private val logger: Logger, private val qu
                 analysisByScopes.forEach { scopeAnalysis ->
                     try {
                         val rulesForScope = getRulesForScope(strategy, scopeAnalysis)
-                        tipster.analyze(candidate, rulesForScope, oddSnapshot.value, scopeAnalysis)
+                        tipster.analyze(candidate, rulesForScope, oddSnapshot, scopeAnalysis)
                     } catch (e: FifaStrategyRuleBreakException) {
                         logger.logFifaStrategyRuleBreak(e)
                         ruleBreakErrors.add(e)

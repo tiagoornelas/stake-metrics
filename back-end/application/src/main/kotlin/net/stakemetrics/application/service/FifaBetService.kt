@@ -51,8 +51,8 @@ class FifaBetService(
             strategy = payload.strategy,
             match = fifaMatch,
             line = payload.candidate,
-            handicap = payload.oddSnapshot.value.goalsHandicap,
-            odds = fifaTipsterHelper.getOddForCandidate(payload.candidate, payload.oddSnapshot.value),
+            handicap = payload.oddSnapshot.goalsHandicap,
+            odds = fifaTipsterHelper.getOddForCandidate(payload.candidate, payload.oddSnapshot),
             betTime = Date(),
             oddSnapshotId = payload.oddSnapshot.id,
         )

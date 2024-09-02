@@ -1,8 +1,8 @@
 package net.stakemetrics.application.workers.tipsters
 
+import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaStrategyRule
 import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
-import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
@@ -16,7 +16,7 @@ class FifaMatchOddsTipster(private val fifaTipsterHelper: FifaTipsterHelper) : F
     override fun analyze(
         betCandidate: FifaMarketBetCandidates,
         rules: MutableSet<FifaStrategyRule>,
-        odds: FifaDataSourceDTO.FifaGenericOddRequest,
+        odds: FifaOddSnapshot,
         analysis: FifaTrendScopeAnalysis
     ) {
         rules.forEach { rule ->
@@ -30,30 +30,33 @@ class FifaMatchOddsTipster(private val fifaTipsterHelper: FifaTipsterHelper) : F
     }
 
     private fun checkMinimumOddsRule(
-        betCandidate: FifaMarketBetCandidates, rule: FifaStrategyRule, odds: FifaDataSourceDTO.FifaGenericOddRequest
+        betCandidate: FifaMarketBetCandidates, rule: FifaStrategyRule, odds: FifaOddSnapshot
     ) {
         when (betCandidate) {
             FifaMarketBetCandidates.HOME -> {
-                if (odds.home!! < rule.value) {
+                if (odds.homeOdd!! < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for home market: ${odds.home} < ${rule.value}"
+                        "Minimum odds rule break for home market: ${odds.homeOdd} < ${rule.value}"
                     )
                 }
             }
+
             FifaMarketBetCandidates.DRAW -> {
-                if (odds.draw!! < rule.value) {
+                if (odds.drawOdd!! < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for draw market: ${odds.draw} < ${rule.value}"
+                        "Minimum odds rule break for draw market: ${odds.drawOdd} < ${rule.value}"
                     )
                 }
             }
+
             FifaMarketBetCandidates.AWAY -> {
-                if (odds.away!! < rule.value) {
+                if (odds.awayOdd!! < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for away market: ${odds.draw} < ${rule.value}"
+                        "Minimum odds rule break for away market: ${odds.awayOdd} < ${rule.value}"
                     )
                 }
             }
+
             else -> throw IllegalArgumentException(notSupportedErrorMessage)
         }
     }

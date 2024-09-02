@@ -53,7 +53,12 @@ class FifaOddSnapshotService(
     ): Boolean {
         val existingSnapshots = getByMatchId(fifaMatch.id)
         return existingSnapshots.any { snapshot ->
-            snapshot.value == incomingOdd
+            snapshot.goalsHandicap == incomingOdd.goalsHandicap &&
+                    snapshot.overGoalsOdd == incomingOdd.overGoals &&
+                    snapshot.underGoalsOdd == incomingOdd.underGoals &&
+                    snapshot.homeOdd == incomingOdd.home &&
+                    snapshot.drawOdd == incomingOdd.draw &&
+                    snapshot.awayOdd == incomingOdd.away
         }
     }
 
@@ -75,7 +80,12 @@ class FifaOddSnapshotService(
         oldOdds: MutableSet<FifaOddSnapshot>
     ): FifaOddSnapshot? {
         return oldOdds.firstOrNull { oldOdd ->
-            oldOdd.value.goalsHandicap == newOdd.goalsHandicap
+            oldOdd.goalsHandicap == newOdd.goalsHandicap &&
+                    oldOdd.overGoalsOdd == newOdd.overGoals &&
+                    oldOdd.underGoalsOdd == newOdd.underGoals &&
+                    oldOdd.homeOdd == newOdd.home &&
+                    oldOdd.drawOdd == newOdd.draw &&
+                    oldOdd.awayOdd == newOdd.away
         }
     }
 
@@ -129,7 +139,12 @@ class FifaOddSnapshotService(
 
         val fifaOddSnapshot = FifaOddSnapshot(
             fifaMatch = fifaMatch,
-            value = newOdd,
+            goalsHandicap = newOdd.goalsHandicap,
+            overGoalsOdd = newOdd.overGoals,
+            underGoalsOdd = newOdd.underGoals,
+            homeOdd = newOdd.home,
+            drawOdd = newOdd.draw,
+            awayOdd = newOdd.away,
             trendScopeAnalysis = scopesWithAnalysis
         )
 
@@ -144,7 +159,12 @@ class FifaOddSnapshotService(
     ) {
         val fifaOddSnapshot = FifaOddSnapshot(
             fifaMatch = fifaMatch,
-            value = newOdd,
+            goalsHandicap = newOdd.goalsHandicap,
+            overGoalsOdd = newOdd.overGoals,
+            underGoalsOdd = newOdd.underGoals,
+            homeOdd = newOdd.home,
+            drawOdd = newOdd.draw,
+            awayOdd = newOdd.away,
             trendScopeAnalysis = similarSnapshot.trendScopeAnalysis
         )
 

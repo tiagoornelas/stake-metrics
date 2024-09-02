@@ -1,8 +1,8 @@
 package net.stakemetrics.application.workers.tipsters
 
+import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaStrategyRule
 import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
-import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
 import org.springframework.stereotype.Component
@@ -20,14 +20,14 @@ class FifaTipsterHelper {
 
     fun getOddForCandidate(
         betCandidate: FifaMarketBetCandidates,
-        line: FifaDataSourceDTO.FifaGenericOddRequest
+        line: FifaOddSnapshot
     ): Double {
         return when (betCandidate) {
-            FifaMarketBetCandidates.HOME -> line.home!!
-            FifaMarketBetCandidates.AWAY -> line.away!!
-            FifaMarketBetCandidates.DRAW -> line.draw!!
-            FifaMarketBetCandidates.OVER -> line.overGoals!!
-            FifaMarketBetCandidates.UNDER -> line.underGoals!!
+            FifaMarketBetCandidates.HOME -> line.homeOdd!!
+            FifaMarketBetCandidates.AWAY -> line.awayOdd!!
+            FifaMarketBetCandidates.DRAW -> line.drawOdd!!
+            FifaMarketBetCandidates.OVER -> line.overGoalsOdd!!
+            FifaMarketBetCandidates.UNDER -> line.underGoalsOdd!!
         }
     }
 
