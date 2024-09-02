@@ -2,46 +2,22 @@ package net.stakemetrics.application.workers
 
 import java.util.Calendar
 import java.util.Date
-import net.stakemetrics.application.entities.GenericScope
-import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.FifaMatch
-import net.stakemetrics.application.entities.FifaPlayer
+import net.stakemetrics.application.entities.GenericScope
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.MatchupTypes
 import net.stakemetrics.application.entities.enums.StrategyScopeTypes
-import net.stakemetrics.application.entities.exceptions.NotFoundException
-import net.stakemetrics.application.service.FifaLeagueService
 import net.stakemetrics.application.service.FifaMatchService
-import net.stakemetrics.application.service.FifaPlayerService
-import net.stakemetrics.application.utils.Logger
 import org.springframework.stereotype.Service
 
 @Service
-class FifaPastResultsSearcher(
-    private val fifaMatchService: FifaMatchService,
-    private val fifaPlayerService: FifaPlayerService,
-    private val fifaLeagueService: FifaLeagueService,
-    private val logger: Logger
-) {
+class FifaPastResultsSearcher(private val fifaMatchService: FifaMatchService) {
 
-    fun search(request: FifaStrategyDTO.FifaStrategyAgainstOddRequest): MutableSet<FifaStrategyDTO.GenericScopePastResults> {
+    fun search(fifaMatch: FifaMatch): MutableSet<FifaStrategyDTO.GenericScopePastResults> {
         val results = mutableSetOf<FifaStrategyDTO.GenericScopePastResults>()
-        val (_, odds) = request
 
-        val homePlayer: FifaPlayer?
-        val awayPlayer: FifaPlayer?
-        val league: FifaLeague?
-
-        try {
-            homePlayer = fifaPlayerService.findByName(odds.homePlayerName)
-            awayPlayer = fifaPlayerService.findByName(odds.awayPlayerName)
-            league = fifaLeagueService.findByIntegrationId(odds.leagueIntegrationId)
-        } catch (e: NotFoundException) {
-            logger.warn("Past results searcher could not find player or league in the database. Cause: ${e.message}")
-            return results
-        }
-
-        val matchQuickIdentifier = FifaStrategyDTO.FifaMatchQuickIdentifier(homePlayer, awayPlayer, league)
+        val matchQuickIdentifier =
+            FifaStrategyDTO.FifaMatchQuickIdentifier(fifaMatch.home, fifaMatch.away, fifaMatch.league)
         val allMatches = fetchAllRelevantMatches(matchQuickIdentifier)
         val organizedMatches = organizeMatchesByScopesAndMatchups(allMatches, matchQuickIdentifier)
 

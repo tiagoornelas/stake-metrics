@@ -101,11 +101,29 @@ class FifaMatchService @Autowired constructor(
         return fifaMatchRepository.listFinishedMatchesByPlayerSince(league, player, since)
     }
 
-    fun listFinishedMatchesByMatchupSince(
-        league: FifaLeague, homePlayer: FifaPlayer, awayPlayer: FifaPlayer, since:
-        Date
-    ): List<FifaMatch> {
-        return fifaMatchRepository.listFinishedMatchesByMatchupSince(league, homePlayer, awayPlayer, since)
+    fun getOrCreateMatchByOdd(odd: FifaDataSourceDTO.FifaOddRequest): FifaMatch {
+        val fifaLeague = fifaLeagueService.findByIntegrationId(odd.leagueIntegrationId)
+        val home = fifaPlayerService.findByName(odd.homePlayerName)
+        val away = fifaPlayerService.findByName(odd.awayPlayerName)
+
+        val fifaMatch = fifaMatchRepository.findByIntegrationId(odd.matchIntegrationId) ?: run {
+            val newFifaMatch = FifaMatch(
+                integrationId = odd.matchIntegrationId,
+                time = odd.odds.matchTime!!,
+                league = fifaLeague,
+                home = home,
+                away = away
+            )
+            try {
+                fifaMatchRepository.save(newFifaMatch)
+                newFifaMatch
+            } catch (e: Exception) {
+                logger.logError(e)
+                fifaMatchRepository.findByIntegrationId(odd.matchIntegrationId)
+            }
+        }
+
+        return fifaMatch!!
     }
 
 }

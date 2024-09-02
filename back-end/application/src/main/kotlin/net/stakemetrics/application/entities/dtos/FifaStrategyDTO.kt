@@ -76,7 +76,12 @@ class FifaStrategyDTO {
 
     data class FifaStrategyAgainstOddRequest(
         val strategy: FifaStrategy,
-        val odds: FifaDataSourceDTO.FifaOddRequest
+        val oddSnapshotId: UUID
+    )
+
+    data class GenericScopePastResults(
+        val scope: GenericScope? = null,
+        val pastResults: MutableSet<FifaMatch> = mutableSetOf()
     )
 
     data class FifaStrategyStatusRequest(
@@ -103,16 +108,6 @@ class FifaStrategyDTO {
         val ruleTypes: List<FifaRuleTypesResponse>,
         val matchupTypes: List<MatchupTypes>,
         val scopeTypes: List<StrategyScopeTypes>
-    )
-
-    data class GenericScopePastResults(
-        val scope: GenericScope? = null,
-        val pastResults: MutableSet<FifaMatch> = mutableSetOf()
-    )
-
-    data class FifaStrategyScopePastResults(
-        val scope: FifaStrategyScope? = null,
-        val pastResults: MutableSet<FifaMatch> = mutableSetOf()
     )
 
     data class FifaMatchQuickIdentifier(

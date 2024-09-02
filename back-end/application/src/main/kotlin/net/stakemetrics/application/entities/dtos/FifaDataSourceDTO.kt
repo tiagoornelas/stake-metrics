@@ -1,9 +1,6 @@
 package net.stakemetrics.application.entities.dtos
 
 import java.util.Date
-import java.util.UUID
-import net.stakemetrics.application.entities.FifaMatch
-import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 
 class FifaDataSourceDTO {
@@ -25,69 +22,13 @@ class FifaDataSourceDTO {
     )
 
     data class FifaGenericOddRequest(
-        val marketType: FifaMarketTypes,
-        val lastCheckedTime: Date?,
-        val oddOfferTime: Date,
-        val matchTime: Date,
-        val handicap: Double?,
-        val over: Double?,
-        val under: Double?,
-        val home: Double?,
-        val draw: Double?,
-        val away: Double?
-    ) {
-
-        fun isMatchOdds(): Boolean {
-            return home != null && draw != null && away != null
-        }
-
-        fun toFifaMatchOddsLine(): FifaMatchOddsOddRequest {
-            return FifaMatchOddsOddRequest(
-                marketType,
-                lastCheckedTime!!,
-                oddOfferTime,
-                matchTime,
-                home!!,
-                draw!!,
-                away!!
-            )
-        }
-
-        fun isGoalLine(): Boolean {
-            return handicap != null && over != null && under != null
-        }
-
-        fun toFifaGoalLine(): FifaGoalLineOddRequest {
-            return FifaGoalLineOddRequest(
-                marketType,
-                lastCheckedTime!!,
-                oddOfferTime,
-                matchTime,
-                handicap!!,
-                over!!,
-                under!!
-            )
-        }
-    }
-
-    data class FifaGoalLineOddRequest(
-        val marketType: FifaMarketTypes,
-        val lastCheckedTime: Date,
-        val oddOfferTime: Date,
-        val matchTime: Date,
-        val handicap: Double,
-        val over: Double,
-        val under: Double
-    )
-
-    data class FifaMatchOddsOddRequest(
-        val marketType: FifaMarketTypes,
-        val lastCheckedTime: Date,
-        val oddOfferTime: Date,
-        val matchTime: Date,
-        val home: Double,
-        val draw: Double,
-        val away: Double
+        val matchTime: Date? = null,
+        val goalsHandicap: Double? = null,
+        val overGoals: Double? = null,
+        val underGoals: Double? = null,
+        val home: Double? = null,
+        val draw: Double? = null,
+        val away: Double? = null
     )
 
     data class FifaOddRequest(
@@ -95,7 +36,7 @@ class FifaDataSourceDTO {
         val matchIntegrationId: Long,
         val homePlayerName: String,
         val awayPlayerName: String,
-        val odds: List<FifaGenericOddRequest>
+        val odds: FifaGenericOddRequest
     )
 
 }

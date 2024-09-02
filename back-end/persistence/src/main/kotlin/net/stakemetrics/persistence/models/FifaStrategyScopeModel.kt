@@ -21,8 +21,8 @@ data class FifaStrategyScopeModel(
         return FifaStrategyScope(
             id,
             rules.map { it.toDomain() }.toMutableSet(),
-            matchup,
-            type
+            matchup!!,
+            type!!
         )
     }
 }

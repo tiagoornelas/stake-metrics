@@ -9,11 +9,8 @@ import net.stakemetrics.application.entities.enums.*
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.repositories.IFifaStrategyRepository
-import net.stakemetrics.application.workers.FifaPastResultsSearcher
 import net.stakemetrics.application.workers.FifaStrategyOpportunityIterator
 import net.stakemetrics.application.workers.FifaStrategyResourceValidator
-import net.stakemetrics.application.workers.FifaStrategyScopePicker
-import net.stakemetrics.application.workers.FifaTrendAnalysisWorker
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipsterFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -26,9 +23,8 @@ class FifaStrategyService @Autowired constructor(
     private val fifaPlayerService: FifaPlayerService,
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaTipsterFactory: FifaTipsterFactory,
+    private val fifaOddSnapshotService: FifaOddSnapshotService,
     private val fifaStrategyRepository: IFifaStrategyRepository,
-    private val fifaStrategyScopePicker: FifaStrategyScopePicker,
-    private val fifaPastResultsSearcher: FifaPastResultsSearcher,
     private val fifaStrategyOpportunityIterator: FifaStrategyOpportunityIterator,
     @Lazy private val fifaStrategyResourceValidator: FifaStrategyResourceValidator,
 ) {
@@ -51,8 +47,8 @@ class FifaStrategyService @Autowired constructor(
 
             FifaStrategyScope(
                 id = scopeRequest.id ?: UUID.randomUUID(),
-                matchup = scopeRequest.matchup,
-                type = scopeRequest.type,
+                matchup = scopeRequest.matchup!!,
+                type = scopeRequest.type!!,
                 rules = rules
             )
         }.toMutableSet()
@@ -188,15 +184,25 @@ class FifaStrategyService @Autowired constructor(
         return fifaStrategyRepository.getStrategiesByUser(userId)
     }
 
-    fun getAllProneToBetStrategies(): List<FifaStrategy> {
-        return fifaStrategyRepository.getAllProneToBetStrategies()
+    fun runStrategyAgainstOdds(request: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
+        val oddSnapshot = fifaOddSnapshotService.getById(request.oddSnapshotId)
+        val allScopesAnalysis = oddSnapshot.trendScopeAnalysis
+        val strategyScopesWithAnalysis = pickStrategyScopesOnly(request.strategy, allScopesAnalysis)
+        val tipster = fifaTipsterFactory.getTipster(request.strategy.marketType)
+        fifaStrategyOpportunityIterator.iterate(
+            tipster, oddSnapshot.fifaMatch, request.strategy, oddSnapshot, strategyScopesWithAnalysis
+        )
     }
 
-    fun runStrategyAgainstOdds(request: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
-        val allScopesResults = fifaPastResultsSearcher.search(request)
-        val resultsForStrategyScopes = fifaStrategyScopePicker.pick(request.strategy, allScopesResults)
-        val tipster = fifaTipsterFactory.getTipster(request.strategy.marketType)
-        fifaStrategyOpportunityIterator.iterate(resultsForStrategyScopes, request, tipster)
+    private fun pickStrategyScopesOnly(
+        strategy: FifaStrategy,
+        allScopeResults: MutableSet<FifaTrendScopeAnalysis>
+    ): MutableSet<FifaTrendScopeAnalysis> {
+        return allScopeResults.filter { scopeResult ->
+            strategy.scopes.any { strategyScope ->
+                scopeResult.matchup == strategyScope.matchup && scopeResult.type == strategyScope.type
+            }
+        }.toMutableSet()
     }
 
 }

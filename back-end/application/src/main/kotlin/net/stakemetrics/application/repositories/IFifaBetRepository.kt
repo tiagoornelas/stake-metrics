@@ -2,6 +2,7 @@ package net.stakemetrics.application.repositories
 
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
+import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategy
 import org.springframework.data.domain.Page
 
@@ -10,7 +11,7 @@ interface IFifaBetRepository {
     fun delete(fifaBet: FifaBet)
     fun findById(id: UUID): FifaBet
     fun findOpenBets(): List<FifaBet>
-    fun existsByStrategyAndMatchIntegrationId(fifaStrategy: FifaStrategy, matchIntegrationId: Long): Boolean
+    fun existsByStrategyAndMatch(fifaStrategy: FifaStrategy, fifaMatch: FifaMatch): Boolean
     fun listAllByStrategyIds(strategyIds: Collection<UUID>, page: Int, size: Int, showPaperBets: Boolean): Page<FifaBet>
     fun deleteAllByStrategyId(strategyId: UUID)
 }

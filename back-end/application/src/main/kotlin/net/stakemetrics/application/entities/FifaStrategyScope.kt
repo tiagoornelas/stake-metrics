@@ -7,6 +7,6 @@ import net.stakemetrics.application.entities.enums.StrategyScopeTypes
 data class FifaStrategyScope(
     val id: UUID = UUID.randomUUID(),
     val rules: MutableSet<FifaStrategyRule> = mutableSetOf(),
-    override val matchup: MatchupTypes? = null,
-    override val type: StrategyScopeTypes? = null
+    override val matchup: MatchupTypes,
+    override val type: StrategyScopeTypes
 ) : StrategyScope
