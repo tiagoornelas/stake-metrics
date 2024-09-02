@@ -46,5 +46,5 @@ Variáveis:
 ### Cloud-Task-Emulator
 - Clone o repositório [cloud-task-emulator](https://github.com/aertje/cloud-tasks-emulator)
 - No repositório, faça o build do docker com o comando docker build ./ -t tasks_emulator
-- Rode o container com docker run -p 8123:8123 tasks_emulator -host 0.0.0.0 -port 8123 -queue projects/stakemetrics/locations/us-central1/queues/run-strategy-against-odds -queue projects/stakemetrics/locations/us-central1/queues/message-queue -queue projects/stakemetrics/locations/us-central1/queues/save-match-result -queue projects/stakemetrics/locations/us-central1/queues/bet-queue -queue projects/stakemetrics/locations/us-central1/queues/close-bet
+- Rode o container com docker run -p 8123:8123 tasks_emulator -host 0.0.0.0 -port 8123 -queue projects/stakemetrics-project/locations/us-central1/queues/run-strategy-against-odds -queue projects/stakemetrics-project/locations/us-central1/queues/run-trend-analysis -queue projects/stakemetrics-project/locations/us-central1/queues/message-queue -queue projects/stakemetrics-project/locations/us-central1/queues/save-match-result -queue projects/stakemetrics-project/locations/us-central1/queues/bet-queue -queue projects/stakemetrics-project/locations/us-central1/queues/close-bet
 - Verifique os nomes das filas padrões criadas para identificar se precisam ser criadas novas filas.
