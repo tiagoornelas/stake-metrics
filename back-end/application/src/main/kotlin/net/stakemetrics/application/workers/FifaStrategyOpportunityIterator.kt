@@ -1,7 +1,11 @@
 package net.stakemetrics.application.workers
 
+import net.stakemetrics.application.entities.FifaMatch
+import net.stakemetrics.application.entities.FifaOddSnapshot
+import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.FifaStrategyRule
+import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
-import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
 import net.stakemetrics.application.service.IQueueService
 import net.stakemetrics.application.utils.Logger
@@ -12,58 +16,50 @@ import org.springframework.stereotype.Service
 class FifaStrategyOpportunityIterator(private val logger: Logger, private val queueService: IQueueService) {
 
     fun iterate(
-        resultsByScopes: MutableSet<FifaStrategyDTO.FifaStrategyScopePastResults>,
-        request: FifaStrategyDTO.FifaStrategyAgainstOddRequest,
-        tipster: FifaTipster
+        tipster: FifaTipster,
+        fifaMatch: FifaMatch,
+        strategy: FifaStrategy,
+        oddSnapshot: FifaOddSnapshot,
+        analysisByScopes: MutableSet<FifaTrendScopeAnalysis>,
     ) {
-        val matchupPlayerNames: Pair<String, String> = Pair(request.odds.homePlayerName, request.odds.awayPlayerName)
-        val betCandidates = request.strategy.marketSubTypes.flatMap { it.betCandidates }
+        val betCandidates = strategy.marketSubTypes.flatMap { it.betCandidates }
 
         run candidatesAnalysis@{
             betCandidates.forEach { candidate ->
                 val ruleBreakErrors = mutableListOf<Exception>()
-                resultsByScopes.forEach { (scope, results) ->
-                    scope?.let {
-                        try {
-                            val specificLine = tipster.getTipstersSpecificLines(request.odds.odds)
-                            if (specificLine == null) {
-                                logger.log("No specific line found for tipster")
-                                return@candidatesAnalysis
-                            } else {
-                                tipster.analyze(candidate, matchupPlayerNames, scope.rules, specificLine, results)
-                            }
-                        } catch (e: FifaStrategyRuleBreakException) {
-                            logger.logFifaStrategyRuleBreak(e)
-                            ruleBreakErrors.add(e)
-                        } catch (e: Exception) {
-                            logger.logError(e)
-                        }
-                    } ?: throw IllegalArgumentException("Scope is null when sending the results to the tipster")
+                analysisByScopes.forEach { scopeAnalysis ->
+                    try {
+                        val rulesForScope = getRulesForScope(strategy, scopeAnalysis)
+                        tipster.analyze(candidate, rulesForScope, oddSnapshot.value, scopeAnalysis)
+                    } catch (e: FifaStrategyRuleBreakException) {
+                        logger.logFifaStrategyRuleBreak(e)
+                        ruleBreakErrors.add(e)
+                    } catch (e: Exception) {
+                        logger.logError(e)
+                    }
                 }
 
                 if (ruleBreakErrors.isEmpty()) {
-                    val specificLine = tipster.getTipstersSpecificLines(request.odds.odds)
-                    if (specificLine == null) {
-                        logger.log("No specific line found for tipster")
-                        return@candidatesAnalysis
-                    } else {
-                        queueService.enqueueBetTask(
-                            FifaBetDTO.BetRequest(
-                                strategy = request.strategy,
-                                leagueIntegrationId = request.odds.leagueIntegrationId,
-                                homePlayerName = request.odds.homePlayerName,
-                                awayPlayerName = request.odds.awayPlayerName,
-                                matchIntegrationId = request.odds.matchIntegrationId,
-                                matchTime = specificLine.matchTime,
-                                candidate = candidate,
-                                lineOdds = specificLine
-                            )
-                        )
-                        return@candidatesAnalysis
-                    }
-
+                    val betRequest  = FifaBetDTO.BetRequest(
+                        strategy = strategy,
+                        fifaMatchId = fifaMatch.id,
+                        candidate = candidate,
+                        oddSnapshot = oddSnapshot
+                    )
+                    
+                    queueService.enqueueBetTask(betRequest)
+                    return@candidatesAnalysis
                 }
+
             }
         }
+    }
+
+    private fun getRulesForScope(
+        strategy: FifaStrategy,
+        scopeAnalysis: FifaTrendScopeAnalysis
+    ): MutableSet<FifaStrategyRule> {
+        return strategy.scopes.find { it.matchup === scopeAnalysis.matchup && it.type === scopeAnalysis.type }
+            ?.rules ?: mutableSetOf()
     }
 }

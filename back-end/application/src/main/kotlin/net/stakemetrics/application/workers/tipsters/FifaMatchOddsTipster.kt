@@ -1,133 +1,89 @@
 package net.stakemetrics.application.workers.tipsters
 
-import net.stakemetrics.application.entities.FifaMatch
-import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.FifaStrategyRule
+import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaRuleTypes
 import net.stakemetrics.application.entities.exceptions.FifaStrategyRuleBreakException
-import net.stakemetrics.application.service.FifaPlayerService
-import net.stakemetrics.application.workers.OddAndLineCalculator
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipster
 import org.springframework.stereotype.Component
 
 @Component
-class FifaMatchOddsTipster(
-    private val oddAndLineCalculator: OddAndLineCalculator,
-    private val fifaPlayerService: FifaPlayerService,
-    private val fifaTipsterHelper: FifaTipsterHelper
-) : FifaTipster {
+class FifaMatchOddsTipster(private val fifaTipsterHelper: FifaTipsterHelper) : FifaTipster {
     val notSupportedErrorMessage = "Market's bet candidate not supported for match odds tipster"
-
-    override fun getTipstersSpecificLines(odds: List<FifaDataSourceDTO.FifaGenericOddRequest>): FifaDataSourceDTO.FifaGenericOddRequest? {
-        return odds.filter { it.isMatchOdds() }.maxByOrNull { it.oddOfferTime }
-    }
 
     override fun analyze(
         betCandidate: FifaMarketBetCandidates,
-        matchupPlayerNames: Pair<String, String>,
         rules: MutableSet<FifaStrategyRule>,
         odds: FifaDataSourceDTO.FifaGenericOddRequest,
-        results: MutableSet<FifaMatch>
+        analysis: FifaTrendScopeAnalysis
     ) {
-        if (results.isEmpty()) return
-        val matchOddsLine = odds.toFifaMatchOddsLine()
-        rules.forEach { rule -> checkRule(matchupPlayerNames, betCandidate, rule, matchOddsLine, results) }
-    }
-
-    private fun checkRule(
-        matchupPlayerNames: Pair<String, String>,
-        betCandidate: FifaMarketBetCandidates,
-        rule: FifaStrategyRule,
-        line: FifaDataSourceDTO.FifaMatchOddsOddRequest,
-        results: MutableSet<FifaMatch>
-    ) {
-        return when (rule.type) {
-            FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(betCandidate, rule, line)
-            FifaRuleTypes.MINIMUM_JUICE -> checkMinimumJuiceRule(matchupPlayerNames, betCandidate, rule, line, results)
-            FifaRuleTypes.MINIMUM_PROBABILITY -> checkMinimumProbabilityRule(
-                matchupPlayerNames,
-                betCandidate,
-                rule,
-                results
-            )
-
-            FifaRuleTypes.MINIMUM_MATCHES -> fifaTipsterHelper.checkMinimumMatchesRule(rule, results)
+        rules.forEach { rule ->
+            return when (rule.type) {
+                FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(betCandidate, rule, odds)
+                FifaRuleTypes.MINIMUM_JUICE -> checkMinimumJuiceRule(betCandidate, rule, analysis)
+                FifaRuleTypes.MINIMUM_PROBABILITY -> checkMinimumProbabilityRule(betCandidate, rule, analysis)
+                FifaRuleTypes.MINIMUM_MATCHES -> fifaTipsterHelper.checkMinimumMatchesRule(rule, analysis)
+            }
         }
     }
 
     private fun checkMinimumOddsRule(
-        betCandidate: FifaMarketBetCandidates, rule: FifaStrategyRule, line: FifaDataSourceDTO.FifaMatchOddsOddRequest
+        betCandidate: FifaMarketBetCandidates, rule: FifaStrategyRule, odds: FifaDataSourceDTO.FifaGenericOddRequest
     ) {
         when (betCandidate) {
             FifaMarketBetCandidates.HOME -> {
-                if (line.home < rule.value) {
+                if (odds.home!! < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for home market: ${line.home} < ${rule.value}"
+                        "Minimum odds rule break for home market: ${odds.home} < ${rule.value}"
                     )
                 }
             }
-
             FifaMarketBetCandidates.DRAW -> {
-                if (line.draw < rule.value) {
+                if (odds.draw!! < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for draw market: ${line.draw} < ${rule.value}"
+                        "Minimum odds rule break for draw market: ${odds.draw} < ${rule.value}"
                     )
                 }
             }
-
             FifaMarketBetCandidates.AWAY -> {
-                if (line.away < rule.value) {
+                if (odds.away!! < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum odds rule break for away market: ${line.draw} < ${rule.value}"
+                        "Minimum odds rule break for away market: ${odds.draw} < ${rule.value}"
                     )
                 }
             }
-
             else -> throw IllegalArgumentException(notSupportedErrorMessage)
         }
     }
 
     private fun checkMinimumJuiceRule(
-        matchupPlayerNames: Pair<String, String>,
         betCandidate: FifaMarketBetCandidates,
         rule: FifaStrategyRule,
-        line: FifaDataSourceDTO.FifaMatchOddsOddRequest,
-        results: MutableSet<FifaMatch>
+        analysis: FifaTrendScopeAnalysis
     ) {
-        val (homeProbability, drawProbability, awayProbability) = getScopeMatchOddsProbabilities(
-            matchupPlayerNames,
-            results
-        )
-
         when (betCandidate) {
             FifaMarketBetCandidates.HOME -> {
-                val homeFairLine = oddAndLineCalculator.getFairLine(homeProbability)
-                val homeJuice = oddAndLineCalculator.getBettorsJuice(line.home, homeFairLine)
-                if (homeJuice < rule.value) {
+                if (analysis.homePlayerJuice < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum juice rule break for home market: $homeJuice < ${rule.value}"
+                        "Minimum juice rule break for home market: ${analysis.homePlayerJuice} < ${rule.value}"
                     )
                 }
             }
 
             FifaMarketBetCandidates.DRAW -> {
-                val drawFairLine = oddAndLineCalculator.getFairLine(drawProbability)
-                val drawJuice = oddAndLineCalculator.getBettorsJuice(line.draw, drawFairLine)
-                if (drawJuice < rule.value) {
+                if (analysis.drawJuice < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum juice rule break for draw market: $drawJuice < ${rule.value}"
+                        "Minimum juice rule break for draw market: ${analysis.drawJuice} < ${rule.value}"
                     )
                 }
             }
 
             FifaMarketBetCandidates.AWAY -> {
-                val awayFairLine = oddAndLineCalculator.getFairLine(awayProbability)
-                val awayJuice = oddAndLineCalculator.getBettorsJuice(line.away, awayFairLine)
-                if (awayJuice < rule.value) {
+                if (analysis.awayPlayerJuice < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum juice rule break for away market: $awayJuice < ${rule.value}"
+                        "Minimum juice rule break for away market: ${analysis.awayPlayerJuice} < ${rule.value}"
                     )
                 }
             }
@@ -137,37 +93,31 @@ class FifaMatchOddsTipster(
     }
 
     private fun checkMinimumProbabilityRule(
-        matchupPlayerNames: Pair<String, String>,
         betCandidate: FifaMarketBetCandidates,
         rule: FifaStrategyRule,
-        results: MutableSet<FifaMatch>
+        analysis: FifaTrendScopeAnalysis
     ) {
-        val (homeProbability, drawProbability, awayProbability) = getScopeMatchOddsProbabilities(
-            matchupPlayerNames,
-            results
-        )
-
         when (betCandidate) {
             FifaMarketBetCandidates.HOME -> {
-                if (homeProbability < rule.value) {
+                if (analysis.homePlayerProbability < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum probability rule break for home market: $homeProbability < ${rule.value}"
+                        "Minimum probability rule break for home market: ${analysis.homePlayerProbability} < ${rule.value}"
                     )
                 }
             }
 
             FifaMarketBetCandidates.DRAW -> {
-                if (drawProbability < rule.value) {
+                if (analysis.drawProbability < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum probability rule break for draw market: $drawProbability < ${rule.value}"
+                        "Minimum probability rule break for draw market: ${analysis.drawProbability} < ${rule.value}"
                     )
                 }
             }
 
             FifaMarketBetCandidates.AWAY -> {
-                if (awayProbability < rule.value) {
+                if (analysis.drawProbability < rule.value) {
                     throw FifaStrategyRuleBreakException(
-                        "Minimum probability rule break for away market: $awayProbability < ${rule.value}"
+                        "Minimum probability rule break for away market: ${analysis.drawProbability} < ${rule.value}"
                     )
                 }
             }
@@ -176,32 +126,4 @@ class FifaMatchOddsTipster(
         }
     }
 
-    private fun getScopeMatchOddsProbabilities(
-        matchupPlayerNames: Pair<String, String>, results: MutableSet<FifaMatch>
-    ): Triple<Double, Double, Double> {
-        val (homePlayerName, awayPlayerName) = matchupPlayerNames
-        val homePlayer = fifaPlayerService.findByName(homePlayerName)
-        val awayPlayer = fifaPlayerService.findByName(awayPlayerName)
-
-        val homePlayerMatches = results.filter { it.home == homePlayer || it.away == homePlayer }.toMutableSet()
-        val awayPlayerMatches = results.filter { it.home == awayPlayer || it.away == awayPlayer }.toMutableSet()
-
-        val drawMatchCount = getDrawMatchCount(results)
-        val homePlayerWonMatchesCount = getPlayerWonMatchesCount(homePlayerMatches, homePlayer)
-        val awayPlayerWonMatchesCount = getPlayerWonMatchesCount(awayPlayerMatches, awayPlayer)
-
-        val drawProbability = drawMatchCount.toDouble() / results.size
-        val homeWinProbability = homePlayerWonMatchesCount.toDouble() / homePlayerMatches.size
-        val awayWinProbability = awayPlayerWonMatchesCount.toDouble() / awayPlayerMatches.size
-
-        return Triple(homeWinProbability, drawProbability, awayWinProbability)
-    }
-
-    private fun getDrawMatchCount(results: MutableSet<FifaMatch>): Int {
-        return results.count { it.winner == null }
-    }
-
-    private fun getPlayerWonMatchesCount(results: MutableSet<FifaMatch>, player: FifaPlayer): Int {
-        return results.count { it.winner == player }
-    }
 }

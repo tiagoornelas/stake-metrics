@@ -2,12 +2,16 @@ package net.stakemetrics.application.service
 
 import java.util.Date
 import java.util.UUID
-import net.stakemetrics.application.entities.*
+import net.stakemetrics.application.entities.FifaBet
+import net.stakemetrics.application.entities.Message
+import net.stakemetrics.application.entities.MessengerChat
+import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.MessengerDTO
 import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.repositories.IFifaBetRepository
+import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.workers.FifaBetClosingWorker
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
@@ -21,45 +25,25 @@ class FifaBetService(
     private val userService: UserService,
     private val queueService: IQueueService,
     private val messageService: MessageService,
-    private val fifaMatchService: FifaMatchService,
     private val messengerService: IMessengerService,
-    private val fifaLeagueService: FifaLeagueService,
-    private val fifaPlayerService: FifaPlayerService,
     private val fifaTipsterHelper: FifaTipsterHelper,
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaStrategyService: FifaStrategyService,
+    private val fifaMatchRepository: IFifaMatchRepository,
     private val fifaBetClosingWorker: FifaBetClosingWorker,
     private val fifaBetMessageBuilder: FifaBetMessageBuilder,
 ) {
 
     fun bet(payload: FifaBetDTO.BetRequest) {
+        val fifaMatch = fifaMatchRepository.findById(payload.fifaMatchId)
+            ?: throw InternalError("Match not found when trying to bet on it")
+
         val alreadyBet =
-            fifaBetRepository.existsByStrategyAndMatchIntegrationId(payload.strategy, payload.matchIntegrationId)
+            fifaBetRepository.existsByStrategyAndMatch(payload.strategy, fifaMatch)
 
         if (alreadyBet) {
-            logger.log("Already bet on the match ${payload.matchIntegrationId} with the strategy ${payload.strategy.id}")
+            logger.log("Already bet on the match ${fifaMatch.integrationId} with the strategy ${payload.strategy.id}")
             return
-        }
-
-        val fifaLeague = fifaLeagueService.findByIntegrationId(payload.leagueIntegrationId)
-        val home = fifaPlayerService.findByName(payload.homePlayerName)
-        val away = fifaPlayerService.findByName(payload.awayPlayerName)
-
-        val fifaMatch = fifaMatchService.findByIntegrationId(payload.matchIntegrationId) ?: run {
-            val newFifaMatch = FifaMatch(
-                integrationId = payload.matchIntegrationId,
-                time = payload.matchTime,
-                league = fifaLeague,
-                home = home,
-                away = away
-            )
-            try {
-                fifaMatchService.save(newFifaMatch)
-                newFifaMatch
-            } catch (e: Exception) {
-                logger.logError(e)
-                fifaMatchService.findByIntegrationId(payload.matchIntegrationId)
-            }
         }
 
         val fifaBet = FifaBet(
@@ -67,10 +51,10 @@ class FifaBetService(
             strategy = payload.strategy,
             match = fifaMatch,
             line = payload.candidate,
-            handicap = payload.lineOdds.handicap,
-            odds = fifaTipsterHelper.getOddForCandidate(payload.candidate, payload.lineOdds),
-            oddOfferTime = payload.lineOdds.oddOfferTime,
-            betTime = Date()
+            handicap = payload.oddSnapshot.value.goalsHandicap,
+            odds = fifaTipsterHelper.getOddForCandidate(payload.candidate, payload.oddSnapshot.value),
+            betTime = Date(),
+            oddSnapshotId = payload.oddSnapshot.id,
         )
 
         if (!fifaBet.isPaperBet) sendBetMessagesToUserChats(fifaBet)

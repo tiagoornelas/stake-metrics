@@ -4,6 +4,6 @@ import net.stakemetrics.application.entities.enums.MatchupTypes
 import net.stakemetrics.application.entities.enums.StrategyScopeTypes
 
 data class GenericScope(
-    override val matchup: MatchupTypes? = null,
-    override val type: StrategyScopeTypes? = null
+    override val matchup: MatchupTypes,
+    override val type: StrategyScopeTypes
 ) : StrategyScope

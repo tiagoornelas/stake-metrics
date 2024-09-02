@@ -16,16 +16,16 @@ data class FifaBetModel(
     @ManyToOne @JoinColumn(name = "match_id") val match: FifaMatchModel? = null,
     val line: FifaMarketBetCandidates? = null,
     @OneToMany(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     ) @JoinColumn(name = "bet_id") val messages: MutableSet<MessageModel> = mutableSetOf(),
     val handicap: Double? = null,
-    val odds: Double = 0.0,
+    val odds: Double? = null,
     val status: BetStatusTypes = BetStatusTypes.PENDING,
     val profit: Double? = null,
-    val oddOfferTime: Date = Date(),
-    val betTime: Date = Date()
+    val betTime: Date = Date(),
+    val oddSnapshotId: UUID? = null
 ) {
     fun toDomain(): FifaBet {
         return FifaBet(
@@ -36,11 +36,11 @@ data class FifaBetModel(
             line!!,
             messages.map { it.toDomain() }.toMutableSet(),
             handicap,
-            odds,
+            odds!!,
             status,
             profit,
-            oddOfferTime,
-            betTime
+            betTime,
+            oddSnapshotId!!
         )
     }
 }
@@ -57,7 +57,7 @@ fun FifaBet.toModel(): FifaBetModel {
         odds,
         status,
         profit,
-        oddOfferTime,
-        betTime
+        betTime,
+        oddSnapshotId
     )
 }

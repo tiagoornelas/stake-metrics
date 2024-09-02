@@ -8,6 +8,7 @@ import com.google.cloud.tasks.v2.*
 import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import java.nio.charset.StandardCharsets
+import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
@@ -45,6 +46,15 @@ class CloudTaskService(
         }
     }
 
+    override fun enqueueRunTrendAnalysisTask(payload: FifaDataSourceDTO.FifaOddRequest) {
+        createCloudTaskClient().use { client ->
+            val queueName = "run-trend-analysis"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
+        }
+    }
+
     override fun enqueueRunStrategyAgainstOddTask(payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "run-strategy-against-odds"
@@ -66,6 +76,15 @@ class CloudTaskService(
     override fun enqueueCloseBetTask(payload: FifaBetDTO.CloseBetRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "close-bet"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
+        }
+    }
+
+    override fun enqueueCloseOddSnapshotTask(payload: FifaOddSnapshot) {
+        createCloudTaskClient().use { client ->
+            val queueName = "close-odd-snapshot"
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
             val fullUrl = "$baseUrl/queue/fifa/$queueName"
             enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
