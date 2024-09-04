@@ -3,7 +3,9 @@ import {ErrorBoundary} from "components/ErrorBoundary";
 import PrivateAreaWrapper from "components/PrivateAreaWrapper";
 import PrivateRouterLayout from "components/PrivateRouterLayout";
 import PublicAreaLayout from "components/PublicAreaLayout";
-import FifaModule from "containers/fifa/FifaModule";
+import FifaBacktestModule from "containers/fifa/backtest/FifaBacktestModule";
+import FifaStrategies from "containers/fifa/strategy/FifaStrategies";
+import FifaTrendModule from "containers/fifa/trends/FifaTrendModule";
 import AccountRecovery from "containers/public/AccountRecovery";
 import CreateAccount from "containers/public/CreateAccount";
 import Login from "containers/public/Login"
@@ -52,13 +54,21 @@ const appRouter = createBrowserRouter([
         element: <PrivateRouterLayout><UserManagement/></PrivateRouterLayout>
     },
     {
-        path: "/app/fifa",
-        element: <PrivateRouterLayout><FifaModule/></PrivateRouterLayout>
+        path: "/app/esoccer/strategies",
+        element: <PrivateRouterLayout><FifaStrategies/></PrivateRouterLayout>
 
     },
     {
+        path: "/app/esoccer/trends",
+        element: <PrivateRouterLayout><FifaTrendModule/></PrivateRouterLayout>
+    },
+    {
+        path: "/app/esoccer/backtest",
+        element: <PrivateRouterLayout><FifaBacktestModule/></PrivateRouterLayout>
+    },
+    {
         path: "/app/*",
-        element: <PrivateRouterLayout><FifaModule/></PrivateRouterLayout>
+        element: <PrivateRouterLayout><FifaStrategies/></PrivateRouterLayout>
     },
     {
         path: "/*",

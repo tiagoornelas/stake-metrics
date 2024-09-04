@@ -6,6 +6,7 @@ import net.stakemetrics.application.entities.*
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.*
+import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.repositories.IFifaStrategyRepository
@@ -175,9 +176,22 @@ class FifaStrategyService @Autowired constructor(
                 strategy.result,
                 strategy.roi,
                 strategy.activeResult,
-                strategy.activeRoi
+                strategy.activeRoi,
+                strategy.todaysResult,
+                strategy.todaysRoi
             )
         }
+    }
+
+    fun listCumulativeProfits(userEmail: String, strategyId: UUID): List<Double> {
+        val strategy = fifaStrategyRepository.findById(strategyId)
+        val user = userService.findByEmail(userEmail)
+        assetStrategyBelongsToUser(strategy!!, user)
+        return fifaBetRepository.listCumulativeProfits(strategyId)
+    }
+
+    private fun assetStrategyBelongsToUser(strategy: FifaStrategy, user: User) {
+        if (strategy.user?.id != user.id) throw EntityDoesntBelongToUserException()
     }
 
     fun findAllByUserId(userId: UUID): List<FifaStrategy> {

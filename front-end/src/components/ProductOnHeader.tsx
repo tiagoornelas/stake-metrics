@@ -21,7 +21,7 @@ const ProductOnHeader = ({path = "/"}: { path?: string }) => {
     return (
         <Flex direction="row" alignItems={'center'} gap={2} cursor="pointer" onClick={handleClick}>
             <ProductLogo/>
-            <Text as={"b"} display={{base: "none", md: "flex"}}>
+            <Text as={"b"} display={{base: "none", lg: "flex"}}>
                 <ProductName/>
             </Text>
             {!envTag && BETA_STATE && <Tag colorScheme={"yellow"}>{tagText}</Tag>}

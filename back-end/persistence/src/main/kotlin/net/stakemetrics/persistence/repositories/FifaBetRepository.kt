@@ -4,13 +4,14 @@ import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.persistence.jpa.FifaBetJpaRepository
 import net.stakemetrics.persistence.models.toModel
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -36,18 +37,18 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         return fifaBetJpaRepository.existsByStrategyAndMatch(fifaStrategy.toModel(), fifaMatch.toModel())
     }
 
-    override fun listAllByStrategyIds(
-        strategyIds: Collection<UUID>,
-        page: Int,
-        size: Int,
-        showPaperBets: Boolean
+    override fun findBetsByStrategyAndFilter(
+        userEmail: String,
+        strategyId: UUID,
+        betFilter: FifaBetDTO.BetFilter,
+        pageable: Pageable
     ): Page<FifaBet> {
-        val pageable = PageRequest.of(page, size)
-        return if (showPaperBets) {
-            fifaBetJpaRepository.findAllByStrategyIdInOrderByMatchTimeDesc(strategyIds, pageable)
-        } else {
-            fifaBetJpaRepository.findAllByStrategyIdInAndIsNotPaperBetOrderByMatchTimeDesc(strategyIds, pageable)
-        }.map { it.toDomain() }
+        return fifaBetJpaRepository.findBetsByStrategyAndFilter(strategyId, betFilter, pageable)
+            .map { it.toDomain() }
+    }
+
+    override fun listCumulativeProfits(strategyId: UUID): List<Double> {
+        return fifaBetJpaRepository.findCumulativeProfitsByStrategyId(strategyId)
     }
 
     override fun deleteAllByStrategyId(strategyId: UUID) {

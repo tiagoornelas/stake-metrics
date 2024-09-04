@@ -49,6 +49,16 @@ class FifaBetDTO {
         val status: BetStatusTypes
     )
 
+    data class BetFilter(
+        val openBets: Boolean,
+        val closedBets: Boolean,
+        val isPaperBet: Boolean,
+        val realBets: Boolean,
+        val league: List<UUID>,
+        val page: Int,
+        val size: Int
+    )
+
 }
 
 fun FifaBet.toResponse(): FifaBetDTO.BetResponse {

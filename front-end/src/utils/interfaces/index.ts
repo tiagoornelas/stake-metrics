@@ -1,5 +1,6 @@
 import {ButtonProps} from "@chakra-ui/react";
 import {ReactElement} from "react";
+import {FEATURES} from "utils/constants/featureConstants";
 import {USER_REDUCER_ACTION_TYPES} from "../constants/contextConstants";
 
 export enum REQUEST_TYPE {
@@ -9,10 +10,17 @@ export enum REQUEST_TYPE {
     DELETE = "DELETE"
 }
 
+export enum NavigationModuleTypes {
+    REGULAR, BETA, COMING_SOON
+}
+
 export interface NavigationLinkOnHeaderValue {
     name: string
     path: string
-    beta: boolean
+    moduleText: string
+    moduleColor: string
+    type: NavigationModuleTypes
+    feature?: FEATURES
 }
 
 export interface LoginBody {
@@ -122,6 +130,8 @@ export type StrategyListItem = {
     roi: number;
     activeResult: number;
     activeRoi: number;
+    todaysResult: number;
+    todaysRoi: number;
 }
 
 export interface FifaLeagueResponse {

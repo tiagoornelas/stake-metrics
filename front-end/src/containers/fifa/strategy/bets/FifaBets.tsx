@@ -18,9 +18,9 @@ import {
     Thead,
     Tr
 } from "@chakra-ui/react";
-import BetEmptyState from "containers/fifa/bets/components/BetEmptyState";
-import BetTableItem from "containers/fifa/bets/components/BetTableItem";
-import useBetQuery from "containers/fifa/bets/hooks/useBetQuery";
+import BetEmptyState from "containers/fifa/strategy/bets/components/BetEmptyState";
+import BetTableItem from "containers/fifa/strategy/bets/components/BetTableItem";
+import useBetQuery from "containers/fifa/strategy/bets/hooks/useBetQuery";
 import useThemeColors from "hooks/useThemeColors";
 import React, {useState} from 'react';
 import {FiFilter} from "react-icons/all";
@@ -80,14 +80,11 @@ const FifaBets = () => {
                     <Thead>
                         <Tr>
                             <Th>Hora do Jogo</Th>
-                            <Th>Estratégia</Th>
                             <Th>Liga</Th>
                             <Th>Confronto</Th>
-                            <Th>Placar</Th>
-                            <Th>Aposta</Th>
+                            <Th>Linha</Th>
                             <Th>Odd</Th>
                             <Th>Resultado</Th>
-                            <Th>L/P</Th>
                             <Th/>
                         </Tr>
                     </Thead>
