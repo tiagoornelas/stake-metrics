@@ -22,16 +22,23 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             COALESCE(SUM(b.profit), 0) AS result,
             COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,
             COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)), 0) AS activeResult,
-            COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi
+            COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi,
+            COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = CURDATE(), b
+            .profit,
+             0)), 0) AS todaysResult,
+            COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = CURDATE(), b
+            .profit,
+             0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = 
+             CURDATE() THEN 1 END), 0), 0) AS todaysRoi
         FROM fifa_strategies s
         LEFT JOIN fifa_bets b ON s.id = b.strategy_id
         WHERE s.user_id = :userId
         GROUP BY s.id, s.name, s.status
     """,
-    resultSetMapping = "fifa_strategy_statistic_singe_response"
+    resultSetMapping = "fifa_strategy_statistic_single_response"
 )
 @SqlResultSetMapping(
-    name = "fifa_strategy_statistic_singe_response",
+    name = "fifa_strategy_statistic_single_response",
     classes = [ConstructorResult(
         targetClass = FifaStrategyDTO.FifaStrategyStatisticSingleResponse::class,
         columns = [
@@ -43,7 +50,9 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             ColumnResult(name = "result", type = Double::class),
             ColumnResult(name = "roi", type = Double::class),
             ColumnResult(name = "activeResult", type = Double::class),
-            ColumnResult(name = "activeRoi", type = Double::class)
+            ColumnResult(name = "activeRoi", type = Double::class),
+            ColumnResult(name = "todaysResult", type = Double::class),
+            ColumnResult(name = "todaysRoi", type = Double::class)
         ]
     )]
 )

@@ -70,3 +70,10 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
         description: "Não conseguimos recuperar os tokens de autenticação. Tente novamente."
     },
 }
+
+export const ERROR_TYPES = {
+    FORBIDDEN_ACCESS: {
+        title: "Você ainda não possui permissão para acessar esta parte do sistema!",
+        description: "Faça upgrade do seu plano para poder utilizar."
+    }
+}

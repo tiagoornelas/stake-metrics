@@ -3,6 +3,7 @@ package net.stakemetrics.application.service
 import java.util.Date
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
+import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.Message
 import net.stakemetrics.application.entities.MessengerChat
 import net.stakemetrics.application.entities.User
@@ -17,6 +18,7 @@ import net.stakemetrics.application.workers.FifaBetClosingWorker
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
 import net.stakemetrics.application.workers.tipsters.FifaTipsterHelper
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -31,7 +33,7 @@ class FifaBetService(
     private val fifaStrategyService: FifaStrategyService,
     private val fifaMatchRepository: IFifaMatchRepository,
     private val fifaBetClosingWorker: FifaBetClosingWorker,
-    private val fifaBetMessageBuilder: FifaBetMessageBuilder,
+    private val fifaBetMessageBuilder: FifaBetMessageBuilder
 ) {
 
     fun bet(payload: FifaBetDTO.BetRequest) {
@@ -82,10 +84,22 @@ class FifaBetService(
         fifaBetClosingWorker.close(bet)
     }
 
-    fun listBets(userEmail: String, page: Int, size: Int, showPaperBets: Boolean): Page<FifaBetDTO.BetResponse> {
-        val user = userService.findByEmail(userEmail)
-        val strategyIds = fifaStrategyService.findAllByUserId(user.id).map { it.id }
-        return fifaBetRepository.listAllByStrategyIds(strategyIds, page, size, showPaperBets).map { it.toResponse() }
+    fun listBets(
+        userEmail: String,
+        strategyId: UUID,
+        betFilter: FifaBetDTO.BetFilter
+    ): Page<FifaBetDTO.BetResponse> {
+        val strategy = fifaStrategyService.findById(strategyId)
+        assureStrategyBelongsToUser(strategy, userEmail)
+        val pageable = PageRequest.of(betFilter.page, betFilter.size)
+        return fifaBetRepository.findBetsByStrategyAndFilter(userEmail, strategyId, betFilter, pageable)
+            .map { it.toResponse() }
+    }
+
+    private fun assureStrategyBelongsToUser(strategy: FifaStrategy, userEmail: String) {
+        if (strategy.user?.email != userEmail) {
+            throw EntityDoesntBelongToUserException()
+        }
     }
 
     fun delete(userEmail: String, betId: UUID) {

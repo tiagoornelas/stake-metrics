@@ -66,7 +66,9 @@ class FifaStrategyDTO {
         val result: Double,
         val roi: Double,
         val activeResult: Double,
-        val activeRoi: Double
+        val activeRoi: Double,
+        val todaysResult: Double,
+        val todaysRoi: Double
     )
 
     data class FifaStrategyListResponse(
@@ -114,6 +116,11 @@ class FifaStrategyDTO {
         val home: FifaPlayer? = null,
         val away: FifaPlayer? = null,
         val league: FifaLeague? = null
+    )
+
+    data class CumulativeProfitResponse(
+        val id: UUID,
+        val cumulativeProfit: List<Double>
     )
 
 }
