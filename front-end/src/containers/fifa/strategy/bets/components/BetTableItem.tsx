@@ -1,6 +1,6 @@
 import {Tag, Td, Text, Tr} from "@chakra-ui/react";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
-import useInvalidateBetQuery from "containers/fifa/bets/hooks/useInvalidateBetQuery";
+import useInvalidateBetQuery from "containers/fifa/strategy/bets/hooks/useInvalidateBetQuery";
 import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
 import {format} from "date-fns";
 import {useErrorToast} from "hooks/useErrorToast";

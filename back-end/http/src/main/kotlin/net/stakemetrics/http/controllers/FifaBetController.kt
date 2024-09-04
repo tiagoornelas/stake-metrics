@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/fifa/bet")
 class FifaBetController(private val fifaBetService: FifaBetService) {
 
-    @GetMapping
-    fun listBets(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "30") size: Int,
-        @RequestParam(defaultValue = "true") showPaperBets: Boolean
+    @PostMapping("/strategy/{strategyId}")
+    fun listBetsByStrategy(
+        @PathVariable strategyId: UUID,
+        @RequestBody betFilter: FifaBetDTO.BetFilter
     ): ResponseEntity<Page<FifaBetDTO.BetResponse>> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
-        val bets = fifaBetService.listBets(userEmail, page, size, showPaperBets)
+        val bets = fifaBetService.listBets(userEmail, strategyId, betFilter)
         return ResponseEntity.ok(bets)
     }
 

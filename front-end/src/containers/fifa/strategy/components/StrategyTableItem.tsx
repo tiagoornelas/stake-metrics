@@ -1,21 +1,10 @@
-import {Badge, Flex, Td, Text, Tr} from "@chakra-ui/react";
+import {Td, Tr, useBreakpointValue, useColorModeValue, useDisclosure} from "@chakra-ui/react";
+import StrategyBetsDrawer from "containers/fifa/strategy/components/StrategyBetsDrawer";
+import StrategyNameAndStatus from "containers/fifa/strategy/components/StrategyNameAndStatus";
 import StrategyTableActions from "containers/fifa/strategy/components/StrategyTableActions";
 import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
-import {strategyStatusDict} from "utils/constants/strategyConstants";
 import {StrategyListItem} from "utils/interfaces";
-
-type StrategyNameAndStatusProps = {
-    status: "ACTIVE" | "INACTIVE" | "PAPER_BET";
-    name: string;
-}
-
-const StrategyNameAndStatus = ({status, name}: StrategyNameAndStatusProps) => {
-    return (
-        <Flex direction={"row"} gap={2}><Text>{name}</Text><Badge
-            colorScheme={strategyStatusDict[status].color}>{strategyStatusDict[status].name}</Badge></Flex>
-    )
-}
 
 const ResultData = ({value}: { value: number }) => {
     const colors = useThemeColors();
@@ -42,18 +31,32 @@ const ROIData = ({value}: { value: number }) => {
         </Td>
     );
 };
+
 const StrategyTableItem = ({strategy}: { strategy: StrategyListItem }) => {
+    const {isOpen, onOpen, onClose} = useDisclosure();
+    const isLargerThanLg = useBreakpointValue({base: false, lg: true});
+    const hoverBgColor = useColorModeValue("gray.100", "gray.700");
+
     return (
-        <Tr key={strategy.id}>
-            <Td><StrategyNameAndStatus status={strategy.status} name={strategy.name}/></Td>
-            <Td textAlign={"center"}>{strategy.openBets}</Td>
-            <Td textAlign={"center"}>{strategy.bets}</Td>
-            <ResultData value={Number(strategy.result.toFixed(1))}/>
-            <ROIData value={Number(strategy.roi)}/>
-            <ResultData value={Number(strategy.activeResult.toFixed(1))}/>
-            <ROIData value={Number(strategy.activeRoi)}/>
-            <Td><StrategyTableActions strategy={strategy}/></Td>
-        </Tr>
+        <>
+            <Tr onClick={onOpen} key={strategy.id} style={{cursor: "pointer"}}
+                sx={{_hover: {backgroundColor: hoverBgColor}}}>
+                <Td><StrategyNameAndStatus status={strategy.status} name={strategy.name}/></Td>
+                <Td textAlign={"center"}>{strategy.openBets}</Td>
+                <Td textAlign={"center"}>{strategy.bets}</Td>
+                <ResultData value={Number(strategy.result.toFixed(1))}/>
+                <ROIData value={Number(strategy.roi)}/>
+                {isLargerThanLg && (
+                    <>
+                        <ResultData value={Number(strategy.activeResult.toFixed(1))}/>
+                        <ROIData value={Number(strategy.activeRoi)}/>
+                    </>
+                )}
+                <Td><StrategyTableActions strategy={strategy}/></Td>
+            </Tr>
+
+            <StrategyBetsDrawer isOpen={isOpen} onClose={onClose} strategy={strategy}/>
+        </>
     );
 };
 

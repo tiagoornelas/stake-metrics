@@ -36,6 +36,7 @@ export const ENDPOINTS = {
         PARAMS: "/params",
         STATUS: "/status",
         STATISTICS: "/statistics",
-        RESTART: "/restart"
+        RESTART: "/restart",
+        PROFITS: "/profits"
     }
 }

@@ -10,7 +10,10 @@ import {
     MenuDivider,
     MenuItem,
     MenuList,
+    Skeleton,
+    SkeletonCircle,
     Stack,
+    Tag,
     useColorMode,
     useColorModeValue,
     useMediaQuery
@@ -23,49 +26,74 @@ import {Dispatch, Fragment, ReactNode} from "react";
 import {useCookies} from "react-cookie";
 import {FaMoon, FaSun} from "react-icons/fa";
 import {useNavigate} from 'react-router-dom';
+import {FEATURES} from "utils/constants/featureConstants";
 import {APP_NAVIGATION} from "utils/constants/navigationConstants";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
 import {cleanUser} from "utils/helpers/contextHelper";
-import {NavigationLinkOnHeaderValue, UserContext, UserReducerAction} from "utils/interfaces";
+import {getFeatureAmount} from "utils/helpers/featureHelper";
+import {NavigationLinkOnHeaderValue, NavigationModuleTypes, UserReducerAction} from "utils/interfaces";
 
 interface Props {
     children: ReactNode,
     path: string
 }
 
-const NavLink = (props: Props) => {
-    const {children, path} = props;
+const NavLink = (props: Props & { feature?: FEATURES }) => {
+    const {children, path, feature} = props;
     const navigate = useNavigate();
+    const {user} = useUserState();
+    const canAccess = feature ? getFeatureAmount(user, feature) >= 1 : true;
+    const canAccessColor = useColorModeValue('gray.200', 'gray.700');
 
     return (
-        <Box
-            as="a"
-            px={2}
-            py={1}
-            rounded={'md'}
-            _hover={{
-                textDecoration: 'none',
-                bg: useColorModeValue('gray.200', 'gray.700'),
-            }}
-            cursor={"pointer"}
-            onClick={() => navigate(`/${path.toLowerCase()}`, {replace: true})}>
-            {children}
-        </Box>
-    )
-}
+        <Skeleton isLoaded={!!user.subscription?.features}>
+            <Box
+                as="a"
+                px={2}
+                py={1}
+                rounded={'md'}
+                _hover={{
+                    textDecoration: 'none',
+                    bg: canAccess ? canAccessColor : 'gray.400',
+                }}
+                cursor={canAccess ? "pointer" : "not-allowed"}
+                onClick={() => canAccess && navigate(`/${path.toLowerCase()}`, {replace: true})}>
+                {children}
+            </Box>
+        </Skeleton>
+    );
+};
 
-export const Header = () => {
+const NavigationTag = ({type, moduleText, moduleColor, canAccess}: {
+    type: NavigationModuleTypes,
+    moduleText: string,
+    moduleColor: string,
+    canAccess: boolean
+}) => {
+    if (!canAccess) {
+        return <Tag ml={2} colorScheme={"gray"}>Não contratado</Tag>;
+    }
+
+    switch (type) {
+        case NavigationModuleTypes.BETA:
+            return <BetaTag ml={2}/>;
+        case NavigationModuleTypes.COMING_SOON:
+            return <Tag ml={2} colorScheme={"blue"}>Em breve</Tag>;
+        default:
+            return <Tag ml={2} colorScheme={moduleColor}>{moduleText}</Tag>;
+    }
+};
+
+const Header = () => {
     const {colorMode, toggleColorMode} = useColorMode();
     const [, , removeCookie] = useCookies(["userId", "token"]);
-    const [isSmallerThanMd] = useMediaQuery("(max-width: 48em)");
+    const [isSmallerThanLg] = useMediaQuery("(max-width: 62em)");
     const navigate = useNavigate();
-
-    const userContext: UserContext = useUserState();
+    const {user} = useUserState();
     const userDispatch: Dispatch<UserReducerAction> = useUserDispatch();
 
-    const getLoggedUserNames = (): Array<String> => (userContext.user.name || "").split(" ");
-
-    const getAvatarSource = (): string => `https://ui-avatars.com/api/?name=${getLoggedUserNames().join("+")}`
+    const getLoggedUserNames = (): Array<String> => (user.name || "").split(" ");
+    const getAvatarSource = (): string => `https://ui-avatars.com/api/?name=${getLoggedUserNames().join("+")}`;
 
     const logOut = useErrorToast(async () => {
         cleanUser(userDispatch);
@@ -76,19 +104,31 @@ export const Header = () => {
         }, 500);
     }, SUCCESS_TYPES.USER_LOGGED_OUT);
 
-
     return (
         <>
             <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
                 <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
                     <ProductOnHeader path={"/app"}/>
-                    <HStack as={'nav'} spacing={4} display={{base: 'none', md: 'flex'}}>
-                        {APP_NAVIGATION.map(({name, path, beta}: NavigationLinkOnHeaderValue) => (
-                            <NavLink key={path} path={path.toLowerCase()}>
-                                {name}
-                                {beta && <BetaTag ml={2}/>}
-                            </NavLink>
-                        ))}
+                    <HStack as={'nav'} spacing={4} display={{base: 'none', lg: 'flex'}}>
+                        {APP_NAVIGATION.map(({
+                                                 name,
+                                                 path,
+                                                 moduleText,
+                                                 moduleColor,
+                                                 type,
+                                                 feature
+                                             }: NavigationLinkOnHeaderValue) => {
+                            const canAccess = feature ? getFeatureAmount(user, feature) >= 1 : true;
+                            return (
+                                <Skeleton isLoaded={!!user.subscription?.features} key={path}>
+                                    <NavLink key={path} path={path.toLowerCase()} feature={feature}>
+                                        {name}
+                                        <NavigationTag type={type} moduleColor={moduleColor} moduleText={moduleText}
+                                                       canAccess={canAccess}/>
+                                    </NavLink>
+                                </Skeleton>
+                            );
+                        })}
                     </HStack>
 
                     <Flex alignItems={'center'}>
@@ -104,10 +144,12 @@ export const Header = () => {
                                     variant={'link'}
                                     cursor={'pointer'}
                                     minW={0}>
-                                    <Avatar
-                                        size={'sm'}
-                                        src={getAvatarSource()}
-                                    />
+                                    <SkeletonCircle isLoaded={!!user.name}>
+                                        <Avatar
+                                            size={'sm'}
+                                            src={getAvatarSource()}
+                                        />
+                                    </SkeletonCircle>
                                 </MenuButton>
                                 <MenuList alignItems={'center'}>
                                     <br/>
@@ -119,24 +161,37 @@ export const Header = () => {
                                     </Center>
                                     <br/>
                                     <Center>
-                                        <p>{userContext.user.name}</p>
+                                        <p>{user.name}</p>
                                     </Center>
                                     <br/>
                                     <MenuDivider/>
-                                    {isSmallerThanMd &&
-                                        <Fragment>
+                                    {isSmallerThanLg &&
+                                        <Flex direction={"column"} gap={1}>
                                             {APP_NAVIGATION.map(({
                                                                      name,
                                                                      path,
-                                                                     beta
-                                                                 }: NavigationLinkOnHeaderValue) => (
-                                                <MenuItem key={path}
-                                                          onClick={() => navigate(path.toLowerCase(), {replace: true})}>
-                                                    {name}
-                                                    {beta && <BetaTag ml={2}/>}
-                                                </MenuItem>))}
+                                                                     moduleText,
+                                                                     moduleColor,
+                                                                     type,
+                                                                     feature
+                                                                 }: NavigationLinkOnHeaderValue) => {
+                                                const canAccess = feature ? getFeatureAmount(user, feature) >= 1 : true;
+                                                return (
+                                                    <Skeleton key={path} isLoaded={!!user.subscription?.features} h={8}>
+                                                        <MenuItem
+                                                            onClick={() => canAccess && navigate(path.toLowerCase(), {replace: true})}
+                                                            isDisabled={!canAccess}
+                                                        >
+                                                            {name}
+                                                            <NavigationTag type={type} moduleColor={moduleColor}
+                                                                           moduleText={moduleText}
+                                                                           canAccess={canAccess}/>
+                                                        </MenuItem>
+                                                    </Skeleton>
+                                                );
+                                            })}
                                             <MenuDivider/>
-                                        </Fragment>
+                                        </Flex>
                                     }
                                     <MenuItem onClick={() => navigate("/app/user-management")}>Minha conta</MenuItem>
                                     <MenuItem onClick={logOut}>Sair</MenuItem>
@@ -147,7 +202,7 @@ export const Header = () => {
                 </Flex>
             </Box>
         </>
-    )
-}
+    );
+};
 
 export default Header;
