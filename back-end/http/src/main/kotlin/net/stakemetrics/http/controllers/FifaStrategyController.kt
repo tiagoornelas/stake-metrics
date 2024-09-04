@@ -67,6 +67,18 @@ class FifaStrategyController(
         return ResponseEntity.status(HttpStatus.OK).body(strategy)
     }
 
+    @GetMapping("/profits/{strategyId}")
+    fun listCumulativeProfits(@PathVariable strategyId: UUID): ResponseEntity<FifaStrategyDTO.CumulativeProfitResponse> {
+        val userEmail = SecurityContextHolder.getContext().authentication.principal as String
+        val cumulativeProfit = fifaStrategyService.listCumulativeProfits(userEmail, strategyId)
+        return ResponseEntity.status(HttpStatus.OK).body(
+            FifaStrategyDTO.CumulativeProfitResponse(
+                strategyId,
+                cumulativeProfit
+            )
+        )
+    }
+
     @GetMapping("/statistics")
     fun listAllStrategies(): ResponseEntity<FifaStrategyDTO.FifaStrategyListResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
