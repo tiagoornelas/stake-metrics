@@ -24,7 +24,7 @@ const FifaBacktestModule = () => {
 
             navigate("/app/user-management", {replace: true});
         }
-    }, []);
+    }, [canUserAccessTrendModule, navigate, toast]);
 
     return (
         <Box mt={4}>
