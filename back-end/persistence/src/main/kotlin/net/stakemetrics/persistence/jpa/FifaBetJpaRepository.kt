@@ -23,7 +23,7 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         AND (:#{#betFilter.closedBets} = true OR (b.profit IS NULL AND b.status = 0))
         AND (:#{#betFilter.openBets} = true OR (b.profit IS NOT NULL AND b.status != 0))
         AND (:#{#betFilter.realBets} = true OR b.isPaperBet = true)
-        AND (:#{#betFilter.isPaperBet} = true OR b.isPaperBet = false)
+        AND (:#{#betFilter.paperBets} = true OR b.isPaperBet = false)
         AND (:#{#betFilter.league.isEmpty()} = true OR b.match.league.id IN :#{#betFilter.league})
         ORDER BY b.match.time DESC
         """

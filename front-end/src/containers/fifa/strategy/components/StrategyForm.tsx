@@ -307,9 +307,11 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
             {form.leagues.length > 0 && <Skeleton isLoaded={isLoaded}>
                 <FormControl>
                     <MultiSelect title={"Jogadores ignorados"} entity={["jogador", "jogadores"]} tagColor={"red"}
+                                 sortSelected
                                  options={dynamicPlayers}
                                  defaultSelected={form.excludedPlayers}
                                  onChange={handlePlayersChange}/>
+
                 </FormControl>
             </Skeleton>}
 

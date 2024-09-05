@@ -55,12 +55,7 @@ const ProfitOverBetsLineChart = ({data}: Props) => {
             <ResponsiveContainer width={"100%"} maxHeight={400}>
                 <AreaChart
                     data={parsedData}
-                    margin={{
-                        top: 10,
-                        right: 30,
-                        left: 0,
-                        bottom: 0,
-                    }}
+                    margin={{top: 0, right: 0, left: 0, bottom: 0}}
                 >
                     <Tooltip content={<CustomTooltip/>}/>
                     <Area type="monotone" dataKey="un" stroke={strokeColor} fill={fillColor}/>

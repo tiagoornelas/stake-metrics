@@ -1,76 +1,23 @@
-import {
-    Box,
-    Button,
-    Flex,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    Skeleton,
-    Spinner,
-    Table,
-    TableContainer,
-    Tbody,
-    Td,
-    Text,
-    Th,
-    Thead,
-    Tr
-} from "@chakra-ui/react";
+import {Box, Button, Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr} from "@chakra-ui/react";
 import BetEmptyState from "containers/fifa/strategy/bets/components/BetEmptyState";
+import BetsHeader from "containers/fifa/strategy/bets/components/BetsHeader";
 import BetTableItem from "containers/fifa/strategy/bets/components/BetTableItem";
 import useBetQuery from "containers/fifa/strategy/bets/hooks/useBetQuery";
 import useThemeColors from "hooks/useThemeColors";
 import React, {useState} from 'react';
-import {FiFilter} from "react-icons/all";
 import {Bet, BetQueryFilters} from "utils/interfaces";
-
-const Header = ({showingBets, betsLength, isLoaded, filters, setFilters}: {
-    showingBets: number,
-    betsLength: number,
-    isLoaded: boolean,
-    filters: BetQueryFilters,
-    setFilters: (filters: BetQueryFilters) => void
-}) => {
-    const getLabel = () => {
-        if (betsLength === 0) return "";
-        if (betsLength === 1) return "1 aposta";
-        if (showingBets >= betsLength) return `${betsLength} apostas`;
-        return `${showingBets} de ${betsLength} apostas`;
-    }
-
-    return (
-        <Flex align={"center"} justifyContent={"space-between"}>
-            <Skeleton isLoaded={isLoaded}>
-                <Text>{getLabel()}</Text>
-            </Skeleton>
-            <Menu>
-                <MenuButton as={Button} colorScheme="blue" rightIcon={<FiFilter/>}>
-                    <Flex alignItems="center">
-                        {/*<Tag mr={2}>{showPaperBets ? "Todas" : "Reais"}</Tag>*/}
-                        Filtrar
-                    </Flex>
-                </MenuButton>
-                <MenuList>
-                    <MenuItem>Mostrar todas</MenuItem>
-                    <MenuItem>Ocultar Paper Bet</MenuItem>
-                </MenuList>
-            </Menu>
-        </Flex>
-    )
-}
 
 const DEFAULT_FILTERS: BetQueryFilters = {
     openBets: true,
     closedBets: true,
-    isPaperBet: true,
+    paperBets: true,
     realBets: true,
     league: [],
-}
+};
 
 type Props = {
     strategyId: string
-}
+};
 
 const FifaBets = ({strategyId}: Props) => {
     const [filters, setFilters] = useState<BetQueryFilters>(DEFAULT_FILTERS);
@@ -84,8 +31,8 @@ const FifaBets = ({strategyId}: Props) => {
 
     return (
         <Box mt={16}>
-            <Header showingBets={maxFetchedLength} betsLength={totalBets} isLoaded={!isLoading} filters={filters}
-                    setFilters={setFilters}/>
+            <BetsHeader showingBets={maxFetchedLength} betsLength={totalBets} isLoaded={!isLoading} filters={filters}
+                        setFilters={setFilters}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
                     <Thead>
