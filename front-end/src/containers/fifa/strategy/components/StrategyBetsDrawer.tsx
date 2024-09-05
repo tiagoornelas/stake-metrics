@@ -16,6 +16,7 @@ import {
     useBreakpointValue
 } from "@chakra-ui/react";
 import ProfitOverBetsLineChart from "components/charts/ProfitOverBetsLineChart";
+import FifaBets from "containers/fifa/strategy/bets/FifaBets";
 import StrategyNameAndStatus from "containers/fifa/strategy/components/StrategyNameAndStatus";
 import useStrategyCumulativeProfitsQuery from "containers/fifa/strategy/hooks/useStrategyCumulativeProfitsQuery";
 import useThemeColors from "hooks/useThemeColors";
@@ -122,6 +123,7 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                                 color={getColorScheme(strategy.roi)}>{formatPercentage(strategy.roi)}</StatNumber>
                         </Stat>
                     </SimpleGrid>
+                    <FifaBets strategyId={strategy.id}/>
                 </DrawerBody>
             </DrawerContent>
         </Drawer>

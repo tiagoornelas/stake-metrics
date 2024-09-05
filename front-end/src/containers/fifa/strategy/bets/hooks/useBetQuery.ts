@@ -1,11 +1,11 @@
 import {InfiniteQueryObserverResult, useInfiniteQuery} from "react-query";
-import {listBets} from "services/betService";
-import {PaginatedResponse} from "utils/interfaces";
+import {listBetsForStrategy} from "services/betService";
+import {BetQueryFilters, PaginatedResponse} from "utils/interfaces";
 
-const useBetQuery = (showPaperBets: boolean): InfiniteQueryObserverResult<PaginatedResponse> => {
+const useBetQuery = (strategyId: string, filters: BetQueryFilters): InfiniteQueryObserverResult<PaginatedResponse> => {
     return useInfiniteQuery(
-        ['bets', {showPaperBets}],
-        ({pageParam = 0}) => listBets(pageParam, 30, showPaperBets),
+        ['bets', {strategyId, filters}],
+        ({pageParam = 0}) => listBetsForStrategy(strategyId, filters, pageParam, 30),
         {
             getNextPageParam: (lastPage) => {
                 if (lastPage.number < lastPage.totalPages - 1) {
