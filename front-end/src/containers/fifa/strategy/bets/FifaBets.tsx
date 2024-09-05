@@ -1,69 +1,27 @@
-import {
-    Box,
-    Button,
-    Flex,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    Skeleton,
-    Spinner,
-    Table,
-    TableContainer,
-    Tag,
-    Tbody,
-    Td,
-    Text,
-    Th,
-    Thead,
-    Tr
-} from "@chakra-ui/react";
+import {Box, Button, Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr} from "@chakra-ui/react";
 import BetEmptyState from "containers/fifa/strategy/bets/components/BetEmptyState";
+import BetsHeader from "containers/fifa/strategy/bets/components/BetsHeader";
 import BetTableItem from "containers/fifa/strategy/bets/components/BetTableItem";
 import useBetQuery from "containers/fifa/strategy/bets/hooks/useBetQuery";
 import useThemeColors from "hooks/useThemeColors";
 import React, {useState} from 'react';
-import {FiFilter} from "react-icons/all";
-import {Bet} from "utils/interfaces";
+import {Bet, BetQueryFilters} from "utils/interfaces";
 
-const Header = ({showingBets, betsLength, isLoaded, showPaperBets, setShowPaperBets}: {
-    showingBets: number,
-    betsLength: number,
-    isLoaded: boolean,
-    showPaperBets: boolean,
-    setShowPaperBets: (showPaperBets: boolean) => void
-}) => {
-    const getLabel = () => {
-        if (betsLength === 0) return "";
-        if (betsLength === 1) return "1 aposta" + (showPaperBets ? "" : " real");
-        if (showingBets >= betsLength) return `${betsLength} apostas` + (showPaperBets ? "" : " reais");
-        return `${showingBets} de ${betsLength} apostas` + (showPaperBets ? "" : " reais");
-    }
+const DEFAULT_FILTERS: BetQueryFilters = {
+    openBets: true,
+    closedBets: true,
+    paperBets: true,
+    realBets: true,
+    league: [],
+};
 
-    return (
-        <Flex align={"center"} justifyContent={"space-between"}>
-            <Skeleton isLoaded={isLoaded}>
-                <Text>{getLabel()}</Text>
-            </Skeleton>
-            <Menu>
-                <MenuButton as={Button} colorScheme="blue" rightIcon={<FiFilter/>}>
-                    <Flex alignItems="center">
-                        <Tag mr={2}>{showPaperBets ? "Todas" : "Reais"}</Tag>
-                        Filtrar
-                    </Flex>
-                </MenuButton>
-                <MenuList>
-                    <MenuItem onClick={() => setShowPaperBets(true)}>Mostrar todas</MenuItem>
-                    <MenuItem onClick={() => setShowPaperBets(false)}>Ocultar Paper Bet</MenuItem>
-                </MenuList>
-            </Menu>
-        </Flex>
-    )
-}
+type Props = {
+    strategyId: string
+};
 
-const FifaBets = () => {
-    const [showPaperBets, setShowPaperBets] = useState<boolean>(false);
-    const {data, isLoading, fetchNextPage, isFetchingNextPage} = useBetQuery(showPaperBets);
+const FifaBets = ({strategyId}: Props) => {
+    const [filters, setFilters] = useState<BetQueryFilters>(DEFAULT_FILTERS);
+    const {data, isLoading, fetchNextPage, isFetchingNextPage} = useBetQuery(strategyId, filters);
     const colors = useThemeColors();
     const totalBets = data?.pages[0]?.totalElements ?? 0;
     const maxFetchedLength = data?.pages.reduce((acc, page) => acc + page.content.length, 0) ?? 0;
@@ -72,19 +30,18 @@ const FifaBets = () => {
     const shouldRenderEmptyState = !isLoading && data?.pages[0]?.empty;
 
     return (
-        <Box mt={4}>
-            <Header showingBets={maxFetchedLength} betsLength={totalBets} isLoaded={!isLoading}
-                    showPaperBets={showPaperBets} setShowPaperBets={setShowPaperBets}/>
+        <Box mt={16}>
+            <BetsHeader showingBets={maxFetchedLength} betsLength={totalBets} isLoaded={!isLoading} filters={filters}
+                        setFilters={setFilters}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
                     <Thead>
                         <Tr>
-                            <Th>Hora do Jogo</Th>
+                            <Th>Hora</Th>
                             <Th>Liga</Th>
                             <Th>Confronto</Th>
-                            <Th>Linha</Th>
-                            <Th>Odd</Th>
-                            <Th>Resultado</Th>
+                            <Th textAlign="center">Linha</Th>
+                            <Th textAlign="center">Resultado</Th>
                             <Th/>
                         </Tr>
                     </Thead>
