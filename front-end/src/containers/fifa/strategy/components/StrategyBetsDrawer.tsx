@@ -18,6 +18,7 @@ import {
 import ProfitOverBetsLineChart from "components/charts/ProfitOverBetsLineChart";
 import StrategyNameAndStatus from "containers/fifa/strategy/components/StrategyNameAndStatus";
 import useStrategyCumulativeProfitsQuery from "containers/fifa/strategy/hooks/useStrategyCumulativeProfitsQuery";
+import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
 import {StrategyListItem} from "utils/interfaces";
 
@@ -30,24 +31,25 @@ type Props = {
 type DiffType = "increase" | "decrease" | undefined;
 
 const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
+    const colors = useThemeColors();
     const {data = [], isLoading} = useStrategyCumulativeProfitsQuery(strategy.id);
 
     const formatPercentage = (value: number) => `${Math.round(value * 10000) / 100} %`;
 
     const getColorScheme = (value: number) => {
-        if (value > 0) return 'green';
-        if (value < 0) return 'red';
-        return 'gray';
+        if (value > 0) return 'green.500';
+        if (value < 0) return 'red.500';
+        return colors.contrast;
     };
 
     const calculateDiff = (value: number, comparedValue: number): { type: DiffType, text: string } | null => {
-        const diff = ((value - comparedValue) / Math.abs(comparedValue)) * 100;
+        const diff = Math.round(((value - comparedValue) / Math.abs(comparedValue)) * 100);
         if (diff === 0 || Math.abs(diff) === 100) {
             return null;
         }
         return {
             type: diff > 0 ? 'increase' : 'decrease',
-            text: `${Math.abs(diff).toFixed(2)}%`
+            text: `${Math.abs(diff)}%`
         };
     };
 
@@ -71,53 +73,53 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                             <ProfitOverBetsLineChart data={data}/>
                         </Box>
                     </Skeleton>
-                    <SimpleGrid columns={{base: 2, md: 3, lg: 6}} spacing={4} mt={4} textAlign="center"
+                    <SimpleGrid columns={{base: 2, md: 3, lg: 6}} spacing={4} mt={4}
                                 justifyContent="center">
                         {showTodaysStats && (
                             <>
-                                <Stat colorScheme={getColorScheme(strategy.todaysResult)}>
+                                <Stat>
                                     <StatLabel>Un Hoje</StatLabel>
-                                    <StatNumber>{`${strategy.todaysResult.toFixed(2)} u`}</StatNumber>
+                                    <StatNumber
+                                        color={getColorScheme(strategy.todaysResult)}>{`${strategy.todaysResult.toFixed(2)} u`}</StatNumber>
                                 </Stat>
-                                <Stat colorScheme={getColorScheme(strategy.todaysRoi)}>
+                                <Stat>
                                     <StatLabel>ROI Hoje</StatLabel>
-                                    <StatNumber>{formatPercentage(strategy.todaysRoi)}</StatNumber>
+                                    <StatNumber
+                                        color={getColorScheme(strategy.todaysRoi)}>{formatPercentage(strategy.todaysRoi)}</StatNumber>
                                     {strategy.roi !== 0 && calculateDiff(strategy.todaysRoi, strategy.roi) && (
                                         <StatHelpText>
                                             <StatArrow type={calculateDiff(strategy.todaysRoi, strategy.roi)!.type}/>
-                                            {calculateDiff(strategy.todaysRoi, strategy.roi)!.text} (ROI Total)
+                                            {calculateDiff(strategy.todaysRoi, strategy.roi)!.text}
                                         </StatHelpText>
                                     )}
                                 </Stat>
                             </>
                         )}
-                        <Stat colorScheme={getColorScheme(strategy.activeResult)}>
+                        <Stat>
                             <StatLabel>Un Ativas</StatLabel>
-                            <StatNumber>{`${strategy.activeResult.toFixed(2)} u`}</StatNumber>
+                            <StatNumber
+                                color={getColorScheme(strategy.activeResult)}>{`${strategy.activeResult.toFixed(2)} u`}</StatNumber>
                         </Stat>
-                        <Stat colorScheme={getColorScheme(strategy.activeRoi)}>
+                        <Stat>
                             <StatLabel>ROI Ativa</StatLabel>
-                            <StatNumber>{formatPercentage(strategy.activeRoi)}</StatNumber>
+                            <StatNumber
+                                color={getColorScheme(strategy.activeRoi)}>{formatPercentage(strategy.activeRoi)}</StatNumber>
                             {strategy.roi !== 0 && calculateDiff(strategy.activeRoi, strategy.roi) && (
                                 <StatHelpText>
                                     <StatArrow type={calculateDiff(strategy.activeRoi, strategy.roi)!.type}/>
-                                    {calculateDiff(strategy.activeRoi, strategy.roi)!.text} (ROI Total)
+                                    {calculateDiff(strategy.activeRoi, strategy.roi)!.text}
                                 </StatHelpText>
                             )}
                         </Stat>
-                        <Stat colorScheme={getColorScheme(strategy.result)}>
+                        <Stat>
                             <StatLabel>Un Totais</StatLabel>
-                            <StatNumber>{`${strategy.result.toFixed(2)} u`}</StatNumber>
+                            <StatNumber
+                                color={getColorScheme(strategy.result)}>{`${strategy.result.toFixed(2)} u`}</StatNumber>
                         </Stat>
-                        <Stat colorScheme={getColorScheme(strategy.roi)}>
+                        <Stat>
                             <StatLabel>ROI Total</StatLabel>
-                            <StatNumber>{formatPercentage(strategy.roi)}</StatNumber>
-                            {strategy.activeRoi !== 0 && calculateDiff(strategy.roi, strategy.activeRoi) && (
-                                <StatHelpText>
-                                    <StatArrow type={calculateDiff(strategy.roi, strategy.activeRoi)!.type}/>
-                                    {calculateDiff(strategy.roi, strategy.activeRoi)!.text} (ROI Ativa)
-                                </StatHelpText>
-                            )}
+                            <StatNumber
+                                color={getColorScheme(strategy.roi)}>{formatPercentage(strategy.roi)}</StatNumber>
                         </Stat>
                     </SimpleGrid>
                 </DrawerBody>
