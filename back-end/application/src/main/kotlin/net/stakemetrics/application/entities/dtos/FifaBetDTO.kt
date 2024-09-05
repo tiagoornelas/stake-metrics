@@ -52,7 +52,7 @@ class FifaBetDTO {
     data class BetFilter(
         val openBets: Boolean,
         val closedBets: Boolean,
-        val isPaperBet: Boolean,
+        val paperBets: Boolean,
         val realBets: Boolean,
         val league: List<UUID>,
         val page: Int,

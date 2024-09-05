@@ -6,7 +6,7 @@ import {
     DrawerContent,
     DrawerHeader,
     DrawerOverlay,
-    SimpleGrid,
+    Flex,
     Skeleton,
     Stat,
     StatArrow,
@@ -54,7 +54,8 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
         };
     };
 
-    const showTodaysStats = useBreakpointValue({base: false, md: true});
+    const showTodaysStats = useBreakpointValue({base: false, sm: true});
+    const statFontSize = useBreakpointValue({base: 'md', sm: 'xl'});
 
     return (
         <Drawer
@@ -74,18 +75,19 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                             <ProfitOverBetsLineChart data={data}/>
                         </Box>
                     </Skeleton>
-                    <SimpleGrid columns={{base: 2, md: 3, lg: 6}} spacing={4} mt={4}
-                                justifyContent="center">
+                    <Flex wrap="wrap" justifyContent="center" mt={4}>
                         {showTodaysStats && (
                             <>
                                 <Stat>
                                     <StatLabel>Un Hoje</StatLabel>
                                     <StatNumber
+                                        fontSize={statFontSize}
                                         color={getColorScheme(strategy.todaysResult)}>{`${strategy.todaysResult.toFixed(2)} u`}</StatNumber>
                                 </Stat>
                                 <Stat>
                                     <StatLabel>ROI Hoje</StatLabel>
                                     <StatNumber
+                                        fontSize={statFontSize}
                                         color={getColorScheme(strategy.todaysRoi)}>{formatPercentage(strategy.todaysRoi)}</StatNumber>
                                     {strategy.roi !== 0 && calculateDiff(strategy.todaysRoi, strategy.roi) && (
                                         <StatHelpText>
@@ -99,11 +101,13 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                         <Stat>
                             <StatLabel>Un Ativas</StatLabel>
                             <StatNumber
+                                fontSize={statFontSize}
                                 color={getColorScheme(strategy.activeResult)}>{`${strategy.activeResult.toFixed(2)} u`}</StatNumber>
                         </Stat>
                         <Stat>
                             <StatLabel>ROI Ativa</StatLabel>
                             <StatNumber
+                                fontSize={statFontSize}
                                 color={getColorScheme(strategy.activeRoi)}>{formatPercentage(strategy.activeRoi)}</StatNumber>
                             {strategy.roi !== 0 && calculateDiff(strategy.activeRoi, strategy.roi) && (
                                 <StatHelpText>
@@ -115,14 +119,16 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                         <Stat>
                             <StatLabel>Un Totais</StatLabel>
                             <StatNumber
+                                fontSize={statFontSize}
                                 color={getColorScheme(strategy.result)}>{`${strategy.result.toFixed(2)} u`}</StatNumber>
                         </Stat>
                         <Stat>
                             <StatLabel>ROI Total</StatLabel>
                             <StatNumber
+                                fontSize={statFontSize}
                                 color={getColorScheme(strategy.roi)}>{formatPercentage(strategy.roi)}</StatNumber>
                         </Stat>
-                    </SimpleGrid>
+                    </Flex>
                     <FifaBets strategyId={strategy.id}/>
                 </DrawerBody>
             </DrawerContent>
