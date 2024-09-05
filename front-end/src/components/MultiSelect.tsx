@@ -25,9 +25,12 @@ type Props = {
     tagColor?: "green" | "blue" | "yellow" | "red";
     defaultSelected?: string[];
     isInvalid?: boolean;
+    sortSelected?: boolean;
+    [x: string]: any;
 };
 
-const sortOptions = (options: Option[], selectedOptions: string[]): Option[] => {
+const sortOptions = (options: Option[], selectedOptions: string[], sortSelected: boolean): Option[] => {
+    if (!sortSelected) return options;
     return options.sort((a, b) => {
         const aSelected = selectedOptions.includes(a.value);
         const bSelected = selectedOptions.includes(b.value);
@@ -44,7 +47,9 @@ const MultiSelect = ({
                          entity = [],
                          tagColor = "blue",
                          defaultSelected = [],
-                         isInvalid
+                         isInvalid,
+                         sortSelected = false,
+                         ...rest
                      }: Props) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>(defaultSelected);
     const [searchInput, setSearchInput] = useState<string>("");
@@ -100,10 +105,10 @@ const MultiSelect = ({
     };
 
     const filteredOptions = filterOptions(normalizedOptions, searchInput);
-    const sortedOptions = sortOptions(filteredOptions, selectedOptions);
+    const sortedOptions = sortOptions(filteredOptions, selectedOptions, sortSelected);
 
     return (
-        <Flex direction={"column"}>
+        <Flex direction={"column"} {...rest}>
             <Flex gap="4" align={"center"}>
                 <Menu closeOnSelect={false}>
                     <MenuButton
