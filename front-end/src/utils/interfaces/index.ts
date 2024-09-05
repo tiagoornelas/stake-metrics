@@ -288,3 +288,11 @@ export interface PaginatedResponse {
     };
     empty: boolean;
 }
+
+export interface BetQueryFilters {
+    openBets: boolean;
+    closedBets: boolean;
+    isPaperBet: boolean;
+    realBets: boolean;
+    league: string[];
+}

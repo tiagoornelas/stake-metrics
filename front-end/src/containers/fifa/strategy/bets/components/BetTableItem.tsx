@@ -1,4 +1,4 @@
-import {Tag, Td, Text, Tr} from "@chakra-ui/react";
+import {Tag, Td, Tr} from "@chakra-ui/react";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import useInvalidateBetQuery from "containers/fifa/strategy/bets/hooks/useInvalidateBetQuery";
 import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
@@ -9,7 +9,7 @@ import {deleteBet} from "services/betService";
 import {FifaBetStatus, statusColors, statusLabels} from "utils/constants/betConstants";
 import {MARKET_CANDIDATES_DICT} from "utils/constants/marketCandidatesConstants";
 import {SUCCESS_TYPES} from "utils/constants/successConstants";
-import {formatProfit} from "utils/helpers/betHelper";
+import {abbreviateLeagueName} from "utils/helpers/leagueHelper";
 import {Bet} from "utils/interfaces";
 
 const DeleteButton = ({bet}: { bet: Bet }) => {
@@ -42,19 +42,22 @@ const BetTableItem = ({bet}: Props) => {
     };
 
     const candidate = MARKET_CANDIDATES_DICT[bet.candidate as keyof typeof MARKET_CANDIDATES_DICT];
-    const {text: formattedProfit, color: profitColor} = formatProfit(bet.profit);
 
     return (
         <Tr key={bet.id}>
-            <Td>{formatDate(bet.matchTime, "dd/MM HH:mm")}</Td>
-            <Td>{bet.strategyName}{bet.isPaperBet && <Tag ml={2} colorScheme={"yellow"}>Paper Bet</Tag>}</Td>
-            <Td>{bet.leagueName}</Td>
-            <Td>{`${bet.homePlayerName} x ${bet.awayPlayerName}`}</Td>
-            <Td>{bet.score || ""}</Td>
-            <Td>{bet.handicap ? `${candidate} ${bet.handicap}` : candidate}</Td>
-            <Td>{bet.odds}</Td>
-            <Td>{getStatusTag(bet.status)}</Td>
-            <Td><Text color={profitColor}>{formattedProfit}</Text></Td>
+            <Td>{formatDate(bet.matchTime, "d/M HH:mm")}</Td>
+            <Td>{abbreviateLeagueName(bet.leagueName)}</Td>
+            <Td>
+                {bet.score ? (
+                    <>
+                        {bet.homePlayerName} <strong>{bet.score}</strong> {bet.awayPlayerName}
+                    </>
+                ) : (
+                    `${bet.homePlayerName} x ${bet.awayPlayerName}`
+                )}
+            </Td>
+            <Td textAlign="center">{bet.handicap ? `${candidate} ${bet.handicap}` : candidate} @{bet.odds}</Td>
+            <Td textAlign="center">{getStatusTag(bet.status)}</Td>
             <Td><DeleteButton bet={bet}/></Td>
         </Tr>
     );
