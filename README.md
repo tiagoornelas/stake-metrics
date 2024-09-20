@@ -14,7 +14,7 @@ application-properties:
 
 application-{{dev | prod}}.properties:
 - app.frontend.base.url=http://localhost:3000
-- app.backend.queue.base.url=http://host.docker.internal:8080
+- app.backend.queue.base.url=http://172.17.0.1:8080 (Linux) http://host.docker.internal:8080 (Windows or Mac)
 - app.gcp.project.id=stakemetrics
 - app.gcp.location.id=us-central1
 - spring.datasource.url=jdbc:mysql://localhost:3306/stake-metrics
