@@ -35,6 +35,7 @@ class FifaStrategyOpportunityIterator(private val logger: Logger, private val qu
                         return@candidatesAnalysis
                     } catch (e: Exception) {
                         logger.logError(e)
+                        return@candidatesAnalysis
                     }
                 }
 
