@@ -26,40 +26,31 @@ class FifaStrategyOpportunityIterator(private val logger: Logger, private val qu
 
         run candidatesAnalysis@{
             betCandidates.forEach { candidate ->
-                val ruleBreakErrors = mutableListOf<Exception>()
                 analysisByScopes.forEach { scopeAnalysis ->
                     try {
                         val rulesForScope = getRulesForScope(strategy, scopeAnalysis)
                         tipster.analyze(candidate, rulesForScope, oddSnapshot, scopeAnalysis)
                     } catch (e: FifaStrategyRuleBreakException) {
                         logger.logFifaStrategyRuleBreak(e)
-                        ruleBreakErrors.add(e)
+                        return@candidatesAnalysis
                     } catch (e: Exception) {
                         logger.logError(e)
                     }
                 }
 
-                if (ruleBreakErrors.isEmpty()) {
-                    val betRequest  = FifaBetDTO.BetRequest(
-                        strategy = strategy,
-                        fifaMatchId = fifaMatch.id,
-                        candidate = candidate,
-                        oddSnapshot = oddSnapshot
-                    )
-                    
-                    queueService.enqueueBetTask(betRequest)
-                    return@candidatesAnalysis
-                }
-
+                val betRequest = FifaBetDTO.BetRequest(
+                    strategy = strategy, fifaMatchId = fifaMatch.id, candidate = candidate, oddSnapshot = oddSnapshot
+                )
+                queueService.enqueueBetTask(betRequest)
+                return@candidatesAnalysis
             }
         }
     }
 
     private fun getRulesForScope(
-        strategy: FifaStrategy,
-        scopeAnalysis: FifaTrendScopeAnalysis
+        strategy: FifaStrategy, scopeAnalysis: FifaTrendScopeAnalysis
     ): MutableSet<FifaStrategyRule> {
-        return strategy.scopes.find { it.matchup === scopeAnalysis.matchup && it.type === scopeAnalysis.type }
-            ?.rules ?: mutableSetOf()
+        return strategy.scopes.find { it.matchup === scopeAnalysis.matchup && it.type === scopeAnalysis.type }?.rules
+            ?: mutableSetOf()
     }
 }
