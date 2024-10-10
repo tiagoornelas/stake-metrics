@@ -78,7 +78,7 @@ class FifaStrategyDTO {
 
     data class FifaStrategyAgainstOddRequest(
         val strategy: FifaStrategy,
-        val oddSnapshotId: UUID
+        val oddSnapshot: FifaOddSnapshot
     )
 
     data class GenericScopePastResults(
