@@ -15,7 +15,7 @@ const FifaBacktestModule = () => {
     const canUserAccessBacktestModule = getFeatureAmount(user, FEATURES.BACKTEST_MODULE) >= 1 ?? false;
 
     useEffect(() => {
-        if (canUserAccessBacktestModule) {
+        if (!canUserAccessBacktestModule) {
             toast({
                 status: "error",
                 ...ERROR_TYPES.FORBIDDEN_ACCESS,
