@@ -12,10 +12,10 @@ const FifaBacktestModule = () => {
     const toast: CreateToastFnReturn = useToast();
     const navigate = useNavigate();
     const {user} = useUserState();
-    const canUserAccessTrendModule = getFeatureAmount(user, FEATURES.TREND_MODULE) >= 1 ?? false;
+    const canUserAccessBacktestModule = getFeatureAmount(user, FEATURES.BACKTEST_MODULE) >= 1 ?? false;
 
     useEffect(() => {
-        if (canUserAccessTrendModule) {
+        if (canUserAccessBacktestModule) {
             toast({
                 status: "error",
                 ...ERROR_TYPES.FORBIDDEN_ACCESS,
@@ -24,7 +24,7 @@ const FifaBacktestModule = () => {
 
             navigate("/app/user-management", {replace: true});
         }
-    }, [canUserAccessTrendModule, navigate, toast]);
+    }, [canUserAccessBacktestModule, navigate, toast]);
 
     return (
         <Box mt={4}>
