@@ -12,6 +12,7 @@ import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.application.utils.EnvironmentVerifier
 import net.stakemetrics.application.utils.Logger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 
 @Service
@@ -83,9 +84,13 @@ class FifaMatchService @Autowired constructor(
         return try {
             fifaPlayerService.findByName(name)
         } catch (e: NotFoundException) {
-            val newPlayer = FifaPlayer(name = name, league = league)
-            fifaPlayerService.save(newPlayer)
-            newPlayer
+            try {
+                val newPlayer = FifaPlayer(name = name, league = league)
+                fifaPlayerService.save(newPlayer)
+                newPlayer
+            } catch (e: DataIntegrityViolationException) {
+                fifaPlayerService.findByName(name)
+            }
         }
     }
 

@@ -15,7 +15,7 @@ class FifaStrategyAgainstOddsEnqueuer(
     fun enqueue(oddSnapshot: FifaOddSnapshot) {
         val strategies = fifaStrategyRepository.getAllProneToBetStrategies()
         strategies.filter { it.leagues.contains(oddSnapshot.fifaMatch.league) }.forEach {
-            val request = FifaStrategyDTO.FifaStrategyAgainstOddRequest(it, oddSnapshot.id)
+            val request = FifaStrategyDTO.FifaStrategyAgainstOddRequest(it, oddSnapshot)
             queueService.enqueueRunStrategyAgainstOddTask(request)
         }
     }

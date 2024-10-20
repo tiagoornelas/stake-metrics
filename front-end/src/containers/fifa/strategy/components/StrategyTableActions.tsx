@@ -164,7 +164,6 @@ const DeleteButton = ({strategy}: { strategy: StrategyListItem }) => {
             text={
                 "Ao excluir a estratégia, todas as apostas serão excluídas e as mensagens permanecerão como estão, sem serem editadas com os resultados."
             }
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}
         />
     );
 };
