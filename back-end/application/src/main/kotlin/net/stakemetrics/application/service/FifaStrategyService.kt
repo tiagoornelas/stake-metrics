@@ -3,6 +3,7 @@ package net.stakemetrics.application.service
 import jakarta.transaction.Transactional
 import java.util.UUID
 import net.stakemetrics.application.entities.*
+import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.*
@@ -20,11 +21,11 @@ import org.springframework.stereotype.Service
 @Service
 class FifaStrategyService @Autowired constructor(
     private val userService: UserService,
+    private val queueService: IQueueService,
     private val fifaLeagueService: FifaLeagueService,
     private val fifaPlayerService: FifaPlayerService,
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaTipsterFactory: FifaTipsterFactory,
-    private val fifaOddSnapshotService: FifaOddSnapshotService,
     private val fifaStrategyRepository: IFifaStrategyRepository,
     private val fifaStrategyOpportunityIterator: FifaStrategyOpportunityIterator,
     @Lazy private val fifaStrategyResourceValidator: FifaStrategyResourceValidator,
@@ -199,13 +200,26 @@ class FifaStrategyService @Autowired constructor(
     }
 
     fun runStrategyAgainstOdds(request: FifaStrategyDTO.FifaStrategyAgainstOddRequest) {
-        val oddSnapshot = fifaOddSnapshotService.getById(request.oddSnapshotId)
-        val allScopesAnalysis = oddSnapshot.trendScopeAnalysis
+        val allScopesAnalysis = request.oddSnapshot.trendScopeAnalysis
         val strategyScopesWithAnalysis = pickStrategyScopesOnly(request.strategy, allScopesAnalysis)
         val tipster = fifaTipsterFactory.getTipster(request.strategy.marketType)
-        fifaStrategyOpportunityIterator.iterate(
-            tipster, oddSnapshot.fifaMatch, request.strategy, oddSnapshot, strategyScopesWithAnalysis
+        val suitableCandidate = fifaStrategyOpportunityIterator.iterate(
+            tipster,
+            request.oddSnapshot.fifaMatch,
+            request.strategy,
+            request.oddSnapshot,
+            strategyScopesWithAnalysis,
         )
+
+        if (suitableCandidate != null) {
+            val betRequest = FifaBetDTO.BetRequest(
+                strategy = request.strategy,
+                fifaMatchId = request.oddSnapshot.fifaMatch.id,
+                candidate = suitableCandidate,
+                oddSnapshot = request.oddSnapshot
+            )
+            queueService.enqueueBetTask(betRequest)
+        }
     }
 
     private fun pickStrategyScopesOnly(

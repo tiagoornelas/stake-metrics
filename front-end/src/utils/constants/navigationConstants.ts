@@ -10,14 +10,6 @@ export const APP_NAVIGATION: NavigationLinkOnHeaderValue[] = [
         type: NavigationModuleTypes.REGULAR
     },
     {
-        name: "Tendências",
-        path: "app/esoccer/trends",
-        moduleText: "E-Soccer",
-        moduleColor: "green",
-        type: NavigationModuleTypes.REGULAR,
-        feature: FEATURES.TREND_MODULE
-    },
-    {
         name: "Backtest",
         path: "app/esoccer/backtest",
         moduleText: "E-Soccer",

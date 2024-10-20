@@ -19,8 +19,8 @@ class FifaMatchOddsTipster(private val fifaTipsterHelper: FifaTipsterHelper) : F
         odds: FifaOddSnapshot,
         analysis: FifaTrendScopeAnalysis
     ) {
-        rules.forEach { rule ->
-            return when (rule.type) {
+        for (rule in rules) {
+            when (rule.type) {
                 FifaRuleTypes.MINIMUM_ODDS -> checkMinimumOddsRule(betCandidate, rule, odds)
                 FifaRuleTypes.MINIMUM_JUICE -> checkMinimumJuiceRule(betCandidate, rule, analysis)
                 FifaRuleTypes.MINIMUM_PROBABILITY -> checkMinimumProbabilityRule(betCandidate, rule, analysis)

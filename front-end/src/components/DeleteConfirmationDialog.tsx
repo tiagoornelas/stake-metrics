@@ -27,6 +27,11 @@ const DeleteConfirmationDialog = ({tooltip = false, confirmCallback, entityName,
         const {isOpen, onOpen, onClose} = useDisclosure()
         const cancelRef = React.useRef<HTMLButtonElement>(null)
 
+        const handleOpen = (e: React.MouseEvent) => {
+            e.stopPropagation();
+            onOpen();
+        }
+
         const handleConfirm = () => {
             confirmCallback();
             onClose();
@@ -34,9 +39,9 @@ const DeleteConfirmationDialog = ({tooltip = false, confirmCallback, entityName,
 
         return (
             <>
-            {tooltip ? (<Tooltip label="Excluir" placement="top">
-                <IconButton icon={<MdDelete/>} aria-label="Excluir" onClick={onOpen} {...props}/>
-            </Tooltip>) : <IconButton icon={<MdDelete/>} aria-label="Excluir" onClick={onOpen} {...props}/>}
+                {tooltip ? (<Tooltip label="Excluir" placement="top">
+                    <IconButton icon={<MdDelete/>} aria-label="Excluir" onClick={handleOpen} {...props}/>
+                </Tooltip>) : <IconButton icon={<MdDelete/>} aria-label="Excluir" onClick={handleOpen} {...props}/>}
 
                 <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                     <AlertDialogOverlay>

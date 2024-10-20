@@ -8,5 +8,5 @@ enum class EntitlementTypes(val identifier: String, val featureType: FeatureType
     MESSENGER_CHAT_1("messenger-chat-1", FeatureTypes.MESSENGER_CHAT, 1),
     MESSENGER_CHAT_2("messenger-chat-2", FeatureTypes.MESSENGER_CHAT, 2),
     MESSENGER_CHAT_3("messenger-chat-3", FeatureTypes.MESSENGER_CHAT, 3),
-    TREND_MODULE_1("trend-module-1", FeatureTypes.TREND_MODULE, 1),
+    BACKTEST_MODULE_1("backtest-module-1", FeatureTypes.BACKTEST_MODULE, 1),
 }
