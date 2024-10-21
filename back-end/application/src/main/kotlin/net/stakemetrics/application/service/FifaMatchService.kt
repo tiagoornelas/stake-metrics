@@ -110,6 +110,7 @@ class FifaMatchService @Autowired constructor(
         val fifaLeague = fifaLeagueService.findByIntegrationId(odd.leagueIntegrationId)
         val home = fifaPlayerService.findByName(odd.homePlayerName)
         val away = fifaPlayerService.findByName(odd.awayPlayerName)
+        logger.log("Debugger log: Match ${odd.matchIntegrationId} - ${odd.homePlayerName} x ${odd.awayPlayerName}")
 
         val fifaMatch = fifaMatchRepository.findByIntegrationId(odd.matchIntegrationId) ?: run {
             val newFifaMatch = FifaMatch(
