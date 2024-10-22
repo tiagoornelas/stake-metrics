@@ -30,4 +30,8 @@ class FifaOddSnapshotRepository(
     override fun findAllByFifaMatchId(fifaMatchId: UUID): List<FifaOddSnapshot> {
         return fifaOddSnapshotJpaRepository.findAllByFifaMatchId(fifaMatchId).map { it.toDomain() }
     }
+
+    override fun deleteAllByFifaMatchId(fifaMatchId: UUID) {
+        return fifaOddSnapshotJpaRepository.deleteAllByFifaMatchId(fifaMatchId)
+    }
 }

@@ -131,4 +131,23 @@ class FifaMatchService @Autowired constructor(
         return fifaMatch!!
     }
 
+    fun checkForHomeAndAwaySwappedByIntegration(fifaMatch: FifaMatch, odd: FifaDataSourceDTO.FifaOddRequest): Boolean {
+        if (odd.homePlayerName == fifaMatch.home?.name && odd.awayPlayerName == fifaMatch.away?.name) {
+            return false
+        } else if (odd.awayPlayerName == fifaMatch.home?.name && odd.homePlayerName == fifaMatch.away?.name) {
+            logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home.name} vs ${fifaMatch.away.name}")
+            return true
+        } else {
+            throw Exception("Complete player mismatch for match ${fifaMatch.integrationId}")
+        }
+    }
+
+    fun checkAndFixHomeAndAwaySwappedByIntegration(
+        fifaMatch: FifaMatch,
+        odd: FifaDataSourceDTO.FifaOddRequest
+    ): FifaMatch {
+        val editedMatch = fifaMatch.copy(home = fifaMatch.away, away = fifaMatch.home)
+        fifaMatchRepository.save(editedMatch)
+        return editedMatch
+    }
 }
