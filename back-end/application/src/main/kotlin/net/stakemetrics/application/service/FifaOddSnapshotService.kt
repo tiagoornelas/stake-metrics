@@ -43,8 +43,17 @@ class FifaOddSnapshotService(
 
     fun runTrendAnalysis(payload: FifaDataSourceDTO.FifaOddRequest) {
         val fifaMatch = fifaMatchService.getOrCreateMatchByOdd(payload)
-        val oddsAlreadyAnalyzed = checkIfOddsWereAnalyzed(fifaMatch, payload.odds)
-        if (!oddsAlreadyAnalyzed) createOddSnapshot(fifaMatch, payload.odds)
+        val matchHomeAndAwayWasSwappedByIntegration =
+            fifaMatchService.checkForHomeAndAwaySwappedByIntegration(fifaMatch, payload)
+
+        if (matchHomeAndAwayWasSwappedByIntegration) {
+            val fixedMatch = fifaMatchService.checkAndFixHomeAndAwaySwappedByIntegration(fifaMatch, payload)
+            cleanOddSnapshotsForMatch(fixedMatch)
+            createOddSnapshot(fixedMatch, payload.odds)
+        } else {
+            val oddsAlreadyAnalyzed = checkIfOddsWereAnalyzed(fifaMatch, payload.odds)
+            if (!oddsAlreadyAnalyzed) createOddSnapshot(fifaMatch, payload.odds)
+        }
     }
 
     private fun checkIfOddsWereAnalyzed(
@@ -60,6 +69,10 @@ class FifaOddSnapshotService(
                     snapshot.drawOdd == incomingOdd.draw &&
                     snapshot.awayOdd == incomingOdd.away
         }
+    }
+
+    private fun cleanOddSnapshotsForMatch(fifaMatch: FifaMatch) {
+        fifaOddSnapshotRepository.deleteAllByFifaMatchId(fifaMatch.id)
     }
 
     private fun createOddSnapshot(
