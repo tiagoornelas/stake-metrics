@@ -28,9 +28,7 @@ class FifaUpcomingMatchesMiner(
         do {
             logger.log("[BetsAPI] Fetching Upcoming Events page $page for league ${league.name}")
             val response = betsApiRequester.fetchUpcomingSoccerEvents(league.integrationId, page)
-            logger.log("[BetsAPI] Debugger - Response from fetchUpcomingSoccerEvents: $response")
             val matchResponse = matchDeserializer.parseJsonToMatchResponse(response)
-            logger.log("[BetsAPI] Debugger - Match Response: $matchResponse")
             val pageResults = convertResultListToFifaDtoList(matchResponse.results)
             results.addAll(pageResults)
             page++
