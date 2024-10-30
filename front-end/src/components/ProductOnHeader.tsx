@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 
 const ProductOnHeader = ({path = "/"}: { path?: string }) => {
-    const BETA_STATE = "Closed Beta";
+    const BETA_STATE = "Beta";
     const navigate = useNavigate();
     const tagText = useBreakpointValue({base: 'Beta', md: BETA_STATE});
     const handleClick = () => navigate(path, {replace: true});
