@@ -42,7 +42,7 @@ class FifaBetService(
         val alreadyBet = fifaBetRepository.existsByStrategyAndMatch(payload.strategy, fifaMatch)
 
         if (matchAlreadyStarted) {
-            logger.log("Match ${fifaMatch.integrationId} has already started, not betting on it. Odd snapshot: ${payload.oddSnapshot}")
+            logger.log("Match ${fifaMatch.integrationId} has already started at ${fifaMatch.time}, not betting on it. Odd snapshot: ${payload.oddSnapshot}, now at ${Date()}")
             return
         }
 
