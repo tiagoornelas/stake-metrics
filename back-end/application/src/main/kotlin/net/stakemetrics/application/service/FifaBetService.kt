@@ -9,6 +9,7 @@ import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
+import net.stakemetrics.application.entities.exceptions.FifaBetOnStartedMatchException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.application.utils.Logger
@@ -41,10 +42,7 @@ class FifaBetService(
         val matchAlreadyStarted = hasMatchAlreadyBegun(fifaMatch)
         val alreadyBet = fifaBetRepository.existsByStrategyAndMatch(payload.strategy, fifaMatch)
 
-        if (matchAlreadyStarted) {
-            logger.log("Match ${fifaMatch.integrationId} has already started at ${fifaMatch.time}, not betting on it. Odd snapshot: ${payload.oddSnapshot}, now at ${Date()}")
-            return
-        }
+        if (matchAlreadyStarted) throw FifaBetOnStartedMatchException(fifaMatch, payload.oddSnapshot)
 
         if (alreadyBet) {
             logger.log("Already bet on the match ${fifaMatch.integrationId} with the strategy ${payload.strategy.id}")
