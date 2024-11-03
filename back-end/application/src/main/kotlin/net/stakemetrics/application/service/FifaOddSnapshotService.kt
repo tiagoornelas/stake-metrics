@@ -8,6 +8,7 @@ import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
 import net.stakemetrics.application.utils.MathHelper
+import net.stakemetrics.application.workers.FIfaIntegrationHomeAndAwayMismatchFinder
 import net.stakemetrics.application.workers.FifaOddSnapshotCloser
 import net.stakemetrics.application.workers.FifaPastResultsSearcher
 import net.stakemetrics.application.workers.OddAndLineCalculator
@@ -19,10 +20,11 @@ class FifaOddSnapshotService(
     private val mathHelper: MathHelper,
     private val fifaMatchService: FifaMatchService,
     private val oddAndLineCalculator: OddAndLineCalculator,
+    private val fifaOddSnapshotCloser: FifaOddSnapshotCloser,
     private val fifaPastResultsSearcher: FifaPastResultsSearcher,
     private val fifaOddSnapshotRepository: IFifaOddSnapshotRepository,
     private val fifaStrategyAgainstOddsEnqueuer: FifaStrategyAgainstOddsEnqueuer,
-    private val fifaOddSnapshotCloser: FifaOddSnapshotCloser
+    private val fIfaIntegrationHomeAndAwayMismatchFinder: FIfaIntegrationHomeAndAwayMismatchFinder
 ) {
 
     fun save(oddSnapshot: FifaOddSnapshot) {
@@ -44,7 +46,7 @@ class FifaOddSnapshotService(
     fun runTrendAnalysis(payload: FifaDataSourceDTO.FifaOddRequest) {
         val fifaMatch = fifaMatchService.getOrCreateMatchByOdd(payload)
         val matchHomeAndAwayWasSwappedByIntegration =
-            fifaMatchService.checkForHomeAndAwaySwappedByIntegration(fifaMatch, payload)
+            fIfaIntegrationHomeAndAwayMismatchFinder.checkForHomeAndAwaySwappedByIntegration(fifaMatch, payload)
 
         if (matchHomeAndAwayWasSwappedByIntegration) {
             val fixedMatch = fifaMatchService.checkAndFixHomeAndAwaySwappedByIntegration(fifaMatch, payload)
