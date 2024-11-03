@@ -42,7 +42,7 @@ class FifaBetService(
         val matchAlreadyStarted = hasMatchAlreadyBegun(fifaMatch)
         val alreadyBet = fifaBetRepository.existsByStrategyAndMatch(payload.strategy, fifaMatch)
 
-        if (matchAlreadyStarted) throw FifaBetOnStartedMatchException(fifaMatch, payload.oddSnapshot)
+        if (matchAlreadyStarted) throw FifaBetOnStartedMatchException(fifaMatch)
 
         if (alreadyBet) {
             logger.log("Already bet on the match ${fifaMatch.integrationId} with the strategy ${payload.strategy.id}")
