@@ -11,6 +11,7 @@ import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.application.utils.EnvironmentVerifier
 import net.stakemetrics.application.utils.Logger
+import net.stakemetrics.application.workers.FIfaIntegrationHomeAndAwayMismatchFinder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
@@ -20,8 +21,9 @@ class FifaMatchService @Autowired constructor(
     private val logger: Logger,
     private val fifaLeagueService: FifaLeagueService,
     private val fifaPlayerService: FifaPlayerService,
+    private val environmentVerifier: EnvironmentVerifier,
     private val fifaMatchRepository: IFifaMatchRepository,
-    private val environmentVerifier: EnvironmentVerifier
+    private val fIfaIntegrationHomeAndAwayMismatchFinder: FIfaIntegrationHomeAndAwayMismatchFinder
 ) {
     @EnvironmentSensitive
     fun getLastMatchResultTime(): Date {
@@ -41,39 +43,80 @@ class FifaMatchService @Autowired constructor(
     }
 
     fun buildAndSave(dto: FifaDataSourceDTO.FifaMatchRequest) {
-        logger.log("Saving match ${dto.integrationId}")
         val league = fifaLeagueService.findByIntegrationId(dto.leagueId)
-
         val existingMatch = fifaMatchRepository.findByIntegrationId(dto.integrationId)
 
-        val match = existingMatch?.copy(
-            time = dto.time,
-            status = dto.status,
-            league = league,
-            homeGoalsAtHalfTime = dto.homeGoalsAtHalfTime,
-            homeGoalsAtFullTime = dto.homeGoalsAtFullTime,
-            awayGoalsAtHalfTime = dto.awayGoalsAtHalfTime,
-            awayGoalsAtFullTime = dto.awayGoalsAtFullTime,
-            totalGoalsAtHalfTime = dto.totalGoalsAtHalfTime,
-            totalGoalsAtFullTime = dto.totalGoalsAtFullTime,
-            winner = determineWinner(dto.winner, dto.home, dto.away, league)
-        ) ?: FifaMatch(
-            integrationId = dto.integrationId,
-            time = dto.time,
-            status = dto.status,
-            league = league,
-            home = findOrCreatePlayer(dto.home, league),
-            away = findOrCreatePlayer(dto.away, league),
-            homeGoalsAtHalfTime = dto.homeGoalsAtHalfTime,
-            homeGoalsAtFullTime = dto.homeGoalsAtFullTime,
-            awayGoalsAtHalfTime = dto.awayGoalsAtHalfTime,
-            awayGoalsAtFullTime = dto.awayGoalsAtFullTime,
-            totalGoalsAtHalfTime = dto.totalGoalsAtHalfTime,
-            totalGoalsAtFullTime = dto.totalGoalsAtFullTime,
-            winner = determineWinner(dto.winner, dto.home, dto.away, league)
-        )
+        val match: FifaMatch = if (existingMatch != null) {
+            val matchHomeAndAwayWasSwappedByIntegration =
+                fIfaIntegrationHomeAndAwayMismatchFinder.checkForHomeAndAwaySwappedByIntegration(existingMatch, dto)
+
+            if (matchHomeAndAwayWasSwappedByIntegration) {
+                logger.log("Match result mismatch found: ${existingMatch.home?.name} vs ${existingMatch.away?.name} for match ${existingMatch.integrationId}")
+            }
+
+            val (homeGoalsAtHalfTime, awayGoalsAtHalfTime) = swapValuesIfNecessary(
+                matchHomeAndAwayWasSwappedByIntegration,
+                dto.homeGoalsAtHalfTime,
+                dto.awayGoalsAtHalfTime
+            )
+            val (homeGoalsAtFullTime, awayGoalsAtFullTime) = swapValuesIfNecessary(
+                matchHomeAndAwayWasSwappedByIntegration,
+                dto.homeGoalsAtFullTime,
+                dto.awayGoalsAtFullTime
+            )
+
+
+            existingMatch.copy(
+                time = dto.time,
+                status = dto.status,
+                league = league,
+                homeGoalsAtHalfTime = homeGoalsAtHalfTime,
+                awayGoalsAtHalfTime = awayGoalsAtHalfTime,
+                homeGoalsAtFullTime = homeGoalsAtFullTime,
+                awayGoalsAtFullTime = awayGoalsAtFullTime,
+                totalGoalsAtHalfTime = dto.totalGoalsAtHalfTime,
+                totalGoalsAtFullTime = dto.totalGoalsAtFullTime,
+                winner = getWinnerBasedOnSwap(dto, matchHomeAndAwayWasSwappedByIntegration, league)
+            )
+        } else {
+            FifaMatch(
+                integrationId = dto.integrationId,
+                time = dto.time,
+                status = dto.status,
+                league = league,
+                home = findOrCreatePlayer(dto.home, league),
+                away = findOrCreatePlayer(dto.away, league),
+                homeGoalsAtHalfTime = dto.homeGoalsAtHalfTime,
+                homeGoalsAtFullTime = dto.homeGoalsAtFullTime,
+                awayGoalsAtHalfTime = dto.awayGoalsAtHalfTime,
+                awayGoalsAtFullTime = dto.awayGoalsAtFullTime,
+                totalGoalsAtHalfTime = dto.totalGoalsAtHalfTime,
+                totalGoalsAtFullTime = dto.totalGoalsAtFullTime,
+                winner = getWinnerBasedOnSwap(dto, false, league)
+            )
+        }
 
         fifaMatchRepository.save(match)
+    }
+
+    private fun swapValuesIfNecessary(isSwapped: Boolean, homeValue: Int?, awayValue: Int?): Pair<Int?, Int?> {
+        return if (isSwapped) {
+            awayValue to homeValue
+        } else {
+            homeValue to awayValue
+        }
+    }
+
+    private fun getWinnerBasedOnSwap(
+        dto: FifaDataSourceDTO.FifaMatchRequest,
+        isSwapped: Boolean,
+        league: FifaLeague
+    ): FifaPlayer? {
+        return if (isSwapped) {
+            determineWinner(dto.winner, dto.away, dto.home, league)
+        } else {
+            determineWinner(dto.winner, dto.home, dto.away, league)
+        }
     }
 
     fun findByIntegrationId(integrationId: Long): FifaMatch? {
@@ -129,17 +172,6 @@ class FifaMatchService @Autowired constructor(
         }
 
         return fifaMatch!!
-    }
-
-    fun checkForHomeAndAwaySwappedByIntegration(fifaMatch: FifaMatch, odd: FifaDataSourceDTO.FifaOddRequest): Boolean {
-        if (odd.homePlayerName == fifaMatch.home?.name && odd.awayPlayerName == fifaMatch.away?.name) {
-            return false
-        } else if (odd.awayPlayerName == fifaMatch.home?.name && odd.homePlayerName == fifaMatch.away?.name) {
-            logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home.name} vs ${fifaMatch.away.name}")
-            return true
-        } else {
-            throw Exception("Complete player mismatch for match ${fifaMatch.integrationId}")
-        }
     }
 
     fun checkAndFixHomeAndAwaySwappedByIntegration(
