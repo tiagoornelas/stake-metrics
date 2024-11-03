@@ -6,7 +6,10 @@ import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
+import net.stakemetrics.application.entities.exceptions.FifaBetOnStartedMatchException
 import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
+import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.utils.MathHelper
 import net.stakemetrics.application.workers.FIfaIntegrationHomeAndAwayMismatchFinder
 import net.stakemetrics.application.workers.FifaOddSnapshotCloser
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class FifaOddSnapshotService(
+    private val logger: Logger,
     private val mathHelper: MathHelper,
     private val fifaMatchService: FifaMatchService,
     private val oddAndLineCalculator: OddAndLineCalculator,
@@ -45,6 +49,9 @@ class FifaOddSnapshotService(
 
     fun runTrendAnalysis(payload: FifaDataSourceDTO.FifaOddRequest) {
         val fifaMatch = fifaMatchService.getOrCreateMatchByOdd(payload)
+
+        if (fifaMatch.status != FifaMatchStatusTypes.NOT_STARTED) throw FifaBetOnStartedMatchException(fifaMatch)
+
         val matchHomeAndAwayWasSwappedByIntegration =
             fIfaIntegrationHomeAndAwayMismatchFinder.checkForHomeAndAwaySwappedByIntegration(fifaMatch, payload)
 
