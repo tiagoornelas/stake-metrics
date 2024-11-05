@@ -15,7 +15,7 @@ class FIfaIntegrationHomeAndAwayMismatchFinder(private val logger: Logger) {
             logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home.name} vs ${fifaMatch.away.name}")
             return true
         } else {
-            throw Exception("Complete player mismatch for match ${fifaMatch.integrationId}")
+            throw Exception("Complete player mismatch for match ${fifaMatch.integrationId}: ${odd.homePlayerName} vs ${odd.awayPlayerName} / ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
         }
     }
 
@@ -26,7 +26,7 @@ class FIfaIntegrationHomeAndAwayMismatchFinder(private val logger: Logger) {
             logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home.name} vs ${fifaMatch.away.name}")
             return true
         } else {
-            throw Exception("Complete player mismatch for match ${fifaMatch.integrationId}")
+            throw throw Exception("Complete player mismatch for match ${fifaMatch.integrationId}: ${request.home} vs ${request.away} / ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
         }
     }
 
