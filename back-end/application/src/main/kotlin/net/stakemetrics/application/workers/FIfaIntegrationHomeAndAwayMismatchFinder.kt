@@ -9,25 +9,28 @@ import org.springframework.stereotype.Component
 class FIfaIntegrationHomeAndAwayMismatchFinder(private val logger: Logger) {
 
     fun checkForHomeAndAwaySwappedByIntegration(fifaMatch: FifaMatch, odd: FifaDataSourceDTO.FifaOddRequest): Boolean {
-        if (odd.homePlayerName == fifaMatch.home?.name && odd.awayPlayerName == fifaMatch.away?.name) {
-            return false
-        } else if (odd.awayPlayerName == fifaMatch.home?.name && odd.homePlayerName == fifaMatch.away?.name) {
-            logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home.name} vs ${fifaMatch.away.name}")
-            return true
-        } else {
-            throw Exception("Complete player mismatch for match ${fifaMatch.integrationId}: ${odd.homePlayerName} vs ${odd.awayPlayerName} / ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
+        val result = checkForHomeAndAwaySwapped(odd.homePlayerName, odd.awayPlayerName, fifaMatch.home?.name, fifaMatch.away?.name)
+        if (result) {
+            logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
         }
+        return result
     }
 
     fun checkForHomeAndAwaySwappedByIntegration(fifaMatch: FifaMatch, request: FifaDataSourceDTO.FifaMatchRequest): Boolean {
-        if (request.home == fifaMatch.home?.name && request.away == fifaMatch.away?.name) {
-            return false
-        } else if (request.away == fifaMatch.home?.name && request.home == fifaMatch.away?.name) {
-            logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home.name} vs ${fifaMatch.away.name}")
-            return true
-        } else {
-            throw throw Exception("Complete player mismatch for match ${fifaMatch.integrationId}: ${request.home} vs ${request.away} / ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
+        val result = checkForHomeAndAwaySwapped(request.home, request.away, fifaMatch.home?.name, fifaMatch.away?.name)
+        if (result) {
+            logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
         }
+        return result
     }
 
+    private fun checkForHomeAndAwaySwapped(home1: String?, away1: String?, home2: String?, away2: String?): Boolean {
+        return if (home1.equals(home2, true) && away1.equals(away2, true)) {
+            false
+        } else if (away1.equals(home2, true) && home1.equals(away2, true)) {
+            true
+        } else {
+            throw Exception("Complete player mismatch: $home1 vs $away1 / $home2 vs $away2")
+        }
+    }
 }
