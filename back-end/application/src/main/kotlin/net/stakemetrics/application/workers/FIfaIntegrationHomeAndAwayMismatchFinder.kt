@@ -11,7 +11,7 @@ class FIfaIntegrationHomeAndAwayMismatchFinder(private val logger: Logger) {
     fun checkForHomeAndAwaySwappedByIntegration(fifaMatch: FifaMatch, odd: FifaDataSourceDTO.FifaOddRequest): Boolean {
         val result = checkForHomeAndAwaySwapped(odd.homePlayerName, odd.awayPlayerName, fifaMatch.home?.name, fifaMatch.away?.name)
         if (result) {
-            logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
+            logger.log("[Match ${fifaMatch.integrationId}]: Swapped Home and Away for match ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
         }
         return result
     }
@@ -19,7 +19,7 @@ class FIfaIntegrationHomeAndAwayMismatchFinder(private val logger: Logger) {
     fun checkForHomeAndAwaySwappedByIntegration(fifaMatch: FifaMatch, request: FifaDataSourceDTO.FifaMatchRequest): Boolean {
         val result = checkForHomeAndAwaySwapped(request.home, request.away, fifaMatch.home?.name, fifaMatch.away?.name)
         if (result) {
-            logger.log("[Match ${fifaMatch.integrationId}] Swapped Home and Away for match ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
+            logger.log("[Match ${fifaMatch.integrationId}]: Swapped Home and Away for match ${fifaMatch.home?.name} vs ${fifaMatch.away?.name}")
         }
         return result
     }
