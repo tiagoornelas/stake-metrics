@@ -6,6 +6,7 @@ import net.stakemetrics.application.service.IFifaIntegratedDataSourceService
 import net.stakemetrics.application.service.FifaLeagueService
 import net.stakemetrics.application.service.FifaMatchService
 import net.stakemetrics.application.service.IQueueService
+import net.stakemetrics.domain.models.FifaLeague
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,26 +19,20 @@ class FifaEndedMatchesEnqueuer(
 
     fun mine() {
         val activeLeagues = fifaLeagueService.listActiveLeagues()
-        val sinceDate = getLastMinedDate()
 
         activeLeagues.forEach { league ->
+            val sinceDate = getLastMinedDate(league)
             val pastResults =
                 fifaIntegratedDataSourceService.getFifaMatchResultsForLeagueSinceDate(league, sinceDate)
             pastResults.forEach(queueService::enqueueSaveMatchResultTask)
         }
     }
 
-    private fun getLastMinedDate(): Date {
-        val fetchSince = fifaMatchService.getLastMatchResultTime()
-        val calendar = Calendar.getInstance().apply {
-            time = fetchSince
-        }
-
+    private fun getLastMinedDate(league: FifaLeague): Date {
+        val fetchSince = fifaMatchService.getLastMatchResultTimeForLeague(league)
+        val calendar = Calendar.getInstance().apply { time = fetchSince }
         val isBeforeSixAM = calendar.get(Calendar.HOUR_OF_DAY) < 6
-        if (isBeforeSixAM) {
-            calendar.add(Calendar.DAY_OF_YEAR, -1)
-        }
-
+        if (isBeforeSixAM) { calendar.add(Calendar.DAY_OF_YEAR, -1) }
         return calendar.time
     }
 }
