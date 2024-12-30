@@ -38,6 +38,19 @@ class FifaMatchService @Autowired constructor(
         }
     }
 
+    @EnvironmentSensitive
+    fun getLastMatchResultTimeForLeague(league: FifaLeague): Date {
+        val latestMatch = fifaMatchRepository.findLatestMatchForLeague(league)
+        return if (latestMatch != null) {
+            latestMatch.time
+        } else {
+            val populateDatabaseDays = if (environmentVerifier.isProd()) 60 else 1
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DAY_OF_YEAR, -populateDatabaseDays)
+            calendar.time
+        }
+    }
+
     fun save(fifaMatch: FifaMatch) {
         fifaMatchRepository.save(fifaMatch)
     }
