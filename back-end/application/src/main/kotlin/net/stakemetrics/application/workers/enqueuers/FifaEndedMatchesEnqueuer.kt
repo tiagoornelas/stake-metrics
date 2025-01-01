@@ -1,12 +1,12 @@
 package net.stakemetrics.application.workers.enqueuers
 
+import net.stakemetrics.application.entities.FifaLeague
 import java.util.Calendar
 import java.util.Date
 import net.stakemetrics.application.service.IFifaIntegratedDataSourceService
 import net.stakemetrics.application.service.FifaLeagueService
 import net.stakemetrics.application.service.FifaMatchService
 import net.stakemetrics.application.service.IQueueService
-import net.stakemetrics.domain.models.FifaLeague
 import org.springframework.stereotype.Service
 
 @Service
