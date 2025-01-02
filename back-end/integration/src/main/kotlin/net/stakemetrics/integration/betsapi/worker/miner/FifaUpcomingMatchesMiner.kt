@@ -50,7 +50,7 @@ class FifaUpcomingMatchesMiner(
                 FifaDataSourceDTO.FifaOddRequest(
                     leagueIntegrationId = result.league.id.toLong(),
                     matchIntegrationId = result.id.toLong(),
-                    bet365Id = result.bet365Id?.toLongOrNull(),
+                    bet365Id = result.bet365_id?.toLongOrNull(),
                     homePlayerName = fifaMarketHelper.getPlayerName(result.home.name),
                     awayPlayerName = fifaMarketHelper.getPlayerName(result.away.name),
                     odds = it
