@@ -83,6 +83,7 @@ class FifaMatchService @Autowired constructor(
                 time = dto.time,
                 status = dto.status,
                 league = league,
+                bet365Id = dto.bet365Id ?: existingMatch.bet365Id,
                 homeGoalsAtHalfTime = homeGoalsAtHalfTime,
                 awayGoalsAtHalfTime = awayGoalsAtHalfTime,
                 homeGoalsAtFullTime = homeGoalsAtFullTime,
@@ -94,6 +95,7 @@ class FifaMatchService @Autowired constructor(
         } else {
             FifaMatch(
                 integrationId = dto.integrationId,
+                bet365Id = dto.bet365Id,
                 time = dto.time,
                 status = dto.status,
                 league = league,
@@ -170,6 +172,7 @@ class FifaMatchService @Autowired constructor(
         val fifaMatch = fifaMatchRepository.findByIntegrationId(odd.matchIntegrationId) ?: run {
             val newFifaMatch = FifaMatch(
                 integrationId = odd.matchIntegrationId,
+                bet365Id = odd.bet365Id,
                 time = odd.odds.matchTime!!,
                 league = fifaLeague,
                 home = home,

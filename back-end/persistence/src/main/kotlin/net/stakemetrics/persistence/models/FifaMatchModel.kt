@@ -16,6 +16,8 @@ data class FifaMatchModel(
     @Id
     val id: UUID = UUID.randomUUID(),
     val integrationId: Long = 0L,
+    @Column(name = "bet365_id")
+    val bet365Id: Long? = null,
     val time: Date = Date(),
     val status: FifaMatchStatusTypes = FifaMatchStatusTypes.NOT_STARTED,
     @ManyToOne @JoinColumn(name = "league_id")
@@ -37,6 +39,7 @@ data class FifaMatchModel(
         return FifaMatch(
             id,
             integrationId,
+            bet365Id,
             time,
             status,
             league?.toDomain(),
@@ -57,6 +60,7 @@ fun FifaMatch.toModel(): FifaMatchModel {
     return FifaMatchModel(
         id,
         integrationId,
+        bet365Id,
         time,
         status,
         league?.toModel(),
