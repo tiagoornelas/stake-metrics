@@ -7,6 +7,7 @@ class FifaDataSourceDTO {
 
     data class FifaMatchRequest(
         val integrationId: Long,
+        val bet365Id: Long? = null,
         val time: Date,
         val status: FifaMatchStatusTypes,
         val leagueId: Long,
@@ -34,6 +35,7 @@ class FifaDataSourceDTO {
     data class FifaOddRequest(
         val leagueIntegrationId: Long,
         val matchIntegrationId: Long,
+        val bet365Id: Long? = null,
         val homePlayerName: String,
         val awayPlayerName: String,
         val odds: FifaGenericOddRequest

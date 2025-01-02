@@ -7,6 +7,7 @@ import java.util.UUID
 data class FifaMatch(
     val id: UUID = UUID.randomUUID(),
     val integrationId: Long,
+    val bet365Id: Long? = null,
     val time: Date,
     val status: FifaMatchStatusTypes = FifaMatchStatusTypes.NOT_STARTED,
     val league: FifaLeague? = null,
