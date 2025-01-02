@@ -27,6 +27,7 @@ import StrategyForm from "containers/fifa/strategy/components/StrategyForm";
 import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
 import {useErrorToast} from "hooks/useErrorToast";
 import React, {useState} from "react";
+import ReactDOM from "react-dom";
 import {HiOutlineSparkles, IoMdPower, MdEdit} from "react-icons/all";
 import {changeStrategyStatus, deleteStrategy, restartStrategy} from "services/strategyService";
 import {strategyStatusDict} from "utils/constants/strategyConstants";
@@ -45,19 +46,34 @@ const StatusMenu = ({strategy}: { strategy: StrategyListItem }) => {
         invalidateStrategyQuery();
     }, SUCCESS_TYPES.STRATEGY_STATUS_CHANGED);
 
+    const menuContent = (
+        <MenuList 
+            position="fixed" 
+            zIndex={9999} 
+            style={{ 
+                transform: 'translateZ(0)', 
+                willChange: 'transform',
+                overflow: 'visible'
+            }}
+        >
+            {statuses.map((status: StrategyStatus) => (
+                <MenuItem key={status} onClick={(e: React.MouseEvent) => handleStatusChange(status, e)}>
+                    {strategyStatusDict[status].actionText}
+                </MenuItem>
+            ))}
+        </MenuList>
+    );
+
     return (
         <Menu>
             <Tooltip label={"Alterar status"} placement={"top"}>
                 <MenuButton as={IconButton} icon={<IoMdPower/>} variant="outline"
                             onClick={(e: React.MouseEvent) => e.stopPropagation()}/>
             </Tooltip>
-            <MenuList>
-                {statuses.map((status: StrategyStatus) => (
-                    <MenuItem key={status} onClick={(e: React.MouseEvent) => handleStatusChange(status, e)}>
-                        {strategyStatusDict[status].actionText}
-                    </MenuItem>
-                ))}
-            </MenuList>
+            {ReactDOM.createPortal(
+                menuContent, 
+                document.body
+            )}
         </Menu>
     );
 };
