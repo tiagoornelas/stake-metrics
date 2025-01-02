@@ -1,0 +1,70 @@
+{
+    "strategy": {
+        "statusMenu": {
+            "tooltip": {
+                "pt": "Alterar status",
+                "en": "Change status"
+            },
+            "statuses": {
+                "ACTIVE": {
+                    "pt": "Ativar",
+                    "en": "Activate"
+                },
+                "INACTIVE": {
+                    "pt": "Inativar", 
+                    "en": "Deactivate"
+                },
+                "PAPER_BET": {
+                    "pt": "Colocar em teste",
+                    "en": "Set as paper bet"
+                }
+            }
+        },
+        "actions": {
+            "edit": {
+                "pt": "Editar",
+                "en": "Edit"
+            },
+            "restart": {
+                "pt": "Reiniciar",
+                "en": "Restart"
+            },
+            "delete": {
+                "pt": "Excluir",
+                "en": "Delete"
+            }
+        },
+        "restartDialog": {
+            "title": {
+                "pt": "Reiniciar estratégia",
+                "en": "Restart strategy"
+            },
+            "confirmText": {
+                "pt": "Tem certeza? Essa ação não pode ser desfeita.",
+                "en": "Are you sure? This action cannot be undone."
+            },
+            "description1": {
+                "pt": "Ao reiniciar a estratégia, você apagará todas as apostas e as mensagens enviadas continuarão como estão.",
+                "en": "When restarting the strategy, you will clear all bets and sent messages will remain as they are."
+            },
+            "description2": {
+                "pt": "Esta ação pode levar algum tempo para ser realizada.",
+                "en": "This action may take some time to complete."
+            },
+            "cancel": {
+                "pt": "Cancelar",
+                "en": "Cancel"
+            },
+            "confirm": {
+                "pt": "Reiniciar",
+                "en": "Restart"
+            }
+        },
+        "deleteDialog": {
+            "text": {
+                "pt": "Ao excluir a estratégia, todas as apostas serão excluídas e as mensagens permanecerão como estão, sem serem editadas com os resultados.",
+                "en": "When deleting the strategy, all bets will be deleted and messages will remain as they are, without being edited with the results."
+            }
+        }
+    }
+}
