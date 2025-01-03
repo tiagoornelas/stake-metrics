@@ -8,71 +8,15 @@ import {differenceInDays} from 'date-fns';
 import React, {Fragment} from 'react';
 import {GoTelescope} from "react-icons/all";
 import {useNavigate} from "react-router-dom";
+import { useTranslation } from '../../hooks/useTranslation';
 
 const daysValidatingDataBase = differenceInDays(new Date(), new Date(2023, 12, 5));
-
-const firstSectionFeatures = [
-    {
-        text: "Estratégias para E-Soccer Bet365 e mais por vir!",
-        emoji: "⚽"
-    },
-    {
-        text: "Receba apostas com links e acompanhe os resultados, tudo pelo Telegram!",
-        emoji: "✅"
-    },
-    {
-        text: "Receba suas apostas em até 3 chats ou canais!",
-        emoji: "🤝"
-    },
-    {
-        text: "Configure um tempo pra você pegar sua aposta antes de compartilhar com outros chats!",
-        emoji: "⏳"
-    },
-    {
-        text: "Escolha compartilhar só algumas apostas com determinado chat!",
-        emoji: "🧱"
-    },
-];
-
-const secondSessionFeatures = [
-    {
-        text: "Envie relatórios automáticos para as apostas de cada chat!",
-        emoji: "📊",
-        tagColor: "blue",
-        tagText: "Em breve"
-    },
-    {
-        text: "Acompanhe visualmente as tendências das ligas de E-Soccer!",
-        emoji: "📈",
-        tagColor: "blue",
-        tagText: "Em breve"
-    },
-    {
-        text: "Monitore ligas e descubra parâmetros vencedores!",
-        emoji: "🏆",
-        tagColor: "blue",
-        tagText: "Em breve"
-    },
-    {
-        text: "Evite a pirataria: sistema próprio anti-repasse!",
-        emoji: "🏴‍☠️",
-        tagColor: "blue",
-        tagText: "Em breve"
-    },
-    {
-        text: "Suas estratégias são privadas e nunca serão vendidas!",
-        emoji: "🔒"
-    },
-    {
-        text: `Saia da manada com nossos dados próprios já validados por ${daysValidatingDataBase} dias!`,
-        emoji: "🐘"
-    },
-];
 
 const FeatureList = ({features}: {
     features: { text: string, emoji: string, tagColor?: string, tagText?: string }[]
 }) => {
-    const tagText = useBreakpointValue({base: "Breve", md: "Em breve"});
+    const { t } = useTranslation();
+    const tagText = useBreakpointValue({base: t('common.soon.short'), md: t('common.soon.full')});
 
     return (
         <>
@@ -98,8 +42,67 @@ const FeatureList = ({features}: {
 };
 
 const PublicPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const goToAccountCreation = () => navigate("/create-account", {replace: true});
+
+    const firstSectionFeatures = [
+        {
+            text: t('publicPage.firstSectionFeatures.0'),
+            emoji: "⚽"
+        },
+        {
+            text: t('publicPage.firstSectionFeatures.1'),
+            emoji: "✅"
+        },
+        {
+            text: t('publicPage.firstSectionFeatures.2'),
+            emoji: "🤝"
+        },
+        {
+            text: t('publicPage.firstSectionFeatures.3'),
+            emoji: "⏳"
+        },
+        {
+            text: t('publicPage.firstSectionFeatures.4'),
+            emoji: "🧱"
+        }
+    ];
+
+    const secondSessionFeatures = [
+        {
+            text: t('publicPage.secondSectionFeatures.0.text'),
+            emoji: "📊",
+            tagColor: "blue",
+            tagText: t('publicPage.secondSectionFeatures.0.tagText')
+        },
+        {
+            text: t('publicPage.secondSectionFeatures.1.text'),
+            emoji: "📈",
+            tagColor: "blue",
+            tagText: t('publicPage.secondSectionFeatures.1.tagText')
+        },
+        {
+            text: t('publicPage.secondSectionFeatures.2.text'),
+            emoji: "🏆",
+            tagColor: "blue",
+            tagText: t('publicPage.secondSectionFeatures.2.tagText')
+        },
+        {
+            text: t('publicPage.secondSectionFeatures.3.text'),
+            emoji: "🏴‍☠️",
+            tagColor: "blue",
+            tagText: t('publicPage.secondSectionFeatures.3.tagText')
+        },
+        {
+            text: t('publicPage.secondSectionFeatures.4'),
+            emoji: "🔒"
+        },
+        {
+            text: t('publicPage.secondSectionFeatures.5', { days: daysValidatingDataBase }),
+            emoji: "🐘"
+        }
+    ];
 
     return (
         <Fragment>
@@ -111,17 +114,19 @@ const PublicPage = () => {
                             query={["confiança", "dados", "resultado"]}
                             styles={{px: '2', py: '1', rounded: 'full', bg: 'yellow.100'}}
                         >
-                            Aposte com confiança: crie estratégias baseadas em dados, ganhe tempo e tenha mais
-                            resultado!
+                            {t('publicPage.heading')}
                         </Highlight>
                     </Heading>
                     <Text fontSize={"xl"} textAlign={"center"} width={"85%"}>
-                        O Stake Metrics é uma ferramenta que busca oportunidades e as envia para você e seus canais.
-                        🔔<br/>
-                        Analise e defina suas estratégias com base em dados, acompanhe as tendências e tome decisões. 🎯
+                        {t('publicPage.description')}
                     </Text>
-                    <Button colorScheme={"yellow"} rightIcon={<GoTelescope/>} onClick={goToAccountCreation}>Comece
-                        já!</Button>
+                    <Button 
+                        colorScheme={"yellow"} 
+                        rightIcon={<GoTelescope/>} 
+                        onClick={goToAccountCreation}
+                    >
+                        {t('publicPage.buttonText')}
+                    </Button>
                     <Box width={{base: "xs", md: "md", lg: "xl"}} mt={4}>
                         <Image src={PublicBanner} alt="App screen"/>
                     </Box>

@@ -7,7 +7,7 @@ type Language = 'pt' | 'en';
 interface TranslationContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
-    t: (key: string) => string;
+    t: (key: string, params?: Record<string, any>) => string;
 }
 
 const TranslationContext = createContext<TranslationContextType>({
@@ -22,7 +22,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
         return browserLang === 'en' ? 'en' : 'pt';
     });
 
-    const t = (key: string) => {
+    const t = (key: string, params?: Record<string, any>) => {
         const keys = key.split('.');
         let value: any = translations;
         
@@ -32,7 +32,14 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
         }
         
         if (typeof value === 'object' && value.hasOwnProperty(language)) {
-            return value[language];
+            value = value[language];
+        }
+        
+        // Interpolate parameters if provided
+        if (params && typeof value === 'string') {
+            return value.replace(/\{(\w+)\}/g, (match, p1) => 
+                params.hasOwnProperty(p1) ? params[p1] : match
+            );
         }
         
         return value || key;
