@@ -136,15 +136,6 @@ class SubscriptionService(
             .setCancelUrl(appBaseUrl)
             .setCustomer(integrationId)
             .setCustomerEmail(userEmail)
-            .setCustomerUpdate(
-                CheckoutSessionCreateParams.CustomerUpdate.builder()
-                    .setAllowed(listOf(
-                        CheckoutSessionCreateParams.CustomerUpdate.AllowedUpdate.SHIPPING,
-                        CheckoutSessionCreateParams.CustomerUpdate.AllowedUpdate.PHONE,
-                        CheckoutSessionCreateParams.CustomerUpdate.AllowedUpdate.ADDRESS
-                    ))
-                    .build()
-            )
             .setMode(CheckoutSessionCreateParams.Mode.SUBSCRIPTION)
             .setAllowPromotionCodes(true)
             .addLineItem(
