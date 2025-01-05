@@ -80,6 +80,10 @@ class MessengerDTO {
         val integrationMessageId: Int,
         val newText: String
     )
+
+    data class ReportBetResultsRequest(
+        val messengerChat: MessengerChat
+    )
 }
 
 fun MessengerChat.toMessengerChatResponse(): MessengerDTO.MessengerChatResponse {

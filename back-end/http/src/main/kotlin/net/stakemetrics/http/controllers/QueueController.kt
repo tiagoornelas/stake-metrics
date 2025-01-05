@@ -11,6 +11,7 @@ import net.stakemetrics.application.service.FifaMatchService
 import net.stakemetrics.application.service.FifaOddSnapshotService
 import net.stakemetrics.application.service.FifaStrategyService
 import net.stakemetrics.application.service.IMessengerService
+import net.stakemetrics.application.workers.BetResultsReporter
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -24,6 +25,7 @@ class QueueController(
     private val fifaBetService: FifaBetService,
     private val fifaMatchService: FifaMatchService,
     private val messengerService: IMessengerService,
+    private val betResultsReporter: BetResultsReporter,
     private val fifaStrategyService: FifaStrategyService,
     private val fifaOddSnapshotService: FifaOddSnapshotService,
 ) {
@@ -73,6 +75,12 @@ class QueueController(
     @PutMapping("/fifa/message-queue")
     fun enqueueEditMessageTask(@RequestBody payload: MessengerDTO.EditMessageEnqueueRequest): ResponseEntity<QueueDTO.Response> {
         messengerService.editMessage(payload)
+        return ResponseEntity.ok(QueueDTO.Response())
+    }
+
+    @PostMapping("/fifa/report-bet-results")
+    fun reportBetResults(@RequestBody payload: MessengerDTO.ReportBetResultsRequest): ResponseEntity<QueueDTO.Response> {
+        betResultsReporter.reportChat(payload.messengerChat)
         return ResponseEntity.ok(QueueDTO.Response())
     }
 
