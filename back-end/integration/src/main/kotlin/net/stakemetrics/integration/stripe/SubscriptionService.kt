@@ -131,11 +131,22 @@ class SubscriptionService(
     ): SubscriptionDTO.CreateSessionResponse {
         val integrationId = getIntegrationIdByUserEmail(userEmail)
 
-        return CheckoutSessionCreateParams.Builder().setSuccessUrl(appBaseUrl).setCancelUrl(appBaseUrl)
-            .setCustomer(integrationId).setMode(CheckoutSessionCreateParams.Mode.SUBSCRIPTION)
-            .setAllowPromotionCodes(true).addLineItem(
-                CheckoutSessionCreateParams.LineItem.Builder().setQuantity(1L).setPrice(priceId).build()
-            ).build().let { CheckoutSession.create(it) }.let { SubscriptionDTO.CreateSessionResponse(it.url) }
+        return CheckoutSessionCreateParams.Builder()
+            .setSuccessUrl(appBaseUrl)
+            .setCancelUrl(appBaseUrl)
+            .setCustomer(integrationId)
+            .setCustomerEmail(userEmail)
+            .setMode(CheckoutSessionCreateParams.Mode.SUBSCRIPTION)
+            .setAllowPromotionCodes(true)
+            .addLineItem(
+                CheckoutSessionCreateParams.LineItem.Builder()
+                    .setQuantity(1L)
+                    .setPrice(priceId)
+                    .build()
+            )
+            .build()
+            .let { CheckoutSession.create(it) }
+            .let { SubscriptionDTO.CreateSessionResponse(it.url) }
     }
 
     override fun createPortalSession(userEmail: String): SubscriptionDTO.CreateSessionResponse {
