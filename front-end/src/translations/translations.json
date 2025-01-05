@@ -1,0 +1,178 @@
+{
+    "strategy": {
+        "statusMenu": {
+            "tooltip": {
+                "pt": "Alterar status",
+                "en": "Change status"
+            },
+            "statuses": {
+                "ACTIVE": {
+                    "pt": "Ativar",
+                    "en": "Activate"
+                },
+                "INACTIVE": {
+                    "pt": "Inativar", 
+                    "en": "Deactivate"
+                },
+                "PAPER_BET": {
+                    "pt": "Colocar em teste",
+                    "en": "Set as paper bet"
+                }
+            }
+        },
+        "actions": {
+            "edit": {
+                "pt": "Editar",
+                "en": "Edit"
+            },
+            "restart": {
+                "pt": "Reiniciar",
+                "en": "Restart"
+            },
+            "delete": {
+                "pt": "Excluir",
+                "en": "Delete"
+            }
+        },
+        "restartDialog": {
+            "title": {
+                "pt": "Reiniciar estratégia",
+                "en": "Restart strategy"
+            },
+            "confirmText": {
+                "pt": "Tem certeza? Essa ação não pode ser desfeita.",
+                "en": "Are you sure? This action cannot be undone."
+            },
+            "description1": {
+                "pt": "Ao reiniciar a estratégia, você apagará todas as apostas e as mensagens enviadas continuarão como estão.",
+                "en": "When restarting the strategy, you will clear all bets and sent messages will remain as they are."
+            },
+            "description2": {
+                "pt": "Esta ação pode levar algum tempo para ser realizada.",
+                "en": "This action may take some time to complete."
+            },
+            "cancel": {
+                "pt": "Cancelar",
+                "en": "Cancel"
+            },
+            "confirm": {
+                "pt": "Reiniciar",
+                "en": "Restart"
+            }
+        },
+        "deleteDialog": {
+            "text": {
+                "pt": "Ao excluir a estratégia, todas as apostas serão excluídas e as mensagens permanecerão como estão, sem serem editadas com os resultados.",
+                "en": "When deleting the strategy, all bets will be deleted and messages will remain as they are, without being edited with the results."
+            }
+        },
+        "newFeatureEmptyState": {
+            "heading": {
+                "pt": "Aqui, por enquanto, tudo é mato!",
+                "en": "Here, for now, everything is wild!"
+            }
+            }
+        },
+        "publicPage": {
+            "heading": {
+                "pt": "Aposte com confiança: crie estratégias baseadas em dados, ganhe tempo e tenha mais resultado!",
+                "en": "Bet with confidence: create data-driven strategies, save time, and get better results!"
+            },
+            "description": {
+                "pt": "O Stake Metrics é uma ferramenta que busca oportunidades e as envia para você e seus canais. 🔔\nAnalise e defina suas estratégias com base em dados, acompanhe as tendências e tome decisões. 🎯",
+                "en": "Stake Metrics is a tool that seeks opportunities and sends them to you and your channels. 🔔\nAnalyze and define your strategies based on data, track trends, and make decisions. 🎯"
+            },
+            "buttonText": {
+                "pt": "Comece já!",
+                "en": "Start now!"
+            },
+            "firstSectionFeatures": {
+                "0": {
+                    "pt": "Estratégias para E-Soccer Bet365 e mais por vir!",
+                    "en": "Strategies for E-Soccer Bet365 and more to come!"
+                },
+                "1": {
+                    "pt": "Receba apostas com links e acompanhe os resultados, tudo pelo Telegram!",
+                    "en": "Receive bets with links and track results, all through Telegram!"
+                },
+                "2": {
+                    "pt": "Receba suas apostas em até 3 chats ou canais!",
+                    "en": "Receive your bets in up to 3 chats or channels!"
+                },
+                "3": {
+                    "pt": "Configure um tempo pra você pegar sua aposta antes de compartilhar com outros chats!",
+                    "en": "Set a time for you to grab your bet before sharing with other chats!"
+                },
+                "4": {
+                    "pt": "Escolha compartilhar só algumas apostas com determinado chat!",
+                    "en": "Choose to share only some bets with a specific chat!"
+                }
+            },
+            "secondSectionFeatures": {
+                "0": {
+                    "text": {
+                        "pt": "Envie relatórios automáticos para as apostas de cada chat!",
+                        "en": "Send automatic reports for bets in each chat!"
+                    },
+                    "tagText": {
+                        "pt": "Em breve",
+                        "en": "Coming soon"
+                    }
+                },
+                "1": {
+                    "text": {
+                        "pt": "Acompanhe visualmente as tendências das ligas de E-Soccer!",
+                        "en": "Visually track E-Soccer league trends!"
+                    },
+                    "tagText": {
+                        "pt": "Em breve",
+                        "en": "Coming soon"
+                    }
+                },
+                "2": {
+                    "text": {
+                        "pt": "Monitore ligas e descubra parâmetros vencedores!",
+                        "en": "Monitor leagues and discover winning parameters!"
+                    },
+                    "tagText": {
+                        "pt": "Em breve",
+                        "en": "Coming soon"
+                    }
+                },
+                "3": {
+                    "text": {
+                        "pt": "Evite a pirataria: sistema próprio anti-repasse!",
+                        "en": "Avoid piracy: proprietary anti-resale system!"
+                    },
+                    "tagText": {
+                        "pt": "Em breve",
+                        "en": "Coming soon"
+                    }
+                },
+                "4": {
+                    "pt": "Segurança de ponta",
+                    "en": "Top-notch security"
+                },
+                "5": {
+                    "pt": "Validando dados por {days} dias",
+                    "en": "Validating data for {days} days"
+                },
+                "6": {
+                    "pt": "Suas estratégias são privadas e nunca serão vendidas!",
+                    "en": "Your strategies are private and will never be sold!"
+                }
+            }
+        },
+        "common": {
+            "soon": {
+                "short": {
+                    "pt": "Breve",
+                    "en": "Soon"
+                },
+                "full": {
+                    "pt": "Em breve",
+                    "en": "Coming soon"
+                }
+            }
+        }
+    }

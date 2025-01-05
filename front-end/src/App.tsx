@@ -20,6 +20,7 @@ import {setUser} from "utils/helpers/contextHelper";
 import {getCustomThemeColors} from "utils/helpers/themeColorHelper";
 import {UserContext, UserReducerAction} from "utils/interfaces";
 import UserManagement from "./containers/user/UserManagement";
+import { TranslationProvider } from "hooks/useTranslation";
 
 const publicRouter = createBrowserRouter([
     {
@@ -116,7 +117,9 @@ export const App = () => {
         <ChakraProvider theme={extendedTheme}>
             <UserProvider>
                 <ErrorBoundary>
-                    <AppContent/>
+                    <TranslationProvider>
+                        <AppContent/>
+                    </TranslationProvider>
                 </ErrorBoundary>
             </UserProvider>
         </ChakraProvider>

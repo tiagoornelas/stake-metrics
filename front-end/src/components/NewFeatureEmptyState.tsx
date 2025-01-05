@@ -1,5 +1,6 @@
 import {Flex, Heading, Highlight, Text} from "@chakra-ui/react";
 import React from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 
 const Illustration = ({height = "727", width = "939.00197", style = {}}) => {
     return (
@@ -158,12 +159,13 @@ const Illustration = ({height = "727", width = "939.00197", style = {}}) => {
 }
 
 const NewFeatureEmptyState = ({text}: { text: string }) => {
+    const { t } = useTranslation();
     return (
         <Flex p={4} mt={12} direction={"column"} alignItems={"center"} gap={4}>
             <Illustration height="400" width="500" style={{width: '100%', height: 'auto'}}/>
             <Heading mt={6} textAlign={"center"}>
                 <Highlight query='por enquanto' styles={{px: '1', py: '1', bg: 'yellow.100'}}>
-                    Aqui, por enquanto, tudo é mato!
+                    {t('strategy.newFeatureEmptyState.heading')}
                 </Highlight>
             </Heading>
             <Text textAlign={"center"} width={"80%"}>{text}</Text>
