@@ -8,4 +8,5 @@ interface IFifaOddSnapshotRepository {
     fun findById(id: UUID): FifaOddSnapshot
     fun findAllPending(): List<FifaOddSnapshot>
     fun findAllByFifaMatchId(fifaMatchId: UUID): List<FifaOddSnapshot>
+    fun deleteAllByFifaMatchId(fifaMatchId: UUID)
 }

@@ -36,4 +36,6 @@ interface FifaMatchJpaRepository : JpaRepository<FifaMatchModel, UUID> {
         league: FifaLeagueModel, home: FifaPlayerModel, away: FifaPlayerModel, status:
         FifaMatchStatusTypes, pageable: PageRequest
     ): List<FifaMatchModel>
+
+    fun findTopByLeagueAndStatusOrderByTimeDesc(league: FifaLeagueModel, status: FifaMatchStatusTypes): Optional<FifaMatchModel>
 }

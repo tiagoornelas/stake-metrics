@@ -6,8 +6,12 @@ import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
+import net.stakemetrics.application.entities.exceptions.FifaBetOnStartedMatchException
 import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
+import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.application.utils.MathHelper
+import net.stakemetrics.application.workers.FIfaIntegrationHomeAndAwayMismatchFinder
 import net.stakemetrics.application.workers.FifaOddSnapshotCloser
 import net.stakemetrics.application.workers.FifaPastResultsSearcher
 import net.stakemetrics.application.workers.OddAndLineCalculator
@@ -16,13 +20,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class FifaOddSnapshotService(
+    private val logger: Logger,
     private val mathHelper: MathHelper,
     private val fifaMatchService: FifaMatchService,
     private val oddAndLineCalculator: OddAndLineCalculator,
+    private val fifaOddSnapshotCloser: FifaOddSnapshotCloser,
     private val fifaPastResultsSearcher: FifaPastResultsSearcher,
     private val fifaOddSnapshotRepository: IFifaOddSnapshotRepository,
     private val fifaStrategyAgainstOddsEnqueuer: FifaStrategyAgainstOddsEnqueuer,
-    private val fifaOddSnapshotCloser: FifaOddSnapshotCloser
+    private val fIfaIntegrationHomeAndAwayMismatchFinder: FIfaIntegrationHomeAndAwayMismatchFinder
 ) {
 
     fun save(oddSnapshot: FifaOddSnapshot) {
@@ -43,8 +49,20 @@ class FifaOddSnapshotService(
 
     fun runTrendAnalysis(payload: FifaDataSourceDTO.FifaOddRequest) {
         val fifaMatch = fifaMatchService.getOrCreateMatchByOdd(payload)
-        val oddsAlreadyAnalyzed = checkIfOddsWereAnalyzed(fifaMatch, payload.odds)
-        if (!oddsAlreadyAnalyzed) createOddSnapshot(fifaMatch, payload.odds)
+
+        if (fifaMatch.status != FifaMatchStatusTypes.NOT_STARTED) throw FifaBetOnStartedMatchException(fifaMatch)
+
+        val matchHomeAndAwayWasSwappedByIntegration =
+            fIfaIntegrationHomeAndAwayMismatchFinder.checkForHomeAndAwaySwappedByIntegration(fifaMatch, payload)
+
+        if (matchHomeAndAwayWasSwappedByIntegration) {
+            val fixedMatch = fifaMatchService.checkAndFixHomeAndAwaySwappedByIntegration(fifaMatch, payload)
+            cleanOddSnapshotsForMatch(fixedMatch)
+            createOddSnapshot(fixedMatch, payload.odds)
+        } else {
+            val oddsAlreadyAnalyzed = checkIfOddsWereAnalyzed(fifaMatch, payload.odds)
+            if (!oddsAlreadyAnalyzed) createOddSnapshot(fifaMatch, payload.odds)
+        }
     }
 
     private fun checkIfOddsWereAnalyzed(
@@ -60,6 +78,10 @@ class FifaOddSnapshotService(
                     snapshot.drawOdd == incomingOdd.draw &&
                     snapshot.awayOdd == incomingOdd.away
         }
+    }
+
+    private fun cleanOddSnapshotsForMatch(fifaMatch: FifaMatch) {
+        fifaOddSnapshotRepository.deleteAllByFifaMatchId(fifaMatch.id)
     }
 
     private fun createOddSnapshot(

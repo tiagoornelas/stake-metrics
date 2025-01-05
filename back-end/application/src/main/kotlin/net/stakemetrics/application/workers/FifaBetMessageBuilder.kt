@@ -15,7 +15,7 @@ class FifaBetMessageBuilder {
         return """
             |$commonMessage
             |
-            |${fifaBet.match?.league?.link}
+            |${generateBetLink(fifaBet)}
         """.trimMargin()
     }
 
@@ -97,6 +97,16 @@ class FifaBetMessageBuilder {
             }
 
             else -> handicap.toString()
+        }
+    }
+
+    private fun generateBetLink(fifaBet: FifaBet): String {
+        val match = fifaBet.match
+        return when {
+            match?.bet365Id != null -> 
+                "https://www.bet365.bet.br/dl/sportsbookredirect?bet=1&bs=${match.bet365Id}-1~1"
+            else -> 
+                match?.league?.link ?: ""
         }
     }
 }

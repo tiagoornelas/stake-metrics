@@ -27,6 +27,11 @@ class FifaMatchRepository(private val fifaMatchJpaRepository: FifaMatchJpaReposi
         return if (optionalResult.isPresent) optionalResult.get().toDomain() else null
     }
 
+    override fun findLatestMatchForLeague(league: FifaLeague): FifaMatch? {
+        val optionalResult = fifaMatchJpaRepository.findTopByLeagueAndStatusOrderByTimeDesc(league.toModel(), FifaMatchStatusTypes.ENDED)
+        return if (optionalResult.isPresent) optionalResult.get().toDomain() else null
+    }
+
     override fun existsByIntegrationId(integrationId: Long): Boolean {
         return fifaMatchJpaRepository.existsByIntegrationId(integrationId)
     }

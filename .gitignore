@@ -50,3 +50,8 @@ back-end/persistence/persistence.iml
 
 # Ignorar diretório node_modules
 front-end/node_modules/
+
+# Ignorar diretórios bin
+back-end/bin/
+back-end/*/bin/
+**/bin/
