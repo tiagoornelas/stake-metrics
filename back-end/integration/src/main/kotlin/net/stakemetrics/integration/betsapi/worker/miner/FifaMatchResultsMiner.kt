@@ -44,6 +44,7 @@ class FifaMatchResultsMiner(
             val totalGoalsAtFullTime = calculateTotalGoals(result.scores, 2)
             FifaDataSourceDTO.FifaMatchRequest(
                 integrationId = result.id.toLong(),
+                bet365Id = result.bet365_id?.toLongOrNull(),
                 time = betsApiHelper.convertTimestampToDate(result.time),
                 status = result.time_status.toFifaMatchStatusType(),
                 leagueId = result.league.id.toLong(),

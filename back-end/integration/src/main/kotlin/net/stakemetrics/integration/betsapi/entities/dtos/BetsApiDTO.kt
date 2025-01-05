@@ -54,7 +54,7 @@ class BetsApiDTO {
             val home: Team,
             val away: Team,
             val ss: String?,
-            val bet365Id: String? = null,
+            val bet365_id: String? = null,
             val scores: Map<String, Score>? = emptyMap(),
             val stats: Stats? = null
         )

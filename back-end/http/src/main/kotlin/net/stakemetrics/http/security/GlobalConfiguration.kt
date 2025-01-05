@@ -29,6 +29,7 @@ class GlobalConfiguration(
                     .requestMatchers(HttpMethod.POST, "/queue/**").permitAll()
                     .requestMatchers(HttpMethod.PUT, "/queue/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/cron/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/dev/**").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter::class.java)

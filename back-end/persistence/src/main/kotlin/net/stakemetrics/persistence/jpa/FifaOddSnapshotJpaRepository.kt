@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface FifaOddSnapshotJpaRepository : JpaRepository<FifaOddSnapshotModel, UUID> {
     fun findAllByFifaMatchId(fifaMatchId: UUID): List<FifaOddSnapshotModel>
     fun findAllByStatus(status: OddSnapshotTypes): List<FifaOddSnapshotModel>
+    fun deleteAllByFifaMatchId(fifaMatchId: UUID)
 }
