@@ -13,6 +13,7 @@ import net.stakemetrics.persistence.models.toModel
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) : IFifaBetRepository {
@@ -55,4 +56,15 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         fifaBetJpaRepository.deleteAllByStrategyId(strategyId)
     }
 
+    override fun findByMessengerChatAndDateBetween(
+        messengerChatId: UUID,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): List<FifaBet> {
+        return fifaBetJpaRepository.findByMessengerChatAndDateBetween(
+            messengerChatId, 
+            startDate, 
+            endDate
+        ).map { it.toDomain() }
+    }
 }
