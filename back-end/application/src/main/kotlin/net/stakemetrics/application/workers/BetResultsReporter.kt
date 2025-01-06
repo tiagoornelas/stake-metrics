@@ -9,9 +9,9 @@ import java.util.*
 
 @Service
 class BetResultsReporter(
+    private val messengerService: IMessengerService,
     private val fifaBetRepository: IFifaBetRepository,
-    private val fifaBetMessageBuilder: FifaBetMessageBuilder,
-    private val messengerService: IMessengerService
+    private val fifaBetMessageBuilder: FifaBetMessageBuilder
 ) {
 
     fun reportChat(messengerChat: MessengerChat) {
