@@ -84,6 +84,7 @@ class MessengerDTO {
     data class ReportBetResultsRequest(
         val messengerChat: MessengerChat
     )
+
 }
 
 fun MessengerChat.toMessengerChatResponse(): MessengerDTO.MessengerChatResponse {

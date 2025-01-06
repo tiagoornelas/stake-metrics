@@ -10,4 +10,5 @@ interface MessengerChatJpaRepository : JpaRepository<MessengerChatModel, UUID> {
     fun findAllByUserId(userId: UUID): List<MessengerChatModel>
     fun findAllByUserIdAndChatId(userId: UUID, chatId: String): List<MessengerChatModel>
     fun findAllByUserIdAndStatus(userId: UUID, status: MessengerChatStatus): List<MessengerChatModel>
+    fun findAllByStatus(status: MessengerChatStatus): List<MessengerChatModel>
 }

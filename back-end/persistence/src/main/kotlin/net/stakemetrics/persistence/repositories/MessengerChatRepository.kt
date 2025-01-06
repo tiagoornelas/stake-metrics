@@ -46,4 +46,8 @@ class MessengerChatRepository(private val messengerChatJpaRepository: MessengerC
     override fun findAllByUserIdAndStatus(userId: UUID, status: MessengerChatStatus): List<MessengerChat> {
         return messengerChatJpaRepository.findAllByUserIdAndStatus(userId, status).map { it.toDomain() }
     }
+
+    override fun findAllActive(): List<MessengerChat> {
+        return messengerChatJpaRepository.findAllByStatus(MessengerChatStatus.ACTIVE).map { it.toDomain() }
+    }
 }
