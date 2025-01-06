@@ -7,6 +7,7 @@ import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import java.time.LocalDateTime
 
 interface IFifaBetRepository {
     fun save(fifaBet: FifaBet)
@@ -20,6 +21,12 @@ interface IFifaBetRepository {
         betFilter: FifaBetDTO.BetFilter,
         pageable: Pageable
     ): Page<FifaBet>
+
     fun listCumulativeProfits(strategyId: UUID): List<Double>
     fun deleteAllByStrategyId(strategyId: UUID)
+    fun findByMessengerChatAndDateBetween(
+        messengerChatId: UUID,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): List<FifaBet>
 }

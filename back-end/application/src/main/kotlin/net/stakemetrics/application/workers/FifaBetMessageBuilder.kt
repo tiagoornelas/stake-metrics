@@ -1,11 +1,13 @@
 package net.stakemetrics.application.workers
 
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import org.springframework.stereotype.Component
+import java.text.DecimalFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Component
 class FifaBetMessageBuilder {
@@ -45,6 +47,79 @@ class FifaBetMessageBuilder {
             |🗑️ Descartada
         """.trimMargin()
     }
+
+    fun buildReport(fifaBets: List<FifaBet>): String {
+        val today = LocalDate.now()
+        val formattedDate = today.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        val title = "🏆 Relatório de Entradas - $formattedDate 🏆\n\n"
+
+        if (fifaBets.isEmpty()) {
+            return title + "Sem entradas no dia de hoje."
+        }
+
+        val totalProfit = fifaBets.sumOf { it.profit ?: 0.0 }
+        val totalBetsCount = fifaBets.size
+        val totalROI = if (totalBetsCount > 0) (totalProfit / totalBetsCount * 100) else 0.0
+
+        val leagueStats = fifaBets.groupBy { it.match?.league?.name ?: "Sem Liga" }
+            .mapValues { (_, leagueBets) ->
+                DetailedBetStats(
+                    totalProfit = leagueBets.sumOf { it.profit ?: 0.0 },
+                    betsCount = leagueBets.size,
+                    roi = if (leagueBets.isNotEmpty())
+                        (leagueBets.sumOf { it.profit ?: 0.0 } / leagueBets.size * 100)
+                    else 0.0
+                )
+            }
+
+        val marketStats = fifaBets.groupBy { getMarketType(it.line) }
+            .mapValues { (_, marketBets) ->
+                DetailedBetStats(
+                    totalProfit = marketBets.sumOf { it.profit ?: 0.0 },
+                    betsCount = marketBets.size,
+                    roi = if (marketBets.isNotEmpty())
+                        (marketBets.sumOf { it.profit ?: 0.0 } / marketBets.size * 100)
+                    else 0.0
+                )
+            }
+
+        val reportBuilder = StringBuilder()
+
+        reportBuilder.append(title)
+
+        reportBuilder.append("📊 Desempenho Geral:\n\n")
+        reportBuilder.append("Lucro Total: ${decimalFormat.format(totalProfit)}u ${getProfitEmoji(totalProfit)}\n")
+        reportBuilder.append("Total de Entradas: $totalBetsCount\n")
+        reportBuilder.append("ROI Total: ${decimalFormat.format(totalROI)}%\n\n")
+
+        if (leagueStats.isNotEmpty()) {
+            reportBuilder.append("🏆 Desempenho por Liga:\n\n")
+            leagueStats.forEach { (league, stats) ->
+                reportBuilder.append("$league\n")
+                reportBuilder.append("    Lucro: ${decimalFormat.format(stats.totalProfit)}u ${getProfitEmoji(stats.totalProfit)}\n")
+                reportBuilder.append("    Entradas: ${stats.betsCount}\n")
+                reportBuilder.append("    ROI: ${decimalFormat.format(stats.roi)}%\n\n")
+            }
+        }
+
+        if (marketStats.isNotEmpty()) {
+            reportBuilder.append("📈 Desempenho por Mercado:\n\n")
+            marketStats.forEach { (market, stats) ->
+                reportBuilder.append("$market\n")
+                reportBuilder.append("    Lucro: ${decimalFormat.format(stats.totalProfit)}u ${getProfitEmoji(stats.totalProfit)}\n")
+                reportBuilder.append("    Entradas: ${stats.betsCount}\n")
+                reportBuilder.append("    ROI: ${decimalFormat.format(stats.roi)}%\n\n")
+            }
+        }
+
+        return reportBuilder.toString()
+    }
+
+    data class DetailedBetStats(
+        val totalProfit: Double,
+        val betsCount: Int,
+        val roi: Double
+    )
 
     private fun buildCommonMessage(fifaBet: FifaBet): String {
         val homePlayerName = fifaBet.match?.home?.name
@@ -100,13 +175,33 @@ class FifaBetMessageBuilder {
         }
     }
 
+    private fun getMarketType(candidate: FifaMarketBetCandidates): String {
+        return when (candidate) {
+            FifaMarketBetCandidates.HOME,
+            FifaMarketBetCandidates.DRAW,
+            FifaMarketBetCandidates.AWAY -> "Mercado de Vencedor"
+
+            FifaMarketBetCandidates.OVER,
+            FifaMarketBetCandidates.UNDER -> "Mercado de Gols"
+        }
+    }
+
     private fun generateBetLink(fifaBet: FifaBet): String {
         val match = fifaBet.match
         return when {
-            match?.bet365Id != null -> 
-                "https://www.bet365.bet.br/dl/sportsbookredirect?bet=1&bs=${match.bet365Id}-1~1"
-            else -> 
-                match?.league?.link ?: ""
+            match?.bet365Id != null -> "https://www.bet365.bet.br/dl/sportsbookredirect?bet=1&bs=${match.bet365Id}-1~1"
+
+            else -> match?.league?.link ?: ""
         }
     }
+
+    private fun getProfitEmoji(profit: Double): String {
+        return when {
+            profit > 0 -> "✅"
+            profit < 0 -> "❌"
+            else -> "\uD83D\uDD04"
+        }
+    }
+
+    private val decimalFormat = DecimalFormat("#,##0.00")
 }

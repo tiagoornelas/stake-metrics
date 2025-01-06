@@ -7,7 +7,6 @@ import com.google.api.gax.rpc.FixedTransportChannelProvider
 import com.google.cloud.tasks.v2.*
 import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
-import java.nio.charset.StandardCharsets
 import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
@@ -18,6 +17,7 @@ import net.stakemetrics.application.service.IQueueService
 import net.stakemetrics.application.utils.EnvironmentVerifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.nio.charset.StandardCharsets
 
 @Service
 @EnvironmentSensitive
@@ -106,6 +106,15 @@ class CloudTaskService(
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
             val fullUrl = "$baseUrl/queue/fifa/$queueName"
             enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath, method = HttpMethod.PUT)
+        }
+    }
+
+    override fun enqueueBetResultReport(payload: MessengerDTO.ReportBetResultsRequest) {
+        createCloudTaskClient().use { client ->
+            val queueName = "bet-report-queue"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
         }
     }
 
