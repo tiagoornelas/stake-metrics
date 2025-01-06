@@ -14,7 +14,8 @@ class MessengerDTO {
         val delay: Int,
         val deliveryProbability: Double,
         val notDeliveredMessage: String,
-        val extraText: String
+        val extraText: String,
+        val receiveReports: Boolean
     )
 
     data class ListResponse(
@@ -58,7 +59,8 @@ class MessengerDTO {
         val delay: Int?,
         val deliveryProbability: Double?,
         val notDeliveredMessage: String,
-        val extraText: String
+        val extraText: String,
+        val receiveReports: Boolean?
     )
 
     data class EditIntegrationResponse(
@@ -96,7 +98,8 @@ fun MessengerChat.toMessengerChatResponse(): MessengerDTO.MessengerChatResponse 
         this.delay,
         this.deliveryProbability,
         this.notDeliveredMessage,
-        this.extraText
+        this.extraText,
+        this.receiveReports
     )
 }
 

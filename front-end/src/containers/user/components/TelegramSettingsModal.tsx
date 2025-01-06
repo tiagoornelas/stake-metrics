@@ -37,7 +37,8 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
     delay: chat.delay,
     deliveryProbability: chat.deliveryProbability,
     notDeliveredMessage: chat.notDeliveredMessage,
-    extraText: chat.extraText
+    extraText: chat.extraText,
+    receiveReports: chat.receiveReports ?? false
   });
 
   useEffect(() => {
@@ -48,7 +49,8 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
       formState.delay !== chat.delay ||
       formState.deliveryProbability !== chat.deliveryProbability ||
       formState.notDeliveredMessage !== chat.notDeliveredMessage ||
-      formState.extraText !== originalChatExtraText;
+      formState.extraText !== originalChatExtraText ||
+      formState.receiveReports !== (chat.receiveReports ?? false);
     setIsFormDirty(isDirty);
   }, [formState, chat]);
 
@@ -65,7 +67,7 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
     const { name, value } = e.target;
     setFormState(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: name === 'receiveReports' ? value === 'true' : value
     }));
   };
 
@@ -92,7 +94,8 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
         formState.delay,
         formState.deliveryProbability,
         formState.notDeliveredMessage,
-        formState.extraText
+        formState.extraText,
+        formState.receiveReports
       ),
     SUCCESS_TYPES.TELEGRAM_CHAT_EDITED
   );
@@ -156,6 +159,13 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
             <Select name="status" value={formState.status} onChange={handleChange} disabled={isLoading}>
               <option value="ACTIVE">Ativo</option>
               <option value="INACTIVE">Inativo</option>
+            </Select>
+          </Box>
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Heading size="sm">Receber relatórios</Heading>
+            <Select name="receiveReports" value={formState.receiveReports.toString()} onChange={handleChange} disabled={isLoading}>
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
             </Select>
           </Box>
           <Box display="flex" flexDirection="column" gap={2}>

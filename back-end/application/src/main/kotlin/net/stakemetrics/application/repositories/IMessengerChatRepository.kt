@@ -13,4 +13,5 @@ interface IMessengerChatRepository {
     fun findAllByUserIdAndChatId(userId: UUID, chatId: String): List<MessengerChat>
     fun findAllByUserIdAndStatus(userId: UUID, status: MessengerChatStatus): List<MessengerChat>
     fun findAllActive(): List<MessengerChat>
+    fun findAllActiveAndReceiveReports(): List<MessengerChat>
 }
