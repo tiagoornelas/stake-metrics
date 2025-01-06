@@ -5,7 +5,7 @@ import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import org.springframework.stereotype.Component
 import java.text.DecimalFormat
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -48,9 +48,8 @@ class FifaBetMessageBuilder {
         """.trimMargin()
     }
 
-    fun buildReport(fifaBets: List<FifaBet>): String {
-        val today = LocalDate.now()
-        val formattedDate = today.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    fun buildReport(fifaBets: List<FifaBet>, targetDate: LocalDateTime): String {
+        val formattedDate = targetDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         val title = "🏆 Relatório de Entradas - $formattedDate 🏆\n\n"
 
         if (fifaBets.isEmpty()) {
