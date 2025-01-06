@@ -107,6 +107,7 @@ export interface TelegramChat {
     deliveryProbability: number;
     notDeliveredMessage: string;
     extraText: string;
+    receiveReports: boolean;
 }
 
 export interface ExtraButton extends ButtonProps {

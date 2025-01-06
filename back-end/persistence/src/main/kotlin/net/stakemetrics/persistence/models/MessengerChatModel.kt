@@ -23,6 +23,7 @@ data class MessengerChatModel(
     val deliveryProbability: Double = 1.0,
     val notDeliveredMessage: String = "",
     val extraText: String = "",
+    val receiveReports: Boolean = true,
     val createdAt: Long = System.currentTimeMillis()
 ) {
     fun toDomain(): MessengerChat {
@@ -36,6 +37,7 @@ data class MessengerChatModel(
             deliveryProbability,
             notDeliveredMessage,
             extraText,
+            receiveReports,
             createdAt
         )
     }
@@ -51,6 +53,8 @@ fun MessengerChat.toModel(): MessengerChatModel {
         delay,
         deliveryProbability,
         notDeliveredMessage,
-        extraText
+        extraText,
+        receiveReports,
+        createdAt
     )
 }

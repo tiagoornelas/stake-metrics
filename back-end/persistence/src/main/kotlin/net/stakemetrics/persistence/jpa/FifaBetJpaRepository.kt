@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.time.LocalDateTime
 
 interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
     fun existsByStrategyAndMatch(strategy: FifaStrategyModel, match: FifaMatchModel): Boolean
@@ -45,4 +46,18 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
     """, nativeQuery = true
     )
     fun findCumulativeProfitsByStrategyId(@Param("strategyId") strategyId: UUID): List<Double>
+
+    @Query(
+        """
+        SELECT b FROM FifaBetModel b
+        JOIN b.messages m
+        WHERE m.messengerChat.id = :messengerChatId
+        AND b.betTime BETWEEN :startDate AND :endDate
+        """
+    )
+    fun findByMessengerChatAndDateBetween(
+        @Param("messengerChatId") messengerChatId: UUID,
+        @Param("startDate") startDate: LocalDateTime,
+        @Param("endDate") endDate: LocalDateTime
+    ): List<FifaBetModel>
 }
