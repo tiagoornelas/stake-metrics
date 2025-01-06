@@ -39,13 +39,9 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
     }
 
     override fun findBetsByStrategyAndFilter(
-        userEmail: String,
-        strategyId: UUID,
-        betFilter: FifaBetDTO.BetFilter,
-        pageable: Pageable
+        userEmail: String, strategyId: UUID, betFilter: FifaBetDTO.BetFilter, pageable: Pageable
     ): Page<FifaBet> {
-        return fifaBetJpaRepository.findBetsByStrategyAndFilter(strategyId, betFilter, pageable)
-            .map { it.toDomain() }
+        return fifaBetJpaRepository.findBetsByStrategyAndFilter(strategyId, betFilter, pageable).map { it.toDomain() }
     }
 
     override fun listCumulativeProfits(strategyId: UUID): List<Double> {
@@ -62,9 +58,7 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         endDate: LocalDateTime
     ): List<FifaBet> {
         return fifaBetJpaRepository.findByMessengerChatAndDateBetween(
-            messengerChatId, 
-            startDate, 
-            endDate
+            messengerChatId, startDate, endDate
         ).map { it.toDomain() }
     }
 }

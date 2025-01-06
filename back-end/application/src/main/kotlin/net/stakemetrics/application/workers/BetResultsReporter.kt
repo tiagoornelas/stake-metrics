@@ -16,7 +16,7 @@ class BetResultsReporter(
 
     fun reportChat(messengerChat: MessengerChat) {
         val now = LocalDateTime.now()
-        val startDate = now.minusDays(6).withStartOfDay()
+        val startDate = now.withStartOfDay()
         val endDate = now.withEndOfDay()
 
         val fifaBets = fifaBetRepository.findByMessengerChatAndDateBetween(
@@ -24,8 +24,7 @@ class BetResultsReporter(
         )
 
         val reportMessage = fifaBetMessageBuilder.buildReport(fifaBets)
-        messengerService.sendToChat(messengerChat, reportMessage, null)
-        println(reportMessage)
+        messengerService.sendToQueue(messengerChat, reportMessage, null)
     }
 
     private fun LocalDateTime.withStartOfDay(): LocalDateTime {
