@@ -78,7 +78,7 @@ class QueueController(
         return ResponseEntity.ok(QueueDTO.Response())
     }
 
-    @PostMapping("/fifa/report-bet-results")
+    @PostMapping("/fifa/bet-report-queue")
     fun reportBetResults(@RequestBody payload: MessengerDTO.ReportBetResultsRequest): ResponseEntity<QueueDTO.Response> {
         betResultsReporter.reportChat(payload.messengerChat)
         return ResponseEntity.ok(QueueDTO.Response())
