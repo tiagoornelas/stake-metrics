@@ -13,6 +13,7 @@ data class MessengerChat(
     val deliveryProbability: Double = 1.0,
     val notDeliveredMessage: String = "",
     val extraText: String = "",
+    val receiveReports: Boolean = true,
     val createdAt: Long = System.currentTimeMillis()
 ) {
     fun hasNotDeliveredMessage(): Boolean {

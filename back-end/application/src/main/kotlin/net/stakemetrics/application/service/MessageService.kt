@@ -24,7 +24,7 @@ class MessageService(
     }
 
     fun getProneToReportMessengerChats(): List<MessengerChat> {
-        return messengerChatRepository.findAllActive()
+        return messengerChatRepository.findAllActiveAndReceiveReports()
     }
 
 }
