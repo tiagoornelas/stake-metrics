@@ -10,7 +10,8 @@ class SubscriptionDTO {
         val integrationId: String,
         val status: SubscriptionStatus,
         val expiresAt: Date?,
-        val features: Map<String, Int>
+        val features: Map<String, Int>,
+        val hasPendingPayment: Boolean = false
     )
 
     data class PricingTableResponse(
