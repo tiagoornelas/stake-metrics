@@ -68,7 +68,7 @@ class FifaStrategyDTO {
         val activeResult: Double,
         val activeRoi: Double,
         val todaysResult: Double,
-        val todaysRoi: Double
+        val averageDailyBets: Int
     )
 
     data class FifaStrategyListResponse(

@@ -133,7 +133,7 @@ export type StrategyListItem = {
     activeResult: number;
     activeRoi: number;
     todaysResult: number;
-    todaysRoi: number;
+    averageDailyBets: number;
 }
 
 export interface FifaLeagueResponse {

@@ -37,6 +37,8 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
 
     const formatPercentage = (value: number) => `${Math.round(value * 10000) / 100} %`;
 
+    const formatBetVolume = (value: number) => value > 0 ? `${Math.round(value)} / dia` : "0 / dia";
+
     const getColorScheme = (value: number) => {
         if (value > 0) return 'green.500';
         if (value < 0) return 'red.500';
@@ -54,7 +56,7 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
         };
     };
 
-    const showTodaysStats = useBreakpointValue({base: false, sm: true});
+    const showExtraStats = useBreakpointValue({base: false, sm: true});
     const statFontSize = useBreakpointValue({base: 'md', sm: 'xl'});
 
     return (
@@ -76,7 +78,7 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                         </Box>
                     </Skeleton>
                     <Flex wrap="wrap" justifyContent="center" mt={4}>
-                        {showTodaysStats && (
+                        {showExtraStats && (
                             <>
                                 <Stat>
                                     <StatLabel>Un Hoje</StatLabel>
@@ -84,27 +86,19 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                                         fontSize={statFontSize}
                                         color={getColorScheme(strategy.todaysResult)}>{`${strategy.todaysResult.toFixed(2)} u`}</StatNumber>
                                 </Stat>
-                                <Stat>
-                                    <StatLabel>ROI Hoje</StatLabel>
-                                    <StatNumber
-                                        fontSize={statFontSize}
-                                        color={getColorScheme(strategy.todaysRoi)}>{formatPercentage(strategy.todaysRoi)}</StatNumber>
-                                    {strategy.roi !== 0 && calculateDiff(strategy.todaysRoi, strategy.roi) && (
-                                        <StatHelpText>
-                                            <StatArrow type={calculateDiff(strategy.todaysRoi, strategy.roi)!.type}/>
-                                            {calculateDiff(strategy.todaysRoi, strategy.roi)!.text}
-                                        </StatHelpText>
-                                    )}
-                                </Stat>
                             </>
                         )}
+                        <Stat>
+                            <StatLabel>Volume</StatLabel>
+                            <StatNumber fontSize={statFontSize}>{formatBetVolume(strategy.averageDailyBets)}</StatNumber>
+                        </Stat>
                         <Stat>
                             <StatLabel>Un Ativas</StatLabel>
                             <StatNumber
                                 fontSize={statFontSize}
                                 color={getColorScheme(strategy.activeResult)}>{`${strategy.activeResult.toFixed(2)} u`}</StatNumber>
                         </Stat>
-                        <Stat>
+                        {showExtraStats && (<Stat>
                             <StatLabel>ROI Ativa</StatLabel>
                             <StatNumber
                                 fontSize={statFontSize}
@@ -115,7 +109,7 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                                     {calculateDiff(strategy.activeRoi, strategy.roi)!.text}
                                 </StatHelpText>
                             )}
-                        </Stat>
+                        </Stat>)}
                         <Stat>
                             <StatLabel>Un Totais</StatLabel>
                             <StatNumber

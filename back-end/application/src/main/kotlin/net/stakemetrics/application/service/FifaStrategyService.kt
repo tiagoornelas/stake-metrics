@@ -179,7 +179,7 @@ class FifaStrategyService @Autowired constructor(
                 strategy.activeResult,
                 strategy.activeRoi,
                 strategy.todaysResult,
-                strategy.todaysRoi
+                strategy.averageDailyBets
             )
         }
     }

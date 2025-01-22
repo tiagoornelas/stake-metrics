@@ -1,8 +1,28 @@
-import {Flex, Skeleton, Text} from "@chakra-ui/react";
+import {Flex, Menu, MenuButton, MenuList, MenuItem, IconButton, Skeleton, Text, Tag} from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
 import React, {useEffect, useState} from 'react';
 import {getLeagues} from "services/leagueService";
 import {BetQueryFilters, Option} from "utils/interfaces";
+import {BsFileSpreadsheet} from "react-icons/all";
+import { useTranslation } from "hooks/useTranslation";
+
+const ReportMenu = () => {
+    const { t } = useTranslation();
+
+    return <Menu>
+    <MenuButton as={IconButton} icon={<BsFileSpreadsheet />} />
+    <MenuList>
+        <MenuItem  disabled cursor={"not-allowed"}>
+            {t("strategy.actions.downloadReport.simple")}
+            <Tag ml={2} colorScheme={"blue"}>Em breve</Tag>
+        </MenuItem>
+        <MenuItem disabled cursor={"not-allowed"}>
+            {t("strategy.actions.downloadReport.detailed")}
+            <Tag ml={2} colorScheme={"blue"}>Em breve</Tag>
+        </MenuItem>
+    </MenuList>
+    </Menu>
+}
 
 const BetsHeader = ({showingBets, betsLength, isLoaded, filters, setFilters}: {
     showingBets: number,
@@ -47,6 +67,7 @@ const BetsHeader = ({showingBets, betsLength, isLoaded, filters, setFilters}: {
                 gap={2}
                 w={{base: "100%", md: "auto"}}
             >
+                <ReportMenu />
                 <MultiSelect
                     title="Situação"
                     options={[
