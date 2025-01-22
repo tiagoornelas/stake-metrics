@@ -112,8 +112,8 @@
             },
             "firstSectionFeatures": {
                 "0": {
-                    "pt": "Estratégias para E-Soccer Bet365 e mais por vir!",
-                    "en": "Strategies for E-Soccer Bet365 and more to come!"
+                    "pt": "Estratégias para E-Soccer Bet365",
+                    "en": "Strategies for E-Soccer Bet365"
                 },
                 "1": {
                     "pt": "Receba apostas com links e acompanhe os resultados, tudo pelo Telegram!",
@@ -134,54 +134,22 @@
             },
             "secondSectionFeatures": {
                 "0": {
-                    "text": {
-                        "pt": "Envie relatórios automáticos para as apostas de cada chat!",
-                        "en": "Send automatic reports for bets in each chat!"
-                    },
-                    "tagText": {
-                        "pt": "Em breve",
-                        "en": "Coming soon"
-                    }
+                    "pt": "Envie relatórios automáticos para as apostas de cada chat!",
+                    "en": "Send automatic reports for bets in each chat!"
                 },
                 "1": {
-                    "text": {
-                        "pt": "Acompanhe visualmente as tendências das ligas de E-Soccer!",
-                        "en": "Visually track E-Soccer league trends!"
-                    },
-                    "tagText": {
-                        "pt": "Em breve",
-                        "en": "Coming soon"
-                    }
+                    "pt": "Monitore ligas e descubra parâmetros vencedores!",
+                    "en": "Monitor leagues and discover winning parameters!"
                 },
                 "2": {
-                    "text": {
-                        "pt": "Monitore ligas e descubra parâmetros vencedores!",
-                        "en": "Monitor leagues and discover winning parameters!"
-                    },
-                    "tagText": {
-                        "pt": "Em breve",
-                        "en": "Coming soon"
-                    }
+                    "pt": "Geração de relatórios detalhados para análise dos seus resultados!",
+                    "en": "Detailed report for your results' analysis!"
                 },
                 "3": {
-                    "text": {
-                        "pt": "Evite a pirataria: sistema próprio anti-repasse!",
-                        "en": "Avoid piracy: proprietary anti-resale system!"
-                    },
-                    "tagText": {
-                        "pt": "Em breve",
-                        "en": "Coming soon"
-                    }
+                    "pt": "Validando dados e estatísticas por {days} dias",
+                    "en": "Validating data and statistics for {days} days"
                 },
                 "4": {
-                    "pt": "Segurança de ponta",
-                    "en": "Top-notch security"
-                },
-                "5": {
-                    "pt": "Validando dados por {days} dias",
-                    "en": "Validating data for {days} days"
-                },
-                "6": {
                     "pt": "Suas estratégias são privadas e nunca serão vendidas!",
                     "en": "Your strategies are private and will never be sold!"
                 }
