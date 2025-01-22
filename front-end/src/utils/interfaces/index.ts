@@ -54,6 +54,7 @@ export interface Subscription {
     expiresAt: string | null;
     subscriptionId: string | null;
     features: FeatureMap;
+    hasPendingPayment: boolean;
 }
 
 export interface UserInfo extends User {
