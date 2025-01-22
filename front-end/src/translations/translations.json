@@ -1,4 +1,14 @@
 {
+    "subscription": {
+       "pendingPayment": {
+            "pt": "Você possui um pagamento pendente. Se utilizou método de pagamento por boleto, aguarde o pagamento ser processado em até 2 dias úteis.",
+            "en": "You have a pending payment. If you paid by bank transfer, wait up to 2 business days."
+       },
+       "noSubscription": {
+            "pt": "Você não possui uma assinatura ativa.",
+            "en": "You don't have an active subscription."
+       }
+    },
     "strategy": {
         "statusMenu": {
             "tooltip": {
@@ -32,6 +42,20 @@
             "delete": {
                 "pt": "Excluir",
                 "en": "Delete"
+            },
+            "downloadReport": {
+                "simple": {
+                    "pt": "Gerar relatório simples",
+                    "en": "Export simple report"
+                },
+                "detailed": {
+                    "pt": "Gerar relatório detalhado",
+                    "en": "Export detailed report"
+                },
+                "success": {
+                    "pt": "Relatório está sendo gerado e será enviado no seu e-mail de cadastro.",
+                    "en": "Report is being exported and will be sent to your e-mail."
+                }
             }
         },
         "restartDialog": {

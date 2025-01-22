@@ -3,7 +3,6 @@ import {ErrorBoundary} from "components/ErrorBoundary";
 import PrivateAreaWrapper from "components/PrivateAreaWrapper";
 import PrivateRouterLayout from "components/PrivateRouterLayout";
 import PublicAreaLayout from "components/PublicAreaLayout";
-import FifaBacktestModule from "containers/fifa/backtest/FifaBacktestModule";
 import FifaStrategies from "containers/fifa/strategy/FifaStrategies";
 import AccountRecovery from "containers/public/AccountRecovery";
 import CreateAccount from "containers/public/CreateAccount";
@@ -57,10 +56,6 @@ const appRouter = createBrowserRouter([
         path: "/app/esoccer/strategies",
         element: <PrivateRouterLayout><FifaStrategies/></PrivateRouterLayout>
 
-    },
-    {
-        path: "/app/esoccer/backtest",
-        element: <PrivateRouterLayout><FifaBacktestModule/></PrivateRouterLayout>
     },
     {
         path: "/app/*",

@@ -1,4 +1,3 @@
-import {FEATURES} from "utils/constants/featureConstants";
 import {NavigationLinkOnHeaderValue, NavigationModuleTypes} from "utils/interfaces";
 
 export const APP_NAVIGATION: NavigationLinkOnHeaderValue[] = [
@@ -8,13 +7,5 @@ export const APP_NAVIGATION: NavigationLinkOnHeaderValue[] = [
         moduleText: "E-Soccer",
         moduleColor: "green",
         type: NavigationModuleTypes.REGULAR
-    },
-    {
-        name: "Backtest",
-        path: "app/esoccer/backtest",
-        moduleText: "E-Soccer",
-        moduleColor: "green",
-        type: NavigationModuleTypes.COMING_SOON,
-        feature: FEATURES.BACKTEST_MODULE
     }
 ]
