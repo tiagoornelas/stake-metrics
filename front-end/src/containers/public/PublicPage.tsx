@@ -71,36 +71,24 @@ const PublicPage = () => {
 
     const secondSessionFeatures = [
         {
-            text: t('publicPage.secondSectionFeatures.0.text'),
-            emoji: "📊",
-            tagColor: "blue",
-            tagText: t('publicPage.secondSectionFeatures.0.tagText')
+            text: t('publicPage.secondSectionFeatures.0'),
+            emoji: "📊"
         },
         {
-            text: t('publicPage.secondSectionFeatures.1.text'),
-            emoji: "📈",
-            tagColor: "blue",
-            tagText: t('publicPage.secondSectionFeatures.1.tagText')
+            text: t('publicPage.secondSectionFeatures.1'),
+            emoji: "📈"
         },
         {
-            text: t('publicPage.secondSectionFeatures.2.text'),
-            emoji: "🏆",
-            tagColor: "blue",
-            tagText: t('publicPage.secondSectionFeatures.2.tagText')
+            text: t('publicPage.secondSectionFeatures.2'),
+            emoji: "📎"
         },
         {
-            text: t('publicPage.secondSectionFeatures.3.text'),
-            emoji: "🏴‍☠️",
-            tagColor: "blue",
-            tagText: t('publicPage.secondSectionFeatures.3.tagText')
+            text: t('publicPage.secondSectionFeatures.3', { days: daysValidatingDataBase }),
+            emoji: "🐘"
         },
         {
             text: t('publicPage.secondSectionFeatures.4'),
             emoji: "🔒"
-        },
-        {
-            text: t('publicPage.secondSectionFeatures.5', { days: daysValidatingDataBase }),
-            emoji: "🐘"
         }
     ];
 
