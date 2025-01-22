@@ -42,6 +42,20 @@
             "delete": {
                 "pt": "Excluir",
                 "en": "Delete"
+            },
+            "downloadReport": {
+                "simple": {
+                    "pt": "Gerar relatório simples",
+                    "en": "Export simple report"
+                },
+                "detailed": {
+                    "pt": "Gerar relatório detalhado",
+                    "en": "Export detailed report"
+                },
+                "success": {
+                    "pt": "Relatório está sendo gerado e será enviado no seu e-mail de cadastro.",
+                    "en": "Report is being exported and will be sent to your e-mail."
+                }
             }
         },
         "restartDialog": {
