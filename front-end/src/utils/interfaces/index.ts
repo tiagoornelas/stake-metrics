@@ -54,6 +54,7 @@ export interface Subscription {
     expiresAt: string | null;
     subscriptionId: string | null;
     features: FeatureMap;
+    hasPendingPayment: boolean;
 }
 
 export interface UserInfo extends User {
@@ -132,7 +133,7 @@ export type StrategyListItem = {
     activeResult: number;
     activeRoi: number;
     todaysResult: number;
-    todaysRoi: number;
+    averageDailyBets: number;
 }
 
 export interface FifaLeagueResponse {

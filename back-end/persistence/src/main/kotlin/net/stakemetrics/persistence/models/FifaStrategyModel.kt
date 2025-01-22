@@ -26,10 +26,10 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = CURDATE(), b
             .profit,
              0)), 0) AS todaysResult,
-            COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = CURDATE(), b
-            .profit,
-             0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = 
-             CURDATE() THEN 1 END), 0), 0) AS todaysRoi
+            FLOOR(
+                COALESCE(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0) / 
+                NULLIF(COUNT(DISTINCT DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00'))), 0)
+            ) AS averageDailyBets
         FROM fifa_strategies s
         LEFT JOIN fifa_bets b ON s.id = b.strategy_id
         WHERE s.user_id = :userId
@@ -52,7 +52,7 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             ColumnResult(name = "activeResult", type = Double::class),
             ColumnResult(name = "activeRoi", type = Double::class),
             ColumnResult(name = "todaysResult", type = Double::class),
-            ColumnResult(name = "todaysRoi", type = Double::class)
+            ColumnResult(name = "averageDailyBets", type = Int::class)
         ]
     )]
 )

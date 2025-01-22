@@ -3,11 +3,9 @@ package net.stakemetrics.integration.stripe
 import com.stripe.Stripe
 import com.stripe.model.Customer
 import com.stripe.model.CustomerSession
+import com.stripe.model.Invoice
 import com.stripe.model.entitlements.ActiveEntitlement
-import com.stripe.param.CustomerCreateParams
-import com.stripe.param.CustomerSessionCreateParams
-import com.stripe.param.CustomerUpdateParams
-import com.stripe.param.SubscriptionListParams
+import com.stripe.param.*
 import com.stripe.param.entitlements.ActiveEntitlementListParams
 import java.util.Date
 import javax.annotation.PostConstruct
@@ -73,8 +71,10 @@ class SubscriptionService(
         val status = getStatus(subscription.integrationId)
         val expiresAt = getExpiresAt(subscription.integrationId)
         val features = listUserFeatures(subscription.integrationId)
+        val hasPendingPayment = hasPendingPayment(subscription.integrationId)
+
         return SubscriptionDTO.SubscriptionResponse(
-            subscription.id, subscription.integrationId, status, expiresAt, features
+            subscription.id, subscription.integrationId, status, expiresAt, features, hasPendingPayment
         )
     }
 
@@ -119,6 +119,14 @@ class SubscriptionService(
         }
 
         return featuresMap
+    }
+
+    private fun hasPendingPayment(integrationId: String): Boolean {
+        val subscriptions = getSubscriptions(integrationId)
+        return subscriptions.any { subscription ->
+            val invoices = Invoice.list(InvoiceListParams.builder().setSubscription(subscription.id).build()).data
+            invoices.any { it.status == StripeInvoiceStatus.OPEN.value }
+        }
     }
 
     private fun getIntegrationIdByUserEmail(userEmail: String): String {
