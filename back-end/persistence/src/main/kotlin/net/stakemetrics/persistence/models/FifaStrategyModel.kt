@@ -13,28 +13,41 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
 @NamedNativeQuery(
     name = "find_strategy_statistics_by_user_id",
     query = """
-        SELECT
-            s.id AS id,
-            s.name AS name,
-            s.status AS status,
-            COUNT(CASE WHEN b.profit IS NULL AND b.status = 0 THEN 1 END) AS openBets,
-            COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END) AS bets,
-            COALESCE(SUM(b.profit), 0) AS result,
-            COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,
-            COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)), 0) AS activeResult,
-            COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi,
-            COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = CURDATE(), b
-            .profit,
-             0)), 0) AS todaysResult,
-            FLOOR(
-                COALESCE(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0) / 
-                NULLIF(COUNT(DISTINCT DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00'))), 0)
-            ) AS averageDailyBets
-        FROM fifa_strategies s
-        LEFT JOIN fifa_bets b ON s.id = b.strategy_id
-        WHERE s.user_id = :userId
-        GROUP BY s.id, s.name, s.status
-    """,
+        WITH strategy_stats AS (
+            SELECT
+                s.id AS id,
+                s.name AS name,
+                s.status AS status,
+                COUNT(CASE WHEN b.profit IS NULL AND b.status = 0 THEN 1 END) AS openBets,
+                COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END) AS bets,
+                COALESCE(SUM(b.profit), 0) AS result,
+                COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,
+                COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)), 0) AS activeResult,
+                COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi,
+                COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = CURDATE(), b.profit, 0)), 0) AS todaysResult,
+                FLOOR(
+                    COALESCE(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0) / 
+                    NULLIF(COUNT(DISTINCT DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00'))), 0)
+                ) AS averageDailyBets
+            FROM fifa_strategies s
+            LEFT JOIN fifa_bets b ON s.id = b.strategy_id
+            WHERE s.user_id = :userId
+            GROUP BY s.id, s.name, s.status
+        )
+        SELECT 
+            id, 
+            name, 
+            status, 
+            COALESCE(openBets, 0) AS openBets, 
+            COALESCE(bets, 0) AS bets, 
+            COALESCE(result, 0) AS result, 
+            COALESCE(roi, 0) AS roi, 
+            COALESCE(activeResult, 0) AS activeResult, 
+            COALESCE(activeRoi, 0) AS activeRoi, 
+            COALESCE(todaysResult, 0) AS todaysResult, 
+            COALESCE(averageDailyBets, 0) AS averageDailyBets
+        FROM strategy_stats
+        """,
     resultSetMapping = "fifa_strategy_statistic_single_response"
 )
 @SqlResultSetMapping(
