@@ -6,5 +6,4 @@ enum class FeatureTypes(val identifier: String) {
     SIMPLE_REPORT("simple-report"),
     DETAILED_REPORT("detailed-report"),
     NO_ADS_MESSAGES("no-ads-messages"),
-    BACKTEST_MODULE("backtest-module"),
 }
