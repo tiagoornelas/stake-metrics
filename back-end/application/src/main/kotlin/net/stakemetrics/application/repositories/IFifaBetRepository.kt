@@ -7,6 +7,7 @@ import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 interface IFifaBetRepository {
@@ -14,6 +15,7 @@ interface IFifaBetRepository {
     fun delete(fifaBet: FifaBet)
     fun findById(id: UUID): FifaBet
     fun findOpenBets(): List<FifaBet>
+    fun countOpenBetsByUser(userId: UUID): Int
     fun existsByStrategyAndMatch(fifaStrategy: FifaStrategy, fifaMatch: FifaMatch): Boolean
     fun findBetsByStrategyAndFilter(
         userEmail: String,
@@ -29,4 +31,24 @@ interface IFifaBetRepository {
         startDate: LocalDateTime,
         endDate: LocalDateTime
     ): List<FifaBet>
+
+    fun getMainStatisticsByUserAndDateBetween(
+        userId: UUID,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): FifaBetDTO.MainStatistics
+
+    fun getMonthlyProfits(
+        userId: UUID,
+        timezone: String,
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): List<FifaBetDTO.MonthlyProfit>
+
+    fun getDailyProfits(
+        userId: UUID,
+        timezone: String,
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): List<FifaBetDTO.DailyProfit>
 }

@@ -8,6 +8,7 @@ import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
+import java.time.LocalDate
 
 class FifaBetDTO {
 
@@ -57,6 +58,23 @@ class FifaBetDTO {
         val league: List<UUID>,
         val page: Int,
         val size: Int
+    )
+
+    data class DailyProfit(val date: LocalDate, val profit: Double)
+    data class MonthlyProfit(val startDate: LocalDate, val endDate: LocalDate, val profit: Double)
+
+    data class MainStatistics(
+        val numberOfBets: Long,
+        val profit: Double,
+        val roi: Double
+    )
+
+    data class StatisticsResponse(
+        val openBets: Int,
+        val dayStatistics: MainStatistics,
+        val monthStatistics: MainStatistics,
+        val last12DaysProfit: List<DailyProfit>,
+        val last12MonthsProfit: List<MonthlyProfit>
     )
 
 }
