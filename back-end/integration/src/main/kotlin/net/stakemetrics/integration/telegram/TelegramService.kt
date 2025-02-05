@@ -1,21 +1,22 @@
 package net.stakemetrics.integration.telegram
 
 import jakarta.transaction.Transactional
-import java.util.UUID
-import kotlin.random.Random
 import net.stakemetrics.application.entities.ChatDetails
 import net.stakemetrics.application.entities.MessengerChat
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.MessengerDTO
+import net.stakemetrics.application.entities.enums.FeatureTypes
 import net.stakemetrics.application.entities.enums.MessengerChatStatus
 import net.stakemetrics.application.entities.exceptions.AlreadyIntegratedException
 import net.stakemetrics.application.entities.exceptions.IntegrationException
 import net.stakemetrics.application.entities.exceptions.InvalidFieldException
+import net.stakemetrics.application.entities.exceptions.NotAllowedException
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IMessageRepository
 import net.stakemetrics.application.repositories.IMessengerChatRepository
 import net.stakemetrics.application.service.IMessengerService
 import net.stakemetrics.application.service.IQueueService
+import net.stakemetrics.application.service.ISubscriptionService
 import net.stakemetrics.application.service.MessageService
 import net.stakemetrics.application.service.UserService
 import net.stakemetrics.application.utils.Logger
@@ -25,6 +26,8 @@ import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updates.GetUpdates
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
+import java.util.UUID
+import kotlin.random.Random
 
 @Service
 class TelegramService(
@@ -33,6 +36,7 @@ class TelegramService(
     private val queueService: IQueueService,
     private val messageService: MessageService,
     private val messageRepository: IMessageRepository,
+    private val subscriptionService: ISubscriptionService,
     private val messengerChatRepository: IMessengerChatRepository
 ) : IMessengerService {
 
@@ -130,6 +134,13 @@ class TelegramService(
 
         val queriedMessengerChat = messengerChatRepository.findById(dto.id)
 
+        if (dto.hideSoftwareLink == true) {
+            val user = queriedMessengerChat.user ?: throw InvalidFieldException("user", "null")
+            if (!subscriptionService.hasFeature(user, FeatureTypes.NO_ADS_MESSAGES)) {
+                throw NotAllowedException("User does not have the NO_ADS_MESSAGES feature")
+            }
+        }
+
         val editedMessengerChat = queriedMessengerChat.copy(
             name = dto.name ?: queriedMessengerChat.name,
             status = dto.status ?: queriedMessengerChat.status,
@@ -137,7 +148,9 @@ class TelegramService(
             delay = dto.delay ?: queriedMessengerChat.delay,
             deliveryProbability = dto.deliveryProbability ?: queriedMessengerChat.deliveryProbability,
             notDeliveredMessage = dto.notDeliveredMessage,
-            extraText = dto.extraText
+            extraText = dto.extraText,
+            hideSoftwareLink = dto.hideSoftwareLink ?: queriedMessengerChat.hideSoftwareLink,
+            receiveReports = dto.receiveReports ?: queriedMessengerChat.receiveReports
         )
 
         messengerChatRepository.save(editedMessengerChat)
@@ -160,10 +173,18 @@ class TelegramService(
 
     private fun getFinalMessage(
         messengerChat: MessengerChat, message: String
-    ) = if (messengerChat.extraText.isNotEmpty()) {
-        "$message\n\n${messengerChat.extraText}"
-    } else {
-        message
+    ): String {
+        val softwareLink = if (!messengerChat.hideSoftwareLink) {
+            "\n\n🚀 Acesse [stakemetrics.net](https://stakemetrics.net) para criar ainda hoje o seu próprio robô"
+        } else {
+            ""
+        }
+
+        return if (messengerChat.extraText.isNotEmpty()) {
+            "$message\n\n${messengerChat.extraText}$softwareLink"
+        } else {
+            "$message$softwareLink"
+        }
     }
 
     fun getChatIdWithPassPhrase(passPhrase: UUID): ChatDetails {
@@ -193,4 +214,3 @@ class TelegramService(
         return remainingChat
     }
 }
-

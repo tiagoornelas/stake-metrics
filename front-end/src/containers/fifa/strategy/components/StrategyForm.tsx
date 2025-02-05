@@ -58,6 +58,7 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
     const [dynamicLeagues, setDynamicLeagues] = useState<Option[]>([]);
     const [dynamicPlayers, setDynamicPlayers] = useState<Option[]>([]);
     const [validationErrors, setValidationErrors] = useState<{ [key: string]: boolean }>({});
+    const [isSaving, setIsSaving] = useState(false);
 
     const colors = useThemeColors();
     const invalidateStrategyQuery = useInvalidateStrategyQuery();
@@ -257,9 +258,14 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
         setValidationErrors(errors);
 
         if (isFormValid(errors)) {
-            await saveStrategy(form);
-            if (onClose) onClose();
-            invalidateStrategyQuery();
+            setIsSaving(true);
+            try {
+                await saveStrategy(form);
+                if (onClose) onClose();
+                invalidateStrategyQuery();
+            } finally {
+                setIsSaving(false);
+            }
         } else {
             throw new Error("Revise os campos em vermelho e tente novamente.");
         }
@@ -442,7 +448,13 @@ const StrategyForm = ({strategyId, onClose}: { strategyId?: string, onClose?: ()
                 <Button mr={3} onClick={onClose}>
                     Voltar
                 </Button>
-                <Button bgColor={colors.product} color={colors.productContrast} onClick={handleSave}>
+                <Button
+                    bgColor={colors.product}
+                    color={colors.productContrast}
+                    onClick={handleSave}
+                    isLoading={isSaving}
+                    loadingText="Salvando"
+                >
                     Salvar
                 </Button>
             </Flex>

@@ -7,13 +7,16 @@ import {
   Input,
   Select,
   Stack,
+  Switch,
   Tag,
   Text,
+  Tooltip,
   useToast
 } from "@chakra-ui/react";
 import DefaultSlider from "components/DefaultSlider";
 import Modal from "components/Modal";
 import { useErrorToast } from "hooks/useErrorToast";
+import useTranslation from 'hooks/useTranslation';
 import React, { useEffect, useState } from "react";
 import { IoMdSettings, SiTelegram } from "react-icons/all";
 import { MdDelete } from "react-icons/md";
@@ -21,6 +24,9 @@ import { deletePrivateChat, editIntegration, testPrivateChat } from "services/te
 import { SUCCESS_TYPES } from "utils/constants/successConstants";
 import { defaultToastProps } from "utils/constants/toastConstants";
 import { ExtraButton, TelegramChat } from "utils/interfaces";
+import { useUserState } from "context/UserContext";
+import { getFeatureAmount } from 'utils/helpers/featureHelper';
+import { FEATURES } from 'utils/constants/featureConstants';
 
 type Props = {
   chat: TelegramChat;
@@ -29,8 +35,11 @@ type Props = {
 
 const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
   const toast: CreateToastFnReturn = useToast();
+  const { user } = useUserState();
+  const { t } = useTranslation();
   const [isFormDirty, setIsFormDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [formState, setFormState] = useState({
     name: chat.name,
     status: chat.status,
@@ -38,8 +47,11 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
     deliveryProbability: chat.deliveryProbability,
     notDeliveredMessage: chat.notDeliveredMessage,
     extraText: chat.extraText,
-    receiveReports: chat.receiveReports ?? false
+    receiveReports: chat.receiveReports ?? false,
+    hideSoftwareLink: chat.hideSoftwareLink ?? false
   });
+
+  const hasNoAdMessages = getFeatureAmount(user, FEATURES.NO_ADS_MESSAGES) > 0;
 
   useEffect(() => {
     const originalChatExtraText = chat.extraText || "";
@@ -50,7 +62,8 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
       formState.deliveryProbability !== chat.deliveryProbability ||
       formState.notDeliveredMessage !== chat.notDeliveredMessage ||
       formState.extraText !== originalChatExtraText ||
-      formState.receiveReports !== (chat.receiveReports ?? false);
+      formState.receiveReports !== (chat.receiveReports ?? false) ||
+      formState.hideSoftwareLink !== (chat.hideSoftwareLink ?? false);
     setIsFormDirty(isDirty);
   }, [formState, chat]);
 
@@ -67,7 +80,7 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
     const { name, value } = e.target;
     setFormState(prevState => ({
       ...prevState,
-      [name]: name === 'receiveReports' ? value === 'true' : value
+      [name]: value
     }));
   };
 
@@ -86,17 +99,24 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
   };
 
   const handleSave = useErrorToast(
-    async () =>
-      editIntegration(
-        chat.id,
-        formState.name,
-        formState.status,
-        formState.delay,
-        formState.deliveryProbability,
-        formState.notDeliveredMessage,
-        formState.extraText,
-        formState.receiveReports
-      ),
+    async () => {
+      setIsSaving(true);
+      try {
+        await editIntegration(
+          chat.id,
+          formState.name,
+          formState.status,
+          formState.delay,
+          formState.deliveryProbability,
+          formState.notDeliveredMessage,
+          formState.extraText,
+          formState.receiveReports,
+          formState.hideSoftwareLink
+        );
+      } finally {
+        setIsSaving(false);
+      }
+    },
     SUCCESS_TYPES.TELEGRAM_CHAT_EDITED
   );
 
@@ -145,6 +165,7 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
         title="Configuração de Telegram"
         actionText="Salvar"
         actionCallback={handleSave}
+        actionIsLoading={isSaving}
         extraButtons={extraButtons}
         onCloseCallback={onCloseCallback}
         icon={<IoMdSettings />}
@@ -161,13 +182,7 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
               <option value="INACTIVE">Inativo</option>
             </Select>
           </Box>
-          <Box display="flex" flexDirection="column" gap={2}>
-            <Heading size="sm">Receber relatórios</Heading>
-            <Select name="receiveReports" value={formState.receiveReports.toString()} onChange={handleChange} disabled={isLoading}>
-              <option value="true">Sim</option>
-              <option value="false">Não</option>
-            </Select>
-          </Box>
+
           <Box display="flex" flexDirection="column" gap={2}>
             <Flex gap={2}>
               <Heading size="sm">Atraso</Heading>
@@ -207,6 +222,44 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
               Preencha para enviar uma mensagem antes da mensagem principal em caso de atraso
             </Text>
             <Input name="extraText" value={formState.extraText} onChange={handleChange} disabled={isLoading} />
+          </Box>
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Heading size="sm">Configurações adicionais</Heading>
+            <Stack>
+              <Flex alignItems="center" gap={2}>
+                <Switch
+                  isChecked={formState.receiveReports}
+                  onChange={(e) => {
+                    setFormState((prevState) => ({
+                      ...prevState,
+                      receiveReports: e.target.checked,
+                    }));
+                  }}
+                  disabled={isLoading}
+                />
+                <Text>Receber relatórios</Text>
+              </Flex>
+              <Tooltip
+                label={t('features.upgrade_plan_required', { 
+                  feature: t('features.no_ads_messages') 
+                })}
+                isDisabled={hasNoAdMessages}
+              >
+                <Flex alignItems="center" gap={2}>
+                  <Switch
+                    isChecked={formState.hideSoftwareLink}
+                    onChange={(e) => {
+                      setFormState((prevState) => ({
+                        ...prevState,
+                        hideSoftwareLink: e.target.checked,
+                      }));
+                    }}
+                    disabled={isLoading || !hasNoAdMessages}
+                  />
+                  <Text>Remover link do software</Text>
+                </Flex>
+              </Tooltip>
+            </Stack>
           </Box>
         </Stack>
       </Modal>
