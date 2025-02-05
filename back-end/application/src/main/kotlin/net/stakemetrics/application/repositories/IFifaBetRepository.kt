@@ -28,12 +28,14 @@ interface IFifaBetRepository {
     fun deleteAllByStrategyId(strategyId: UUID)
     fun findByMessengerChatAndDateBetween(
         messengerChatId: UUID,
+        timezone: String,
         startDate: LocalDateTime,
         endDate: LocalDateTime
     ): List<FifaBet>
 
     fun getMainStatisticsByUserAndDateBetween(
         userId: UUID,
+        timezone: String,
         startDate: LocalDateTime,
         endDate: LocalDateTime
     ): FifaBetDTO.MainStatistics

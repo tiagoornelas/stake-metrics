@@ -9,5 +9,7 @@ import java.util.*
 class KotlinScript(private val betResultsReporter: BetResultsReporter, private val messengerChatRepository: IMessengerChatRepository) {
     fun run() {
         // Empty method
+        val chat = messengerChatRepository.findById(UUID.fromString("e7446964-7614-411c-8476-ef88eccbb8e3"))
+        betResultsReporter.reportChat(chat)
     }
 }
