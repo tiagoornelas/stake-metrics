@@ -20,7 +20,7 @@ data class FifaBet(
     val oddSnapshotId: UUID
 ) {
     companion object {
-        private const val HOURS_TO_CONSIDER_HANGING = 6
+        private const val HOURS_TO_CONSIDER_HANGING = 3
     }
 
     fun isHanging(): Boolean {

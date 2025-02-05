@@ -58,18 +58,18 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
     }
 
     override fun findByMessengerChatAndDateBetween(
-        messengerChatId: UUID, startDate: LocalDateTime, endDate: LocalDateTime
+        messengerChatId: UUID, timezone: String, startDate: LocalDateTime, endDate: LocalDateTime
     ): List<FifaBet> {
         return fifaBetJpaRepository.findByMessengerChatAndDateBetween(
-            messengerChatId, startDate, endDate
+            messengerChatId, timezone, startDate, endDate
         ).map { it.toDomain() }
     }
 
     override fun getMainStatisticsByUserAndDateBetween(
-        userId: UUID, startDate: LocalDateTime, endDate: LocalDateTime
+        userId: UUID, timezone: String, startDate: LocalDateTime, endDate: LocalDateTime
     ): FifaBetDTO.MainStatistics {
         return fifaBetJpaRepository.getMainStatisticsByUserAndDateBetween(
-            userId, startDate, endDate
+            userId, timezone, startDate, endDate
         ).toMainStatistics()
     }
 

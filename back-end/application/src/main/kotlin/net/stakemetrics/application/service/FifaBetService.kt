@@ -23,7 +23,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.Date
 import java.util.UUID
 
@@ -143,15 +142,13 @@ class FifaBetService(
         val openBets = fifaBetRepository.countOpenBetsByUser(user.id)
 
         val tz = user.timezoneOffset.id
-        validateTimezone(tz)
-
-        val now = LocalDateTime.now(ZoneId.of(tz))
+        val now = LocalDateTime.now()
 
         val startOfTheDay = now.withHour(0).withMinute(0).withSecond(0).withNano(0)
         val startOfTheMonth = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0)
 
-        val dayStatistics = fifaBetRepository.getMainStatisticsByUserAndDateBetween(user.id, startOfTheDay, now)
-        val monthStatistics = fifaBetRepository.getMainStatisticsByUserAndDateBetween(user.id, startOfTheMonth, now)
+        val dayStatistics = fifaBetRepository.getMainStatisticsByUserAndDateBetween(user.id, tz, startOfTheDay, now)
+        val monthStatistics = fifaBetRepository.getMainStatisticsByUserAndDateBetween(user.id, tz, startOfTheMonth, now)
 
         val dailyStartDate = now.minusDays(12).toLocalDate()
         val monthlyStartDate = now.minusMonths(12).toLocalDate()
@@ -177,27 +174,20 @@ class FifaBetService(
         )
     }
 
-    private fun validateTimezone(timezone: String) {
-        try {
-            ZoneId.of(timezone)
-        } catch (e: Exception) {
-            throw IllegalArgumentException("Invalid timezone: $timezone")
-        }
-    }
-
     private fun assertBetBelongsToUser(user: User, bet: FifaBet) {
         if (bet.strategy?.user?.id != user.id) throw EntityDoesntBelongToUserException()
     }
 
     private fun discardBetMessages(bet: FifaBet) {
-        bet.messages.forEach { message ->
-            queueService.enqueueEditMessageTask(
-                MessengerDTO.EditMessageEnqueueRequest(
-                    messengerChat = message.messengerChat!!,
-                    integrationMessageId = message.integrationMessageId!!,
-                    newText = fifaBetMessageBuilder.buildDiscard(bet)
+        bet.messages.filter { it.messengerChat != null && it.integrationMessageId != null }
+            .forEach { message ->
+                queueService.enqueueEditMessageTask(
+                    MessengerDTO.EditMessageEnqueueRequest(
+                        messengerChat = message.messengerChat!!,
+                        integrationMessageId = message.integrationMessageId!!,
+                        newText = fifaBetMessageBuilder.buildDiscard(bet)
+                    )
                 )
-            )
-        }
+            }
     }
 }
