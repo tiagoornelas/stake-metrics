@@ -71,6 +71,7 @@ class FifaBetDTO {
 
     data class StatisticsResponse(
         val openBets: Int,
+        val possibleProfitOnOpenBets: Double,
         val dayStatistics: MainStatistics,
         val monthStatistics: MainStatistics,
         val last12DaysProfit: List<DailyProfit>,

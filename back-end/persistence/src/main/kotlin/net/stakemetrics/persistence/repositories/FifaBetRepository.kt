@@ -90,4 +90,8 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         return fifaBetJpaRepository.getDailyProfits(userId, timezone, startDate, endDate)
             .map { FifaBetDTO.DailyProfit(it.date, it.profit) }
     }
+
+    override fun getPossibleProfitFromOpenBets(userId: UUID): Double {
+        return fifaBetJpaRepository.getPossibleProfitFromOpenBets(userId)
+    }
 }
