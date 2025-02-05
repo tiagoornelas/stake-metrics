@@ -18,8 +18,8 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
 
     interface MainStatisticsProjection {
         val numberOfBets: Long
-        val profit: Double
-        val roi: Double
+        val profit: Double?
+        val roi: Double?
     }
 
     interface DailyProfitProjection {
