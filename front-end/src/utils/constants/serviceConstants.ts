@@ -30,7 +30,8 @@ export const ENDPOINTS = {
     },
     BET: {
         BASE: "/bet",
-        STRATEGY: "/strategy"
+        STRATEGY: "/strategy",
+        STATISTICS: "/statistics",
     },
     STRATEGY: {
         BASE: "/strategy",

@@ -28,4 +28,11 @@ class FifaBetController(private val fifaBetService: FifaBetService) {
         fifaBetService.delete(userEmail, betId)
         return ResponseEntity.ok(FifaBetDTO.DeleteResponse())
     }
+
+    @GetMapping("/statistics")
+    fun getStatistics(): ResponseEntity<FifaBetDTO.StatisticsResponse> {
+        val userEmail = SecurityContextHolder.getContext().authentication.principal as String
+        val statistics = fifaBetService.getStatistics(userEmail)
+        return ResponseEntity.ok(statistics)
+    }
 }

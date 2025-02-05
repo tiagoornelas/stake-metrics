@@ -9,7 +9,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @SpringBootApplication
 @ComponentScan("net.stakemetrics")
 @EntityScan("net.stakemetrics.persistence.models")
-@EnableJpaRepositories("net.stakemetrics.persistence.jpa")
+@EnableJpaRepositories(
+    "net.stakemetrics.persistence.jpa",
+    entityManagerFactoryRef = "entityManagerFactory"
+)
 class BackEndApplication
 
 fun main(args: Array<String>) {

@@ -1,8 +1,11 @@
 package net.stakemetrics.application.service
 
-import net.stakemetrics.application.entities.*
-import java.util.Date
-import java.util.UUID
+import net.stakemetrics.application.entities.FifaBet
+import net.stakemetrics.application.entities.FifaMatch
+import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.Message
+import net.stakemetrics.application.entities.MessengerChat
+import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.MessengerDTO
 import net.stakemetrics.application.entities.dtos.toResponse
@@ -19,6 +22,10 @@ import net.stakemetrics.application.workers.tipsters.FifaTipsterHelper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.Date
+import java.util.UUID
 
 @Service
 class FifaBetService(
@@ -98,9 +105,7 @@ class FifaBetService(
     }
 
     fun listBets(
-        userEmail: String,
-        strategyId: UUID,
-        betFilter: FifaBetDTO.BetFilter
+        userEmail: String, strategyId: UUID, betFilter: FifaBetDTO.BetFilter
     ): Page<FifaBetDTO.BetResponse> {
         val strategy = fifaStrategyService.findById(strategyId)
         assureStrategyBelongsToUser(strategy, userEmail)
@@ -121,6 +126,53 @@ class FifaBetService(
         assertBetBelongsToUser(user, bet)
         fifaBetRepository.delete(bet)
         discardBetMessages(bet)
+    }
+
+    fun getStatistics(userEmail: String): FifaBetDTO.StatisticsResponse {
+        val user = userService.findByEmail(userEmail)
+        val openBets = fifaBetRepository.countOpenBetsByUser(user.id)
+
+        val tz = user.timezoneOffset.id
+        validateTimezone(tz)
+        
+        val now = LocalDateTime.now(ZoneId.of(tz))
+
+        val startOfTheDay = now.withHour(0).withMinute(0).withSecond(0).withNano(0)
+        val startOfTheMonth = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0)
+
+        val dayStatistics = fifaBetRepository.getMainStatisticsByUserAndDateBetween(user.id, startOfTheDay, now)
+        val monthStatistics = fifaBetRepository.getMainStatisticsByUserAndDateBetween(user.id, startOfTheMonth, now)
+
+        val dailyStartDate = now.minusDays(12).toLocalDate()
+        val monthlyStartDate = now.minusMonths(12).toLocalDate()
+        val endDate = now.toLocalDate()
+
+        val dailyProfits = fifaBetRepository.getDailyProfits(
+            user.id, tz, dailyStartDate, endDate
+        ).map { FifaBetDTO.DailyProfit(it.date, it.profit) }
+
+        val monthlyProfits = fifaBetRepository.getMonthlyProfits(
+            user.id, tz, monthlyStartDate, endDate
+        ).map { FifaBetDTO.MonthlyProfit(it.startDate, it.endDate, it.profit) }
+
+        val possibleProfitOnOpenBets = fifaBetRepository.getPossibleProfitFromOpenBets(user.id)
+
+        return FifaBetDTO.StatisticsResponse(
+            openBets = openBets,
+            possibleProfitOnOpenBets = possibleProfitOnOpenBets,
+            dayStatistics = dayStatistics,
+            monthStatistics = monthStatistics,
+            last12DaysProfit = dailyProfits,
+            last12MonthsProfit = monthlyProfits
+        )
+    }
+
+    private fun validateTimezone(timezone: String) {
+        try {
+            ZoneId.of(timezone)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Invalid timezone: $timezone")
+        }
     }
 
     private fun assertBetBelongsToUser(user: User, bet: FifaBet) {

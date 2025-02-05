@@ -13,6 +13,7 @@ import net.stakemetrics.persistence.models.toModel
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Repository
@@ -34,6 +35,10 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
         return fifaBetJpaRepository.findAllByStatusOrProfit(BetStatusTypes.PENDING, null).map { it.toDomain() }
     }
 
+    override fun countOpenBetsByUser(userId: UUID): Int {
+        return fifaBetJpaRepository.countByStatusAndUserId(BetStatusTypes.PENDING, userId)
+    }
+
     override fun existsByStrategyAndMatch(fifaStrategy: FifaStrategy, fifaMatch: FifaMatch): Boolean {
         return fifaBetJpaRepository.existsByStrategyAndMatch(fifaStrategy.toModel(), fifaMatch.toModel())
     }
@@ -53,12 +58,40 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
     }
 
     override fun findByMessengerChatAndDateBetween(
-        messengerChatId: UUID,
-        startDate: LocalDateTime,
-        endDate: LocalDateTime
+        messengerChatId: UUID, startDate: LocalDateTime, endDate: LocalDateTime
     ): List<FifaBet> {
         return fifaBetJpaRepository.findByMessengerChatAndDateBetween(
             messengerChatId, startDate, endDate
         ).map { it.toDomain() }
+    }
+
+    override fun getMainStatisticsByUserAndDateBetween(
+        userId: UUID, startDate: LocalDateTime, endDate: LocalDateTime
+    ): FifaBetDTO.MainStatistics {
+        return fifaBetJpaRepository.getMainStatisticsByUserAndDateBetween(
+            userId, startDate, endDate
+        ).toMainStatistics()
+    }
+
+    private fun FifaBetJpaRepository.MainStatisticsProjection.toMainStatistics() = FifaBetDTO.MainStatistics(
+        numberOfBets = numberOfBets, profit = profit, roi = roi
+    )
+
+    override fun getMonthlyProfits(
+        userId: UUID, timezone: String, startDate: LocalDate, endDate: LocalDate
+    ): List<FifaBetDTO.MonthlyProfit> {
+        return fifaBetJpaRepository.getMonthlyProfits(userId, timezone, startDate, endDate)
+            .map { FifaBetDTO.MonthlyProfit(it.startDate, it.endDate, it.profit) }
+    }
+
+    override fun getDailyProfits(
+        userId: UUID, timezone: String, startDate: LocalDate, endDate: LocalDate
+    ): List<FifaBetDTO.DailyProfit> {
+        return fifaBetJpaRepository.getDailyProfits(userId, timezone, startDate, endDate)
+            .map { FifaBetDTO.DailyProfit(it.date, it.profit) }
+    }
+
+    override fun getPossibleProfitFromOpenBets(userId: UUID): Double {
+        return fifaBetJpaRepository.getPossibleProfitFromOpenBets(userId)
     }
 }
