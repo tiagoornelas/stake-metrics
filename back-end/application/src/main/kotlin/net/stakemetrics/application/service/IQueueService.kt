@@ -8,7 +8,7 @@ import net.stakemetrics.application.entities.dtos.MessengerDTO
 
 interface IQueueService {
     fun enqueueSaveMatchResultTask(payload: FifaDataSourceDTO.FifaMatchRequest)
-    fun enqueueRunTrendAnalysisTask(payload: FifaDataSourceDTO. FifaOddRequest)
+    fun enqueueRunTrendAnalysisTask(payload: FifaDataSourceDTO.FifaOddRequest)
     fun enqueueRunStrategyAgainstOddTask(payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest)
     fun enqueueBetTask(payload: FifaBetDTO.BetRequest)
     fun enqueueCloseBetTask(payload: FifaBetDTO.CloseBetRequest)
@@ -16,4 +16,5 @@ interface IQueueService {
     fun enqueueMessageTask(payload: MessengerDTO.EnqueueRequest, delay: Int?)
     fun enqueueEditMessageTask(payload: MessengerDTO.EditMessageEnqueueRequest)
     fun enqueueBetResultReport(payload: MessengerDTO.ReportBetResultsRequest)
+    fun enqueueDiscardHangingBetTask(payload: FifaBetDTO.CloseBetRequest)
 }
