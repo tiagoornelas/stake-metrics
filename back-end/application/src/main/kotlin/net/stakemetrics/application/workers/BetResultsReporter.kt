@@ -15,15 +15,14 @@ class BetResultsReporter(
 ) {
 
     fun reportChat(messengerChat: MessengerChat) {
-        val user = messengerChat.user ?: throw IllegalStateException("MessengerChat must have a user")
-        val userZone = ZoneId.of(user.timezoneOffset.id)
-        val now = LocalDateTime.now(userZone)
-        val targetDate = now.minusDays(1)
+        val user = messengerChat.user ?: throw IllegalStateException("MessengerChat must have an user")
+
+        val targetDate = LocalDateTime.now().minusDays(1)
         val startDate = targetDate.withHour(0).withMinute(0).withSecond(0)
         val endDate = targetDate.withHour(23).withMinute(59).withSecond(59)
 
         val fifaBets = fifaBetRepository.findByMessengerChatAndDateBetween(
-            messengerChat.id, startDate, endDate
+            messengerChat.id, user.timezoneOffset.id, startDate, endDate
         )
 
         val reportMessage = fifaBetMessageBuilder.buildReport(fifaBets, targetDate)
