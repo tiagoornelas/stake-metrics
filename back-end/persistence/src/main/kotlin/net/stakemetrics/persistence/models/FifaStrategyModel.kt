@@ -24,10 +24,10 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
                 COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,
                 COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)), 0) AS activeResult,
                 COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi,
-                COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00')) = CURDATE(), b.profit, 0)), 0) AS todaysResult,
+                COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) = DATE(CONVERT_TZ(NOW(), '+00:00', :timezone)), b.profit, 0)), 0) AS todaysResult,
                 FLOOR(
                     COALESCE(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0) / 
-                    NULLIF(COUNT(DISTINCT DATE(CONVERT_TZ(b.bet_time, '+00:00', '-03:00'))), 0)
+                    NULLIF(COUNT(DISTINCT DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone))), 0)
                 ) AS averageDailyBets
             FROM fifa_strategies s
             LEFT JOIN fifa_bets b ON s.id = b.strategy_id

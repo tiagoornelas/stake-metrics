@@ -128,7 +128,7 @@ class CloudTaskService(
             val queueName = "discard-hanging-bet"
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
             val fullUrl = "$baseUrl/queue/fifa/$queueName"
-            enqueueTask(fullUrl, getJsonPayload(payload.bet), client, queuePath)
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
         }
     }
 
