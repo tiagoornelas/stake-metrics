@@ -22,6 +22,7 @@ interface Props extends ButtonProps {
     title: string;
     actionText?: string;
     actionCallback?: () => void;
+    actionIsLoading?: boolean;
     disableAction?: boolean
     noFooter?: boolean;
     size?: string;
@@ -64,6 +65,7 @@ const Modal: React.FC<Props> = ({
                                     title,
                                     actionText,
                                     actionCallback,
+                                    actionIsLoading = false,
                                     disableAction = false,
                                     noFooter = false,
                                     size = "md",
@@ -131,8 +133,14 @@ const Modal: React.FC<Props> = ({
                                     {button.label}
                                 </Button>
                             ))}
-                            <Button bgColor={colors.product} color={colors.productContrast} onClick={handleSubmit}
-                                    isDisabled={disableAction}>
+                            <Button
+                                bgColor={colors.product}
+                                color={colors.productContrast}
+                                onClick={handleSubmit}
+                                isDisabled={disableAction || actionIsLoading}
+                                isLoading={actionIsLoading}
+                                loadingText={actionText}
+                            >
                                 {actionText}
                             </Button>
                         </ModalFooter>

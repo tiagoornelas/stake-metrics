@@ -13,6 +13,7 @@ import net.stakemetrics.application.entities.Subscription
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.SubscriptionDTO
 import net.stakemetrics.application.entities.enums.EntitlementTypes
+import net.stakemetrics.application.entities.enums.FeatureTypes
 import net.stakemetrics.application.entities.enums.SubscriptionStatus
 import net.stakemetrics.application.repositories.ISubscriptionRepository
 import net.stakemetrics.application.service.ISubscriptionService
@@ -185,5 +186,11 @@ class SubscriptionService(
         val subscriptions = getSubscriptions(integrationId)
         val activeSubscriptions = subscriptions.filter { it.status == SubscriptionStatus.ACTIVE.integrationValue }
         return if (activeSubscriptions.isNotEmpty()) SubscriptionStatus.ACTIVE else SubscriptionStatus.INACTIVE
+    }
+
+    override fun hasFeature(user: User, featureType: FeatureTypes): Boolean {
+        val subscription = subscriptionRepository.findByUser(user)
+        val features = listUserFeatures(subscription.integrationId)
+        return features[featureType.identifier]?.let { it > 0 } ?: false
     }
 }
