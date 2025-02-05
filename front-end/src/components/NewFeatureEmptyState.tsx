@@ -1,6 +1,6 @@
 import {Flex, Heading, Highlight, Text} from "@chakra-ui/react";
 import React from 'react';
-import { useTranslation } from '../hooks/useTranslation';
+import useTranslation from '../hooks/useTranslation';
 
 const Illustration = ({height = "727", width = "939.00197", style = {}}) => {
     return (

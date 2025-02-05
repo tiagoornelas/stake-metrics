@@ -19,7 +19,8 @@ import {setUser} from "utils/helpers/contextHelper";
 import {getCustomThemeColors} from "utils/helpers/themeColorHelper";
 import {UserContext, UserReducerAction} from "utils/interfaces";
 import UserManagement from "./containers/user/UserManagement";
-import { TranslationProvider } from "hooks/useTranslation";
+import TranslationProvider from "providers/TranslationProvider";
+import FifaDashboard from "containers/fifa/dashboard/FifaDashboard";
 
 const publicRouter = createBrowserRouter([
     {
@@ -53,13 +54,17 @@ const appRouter = createBrowserRouter([
         element: <PrivateRouterLayout><UserManagement/></PrivateRouterLayout>
     },
     {
-        path: "/app/esoccer/strategies",
-        element: <PrivateRouterLayout><FifaStrategies/></PrivateRouterLayout>
+        path: "/app/esoccer/dashboard",
+        element: <PrivateRouterLayout><FifaDashboard/></PrivateRouterLayout>
 
     },
     {
-        path: "/app/*",
+        path: "/app/esoccer/strategies",
         element: <PrivateRouterLayout><FifaStrategies/></PrivateRouterLayout>
+    },
+    {
+        path: "/app/*",
+        element: <PrivateRouterLayout><FifaDashboard/></PrivateRouterLayout>
     },
     {
         path: "/*",

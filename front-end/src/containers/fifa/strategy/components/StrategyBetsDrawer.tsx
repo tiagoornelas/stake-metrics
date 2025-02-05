@@ -22,6 +22,7 @@ import useStrategyCumulativeProfitsQuery from "containers/fifa/strategy/hooks/us
 import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
 import {StrategyListItem} from "utils/interfaces";
+import { formatPercentage, formatProfit, formatBetVolume } from "utils/helpers/formatHelpers";
 
 type Props = {
     isOpen: boolean
@@ -34,10 +35,6 @@ type DiffType = "increase" | "decrease" | undefined;
 const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
     const colors = useThemeColors();
     const {data = [], isLoading} = useStrategyCumulativeProfitsQuery(strategy.id);
-
-    const formatPercentage = (value: number) => `${Math.round(value * 10000) / 100} %`;
-
-    const formatBetVolume = (value: number) => value > 0 ? `${Math.round(value)} / dia` : "0 / dia";
 
     const getColorScheme = (value: number) => {
         if (value > 0) return 'green.500';
@@ -56,7 +53,7 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
         };
     };
 
-    const showExtraStats = useBreakpointValue({base: false, sm: true});
+    const showExtraStats = useBreakpointValue({base: false, md: true});
     const statFontSize = useBreakpointValue({base: 'md', sm: 'xl'});
 
     return (
@@ -84,7 +81,7 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                                     <StatLabel>Un Hoje</StatLabel>
                                     <StatNumber
                                         fontSize={statFontSize}
-                                        color={getColorScheme(strategy.todaysResult)}>{`${strategy.todaysResult.toFixed(2)} u`}</StatNumber>
+                                        color={getColorScheme(strategy.todaysResult)}>{formatProfit(strategy.todaysResult)}</StatNumber>
                                 </Stat>
                             </>
                         )}
@@ -96,7 +93,7 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                             <StatLabel>Un Ativas</StatLabel>
                             <StatNumber
                                 fontSize={statFontSize}
-                                color={getColorScheme(strategy.activeResult)}>{`${strategy.activeResult.toFixed(2)} u`}</StatNumber>
+                                color={getColorScheme(strategy.activeResult)}>{formatProfit(strategy.activeResult)}</StatNumber>
                         </Stat>
                         {showExtraStats && (<Stat>
                             <StatLabel>ROI Ativa</StatLabel>
@@ -114,7 +111,7 @@ const StrategyBetsDrawer = ({isOpen, onClose, strategy}: Props) => {
                             <StatLabel>Un Totais</StatLabel>
                             <StatNumber
                                 fontSize={statFontSize}
-                                color={getColorScheme(strategy.result)}>{`${strategy.result.toFixed(2)} u`}</StatNumber>
+                                color={getColorScheme(strategy.result)}>{formatProfit(strategy.result)}</StatNumber>
                         </Stat>
                         <Stat>
                             <StatLabel>ROI Total</StatLabel>

@@ -9,6 +9,54 @@
             "en": "You don't have an active subscription."
        }
     },
+    "charts": {
+        "emptyState": {
+            "pt": "Você ainda não tem nenhuma aposta fechada 💭",
+            "en": "No closed bets yet 💭"
+        }
+    },
+    "dashboard": {
+        "emptyCharts": {
+            "pt": "Quando você tiver apostas fechadas, aqui serão exibidos gráficos com seus resultados",
+            "en": "When you have closed bets, charts with your results will be displayed here"
+        },
+        "createStrategy": {
+            "pt": "Comece criando uma estratégia 🔭",
+            "en": "Start by creating a strategy 🔭"
+        },
+        "last12DaysChart": {
+            "pt": "Últimos 12 dias",
+            "en": "Last 12 days"
+        },
+        "last12MonthsChart": {
+            "pt": "Últimos 12 meses",
+            "en": "Last 12 months"
+        },
+        "openBets": {
+            "pt": "Apostas abertas",
+            "en": "Open bets"
+        },
+        "dailyProfit": {
+            "pt": "Lucro do dia",
+            "en": "Today's profit"
+        },
+        "monthlyProfit": {
+            "pt": "Lucro do mês",
+            "en": "This month's profit"
+        },
+        "monthlyVolume": {
+            "pt": "Volume do mês",
+            "en": "This month's volume"
+        },
+        "today": {
+            "pt": "hoje",
+            "en": "today"
+        },
+        "possibleProfit": {
+            "pt": "Lucro possível",
+            "en": "Possible profit"
+        }
+    },
     "strategy": {
         "statusMenu": {
             "tooltip": {
@@ -25,7 +73,7 @@
                     "en": "Deactivate"
                 },
                 "PAPER_BET": {
-                    "pt": "Colocar em teste",
+                    "pt": "Testar em Paper Bet",
                     "en": "Set as paper bet"
                 }
             }

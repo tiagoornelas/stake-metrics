@@ -6,7 +6,7 @@ import ProductName from "components/ProductName";
 import useThemeColors from "hooks/useThemeColors";
 import { useUserState } from "context/UserContext";
 import { UserContext } from "utils/interfaces";
-import { useTranslation } from 'hooks/useTranslation';
+import useTranslation from 'hooks/useTranslation';
 
 const SubscriptionStatusAlert = ({
   hasPendingPayment,

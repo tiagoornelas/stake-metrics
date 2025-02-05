@@ -1,4 +1,5 @@
 import {Box, Center, Text, useColorMode} from "@chakra-ui/react";
+import useTranslation from "hooks/useTranslation";
 import React from "react";
 import {Area, AreaChart, ResponsiveContainer, Tooltip, TooltipProps} from "recharts";
 import {parseCumulativeProfitsToChart} from "utils/helpers/chartHelper";
@@ -32,6 +33,7 @@ const CustomTooltip = ({active, payload}: TooltipProps<number, string>) => {
 const ProfitOverBetsLineChart = ({data}: Props) => {
     const {colorMode} = useColorMode();
     const isDarkMode = colorMode === "dark";
+    const { t } = useTranslation();
 
     const parsedData = parseCumulativeProfitsToChart(data);
     const lastValue = parsedData[parsedData.length - 1]?.un || 0;
@@ -45,7 +47,7 @@ const ProfitOverBetsLineChart = ({data}: Props) => {
     if (parsedData.length === 1 && parsedData[0].un === 0) {
         return (
             <Center width={"100%"} height={"100%"}>
-                <Text>Ainda nenhuma aposta fechada para esta estratégia. 💭</Text>
+                <Text>{t('charts.emptyState')}</Text>
             </Center>
         );
     }
