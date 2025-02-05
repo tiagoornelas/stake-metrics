@@ -15,10 +15,10 @@ class BetResultsReporter(
 ) {
 
     fun reportChat(messengerChat: MessengerChat) {
-        val brazilZone = ZoneId.of("America/Sao_Paulo")
-        val now = LocalDateTime.now(brazilZone)
-        val targetDate = if (now.hour < 1) now.minusDays(1) else now
-        
+        val user = messengerChat.user ?: throw IllegalStateException("MessengerChat must have a user")
+        val userZone = ZoneId.of(user.timezoneOffset.id)
+        val now = LocalDateTime.now(userZone)
+        val targetDate = now.minusDays(1)
         val startDate = targetDate.withHour(0).withMinute(0).withSecond(0)
         val endDate = targetDate.withHour(23).withMinute(59).withSecond(59)
 
