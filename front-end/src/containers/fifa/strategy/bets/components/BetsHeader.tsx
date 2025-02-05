@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {getLeagues} from "services/leagueService";
 import {BetQueryFilters, Option} from "utils/interfaces";
 import {BsFileSpreadsheet} from "react-icons/all";
-import { useTranslation } from "hooks/useTranslation";
+import useTranslation from "hooks/useTranslation";
 
 const ReportMenu = () => {
     const { t } = useTranslation();

@@ -220,7 +220,7 @@ const Header = () => {
                               <MenuItem
                                 onClick={() =>
                                   canAccess &&
-                                  navigate(path.toLowerCase(), {
+                                  navigate(`/${path.toLowerCase()}`, {
                                     replace: true,
                                   })
                                 }

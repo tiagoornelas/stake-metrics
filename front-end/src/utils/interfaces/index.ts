@@ -1,7 +1,7 @@
-import {ButtonProps} from "@chakra-ui/react";
-import {ReactElement} from "react";
-import {FEATURES} from "utils/constants/featureConstants";
-import {USER_REDUCER_ACTION_TYPES} from "../constants/contextConstants";
+import { ButtonProps } from "@chakra-ui/react";
+import { ReactElement } from "react";
+import { FEATURES } from "utils/constants/featureConstants";
+import { USER_REDUCER_ACTION_TYPES } from "../constants/contextConstants";
 
 export enum REQUEST_TYPE {
     GET = "GET",
@@ -299,4 +299,28 @@ export interface BetQueryFilters {
     league: string[];
 
     [key: string]: boolean | string[];
+}
+
+export interface BetStatistics {
+    openBets: number;
+    possibleProfitOnOpenBets: number;
+    dayStatistics: {
+        numberOfBets: string;
+        profit: number;
+        roi: number;
+    };
+    monthStatistics: {
+        numberOfBets: string;
+        profit: number;
+        roi: number;
+    };
+    last12DaysProfit: Array<{
+        date: string;
+        profit: number;
+    }>;
+    last12MonthsProfit: Array<{
+        startDate: string;
+        endDate: string;
+        profit: number;
+    }>;
 }
