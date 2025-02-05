@@ -2,6 +2,7 @@ package net.stakemetrics.application.service
 
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.SubscriptionDTO
+import net.stakemetrics.application.entities.enums.FeatureTypes
 import net.stakemetrics.application.entities.enums.SubscriptionStatus
 import org.springframework.stereotype.Service
 
@@ -14,4 +15,5 @@ interface ISubscriptionService {
     fun createPortalSession(userEmail: String): SubscriptionDTO.CreateSessionResponse
     fun createPricingTable(userEmail: String, darkMode: Boolean): SubscriptionDTO.PricingTableResponse
     fun checkUserSubscriptionStatus(user: User): SubscriptionStatus
+    fun hasFeature(user: User, featureType: FeatureTypes): Boolean
 }

@@ -14,6 +14,7 @@ data class MessengerChat(
     val notDeliveredMessage: String = "",
     val extraText: String = "",
     val receiveReports: Boolean = true,
+    val hideSoftwareLink: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 ) {
     fun hasNotDeliveredMessage(): Boolean {
