@@ -219,7 +219,7 @@ const TelegramSettingsModal = ({ chat, onCloseCallback }: Props) => {
           <Box display="flex" flexDirection="column" gap={2}>
             <Heading size="sm">Texto extra ao final</Heading>
             <Text fontSize="xs" color="gray">
-              Preencha para enviar uma mensagem antes da mensagem principal em caso de atraso
+              Preencha para enviar uma mensagem ao final
             </Text>
             <Input name="extraText" value={formState.extraText} onChange={handleChange} disabled={isLoading} />
           </Box>
