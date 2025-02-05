@@ -25,7 +25,7 @@ import {
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import StrategyForm from "containers/fifa/strategy/components/StrategyForm";
 import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
-import { useTranslation } from "hooks/useTranslation";
+import useTranslation from "hooks/useTranslation";
 import {useErrorToast} from "hooks/useErrorToast";
 import React, {useState} from "react";
 import ReactDOM from "react-dom";

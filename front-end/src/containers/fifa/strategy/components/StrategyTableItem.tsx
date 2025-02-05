@@ -5,15 +5,15 @@ import StrategyTableActions from "containers/fifa/strategy/components/StrategyTa
 import useThemeColors from "hooks/useThemeColors";
 import React from 'react';
 import {StrategyListItem} from "utils/interfaces";
+import { formatPercentage, formatProfit } from "utils/helpers/formatHelpers";
 
 const ResultData = ({value}: { value: number }) => {
     const colors = useThemeColors();
     const color = value > 0 ? "green" : value < 0 ? "red" : colors.contrast;
-    const formattedValue = `${value > 0 ? "+" : ""}${value} u`;
 
     return (
         <Td textAlign={"center"} color={color}>
-            {formattedValue}
+            {formatProfit(value)}
         </Td>
     );
 };
@@ -21,13 +21,10 @@ const ResultData = ({value}: { value: number }) => {
 const ROIData = ({value}: { value: number }) => {
     const colors = useThemeColors();
     const color = value > 0 ? "green" : value < 0 ? "red" : colors.contrast;
-    const percentageValue = value * 100;
-    const roundedValue = Math.round(percentageValue * 100) / 100;
-    const formattedValue = `${roundedValue > 0 ? "+" : ""}${roundedValue.toFixed(2)} %`;
 
     return (
         <Td textAlign={"center"} color={color}>
-            {formattedValue}
+            {formatPercentage(value)}
         </Td>
     );
 };

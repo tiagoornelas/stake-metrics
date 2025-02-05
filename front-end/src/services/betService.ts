@@ -9,3 +9,6 @@ export const listBetsForStrategy = (strategyId: string, filters: BetQueryFilters
 
 export const deleteBet = (betId: string) =>
     makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.BET.BASE}/${betId}`, REQUEST_TYPE.DELETE);
+
+export const getFifaBetStatistics = () =>
+    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.BET.BASE}${ENDPOINTS.BET.STATISTICS}`, REQUEST_TYPE.GET);

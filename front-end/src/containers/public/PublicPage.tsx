@@ -8,7 +8,7 @@ import {differenceInDays} from 'date-fns';
 import React, {Fragment} from 'react';
 import {GoTelescope} from "react-icons/all";
 import {useNavigate} from "react-router-dom";
-import { useTranslation } from '../../hooks/useTranslation';
+import useTranslation from '../../hooks/useTranslation';
 
 const daysValidatingDataBase = differenceInDays(new Date(), new Date(2023, 12, 5));
 
