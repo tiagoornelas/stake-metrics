@@ -55,6 +55,10 @@
         "possibleProfit": {
             "pt": "Lucro possível",
             "en": "Possible profit"
+        },
+        "noPendingProfit": {
+            "pt": "Sem lucro pendente",
+            "en": "No pending profit"
         }
     },
     "strategy": {
