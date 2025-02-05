@@ -60,6 +60,12 @@ class QueueController(
         return ResponseEntity.ok(QueueDTO.Response())
     }
 
+    @PostMapping("/fifa/discard-hanging-bet")
+    fun discardHangingBet(@RequestBody payload: FifaBetDTO.CloseBetRequest): ResponseEntity<QueueDTO.Response> {
+        fifaBetService.discardHangingBet(payload.bet)
+        return ResponseEntity.ok(QueueDTO.Response())
+    }
+
     @PostMapping("/fifa/close-odd-snapshot")
     fun closeOddSnapshot(@RequestBody payload: FifaOddSnapshot): ResponseEntity<QueueDTO.Response> {
         fifaOddSnapshotService.closeOddSnapshot(payload)
