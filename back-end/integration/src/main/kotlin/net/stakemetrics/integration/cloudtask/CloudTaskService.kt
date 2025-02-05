@@ -4,7 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.api.gax.core.NoCredentialsProvider
 import com.google.api.gax.grpc.GrpcTransportChannel
 import com.google.api.gax.rpc.FixedTransportChannelProvider
-import com.google.cloud.tasks.v2.*
+import com.google.cloud.tasks.v2.CloudTasksClient
+import com.google.cloud.tasks.v2.CloudTasksSettings
+import com.google.cloud.tasks.v2.HttpMethod
+import com.google.cloud.tasks.v2.HttpRequest
+import com.google.cloud.tasks.v2.QueueName
+import com.google.cloud.tasks.v2.Task
 import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import net.stakemetrics.application.entities.FifaOddSnapshot
@@ -115,6 +120,15 @@ class CloudTaskService(
             val queuePath = QueueName.of(projectId, locationId, queueName).toString()
             val fullUrl = "$baseUrl/queue/fifa/$queueName"
             enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
+        }
+    }
+
+    override fun enqueueDiscardHangingBetTask(payload: FifaBetDTO.CloseBetRequest) {
+        createCloudTaskClient().use { client ->
+            val queueName = "discard-hanging-bet"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
+            enqueueTask(fullUrl, getJsonPayload(payload.bet), client, queuePath)
         }
     }
 
