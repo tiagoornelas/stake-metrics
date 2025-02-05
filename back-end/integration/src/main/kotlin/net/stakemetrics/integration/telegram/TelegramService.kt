@@ -175,7 +175,7 @@ class TelegramService(
         messengerChat: MessengerChat, message: String
     ): String {
         val softwareLink = if (!messengerChat.hideSoftwareLink) {
-            "\n\n🚀 Acesse [stakemetrics.net](https://stakemetrics.net) para criar ainda hoje o seu próprio robô"
+            "\n\n🚀 Acesse https://stakemetrics.net para criar ainda hoje o seu próprio robô"
         } else {
             ""
         }
