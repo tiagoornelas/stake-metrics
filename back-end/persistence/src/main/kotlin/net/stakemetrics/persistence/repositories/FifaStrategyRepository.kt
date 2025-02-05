@@ -1,6 +1,5 @@
 package net.stakemetrics.persistence.repositories
 
-import java.util.UUID
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
@@ -11,9 +10,12 @@ import net.stakemetrics.persistence.models.toModel
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
-class FifaStrategyRepository(private val fifaStrategyJpaRepository: FifaStrategyJpaRepository) :
+class FifaStrategyRepository(
+    private val fifaStrategyJpaRepository: FifaStrategyJpaRepository
+) :
     IFifaStrategyRepository {
 
     @CacheEvict(value = ["strategies"], allEntries = true)
@@ -31,8 +33,11 @@ class FifaStrategyRepository(private val fifaStrategyJpaRepository: FifaStrategy
         return fifaStrategyJpaRepository.findAllByUserId(userId).map { it.toDomain() }
     }
 
-    override fun getStrategiesStatisticsByUser(userId: UUID): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse> {
-        return fifaStrategyJpaRepository.findStrategyStatisticsByUserId(userId)
+    override fun getStrategiesStatisticsByUser(
+        userId: UUID,
+        timezone: String
+    ): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse> {
+        return fifaStrategyJpaRepository.findStrategyStatisticsByUserId(userId, timezone)
     }
 
     override fun findById(id: UUID): FifaStrategy? {
