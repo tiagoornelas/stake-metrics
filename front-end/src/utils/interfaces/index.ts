@@ -109,6 +109,7 @@ export interface TelegramChat {
     notDeliveredMessage: string;
     extraText: string;
     receiveReports: boolean;
+    hideSoftwareLink: boolean;
 }
 
 export interface ExtraButton extends ButtonProps {
