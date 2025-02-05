@@ -51,4 +51,6 @@ interface IFifaBetRepository {
         startDate: LocalDate,
         endDate: LocalDate
     ): List<FifaBetDTO.DailyProfit>
+
+    fun getPossibleProfitFromOpenBets(userId: UUID): Double
 }

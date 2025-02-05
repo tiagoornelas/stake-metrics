@@ -98,7 +98,7 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
             AND b.is_paper_bet = FALSE
             AND DATE(CONVERT_TZ(b.bet_time, 'UTC', :timezone)) BETWEEN :startDate AND :endDate
         GROUP BY date
-        ORDER BY date DESC
+        ORDER BY date ASC
     """
     )
     fun getDailyProfits(
@@ -119,7 +119,7 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
             AND b.is_paper_bet = FALSE
             AND DATE(CONVERT_TZ(b.bet_time, 'UTC', :timezone)) BETWEEN :startDate AND :endDate
         GROUP BY startDate, endDate
-        ORDER BY startDate DESC
+        ORDER BY startDate ASC
     """
     )
     fun getMonthlyProfits(
@@ -147,4 +147,17 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         @Param("startDate") startDate: LocalDateTime,
         @Param("endDate") endDate: LocalDateTime
     ): MainStatisticsProjection
+
+    @Query(
+        """
+        SELECT 
+            COALESCE(SUM(b.odds - 1), 0.0) AS possibleProfit
+        FROM FifaBetModel b
+        WHERE b.strategy.user.id = :userId 
+        AND b.status = 0 
+        AND b.profit IS NULL 
+        AND b.isPaperBet = FALSE
+        """
+    )
+    fun getPossibleProfitFromOpenBets(@Param("userId") userId: UUID): Double
 }

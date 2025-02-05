@@ -155,8 +155,11 @@ class FifaBetService(
             user.id, tz, monthlyStartDate, endDate
         ).map { FifaBetDTO.MonthlyProfit(it.startDate, it.endDate, it.profit) }
 
+        val possibleProfitOnOpenBets = fifaBetRepository.getPossibleProfitFromOpenBets(user.id)
+
         return FifaBetDTO.StatisticsResponse(
             openBets = openBets,
+            possibleProfitOnOpenBets = possibleProfitOnOpenBets,
             dayStatistics = dayStatistics,
             monthStatistics = monthStatistics,
             last12DaysProfit = dailyProfits,
