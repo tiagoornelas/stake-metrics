@@ -1,6 +1,7 @@
 package net.stakemetrics.application.workers
 
 import net.stakemetrics.application.entities.FifaBet
+import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.MessengerDTO
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
@@ -18,12 +19,25 @@ class FifaBetClosingWorker(
 ) {
 
     fun close(fifaBet: FifaBet) {
-        val matchHasResult = checkIfMatchHasResult(fifaBet)
-        if (matchHasResult) {
-            closeBet(fifaBet)
-        } else {
+        if (fifaBet.isHanging()) {
+            logger.log("Match ${fifaBet.match?.id} has been hanging for too long, discarding bet.")
+            discardHangingBet(fifaBet)
+            return
+        }
+
+        if (!checkIfMatchHasResult(fifaBet)) {
             logger.log("Could not get result for match ${fifaBet.match?.id}, so the bet cannot be closed yet.")
             return
+        }
+
+        closeBet(fifaBet)
+    }
+
+    private fun discardHangingBet(fifaBet: FifaBet) {
+        fifaBet.match?.let { match ->
+            logger.log("Discarding hanging bet ${fifaBet.id} for match ${match.id} that started at ${match.time}")
+            val payload = FifaBetDTO.CloseBetRequest(fifaBet)
+            queueService.enqueueDiscardHangingBetTask(payload)
         }
     }
 
