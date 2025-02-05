@@ -159,7 +159,7 @@ class FifaStrategyService @Autowired constructor(
 
     fun listAllStrategiesStatistics(userEmail: String): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse> {
         val user = userService.findByEmail(userEmail)
-        val strategies = fifaStrategyRepository.getStrategiesStatisticsByUser(user.id)
+        val strategies = fifaStrategyRepository.getStrategiesStatisticsByUser(user.id, user.timezoneOffset.id)
 
         val sortedStrategies = strategies.sortedWith(
             compareBy({ it.status == FifaStrategyStatus.INACTIVE },
