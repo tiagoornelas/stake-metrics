@@ -1,13 +1,23 @@
 {
     "subscription": {
-       "pendingPayment": {
+        "pendingPayment": {
             "pt": "Você possui um pagamento pendente. Se utilizou método de pagamento por boleto, aguarde o pagamento ser processado em até 2 dias úteis.",
             "en": "You have a pending payment. If you paid by bank transfer, wait up to 2 business days."
-       },
-       "noSubscription": {
+        },
+        "noSubscription": {
             "pt": "Você não possui uma assinatura ativa.",
             "en": "You don't have an active subscription."
-       }
+        }
+    },
+    "features": {
+        "upgrade_plan_required": {
+            "pt": "Necessário fazer upgrade de plano para acessar {feature}",
+            "en": "Upgrade your plan to access {feature}"
+        },
+        "no_ads_messages": {
+            "pt": "mensagens sem identificação da plataforma",
+            "en": "platform-free messages"
+        }
     },
     "charts": {
         "emptyState": {
@@ -73,7 +83,7 @@
                     "en": "Activate"
                 },
                 "INACTIVE": {
-                    "pt": "Inativar", 
+                    "pt": "Inativar",
                     "en": "Deactivate"
                 },
                 "PAPER_BET": {
@@ -147,76 +157,204 @@
                 "pt": "Aqui, por enquanto, tudo é mato!",
                 "en": "Here, for now, everything is wild!"
             }
+        }
+    },
+    "publicPage": {
+        "heading": {
+            "pt": "Aposte com confiança: crie estratégias baseadas em dados, ganhe tempo e tenha mais resultado!",
+            "en": "Bet with confidence: create data-driven strategies, save time, and get better results!"
+        },
+        "description": {
+            "pt": "O Stake Metrics é uma ferramenta que busca oportunidades e as envia para você e seus canais. 🔔\nAnalise e defina suas estratégias com base em dados, acompanhe as tendências e tome decisões. 🎯",
+            "en": "Stake Metrics is a tool that seeks opportunities and sends them to you and your channels. 🔔\nAnalyze and define your strategies based on data, track trends, and make decisions. 🎯"
+        },
+        "buttonText": {
+            "pt": "Comece já!",
+            "en": "Start now!"
+        },
+        "firstSectionFeatures": {
+            "0": {
+                "pt": "Estratégias para E-Soccer Bet365",
+                "en": "Strategies for E-Soccer Bet365"
+            },
+            "1": {
+                "pt": "Receba apostas com links e acompanhe os resultados, tudo pelo Telegram!",
+                "en": "Receive bets with links and track results, all through Telegram!"
+            },
+            "2": {
+                "pt": "Receba suas apostas em até 3 chats ou canais!",
+                "en": "Receive your bets in up to 3 chats or channels!"
+            },
+            "3": {
+                "pt": "Configure um tempo pra você pegar sua aposta antes de compartilhar com outros chats!",
+                "en": "Set a time for you to grab your bet before sharing with other chats!"
+            },
+            "4": {
+                "pt": "Escolha compartilhar só algumas apostas com determinado chat!",
+                "en": "Choose to share only some bets with a specific chat!"
             }
         },
-        "publicPage": {
-            "heading": {
-                "pt": "Aposte com confiança: crie estratégias baseadas em dados, ganhe tempo e tenha mais resultado!",
-                "en": "Bet with confidence: create data-driven strategies, save time, and get better results!"
+        "secondSectionFeatures": {
+            "0": {
+                "pt": "Envie relatórios automáticos para as apostas de cada chat!",
+                "en": "Send automatic reports for bets in each chat!"
             },
-            "description": {
-                "pt": "O Stake Metrics é uma ferramenta que busca oportunidades e as envia para você e seus canais. 🔔\nAnalise e defina suas estratégias com base em dados, acompanhe as tendências e tome decisões. 🎯",
-                "en": "Stake Metrics is a tool that seeks opportunities and sends them to you and your channels. 🔔\nAnalyze and define your strategies based on data, track trends, and make decisions. 🎯"
+            "1": {
+                "pt": "Monitore ligas e descubra parâmetros vencedores!",
+                "en": "Monitor leagues and discover winning parameters!"
             },
-            "buttonText": {
-                "pt": "Comece já!",
-                "en": "Start now!"
+            "2": {
+                "pt": "Geração de relatórios detalhados para análise dos seus resultados!",
+                "en": "Detailed report for your results' analysis!"
             },
-            "firstSectionFeatures": {
-                "0": {
-                    "pt": "Estratégias para E-Soccer Bet365",
-                    "en": "Strategies for E-Soccer Bet365"
-                },
-                "1": {
-                    "pt": "Receba apostas com links e acompanhe os resultados, tudo pelo Telegram!",
-                    "en": "Receive bets with links and track results, all through Telegram!"
-                },
-                "2": {
-                    "pt": "Receba suas apostas em até 3 chats ou canais!",
-                    "en": "Receive your bets in up to 3 chats or channels!"
-                },
-                "3": {
-                    "pt": "Configure um tempo pra você pegar sua aposta antes de compartilhar com outros chats!",
-                    "en": "Set a time for you to grab your bet before sharing with other chats!"
-                },
-                "4": {
-                    "pt": "Escolha compartilhar só algumas apostas com determinado chat!",
-                    "en": "Choose to share only some bets with a specific chat!"
-                }
+            "3": {
+                "pt": "Validando dados e estatísticas por {days} dias",
+                "en": "Validating data and statistics for {days} days"
             },
-            "secondSectionFeatures": {
-                "0": {
-                    "pt": "Envie relatórios automáticos para as apostas de cada chat!",
-                    "en": "Send automatic reports for bets in each chat!"
-                },
-                "1": {
-                    "pt": "Monitore ligas e descubra parâmetros vencedores!",
-                    "en": "Monitor leagues and discover winning parameters!"
-                },
-                "2": {
-                    "pt": "Geração de relatórios detalhados para análise dos seus resultados!",
-                    "en": "Detailed report for your results' analysis!"
-                },
-                "3": {
-                    "pt": "Validando dados e estatísticas por {days} dias",
-                    "en": "Validating data and statistics for {days} days"
-                },
-                "4": {
-                    "pt": "Suas estratégias são privadas e nunca serão vendidas!",
-                    "en": "Your strategies are private and will never be sold!"
-                }
+            "4": {
+                "pt": "Suas estratégias são privadas e nunca serão vendidas!",
+                "en": "Your strategies are private and will never be sold!"
             }
-        },
-        "common": {
-            "soon": {
-                "short": {
-                    "pt": "Breve",
-                    "en": "Soon"
+        }
+    },
+    "common": {
+        "soon": {
+            "short": {
+                "pt": "Breve",
+                "en": "Soon"
+            },
+            "full": {
+                "pt": "Em breve",
+                "en": "Coming soon"
+            }
+        }
+    },
+    "telegram": {
+        "settings_modal": {
+            "title": {
+                "pt": "Configurações do Telegram",
+                "en": "Telegram Settings"
+            },
+            "name": {
+                "label": {
+                    "pt": "Nome do chat",
+                    "en": "Chat name"
+                }
+            },
+            "status": {
+                "label": {
+                    "pt": "Status",
+                    "en": "Status"
                 },
-                "full": {
-                    "pt": "Em breve",
-                    "en": "Coming soon"
+                "active": {
+                    "pt": "Ativo",
+                    "en": "Active"
+                },
+                "inactive": {
+                    "pt": "Inativo", 
+                    "en": "Inactive"
+                }
+            },
+            "delay": {
+                "label": {
+                    "pt": "Atraso",
+                    "en": "Delay"
+                }
+            },
+            "delivery_probability": {
+                "label": {
+                    "pt": "Taxa de entrega",
+                    "en": "Delivery rate"
+                }
+            },
+            "not_delivered_message": {
+                "label": {
+                    "pt": "Aviso de mensagem não entregue",
+                    "en": "Not delivered message warning"
+                },
+                "description": {
+                    "pt": "Preencha para enviar uma mensagem antes da mensagem principal em caso de atraso",
+                    "en": "Fill in to send a message before the main message in case of delay"
+                }
+            },
+            "extra_text": {
+                "label": {
+                    "pt": "Texto extra ao final",
+                    "en": "Extra text at the end"
+                },
+                "description": {
+                    "pt": "Mensagem que será enviada ao final das mensagens de aposta",
+                    "en": "Message to be sent at the end of bet messages"
+                }
+            },
+            "additional_settings": {
+                "label": {
+                    "pt": "Configurações adicionais",
+                    "en": "Additional settings"
+                }
+            },
+            "unsaved_changes": {
+                "label": {
+                    "pt": "Não salvo",
+                    "en": "Unsaved"
+                }
+            },
+            "delete_button": {
+                "label": {
+                    "pt": "Excluir",
+                    "en": "Delete"
+                }
+            },
+            "test_button": {
+                "label": {
+                    "pt": "Testar",
+                    "en": "Test"
+                }
+            },
+            "cancel_button": {
+                "label": {
+                    "pt": "Cancelar",
+                    "en": "Cancel"
+                }
+            },
+            "save_button": {
+                "label": {
+                    "pt": "Salvar",
+                    "en": "Save"
+                }
+            },
+            "delay_message": {
+                "label": {
+                    "pt": "Mensagem de atraso",
+                    "en": "Delay message"
+                },
+                "placeholder": {
+                    "pt": "Preencha para enviar uma mensagem antes da mensagem principal em caso de atraso",
+                    "en": "Fill in to send a message before the main message in case of delay"
+                }
+            },
+            "extra_text": {
+                "label": {
+                    "pt": "Mensagem adicional",
+                    "en": "Additional message"
+                },
+                "placeholder": {
+                    "pt": "Mensagem que será enviada ao final das mensagens de aposta",
+                    "en": "Message to be sent at the end of bet messages"
+                }
+            },
+            "receive_reports": {
+                "label": {
+                    "pt": "Receber relatórios",
+                    "en": "Receive reports"
+                }
+            },
+            "hide_software_link": {
+                "label": {
+                    "pt": "Remover link do software",
+                    "en": "Remove software link"
                 }
             }
         }
     }
+}

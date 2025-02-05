@@ -17,6 +17,10 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
         title: "Não salvamos a estratégia!",
         description: "Verifique se o nome, linhas do mercado ou ligas está vazio."
     },
+    "User does not have the NO_ADS_MESSAGES feature": {
+        title: "Recurso não disponível",
+        description: "Você precisa alterar o plano para remover os links do software."
+    },
     "Scopes cannot be empty": {
         title: "Não salvamos a estratégia!",
         description: "Não rola de salvar sem ter pelo menos uma regra na estratégia."

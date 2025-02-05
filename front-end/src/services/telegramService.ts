@@ -25,7 +25,8 @@ export const editIntegration = (
     deliveryProbability: number,
     notDeliveredMessage: string,
     extraText: string,
-    receiveReports: boolean
+    receiveReports: boolean,
+    hideSoftwareLink: boolean
 ) => makeRequest(`${BASE_URL}${ENDPOINTS.TELEGRAM.BASE}`, REQUEST_TYPE.PUT, {
     id: messengerChatId,
     name,
@@ -34,5 +35,6 @@ export const editIntegration = (
     deliveryProbability,
     notDeliveredMessage,
     extraText,
-    receiveReports
+    receiveReports,
+    hideSoftwareLink
 });
