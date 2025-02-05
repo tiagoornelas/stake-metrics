@@ -24,6 +24,7 @@ data class MessengerChatModel(
     val notDeliveredMessage: String = "",
     val extraText: String = "",
     val receiveReports: Boolean = true,
+    val hideSoftwareLink: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 ) {
     fun toDomain(): MessengerChat {
@@ -38,6 +39,7 @@ data class MessengerChatModel(
             notDeliveredMessage,
             extraText,
             receiveReports,
+            hideSoftwareLink,
             createdAt
         )
     }
@@ -55,6 +57,7 @@ fun MessengerChat.toModel(): MessengerChatModel {
         notDeliveredMessage,
         extraText,
         receiveReports,
+        hideSoftwareLink,
         createdAt
     )
 }
