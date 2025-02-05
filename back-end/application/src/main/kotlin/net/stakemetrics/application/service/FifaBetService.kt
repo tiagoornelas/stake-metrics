@@ -121,9 +121,19 @@ class FifaBetService(
     }
 
     fun delete(userEmail: String, betId: UUID) {
-        val user = userService.findByEmail(userEmail)
         val bet = fifaBetRepository.findById(betId)
+        val user = userService.findByEmail(userEmail)
         assertBetBelongsToUser(user, bet)
+        fifaBetRepository.delete(bet)
+        discardBetMessages(bet)
+    }
+
+    fun discardHangingBet(bet: FifaBet) {
+        if (!bet.isHanging()) {
+            logger.log("Attempted to discard bet ${bet.id} but it is not hanging")
+            return
+        }
+
         fifaBetRepository.delete(bet)
         discardBetMessages(bet)
     }
@@ -134,7 +144,7 @@ class FifaBetService(
 
         val tz = user.timezoneOffset.id
         validateTimezone(tz)
-        
+
         val now = LocalDateTime.now(ZoneId.of(tz))
 
         val startOfTheDay = now.withHour(0).withMinute(0).withSecond(0).withNano(0)
