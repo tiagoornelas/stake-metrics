@@ -16,5 +16,8 @@ interface FifaStrategyJpaRepository : JpaRepository<FifaStrategyModel, UUID> {
     fun countByUserIdAndStatus(userId: UUID, status: FifaStrategyStatus): Int
 
     @Query(name = "find_strategy_statistics_by_user_id", nativeQuery = true)
-    fun findStrategyStatisticsByUserId(@Param("userId") userId: UUID): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse>
+    fun findStrategyStatisticsByUserId(
+        @Param("userId") userId: UUID,
+        @Param("timezone") timezone: String
+    ): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse>
 }

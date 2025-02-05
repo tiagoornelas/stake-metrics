@@ -74,7 +74,9 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
     }
 
     private fun FifaBetJpaRepository.MainStatisticsProjection.toMainStatistics() = FifaBetDTO.MainStatistics(
-        numberOfBets = numberOfBets, profit = profit, roi = roi
+        numberOfBets = numberOfBets,
+        profit = profit ?: 0.0,
+        roi = roi ?: 0.0
     )
 
     override fun getMonthlyProfits(
