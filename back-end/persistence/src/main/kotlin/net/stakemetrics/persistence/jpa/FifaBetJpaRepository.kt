@@ -66,16 +66,16 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
     )
     fun findCumulativeProfitsByStrategyId(@Param("strategyId") strategyId: UUID): List<Double>
 
-    @Query(
-        """
-        SELECT b FROM FifaBetModel b
-        JOIN b.messages m
-        WHERE m.messengerChat.id = :messengerChatId
-        AND b.betTime BETWEEN :startDate AND :endDate
+    @Query(nativeQuery = true, value = """
+        SELECT b.* FROM fifa_bets b
+        JOIN messages m ON m.bet_id = b.id
+        WHERE m.messenger_chat_id = :messengerChatId
+        AND CONVERT_TZ(b.bet_time, '+00:00', :timezone) BETWEEN :startDate AND :endDate
         """
     )
     fun findByMessengerChatAndDateBetween(
         @Param("messengerChatId") messengerChatId: UUID,
+        @Param("timezone") timezone: String,
         @Param("startDate") startDate: LocalDateTime,
         @Param("endDate") endDate: LocalDateTime
     ): List<FifaBetModel>
@@ -90,13 +90,13 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
 
     @Query(nativeQuery = true, value = """
         SELECT 
-            DATE(CONVERT_TZ(b.bet_time, 'UTC', :timezone)) AS date,
+            DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) AS date,
             COALESCE(SUM(b.profit), 0.0) AS profit
         FROM fifa_bets b
         INNER JOIN fifa_strategies s ON b.strategy_id = s.id
         WHERE s.user_id = :userId 
             AND b.is_paper_bet = FALSE
-            AND DATE(CONVERT_TZ(b.bet_time, 'UTC', :timezone)) BETWEEN :startDate AND :endDate
+            AND DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) BETWEEN :startDate AND :endDate
         GROUP BY date
         ORDER BY date ASC
     """
@@ -110,14 +110,14 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
 
     @Query(nativeQuery = true, value = """
         SELECT 
-            DATE_FORMAT(CONVERT_TZ(b.bet_time, 'UTC', :timezone), '%Y-%m-01') AS startDate,
-            LAST_DAY(CONVERT_TZ(b.bet_time, 'UTC', :timezone)) AS endDate,
+            DATE_FORMAT(CONVERT_TZ(b.bet_time, '+00:00', :timezone), '%Y-%m-01') AS startDate,
+            LAST_DAY(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) AS endDate,
             COALESCE(SUM(b.profit), 0.0) AS profit
         FROM fifa_bets b
         INNER JOIN fifa_strategies s ON b.strategy_id = s.id
         WHERE s.user_id = :userId 
             AND b.is_paper_bet = FALSE
-            AND DATE(CONVERT_TZ(b.bet_time, 'UTC', :timezone)) BETWEEN :startDate AND :endDate
+            AND DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) BETWEEN :startDate AND :endDate
         GROUP BY startDate, endDate
         ORDER BY startDate ASC
     """
@@ -129,21 +129,24 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         @Param("endDate") endDate: LocalDate
     ): List<MonthlyProfitProjection>
 
-    @Query(
-        """
+    @Query(nativeQuery = true, value = """
         SELECT 
             COUNT(b.id) AS numberOfBets,
-            SUM(b.profit) AS profit,
+            COALESCE(SUM(b.profit), 0.0) AS profit,
             CASE 
                 WHEN COUNT(b.id) = 0 THEN 0
-                ELSE SUM(b.profit) / COUNT(b.id)
+                ELSE COALESCE(SUM(b.profit), 0.0) / COUNT(b.id)
             END AS roi
-        FROM FifaBetModel b
-        WHERE b.strategy.user.id = :userId AND b.betTime BETWEEN :startDate AND :endDate AND b.isPaperBet = FALSE
+        FROM fifa_bets b
+        INNER JOIN fifa_strategies s ON b.strategy_id = s.id
+        WHERE s.user_id = :userId 
+        AND CONVERT_TZ(b.bet_time, '+00:00', :timezone) BETWEEN :startDate AND :endDate 
+        AND b.is_paper_bet = FALSE
         """
     )
     fun getMainStatisticsByUserAndDateBetween(
         @Param("userId") userId: UUID,
+        @Param("timezone") timezone: String,
         @Param("startDate") startDate: LocalDateTime,
         @Param("endDate") endDate: LocalDateTime
     ): MainStatisticsProjection
