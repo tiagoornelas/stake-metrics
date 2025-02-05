@@ -1,5 +1,6 @@
 import { Box, Grid, Skeleton, Text } from "@chakra-ui/react";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import useThemeColors from "hooks/useThemeColors";
 import useTranslation from "hooks/useTranslation";
 import ProfitBarChart from "components/charts/ProfitBarChart";
@@ -22,20 +23,21 @@ const Charts: React.FC<ChartsProps> = ({ statistics, isLoading }) => {
   const colors = useThemeColors();
   const { t } = useTranslation();
 
-  const formatMonthLabel = (startDate: string) => {
-    const date = new Date(startDate);
-    return format(date, 'MM/yy');
-  };
+  const dailyChartData = statistics?.last12DaysProfit?.map(day => {
+    const date = toZonedTime(day.date, 'UTC');
+    return {
+      name: format(date, 'dd/MM'),
+      profit: day.profit
+    };
+  }) || [];
 
-  const dailyChartData = statistics?.last12DaysProfit?.map(day => ({
-    name: format(new Date(day.date), 'dd/MM'),
-    profit: day.profit
-  })) || [];
-
-  const monthlyChartData = statistics?.last12MonthsProfit?.map(month => ({
-    name: formatMonthLabel(month.startDate),
-    profit: month.profit
-  })) || [];
+  const monthlyChartData = statistics?.last12MonthsProfit?.map(month => {
+    const date = toZonedTime(month.startDate, 'UTC');
+    return {
+      name: format(date, 'MM/yy'),
+      profit: month.profit
+    };
+  }) || [];
 
   if (isLoading) {
     return (

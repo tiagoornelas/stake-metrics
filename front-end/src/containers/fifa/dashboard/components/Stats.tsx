@@ -62,7 +62,11 @@ const Stats: React.FC<StatsProps> = ({ statistics, isLoading }) => {
       <StatCard 
         label={t('dashboard.openBets')} 
         value={statistics?.openBets?.toString() || '0'}
-        helper={statistics?.possibleProfitOnOpenBets != null ? `${t('dashboard.possibleProfit')}: ${formatProfit(statistics.possibleProfitOnOpenBets)}` : undefined}
+        helper={statistics?.possibleProfitOnOpenBets != null 
+          ? (statistics.possibleProfitOnOpenBets === 0 
+            ? t('dashboard.noPendingProfit') 
+            : `${t('dashboard.possibleProfit')}: ${formatProfit(statistics.possibleProfitOnOpenBets)}`)
+          : undefined}
       />
 
       <StatCard
