@@ -6,6 +6,7 @@ import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
 import org.springframework.stereotype.Service
+import kotlin.math.floor
 
 @Service
 class FifaBetWinnerDeterminer {
@@ -72,10 +73,69 @@ class FifaBetWinnerDeterminer {
         odds: Double,
         isOver: Boolean
     ): Pair<BetStatusTypes, Double> {
+        val decimalPart = handicap - floor(handicap)
+        
+        return when (decimalPart) {
+            0.0 -> determineWholeHandicapResult(totalGoals, handicap, odds, isOver)
+            0.25 -> determineQuarterHandicapResult(totalGoals, handicap, odds, isOver)
+            0.5 -> determineHalfHandicapResult(totalGoals, handicap, odds, isOver)
+            0.75 -> determineThreeQuarterHandicapResult(totalGoals, handicap, odds, isOver)
+            else -> throw IllegalArgumentException("Invalid handicap value: $handicap")
+        }
+    }
+
+    private fun determineWholeHandicapResult(
+        totalGoals: Double,
+        handicap: Double,
+        odds: Double,
+        isOver: Boolean
+    ): Pair<BetStatusTypes, Double> = when {
+        isOver && totalGoals > handicap -> BetStatusTypes.WON to (odds - 1.0)
+        !isOver && totalGoals < handicap -> BetStatusTypes.WON to (odds - 1.0)
+        totalGoals == handicap -> BetStatusTypes.VOID to 0.0
+        else -> BetStatusTypes.LOST to -1.0
+    }
+
+    private fun determineQuarterHandicapResult(
+        totalGoals: Double,
+        handicap: Double,
+        odds: Double,
+        isOver: Boolean
+    ): Pair<BetStatusTypes, Double> {
+        val wholeNumber = floor(handicap)
         return when {
-            isOver && totalGoals > handicap || !isOver && totalGoals < handicap -> BetStatusTypes.WON to (odds - 1.0)
-            isOver && totalGoals < handicap || !isOver && totalGoals > handicap -> BetStatusTypes.LOST to -1.0
-            else -> BetStatusTypes.VOID to 0.0
+            isOver && totalGoals > wholeNumber + 0.5 -> BetStatusTypes.WON to (odds - 1.0)
+            isOver && totalGoals == wholeNumber -> BetStatusTypes.HALF_LOST to -0.5
+            !isOver && totalGoals < wholeNumber -> BetStatusTypes.WON to (odds - 1.0)
+            !isOver && totalGoals == wholeNumber -> BetStatusTypes.HALF_WON to (odds - 1.0) / 2
+            else -> BetStatusTypes.LOST to -1.0
+        }
+    }
+
+    private fun determineHalfHandicapResult(
+        totalGoals: Double,
+        handicap: Double,
+        odds: Double,
+        isOver: Boolean
+    ): Pair<BetStatusTypes, Double> = when {
+        isOver && totalGoals > handicap -> BetStatusTypes.WON to (odds - 1.0)
+        !isOver && totalGoals < handicap -> BetStatusTypes.WON to (odds - 1.0)
+        else -> BetStatusTypes.LOST to -1.0
+    }
+
+    private fun determineThreeQuarterHandicapResult(
+        totalGoals: Double,
+        handicap: Double,
+        odds: Double,
+        isOver: Boolean
+    ): Pair<BetStatusTypes, Double> {
+        val wholeNumber = floor(handicap)
+        return when {
+            isOver && totalGoals > wholeNumber + 1 -> BetStatusTypes.WON to (odds - 1.0)
+            isOver && totalGoals == wholeNumber + 1 -> BetStatusTypes.HALF_WON to (odds - 1.0) / 2
+            !isOver && totalGoals < wholeNumber + 1 -> BetStatusTypes.WON to (odds - 1.0)
+            !isOver && totalGoals == wholeNumber + 1 -> BetStatusTypes.HALF_LOST to -0.5
+            else -> BetStatusTypes.LOST to -1.0
         }
     }
 
