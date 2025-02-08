@@ -1,6 +1,5 @@
 package net.stakemetrics.persistence.jpa
 
-import java.util.UUID
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.persistence.models.FifaBetModel
@@ -8,11 +7,14 @@ import net.stakemetrics.persistence.models.FifaMatchModel
 import net.stakemetrics.persistence.models.FifaStrategyModel
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Date
+import java.util.UUID
 
 interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
 
@@ -31,6 +33,21 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         val startDate: LocalDate
         val endDate: LocalDate
         val profit: Double
+    }
+
+    interface SimpleReportProjection {
+        val betTime: Date?
+        val matchTime: Date?
+        val leagueName: String?
+        val homeName: String?
+        val awayName: String?
+        val homeScore: Int?
+        val awayScore: Int?
+        val line: String?
+        val handicap: Double?
+        val odds: Double?
+        val status: BetStatusTypes?
+        val profit: Double?
     }
 
     fun existsByStrategyAndMatch(strategy: FifaStrategyModel, match: FifaMatchModel): Boolean
@@ -66,7 +83,8 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
     )
     fun findCumulativeProfitsByStrategyId(@Param("strategyId") strategyId: UUID): List<Double>
 
-    @Query(nativeQuery = true, value = """
+    @Query(
+        nativeQuery = true, value = """
         SELECT b.* FROM fifa_bets b
         JOIN messages m ON m.bet_id = b.id
         WHERE m.messenger_chat_id = :messengerChatId
@@ -88,7 +106,8 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
     )
     fun countByStatusAndUserId(@Param("status") status: BetStatusTypes, @Param("userId") userId: UUID): Int
 
-    @Query(nativeQuery = true, value = """
+    @Query(
+        nativeQuery = true, value = """
         SELECT 
             DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) AS date,
             COALESCE(SUM(b.profit), 0.0) AS profit
@@ -108,7 +127,8 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         @Param("endDate") endDate: LocalDate
     ): List<DailyProfitProjection>
 
-    @Query(nativeQuery = true, value = """
+    @Query(
+        nativeQuery = true, value = """
         SELECT 
             DATE_FORMAT(CONVERT_TZ(b.bet_time, '+00:00', :timezone), '%Y-%m-01') AS startDate,
             LAST_DAY(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) AS endDate,
@@ -129,7 +149,8 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         @Param("endDate") endDate: LocalDate
     ): List<MonthlyProfitProjection>
 
-    @Query(nativeQuery = true, value = """
+    @Query(
+        nativeQuery = true, value = """
         SELECT 
             COUNT(b.id) AS numberOfBets,
             COALESCE(SUM(b.profit), 0.0) AS profit,
@@ -163,4 +184,31 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         """
     )
     fun getPossibleProfitFromOpenBets(@Param("userId") userId: UUID): Double
+
+    @EntityGraph(attributePaths = ["match", "match.league", "match.home", "match.away"])
+    @Query(
+        """
+        SELECT 
+            b.betTime as betTime,
+            m.time as matchTime,
+            m.league.name as leagueName,
+            m.home.name as homeName,
+            m.away.name as awayName,
+            m.homeGoalsAtFullTime as homeScore,
+            m.awayGoalsAtFullTime as awayScore,
+            b.line as line,
+            b.handicap as handicap,
+            b.odds as odds,
+            b.status as status,
+            b.profit as profit
+        FROM FifaBetModel b 
+        LEFT JOIN b.match m
+        WHERE b.strategy.id = :strategyId 
+        AND b.betTime > :betTime
+    """
+    )
+    fun findSimpleReportBets(
+        @Param("strategyId") strategyId: UUID,
+        @Param("betTime") betTime: Date
+    ): List<SimpleReportProjection>
 }
