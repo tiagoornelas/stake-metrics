@@ -265,4 +265,20 @@ class FifaStrategyService @Autowired constructor(
         return FifaStrategyDTO.SimpleReportResponse(bets)
     }
 
+    @Transactional
+    fun getDetailedReport(userEmail: String, strategyId: UUID): FifaStrategyDTO.DetailedReportResponse {
+        val user = userService.findByEmail(userEmail)
+        val strategy = fifaStrategyRepository.findById(strategyId)
+
+        fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy!!, user)
+        subscriptionService.hasFeature(user, FeatureTypes.DETAILED_REPORT)
+
+        val thirtyDaysAgo = Date.from(Instant.now().minus(30, ChronoUnit.DAYS))
+
+        val bets: List<FifaStrategyDTO.DetailedReportBet> =
+            fifaBetRepository.findDetailedBetsByStrategyIdAndBetTimeAfter(strategyId, thirtyDaysAgo)
+
+        return FifaStrategyDTO.DetailedReportResponse(bets)
+    }
+
 }

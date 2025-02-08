@@ -9,6 +9,7 @@ import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.persistence.jpa.FifaBetJpaRepository
+import net.stakemetrics.persistence.mappers.DetailedReportMapper
 import net.stakemetrics.persistence.models.toModel
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -19,7 +20,10 @@ import java.util.Date
 import java.util.UUID
 
 @Repository
-class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) : IFifaBetRepository {
+class FifaBetRepository(
+    private val fifaBetJpaRepository: FifaBetJpaRepository,
+    private val detailedReportMapper: DetailedReportMapper
+) : IFifaBetRepository {
     override fun save(fifaBet: FifaBet) {
         fifaBetJpaRepository.save(fifaBet.toModel())
     }
@@ -97,6 +101,14 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
 
     override fun getPossibleProfitFromOpenBets(userId: UUID): Double {
         return fifaBetJpaRepository.getPossibleProfitFromOpenBets(userId)
+    }
+
+    override fun findDetailedBetsByStrategyIdAndBetTimeAfter(
+        strategyId: UUID,
+        date: Date
+    ): List<FifaStrategyDTO.DetailedReportBet> {
+        val rawProjections = fifaBetJpaRepository.findDetailedReportBets(strategyId, date)
+        return detailedReportMapper.toDetailedReportBets(rawProjections)
     }
 
     override fun findByStrategyIdAndBetTimeAfter(

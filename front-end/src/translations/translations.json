@@ -135,8 +135,8 @@
                     "en": "Report created! 📊"
                 },
                 "description": {
-                    "pt": "O relatório será enviado para o seu e-mail em breve.",
-                    "en": "The report will be sent to your email shortly."
+                    "pt": "O relatório será baixado pelo seu navegador.",
+                    "en": "The report will be downloaded by your browser."
                 }
             },
             "detailed": {
@@ -299,13 +299,13 @@
                     "en": "Delay"
                 }
             },
-            "delivery_probability": {
+            "deliveryProbability": {
                 "label": {
                     "pt": "Taxa de entrega",
                     "en": "Delivery rate"
                 }
             },
-            "not_delivered_message": {
+            "notDeliveredMessage": {
                 "label": {
                     "pt": "Aviso de mensagem não entregue",
                     "en": "Not delivered message warning"
@@ -313,16 +313,6 @@
                 "description": {
                     "pt": "Preencha para enviar uma mensagem antes da mensagem principal em caso de atraso",
                     "en": "Fill in to send a message before the main message in case of delay"
-                }
-            },
-            "extra_text": {
-                "label": {
-                    "pt": "Texto extra ao final",
-                    "en": "Extra text at the end"
-                },
-                "description": {
-                    "pt": "Mensagem que será enviada ao final das mensagens de aposta",
-                    "en": "Message to be sent at the end of bet messages"
                 }
             },
             "additional_settings": {
@@ -371,7 +361,7 @@
                     "en": "Fill in to send a message before the main message in case of delay"
                 }
             },
-            "extra_text": {
+            "extraText": {
                 "label": {
                     "pt": "Mensagem adicional",
                     "en": "Additional message"
@@ -381,13 +371,13 @@
                     "en": "Message to be sent at the end of bet messages"
                 }
             },
-            "receive_reports": {
+            "receiveReports": {
                 "label": {
                     "pt": "Receber relatórios",
                     "en": "Receive reports"
                 }
             },
-            "hide_software_link": {
+            "hideSoftwareLink": {
                 "label": {
                     "pt": "Remover link do software",
                     "en": "Remove software link"
