@@ -2,6 +2,8 @@ package net.stakemetrics.persistence.jpa
 
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.enums.BetStatusTypes
+import net.stakemetrics.application.entities.enums.MatchupTypes
+import net.stakemetrics.application.entities.enums.StrategyScopeTypes
 import net.stakemetrics.persistence.models.FifaBetModel
 import net.stakemetrics.persistence.models.FifaMatchModel
 import net.stakemetrics.persistence.models.FifaStrategyModel
@@ -48,6 +50,45 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         val odds: Double?
         val status: BetStatusTypes?
         val profit: Double?
+    }
+
+    interface TrendScopeAnalysisProjection {
+        val id: UUID?
+        val matchup: MatchupTypes?
+        val type: StrategyScopeTypes?
+        val totalMatches: Int?
+        val homePlayerProbability: Double?
+        val homePlayerFairLine: Double?
+        val homePlayerJuice: Double?
+        val drawProbability: Double?
+        val drawFairLine: Double?
+        val drawJuice: Double?
+        val awayPlayerProbability: Double?
+        val awayPlayerFairLine: Double?
+        val awayPlayerJuice: Double?
+        val overProbability: Double?
+        val overFairLine: Double?
+        val overJuice: Double?
+        val underProbability: Double?
+        val underFairLine: Double?
+        val underJuice: Double?
+    }
+
+    interface DetailedReportRawProjection {
+        val id: UUID
+        val betTime: Date
+        val matchTime: Date
+        val leagueName: String
+        val homeName: String
+        val awayName: String
+        val homeScore: Int?
+        val awayScore: Int?
+        val line: String
+        val handicap: Double?
+        val odds: Double
+        val status: BetStatusTypes
+        val profit: Double?
+        val trendScopeAnalysis: TrendScopeAnalysisProjection?
     }
 
     fun existsByStrategyAndMatch(strategy: FifaStrategyModel, match: FifaMatchModel): Boolean
@@ -211,4 +252,41 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         @Param("strategyId") strategyId: UUID,
         @Param("betTime") betTime: Date
     ): List<SimpleReportProjection>
+
+    @Query(
+        """
+        SELECT DISTINCT
+            b.id as id,
+            b.betTime as betTime,
+            m.time as matchTime,
+            m.league.name as leagueName,
+            m.home.name as homeName,
+            m.away.name as awayName,
+            m.homeGoalsAtFullTime as homeScore,
+            m.awayGoalsAtFullTime as awayScore,
+            b.line as line,
+            b.handicap as handicap,
+            b.odds as odds,
+            b.status as status,
+            b.profit as profit,
+            tsa as trendScopeAnalysis
+        FROM FifaBetModel b 
+        LEFT JOIN b.match m
+        LEFT JOIN FifaOddSnapshotModel os ON os.id = b.oddSnapshotId
+        LEFT JOIN os.trendScopeAnalysis tsa
+        WHERE b.strategy.id = :strategyId 
+        AND b.betTime > :betTime
+        AND EXISTS (
+            SELECT 1 FROM FifaStrategyModel s2
+            JOIN s2.scopes scope
+            WHERE s2.id = b.strategy.id
+            AND (tsa.matchup = scope.matchup OR scope.matchup IS NULL)
+            AND (tsa.type = scope.type OR scope.type IS NULL)
+        )
+    """
+    )
+    fun findDetailedReportBets(
+        @Param("strategyId") strategyId: UUID,
+        @Param("betTime") betTime: Date
+    ): List<DetailedReportRawProjection>
 }

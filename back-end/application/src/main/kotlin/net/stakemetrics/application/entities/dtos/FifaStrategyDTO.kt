@@ -157,6 +157,48 @@ class FifaStrategyDTO {
         val bets: List<SimpleReportBet>
     )
 
+    data class TrendScopeAnalysisDTO(
+        val matchup: MatchupTypes?,
+        val type: StrategyScopeTypes?,
+        val totalMatches: Int?,
+        val homePlayerProbability: Double?,
+        val homePlayerFairLine: Double?,
+        val homePlayerJuice: Double?,
+        val drawProbability: Double?,
+        val drawFairLine: Double?,
+        val drawJuice: Double?,
+        val awayPlayerProbability: Double?,
+        val awayPlayerFairLine: Double?,
+        val awayPlayerJuice: Double?,
+        val overProbability: Double?,
+        val overFairLine: Double?,
+        val overJuice: Double?,
+        val underProbability: Double?,
+        val underFairLine: Double?,
+        val underJuice: Double?
+    )
+
+    data class DetailedReportBet(
+        val betTime: Date? = null,
+        val matchTime: Date? = null,
+        val leagueName: String? = null,
+        val homeName: String? = null,
+        val awayName: String? = null,
+        val homeScore: Int = 0,
+        val awayScore: Int = 0,
+        val totalScore: Int = 0,
+        val line: String? = null,
+        val handicap: Double? = null,
+        val odds: Double? = null,
+        val status: BetStatusTypes? = null,
+        val profit: Double? = null,
+        val trendScopeAnalysis: List<TrendScopeAnalysisDTO>
+    )
+
+    data class DetailedReportResponse(
+        val bets: List<DetailedReportBet>
+    )
+
 }
 
 fun FifaStrategyScope.toResponse(): FifaStrategyDTO.FifaStrategyScopeResponse {
