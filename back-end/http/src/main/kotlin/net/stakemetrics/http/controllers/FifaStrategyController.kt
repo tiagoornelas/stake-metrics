@@ -86,4 +86,11 @@ class FifaStrategyController(
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyListResponse(strategies))
     }
 
+    @GetMapping("/report/simple/{strategyId}")
+    fun getSimpleReport(@PathVariable strategyId: UUID): ResponseEntity<FifaStrategyDTO.SimpleReportResponse> {
+        val userEmail = SecurityContextHolder.getContext().authentication.principal as String
+        val report = fifaStrategyService.getSimpleReport(userEmail, strategyId)
+        return ResponseEntity.status(HttpStatus.OK).body(report)
+    }
+
 }

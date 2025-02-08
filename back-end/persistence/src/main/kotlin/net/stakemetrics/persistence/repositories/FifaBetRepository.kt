@@ -1,10 +1,10 @@
 package net.stakemetrics.persistence.repositories
 
-import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
+import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Date
+import java.util.UUID
 
 @Repository
 class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) : IFifaBetRepository {
@@ -96,4 +98,29 @@ class FifaBetRepository(private val fifaBetJpaRepository: FifaBetJpaRepository) 
     override fun getPossibleProfitFromOpenBets(userId: UUID): Double {
         return fifaBetJpaRepository.getPossibleProfitFromOpenBets(userId)
     }
+
+    override fun findByStrategyIdAndBetTimeAfter(
+        strategyId: UUID,
+        betTime: Date
+    ): List<FifaStrategyDTO.SimpleReportBet> {
+        return fifaBetJpaRepository.findSimpleReportBets(strategyId, betTime)
+            .map { it.toSimpleReportBet() }
+    }
+}
+
+fun FifaBetJpaRepository.SimpleReportProjection.toSimpleReportBet(): FifaStrategyDTO.SimpleReportBet {
+    return FifaStrategyDTO.SimpleReportBet(
+        betTime = this.betTime,
+        matchTime = this.matchTime,
+        leagueName = this.leagueName,
+        homeName = this.homeName,
+        awayName = this.awayName,
+        homeScore = this.homeScore ?: 0,
+        awayScore = this.awayScore ?: 0,
+        line = this.line,
+        handicap = this.handicap,
+        odds = this.odds,
+        status = this.status,
+        profit = this.profit
+    )
 }

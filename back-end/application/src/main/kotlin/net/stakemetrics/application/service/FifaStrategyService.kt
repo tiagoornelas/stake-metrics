@@ -1,12 +1,23 @@
 package net.stakemetrics.application.service
 
 import jakarta.transaction.Transactional
-import java.util.UUID
-import net.stakemetrics.application.entities.*
+import net.stakemetrics.application.entities.FifaLeague
+import net.stakemetrics.application.entities.FifaPlayer
+import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.FifaStrategyRule
+import net.stakemetrics.application.entities.FifaStrategyScope
+import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
+import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
-import net.stakemetrics.application.entities.enums.*
+import net.stakemetrics.application.entities.enums.FeatureTypes
+import net.stakemetrics.application.entities.enums.FifaMarketTypes
+import net.stakemetrics.application.entities.enums.FifaRuleTypes
+import net.stakemetrics.application.entities.enums.FifaStrategyStatus
+import net.stakemetrics.application.entities.enums.MatchupTypes
+import net.stakemetrics.application.entities.enums.StrategyScopeTypes
+import net.stakemetrics.application.entities.enums.toResponse
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
@@ -17,6 +28,10 @@ import net.stakemetrics.application.workers.tipsters.factory.FifaTipsterFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.util.Date
+import java.util.UUID
 
 @Service
 class FifaStrategyService @Autowired constructor(
@@ -26,6 +41,7 @@ class FifaStrategyService @Autowired constructor(
     private val fifaPlayerService: FifaPlayerService,
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaTipsterFactory: FifaTipsterFactory,
+    private val subscriptionService: ISubscriptionService,
     private val fifaStrategyRepository: IFifaStrategyRepository,
     private val fifaStrategyOpportunityIterator: FifaStrategyOpportunityIterator,
     @Lazy private val fifaStrategyResourceValidator: FifaStrategyResourceValidator,
@@ -231,6 +247,22 @@ class FifaStrategyService @Autowired constructor(
                 scopeResult.matchup == strategyScope.matchup && scopeResult.type == strategyScope.type
             }
         }.toMutableSet()
+    }
+
+    @Transactional
+    fun getSimpleReport(userEmail: String, strategyId: UUID): FifaStrategyDTO.SimpleReportResponse {
+        val user = userService.findByEmail(userEmail)
+        val strategy = fifaStrategyRepository.findById(strategyId)
+
+        fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy!!, user)
+        subscriptionService.hasFeature(user, FeatureTypes.SIMPLE_REPORT)
+
+        val thirtyDaysAgo = Date.from(Instant.now().minus(30, ChronoUnit.DAYS))
+
+        val bets: List<FifaStrategyDTO.SimpleReportBet> =
+            fifaBetRepository.findByStrategyIdAndBetTimeAfter(strategyId, thirtyDaysAgo)
+
+        return FifaStrategyDTO.SimpleReportResponse(bets)
     }
 
 }
