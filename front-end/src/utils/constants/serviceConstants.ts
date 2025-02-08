@@ -39,6 +39,11 @@ export const ENDPOINTS = {
         STATUS: "/status",
         STATISTICS: "/statistics",
         RESTART: "/restart",
-        PROFITS: "/profits"
+        PROFITS: "/profits",
+        REPORT: {
+            BASE: "/report",
+            SIMPLE: "/simple",
+            DETAILED: "/detailed"
+        }
     }
 }

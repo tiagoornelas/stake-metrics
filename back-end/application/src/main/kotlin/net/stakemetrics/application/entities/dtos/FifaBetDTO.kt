@@ -1,7 +1,5 @@
 package net.stakemetrics.application.entities.dtos
 
-import java.util.Date
-import java.util.UUID
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaStrategy
@@ -9,6 +7,8 @@ import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
 import java.time.LocalDate
+import java.util.Date
+import java.util.UUID
 
 class FifaBetDTO {
 

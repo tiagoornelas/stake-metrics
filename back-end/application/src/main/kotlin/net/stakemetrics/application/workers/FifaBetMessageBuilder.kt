@@ -111,7 +111,7 @@ class FifaBetMessageBuilder {
             }
         }
 
-        return reportBuilder.toString()
+        return reportBuilder.toString().trimEnd()
     }
 
     data class DetailedBetStats(

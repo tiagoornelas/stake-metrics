@@ -1,35 +1,41 @@
-import {Flex, Menu, MenuButton, MenuList, MenuItem, IconButton, Skeleton, Text, Tag} from "@chakra-ui/react";
+import { Flex, Menu, MenuButton, MenuList, IconButton, Skeleton, Text } from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
-import React, {useEffect, useState} from 'react';
-import {getLeagues} from "services/leagueService";
-import {BetQueryFilters, Option} from "utils/interfaces";
-import {BsFileSpreadsheet} from "react-icons/all";
-import useTranslation from "hooks/useTranslation";
+import React, { useEffect, useState } from 'react';
+import { getLeagues } from "services/leagueService";
+import { BetQueryFilters, Option } from "utils/interfaces";
+import { BsFileSpreadsheet } from "react-icons/bs";
+import { useStrategyReportDownload } from '../hooks/useStrategyReportDownload';
+import { ReportMenuItem } from './ReportMenuItem';
 
-const ReportMenu = () => {
-    const { t } = useTranslation();
+const ReportMenu = ({ strategyId }: { strategyId: string }) => {
+    const { downloadSimpleReport, downloadDetailedReport } = useStrategyReportDownload();
 
-    return <Menu>
-    <MenuButton as={IconButton} icon={<BsFileSpreadsheet />} />
-    <MenuList>
-        <MenuItem  disabled cursor={"not-allowed"}>
-            {t("strategy.actions.downloadReport.simple")}
-            <Tag ml={2} colorScheme={"blue"}>Em breve</Tag>
-        </MenuItem>
-        <MenuItem disabled cursor={"not-allowed"}>
-            {t("strategy.actions.downloadReport.detailed")}
-            <Tag ml={2} colorScheme={"blue"}>Em breve</Tag>
-        </MenuItem>
-    </MenuList>
-    </Menu>
+    return (
+        <Menu>
+            <MenuButton as={IconButton} icon={<BsFileSpreadsheet />} />
+            <MenuList>
+                <ReportMenuItem
+                    reportType="simple"
+                    strategyId={strategyId}
+                    downloadReport={downloadSimpleReport}
+                />
+                <ReportMenuItem
+                    reportType="detailed"
+                    strategyId={strategyId}
+                    downloadReport={downloadDetailedReport}
+                />
+            </MenuList>
+        </Menu>
+    );
 }
 
-const BetsHeader = ({showingBets, betsLength, isLoaded, filters, setFilters}: {
+const BetsHeader = ({ showingBets, betsLength, isLoaded, filters, setFilters, strategyId }: {
     showingBets: number,
     betsLength: number,
     isLoaded: boolean,
     filters: BetQueryFilters,
-    setFilters: (filters: BetQueryFilters) => void
+    setFilters: (filters: BetQueryFilters) => void,
+    strategyId: string
 }) => {
     const [leagues, setLeagues] = useState<Option[]>([]);
     const [isLoadingLeagues, setIsLoadingLeagues] = useState(true);
@@ -54,25 +60,25 @@ const BetsHeader = ({showingBets, betsLength, isLoaded, filters, setFilters}: {
 
     return (
         <Flex
-            direction={{base: "column", md: "row"}}
+            direction={{ base: "column", md: "row" }}
             align={"center"}
             justifyContent={"space-between"}
             gap={2}
         >
-            <Skeleton isLoaded={isLoaded} display={{base: "none", md: "block"}}>
+            <Skeleton isLoaded={isLoaded} display={{ base: "none", md: "block" }}>
                 <Text>{getLabel()}</Text>
             </Skeleton>
             <Flex
-                direction={{base: "column", md: "row"}}
+                direction={{ base: "column", md: "row" }}
                 gap={2}
-                w={{base: "100%", md: "auto"}}
+                w={{ base: "100%", md: "auto" }}
             >
-                <ReportMenu />
+                <ReportMenu strategyId={strategyId} />
                 <MultiSelect
                     title="Situação"
                     options={[
-                        {value: 'openBets', label: 'Abertas'},
-                        {value: 'closedBets', label: 'Fechadas'}
+                        { value: 'openBets', label: 'Abertas' },
+                        { value: 'closedBets', label: 'Fechadas' }
                     ]}
                     onChange={(value) => setFilters({
                         ...filters,
@@ -84,8 +90,8 @@ const BetsHeader = ({showingBets, betsLength, isLoaded, filters, setFilters}: {
                 <MultiSelect
                     title="Tipo"
                     options={[
-                        {value: 'realBets', label: 'Reais'},
-                        {value: 'paperBets', label: 'Paper Bets'}
+                        { value: 'realBets', label: 'Reais' },
+                        { value: 'paperBets', label: 'Paper Bets' }
                     ]}
                     onChange={(value) => setFilters({
                         ...filters,
@@ -98,7 +104,7 @@ const BetsHeader = ({showingBets, betsLength, isLoaded, filters, setFilters}: {
                     <MultiSelect
                         title="Ligas"
                         options={leagues}
-                        onChange={(value) => setFilters({...filters, league: value})}
+                        onChange={(value) => setFilters({ ...filters, league: value })}
                         defaultSelected={isLoadingLeagues ? [] : leagues.map(league => league.value)}
                     />
                 </Skeleton>
