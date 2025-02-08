@@ -396,5 +396,11 @@
                 }
             }
         }
+    },
+    "reports": {
+        "generateReports": {
+            "pt": "Gerar relatório",
+            "en": "Generate report"
+        }
     }
 }
