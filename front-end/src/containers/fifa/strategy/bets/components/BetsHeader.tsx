@@ -1,4 +1,4 @@
-import { Flex, Menu, MenuButton, MenuList, IconButton, Skeleton, Text } from "@chakra-ui/react";
+import { Flex, Menu, MenuButton, MenuList, IconButton, Skeleton, Text, Button, Tooltip, useBreakpointValue } from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
 import React, { useEffect, useState } from 'react';
 import { getLeagues } from "services/leagueService";
@@ -6,13 +6,25 @@ import { BetQueryFilters, Option } from "utils/interfaces";
 import { BsFileSpreadsheet } from "react-icons/bs";
 import { useStrategyReportDownload } from '../hooks/useStrategyReportDownload';
 import { ReportMenuItem } from './ReportMenuItem';
+import useTranslation from 'hooks/useTranslation';
 
 const ReportMenu = ({ strategyId }: { strategyId: string }) => {
     const { downloadSimpleReport, downloadDetailedReport } = useStrategyReportDownload();
+    const { t } = useTranslation();
+    const buttonText = t('reports.generateReports');
+    const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
     return (
         <Menu>
-            <MenuButton as={IconButton} icon={<BsFileSpreadsheet />} />
+            {isSmallScreen ? (
+                <MenuButton as={Button} leftIcon={<BsFileSpreadsheet />}>
+                    <Text>{buttonText}</Text>
+                </MenuButton>
+            ) : (
+                <Tooltip label={buttonText} aria-label="Generate reports tooltip" placement="top">
+                    <MenuButton as={IconButton} icon={<BsFileSpreadsheet />} />
+                </Tooltip>
+            )}
             <MenuList>
                 <ReportMenuItem
                     reportType="simple"
