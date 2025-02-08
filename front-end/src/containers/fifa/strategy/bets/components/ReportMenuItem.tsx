@@ -14,8 +14,8 @@ export interface ReportMenuItemProps {
 }
 
 export const ReportMenuItem: React.FC<ReportMenuItemProps> = ({
-    reportType, 
-    strategyId, 
+    reportType,
+    strategyId,
     downloadReport,
     isDownloadingReport
 }) => {
@@ -23,8 +23,8 @@ export const ReportMenuItem: React.FC<ReportMenuItemProps> = ({
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { user } = useUserState();
 
-    const featureKey = reportType === 'simple' 
-        ? FEATURES.SIMPLE_REPORT 
+    const featureKey = reportType === 'simple'
+        ? FEATURES.SIMPLE_REPORT
         : FEATURES.DETAILED_REPORT;
 
     const featureAmount = user ? getFeatureAmount(user, featureKey) : 0;
@@ -37,26 +37,20 @@ export const ReportMenuItem: React.FC<ReportMenuItemProps> = ({
 
     return (
         <>
-            <MenuItem 
+            <MenuItem
                 onClick={hasFeature ? onOpen : undefined}
                 isDisabled={!hasFeature}
             >
                 {t(`strategy.actions.downloadReport.${reportType}`)}
-                {reportType === 'simple' && hasFeature && (
-                    <Tag ml={2} colorScheme="yellow">Beta</Tag>
-                )}
-                {reportType === 'detailed' && hasFeature && (
-                    <Tag ml={2} colorScheme="blue">Em breve</Tag>
-                )}
-                {!hasFeature && (
-                    <Tag ml={2} colorScheme="red">
+                {hasFeature ?
+                    (<Tag ml={2} colorScheme="yellow">Beta</Tag>) : 
+                    (<Tag ml={2} colorScheme="red">
                         {t('common.notHired')}
-                    </Tag>
-                )}
+                    </Tag>)}
             </MenuItem>
 
             {hasFeature && (
-                <ReportDownloadModal 
+                <ReportDownloadModal
                     isOpen={isOpen}
                     onClose={onClose}
                     onDownload={handleDownloadReport}

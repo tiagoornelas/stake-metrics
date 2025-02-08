@@ -28,3 +28,6 @@ export const listStrategiesCumulativeProfit = (strategyId: string) =>
 
 export const getStrategySimpleReport = (strategyId: string) =>
     makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.REPORT.BASE}${ENDPOINTS.STRATEGY.REPORT.SIMPLE}/${strategyId}`, REQUEST_TYPE.GET);
+
+export const getStrategyDetailedReport = (strategyId: string) =>
+    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.REPORT.BASE}${ENDPOINTS.STRATEGY.REPORT.DETAILED}/${strategyId}`, REQUEST_TYPE.GET);
