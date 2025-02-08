@@ -26,8 +26,8 @@ export const listStrategiesStatistics = () =>
 export const listStrategiesCumulativeProfit = (strategyId: string) =>
     makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.PROFITS}/${strategyId}`, REQUEST_TYPE.GET);
 
-export const getStrategySimpleReport = (strategyId: string) =>
-    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.REPORT.BASE}${ENDPOINTS.STRATEGY.REPORT.SIMPLE}/${strategyId}`, REQUEST_TYPE.GET);
+export const getStrategySimpleReport = (strategyId: string, days: number) =>
+    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.REPORT.BASE}${ENDPOINTS.STRATEGY.REPORT.SIMPLE}/${strategyId}?days=${days}`, REQUEST_TYPE.GET);
 
-export const getStrategyDetailedReport = (strategyId: string) =>
-    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.REPORT.BASE}${ENDPOINTS.STRATEGY.REPORT.DETAILED}/${strategyId}`, REQUEST_TYPE.GET);
+export const getStrategyDetailedReport = (strategyId: string, days: number) =>
+    makeRequest(`${BASE_URL}${ENDPOINTS.FIFA.BASE}${ENDPOINTS.STRATEGY.BASE}${ENDPOINTS.STRATEGY.REPORT.BASE}${ENDPOINTS.STRATEGY.REPORT.DETAILED}/${strategyId}?days=${days}`, REQUEST_TYPE.GET);

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { getStrategySimpleReport, getStrategyDetailedReport } from 'services/strategyService';
 import useTranslation from 'hooks/useTranslation';
 import { useErrorToast } from 'hooks/useErrorToast';
@@ -105,53 +104,51 @@ const extractAnalysisColumns = (flattenedBets: Record<string, any>[]): ExcelColu
     ).map(key => ({ header: key, key }));
 
 export const useStrategyReportDownload = () => {
-    const [isDownloadingReport, setIsDownloadingReport] = useState(false);
     const { t } = useTranslation();
 
     const downloadSimpleReport = useErrorToast(
-        async (strategyId: string) => {
-            setIsDownloadingReport(true);
-            try {
-                const { bets } = await getStrategySimpleReport(strategyId);
-                generateExcel(bets, baseColumns, `stake_metrics_strategy_${strategyId}_simple`);
-                return true;
-            } finally {
-                setIsDownloadingReport(false);
-            }
+        async (strategyId: string, days: number) => {
+            const { bets } = await getStrategySimpleReport(strategyId, days);
+            generateExcel(bets, baseColumns, `stake_metrics_strategy_${strategyId}_simple`);
+            return true;
         },
         {
             title: t('strategy.report.downloadSuccess.title'),
             description: t('strategy.report.downloadSuccess.description')
+        },
+        null,
+        {
+            title: t('strategy.report.downloadInProgress.title'),
+            description: t('strategy.report.downloadInProgress.description')
         }
     );
 
     const downloadDetailedReport = useErrorToast(
-        async (strategyId: string) => {
-            setIsDownloadingReport(true);
-            try {
-                const { bets } = await getStrategyDetailedReport(strategyId);
-                const flattenedBets = bets.map(flattenBetWithAnalysis);
-                const analysisColumns = extractAnalysisColumns(flattenedBets);
-                
-                generateExcel(
-                    flattenedBets,
-                    [...baseColumns, ...analysisColumns],
-                    `stake_metrics_strategy_${strategyId}_detailed`
-                );
-                return true;
-            } finally {
-                setIsDownloadingReport(false);
-            }
+        async (strategyId: string, days: number) => {
+            const { bets } = await getStrategyDetailedReport(strategyId, days);
+            const flattenedBets = bets.map(flattenBetWithAnalysis);
+            const analysisColumns = extractAnalysisColumns(flattenedBets);
+            
+            generateExcel(
+                flattenedBets,
+                [...baseColumns, ...analysisColumns],
+                `stake_metrics_strategy_${strategyId}_detailed`
+            );
+            return true;
         },
         {
             title: t('strategy.report.downloadSuccess.title'),
             description: t('strategy.report.downloadSuccess.description')
+        },
+        null,
+        {
+            title: t('strategy.report.downloadInProgress.title'),
+            description: t('strategy.report.downloadInProgress.description')
         }
     );
 
     return { 
         downloadSimpleReport, 
-        downloadDetailedReport, 
-        isDownloadingReport 
+        downloadDetailedReport
     };
 };

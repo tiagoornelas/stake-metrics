@@ -8,7 +8,7 @@ import { useStrategyReportDownload } from '../hooks/useStrategyReportDownload';
 import { ReportMenuItem } from './ReportMenuItem';
 
 const ReportMenu = ({ strategyId }: { strategyId: string }) => {
-    const { downloadSimpleReport, downloadDetailedReport, isDownloadingReport } = useStrategyReportDownload();
+    const { downloadSimpleReport, downloadDetailedReport } = useStrategyReportDownload();
 
     return (
         <Menu>
@@ -18,13 +18,11 @@ const ReportMenu = ({ strategyId }: { strategyId: string }) => {
                     reportType="simple"
                     strategyId={strategyId}
                     downloadReport={downloadSimpleReport}
-                    isDownloadingReport={isDownloadingReport}
                 />
                 <ReportMenuItem
                     reportType="detailed"
                     strategyId={strategyId}
                     downloadReport={downloadDetailedReport}
-                    isDownloadingReport={isDownloadingReport}
                 />
             </MenuList>
         </Menu>

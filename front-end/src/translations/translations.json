@@ -114,21 +114,23 @@
                     "pt": "Relatório Detalhado",
                     "en": "Detailed Report"
                 },
-                "success": {
-                    "pt": "Relatório está sendo gerado e será enviado no seu e-mail de cadastro.",
-                    "en": "Report is being exported and will be sent to your e-mail."
+                "period": {
+                    "week": {
+                        "pt": "Últimos 7 dias",
+                        "en": "Last 7 days"
+                    },
+                    "biweek": {
+                        "pt": "Últimos 15 dias",
+                        "en": "Last 15 days"
+                    },
+                    "month": {
+                        "pt": "Últimos 30 dias",
+                        "en": "Last 30 days"
+                    }
                 }
             }
         },
         "report": {
-            "simpleDownloadConfirmation": {
-                "pt": "O relatório simples mostrará todas as apostas dos últimos 30 dias. O processo pode levar alguns minutos para ser concluído.",
-                "en": "The simple report will show all bets from the last 30 days. The process may take a few minutes to complete."
-            },
-            "detailedDownloadConfirmation": {
-                "pt": "O relatório detalhado fornecerá uma análise completa de suas apostas. O processo pode levar alguns minutos para ser concluído.",
-                "en": "The detailed report will provide a comprehensive analysis of your bets. The process may take a few minutes to complete."
-            },
             "downloadSuccess": {
                 "title": {
                     "pt": "Relatório gerado! 📊",
@@ -137,6 +139,16 @@
                 "description": {
                     "pt": "O relatório será baixado pelo seu navegador.",
                     "en": "The report will be downloaded by your browser."
+                }
+            },
+            "downloadInProgress": {
+                "title": {
+                    "pt": "Gerando relatório...",
+                    "en": "Generating report..."
+                },
+                "description": {
+                    "pt": "O relatório está sendo gerado e será baixado em breve.",
+                    "en": "The report is being generated and will be downloaded soon."
                 }
             },
             "detailed": {

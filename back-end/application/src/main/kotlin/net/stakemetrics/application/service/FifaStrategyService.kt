@@ -250,33 +250,35 @@ class FifaStrategyService @Autowired constructor(
     }
 
     @Transactional
-    fun getSimpleReport(userEmail: String, strategyId: UUID): FifaStrategyDTO.SimpleReportResponse {
+    fun getSimpleReport(userEmail: String, strategyId: UUID, days: Int): FifaStrategyDTO.SimpleReportResponse {
+        require(days <= 30) { "Report period cannot exceed 30 days" }
         val user = userService.findByEmail(userEmail)
         val strategy = fifaStrategyRepository.findById(strategyId)
 
         fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy!!, user)
         subscriptionService.hasFeature(user, FeatureTypes.SIMPLE_REPORT)
 
-        val thirtyDaysAgo = Date.from(Instant.now().minus(30, ChronoUnit.DAYS))
+        val cutoffDate = Date.from(Instant.now().minus(days.toLong(), ChronoUnit.DAYS))
 
         val bets: List<FifaStrategyDTO.SimpleReportBet> =
-            fifaBetRepository.findByStrategyIdAndBetTimeAfter(strategyId, thirtyDaysAgo)
+            fifaBetRepository.findByStrategyIdAndBetTimeAfter(strategyId, cutoffDate)
 
         return FifaStrategyDTO.SimpleReportResponse(bets)
     }
 
     @Transactional
-    fun getDetailedReport(userEmail: String, strategyId: UUID): FifaStrategyDTO.DetailedReportResponse {
+    fun getDetailedReport(userEmail: String, strategyId: UUID, days: Int): FifaStrategyDTO.DetailedReportResponse {
+        require(days <= 30) { "Report period cannot exceed 30 days" }
         val user = userService.findByEmail(userEmail)
         val strategy = fifaStrategyRepository.findById(strategyId)
 
         fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy!!, user)
         subscriptionService.hasFeature(user, FeatureTypes.DETAILED_REPORT)
 
-        val thirtyDaysAgo = Date.from(Instant.now().minus(30, ChronoUnit.DAYS))
+        val cutoffDate = Date.from(Instant.now().minus(days.toLong(), ChronoUnit.DAYS))
 
         val bets: List<FifaStrategyDTO.DetailedReportBet> =
-            fifaBetRepository.findDetailedBetsByStrategyIdAndBetTimeAfter(strategyId, thirtyDaysAgo)
+            fifaBetRepository.findDetailedBetsByStrategyIdAndBetTimeAfter(strategyId, cutoffDate)
 
         return FifaStrategyDTO.DetailedReportResponse(bets)
     }
