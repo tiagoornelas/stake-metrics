@@ -1,7 +1,6 @@
 import React from 'react';
-import { MenuItem, Tag, useDisclosure } from "@chakra-ui/react";
+import { MenuItem, MenuGroup, Tag } from "@chakra-ui/react";
 import useTranslation from "hooks/useTranslation";
-import { ReportDownloadModal } from './ReportDownloadModal';
 import { getFeatureAmount } from 'utils/helpers/featureHelper';
 import { FEATURES } from 'utils/constants/featureConstants';
 import { useUserState } from 'context/UserContext';
@@ -9,18 +8,17 @@ import { useUserState } from 'context/UserContext';
 export interface ReportMenuItemProps {
     reportType: 'simple' | 'detailed';
     strategyId: string;
-    downloadReport: (strategyId: string) => Promise<void>;
-    isDownloadingReport: boolean;
+    downloadReport: (strategyId: string, days: number) => Promise<void>;
+
 }
 
 export const ReportMenuItem: React.FC<ReportMenuItemProps> = ({
     reportType,
     strategyId,
     downloadReport,
-    isDownloadingReport
 }) => {
     const { t } = useTranslation();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+
     const { user } = useUserState();
 
     const featureKey = reportType === 'simple'
@@ -30,34 +28,36 @@ export const ReportMenuItem: React.FC<ReportMenuItemProps> = ({
     const featureAmount = user ? getFeatureAmount(user, featureKey) : 0;
     const hasFeature = featureAmount > 0;
 
-    const handleDownloadReport = async () => {
-        await downloadReport(strategyId);
-        onClose();
+    const reportPeriods = [
+        { days: 7, label: t('strategy.actions.downloadReport.period.week') },
+        { days: 15, label: t('strategy.actions.downloadReport.period.biweek') },
+        { days: 30, label: t('strategy.actions.downloadReport.period.month') }
+    ];
+
+    const handleDownloadReport = async (days: number) => {
+        await downloadReport(strategyId, days);
     };
 
     return (
         <>
-            <MenuItem
-                onClick={hasFeature ? onOpen : undefined}
-                isDisabled={!hasFeature}
-            >
-                {t(`strategy.actions.downloadReport.${reportType}`)}
-                {hasFeature ?
-                    (<Tag ml={2} colorScheme="yellow">Beta</Tag>) : 
-                    (<Tag ml={2} colorScheme="red">
-                        {t('common.notHired')}
-                    </Tag>)}
-            </MenuItem>
-
-            {hasFeature && (
-                <ReportDownloadModal
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    onDownload={handleDownloadReport}
-                    isDownloading={isDownloadingReport}
-                    reportType={reportType}
-                />
-            )}
+            <MenuGroup title={t(`strategy.actions.downloadReport.${reportType}`)}>
+                {reportPeriods.map(({ days, label }) => (
+                    <MenuItem
+                        key={days}
+                        onClick={hasFeature ? () => handleDownloadReport(days) : undefined}
+                        isDisabled={!hasFeature}
+                    >
+                        {label}
+                        {hasFeature ? (
+                            <Tag ml={2} colorScheme="yellow">Beta</Tag>
+                        ) : (
+                            <Tag ml={2} colorScheme="red">
+                                {t('common.notHired')}
+                            </Tag>
+                        )}
+                    </MenuItem>
+                ))}
+            </MenuGroup>
         </>
     );
 };
