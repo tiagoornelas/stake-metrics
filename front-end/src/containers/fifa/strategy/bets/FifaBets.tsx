@@ -32,7 +32,7 @@ const FifaBets = ({strategyId}: Props) => {
     return (
         <Box mt={16}>
             <BetsHeader showingBets={maxFetchedLength} betsLength={totalBets} isLoaded={!isLoading} filters={filters}
-                        setFilters={setFilters}/>
+                        setFilters={setFilters} strategyId={strategyId}/>
             <TableContainer mt={8}>
                 <Table variant='simple'>
                     <Thead>

@@ -107,16 +107,42 @@
             },
             "downloadReport": {
                 "simple": {
-                    "pt": "Gerar relatório simples",
-                    "en": "Export simple report"
+                    "pt": "Relatório Simples",
+                    "en": "Simple Report"
                 },
                 "detailed": {
-                    "pt": "Gerar relatório detalhado",
-                    "en": "Export detailed report"
+                    "pt": "Relatório Detalhado",
+                    "en": "Detailed Report"
                 },
                 "success": {
                     "pt": "Relatório está sendo gerado e será enviado no seu e-mail de cadastro.",
                     "en": "Report is being exported and will be sent to your e-mail."
+                }
+            }
+        },
+        "report": {
+            "simpleDownloadConfirmation": {
+                "pt": "O relatório simples mostrará todas as apostas dos últimos 30 dias. O processo pode levar alguns minutos para ser concluído.",
+                "en": "The simple report will show all bets from the last 30 days. The process may take a few minutes to complete."
+            },
+            "detailedDownloadConfirmation": {
+                "pt": "O relatório detalhado fornecerá uma análise completa de suas apostas. O processo pode levar alguns minutos para ser concluído.",
+                "en": "The detailed report will provide a comprehensive analysis of your bets. The process may take a few minutes to complete."
+            },
+            "downloadSuccess": {
+                "title": {
+                    "pt": "Relatório gerado! 📊",
+                    "en": "Report created! 📊"
+                },
+                "description": {
+                    "pt": "O relatório será enviado para o seu e-mail em breve.",
+                    "en": "The report will be sent to your email shortly."
+                }
+            },
+            "detailed": {
+                "comingSoon": {
+                    "pt": "Relatório detalhado em desenvolvimento",
+                    "en": "Detailed report under development"
                 }
             }
         },
@@ -227,6 +253,18 @@
                 "pt": "Em breve",
                 "en": "Coming soon"
             }
+        },
+        "generate": {
+            "pt": "Gerar",
+            "en": "Generate"
+        },
+        "cancel": {
+            "pt": "Cancelar", 
+            "en": "Cancel"
+        },
+        "notHired": {
+            "pt": "Não contratado",
+            "en": "Not hired"
         }
     },
     "telegram": {
