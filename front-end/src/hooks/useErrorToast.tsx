@@ -4,7 +4,17 @@ import {TRANSLATED_ERRORS} from "utils/constants/errorConstants";
 import {defaultToastProps} from "utils/constants/toastConstants";
 import {ErrorDictionary, SuccessDictionary} from "utils/interfaces";
 
-export const useErrorToast = (fn: (...args: any[]) => Promise<any>, successDictionary: SuccessDictionary | null = null, successAction: Function | null = null) => {
+interface LoadingDictionary {
+    title: string;
+    description: string;
+}
+
+export const useErrorToast = (
+    fn: (...args: any[]) => Promise<any>,
+    successDictionary: SuccessDictionary | null = null,
+    successAction: Function | null = null,
+    loadingDictionary: LoadingDictionary | null = null
+) => {
     const toast: CreateToastFnReturn = useToast();
 
     const getErrorMessage = (err: any): ErrorDictionary => {
@@ -19,8 +29,22 @@ export const useErrorToast = (fn: (...args: any[]) => Promise<any>, successDicti
     }
 
     return useCallback(async (...args: any[]) => {
+        let loadingToastId;
+        if (loadingDictionary) {
+            const { title, description } = loadingDictionary;
+            loadingToastId = toast({
+                title,
+                description,
+                status: "loading",
+                ...defaultToastProps
+            });
+        }
         try {
             const result = await fn(...args);
+
+            if (loadingToastId) {
+                toast.close(loadingToastId);
+            }
 
             if (!!successDictionary) {
                 const {title, description} = successDictionary
@@ -37,6 +61,10 @@ export const useErrorToast = (fn: (...args: any[]) => Promise<any>, successDicti
 
             return result;
         } catch (err: any) {
+            if (loadingToastId) {
+                toast.close(loadingToastId);
+            }
+
             const {title, description} = getErrorMessage(err);
 
             toast({
@@ -46,5 +74,5 @@ export const useErrorToast = (fn: (...args: any[]) => Promise<any>, successDicti
                 ...defaultToastProps
             });
         }
-    }, [fn, successDictionary, successAction, toast]);
+    }, [fn, successDictionary, loadingDictionary, successAction, toast]);
 };

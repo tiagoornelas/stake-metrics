@@ -86,4 +86,24 @@ class FifaStrategyController(
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyListResponse(strategies))
     }
 
+    @GetMapping("/report/simple/{strategyId}")
+    fun getSimpleReport(
+        @PathVariable strategyId: UUID,
+        @RequestParam(defaultValue = "30") days: Int
+    ): ResponseEntity<FifaStrategyDTO.SimpleReportResponse> {
+        val userEmail = SecurityContextHolder.getContext().authentication.principal as String
+        val report = fifaStrategyService.getSimpleReport(userEmail, strategyId, days)
+        return ResponseEntity.status(HttpStatus.OK).body(report)
+    }
+
+    @GetMapping("/report/detailed/{strategyId}")
+    fun getDetailedReport(
+        @PathVariable strategyId: UUID,
+        @RequestParam(defaultValue = "30") days: Int
+    ): ResponseEntity<FifaStrategyDTO.DetailedReportResponse> {
+        val userEmail = SecurityContextHolder.getContext().authentication.principal as String
+        val report = fifaStrategyService.getDetailedReport(userEmail, strategyId, days)
+        return ResponseEntity.status(HttpStatus.OK).body(report)
+    }
+
 }

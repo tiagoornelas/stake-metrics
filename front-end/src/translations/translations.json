@@ -107,16 +107,54 @@
             },
             "downloadReport": {
                 "simple": {
-                    "pt": "Gerar relatório simples",
-                    "en": "Export simple report"
+                    "pt": "Relatório Simples",
+                    "en": "Simple Report"
                 },
                 "detailed": {
-                    "pt": "Gerar relatório detalhado",
-                    "en": "Export detailed report"
+                    "pt": "Relatório Detalhado",
+                    "en": "Detailed Report"
                 },
-                "success": {
-                    "pt": "Relatório está sendo gerado e será enviado no seu e-mail de cadastro.",
-                    "en": "Report is being exported and will be sent to your e-mail."
+                "period": {
+                    "week": {
+                        "pt": "Últimos 7 dias",
+                        "en": "Last 7 days"
+                    },
+                    "biweek": {
+                        "pt": "Últimos 15 dias",
+                        "en": "Last 15 days"
+                    },
+                    "month": {
+                        "pt": "Últimos 30 dias",
+                        "en": "Last 30 days"
+                    }
+                }
+            }
+        },
+        "report": {
+            "downloadSuccess": {
+                "title": {
+                    "pt": "Relatório gerado! 📊",
+                    "en": "Report created! 📊"
+                },
+                "description": {
+                    "pt": "O relatório será baixado pelo seu navegador.",
+                    "en": "The report will be downloaded by your browser."
+                }
+            },
+            "downloadInProgress": {
+                "title": {
+                    "pt": "Gerando relatório...",
+                    "en": "Generating report..."
+                },
+                "description": {
+                    "pt": "O relatório está sendo gerado e será baixado em breve.",
+                    "en": "The report is being generated and will be downloaded soon."
+                }
+            },
+            "detailed": {
+                "comingSoon": {
+                    "pt": "Relatório detalhado em desenvolvimento",
+                    "en": "Detailed report under development"
                 }
             }
         },
@@ -227,6 +265,18 @@
                 "pt": "Em breve",
                 "en": "Coming soon"
             }
+        },
+        "generate": {
+            "pt": "Gerar",
+            "en": "Generate"
+        },
+        "cancel": {
+            "pt": "Cancelar", 
+            "en": "Cancel"
+        },
+        "notHired": {
+            "pt": "Não contratado",
+            "en": "Not hired"
         }
     },
     "telegram": {
@@ -261,13 +311,13 @@
                     "en": "Delay"
                 }
             },
-            "delivery_probability": {
+            "deliveryProbability": {
                 "label": {
                     "pt": "Taxa de entrega",
                     "en": "Delivery rate"
                 }
             },
-            "not_delivered_message": {
+            "notDeliveredMessage": {
                 "label": {
                     "pt": "Aviso de mensagem não entregue",
                     "en": "Not delivered message warning"
@@ -275,16 +325,6 @@
                 "description": {
                     "pt": "Preencha para enviar uma mensagem antes da mensagem principal em caso de atraso",
                     "en": "Fill in to send a message before the main message in case of delay"
-                }
-            },
-            "extra_text": {
-                "label": {
-                    "pt": "Texto extra ao final",
-                    "en": "Extra text at the end"
-                },
-                "description": {
-                    "pt": "Mensagem que será enviada ao final das mensagens de aposta",
-                    "en": "Message to be sent at the end of bet messages"
                 }
             },
             "additional_settings": {
@@ -333,7 +373,7 @@
                     "en": "Fill in to send a message before the main message in case of delay"
                 }
             },
-            "extra_text": {
+            "extraText": {
                 "label": {
                     "pt": "Mensagem adicional",
                     "en": "Additional message"
@@ -343,13 +383,13 @@
                     "en": "Message to be sent at the end of bet messages"
                 }
             },
-            "receive_reports": {
+            "receiveReports": {
                 "label": {
                     "pt": "Receber relatórios",
                     "en": "Receive reports"
                 }
             },
-            "hide_software_link": {
+            "hideSoftwareLink": {
                 "label": {
                     "pt": "Remover link do software",
                     "en": "Remove software link"
