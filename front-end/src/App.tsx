@@ -86,7 +86,7 @@ const AppContent = () => {
             const {user} = await getUserDetails(userId);
             const parsedUser = {
                 ...user,
-                isExpired: user.subscription?.status !== "ACTIVE"
+                isExpired: user.subscription?.status === "INACTIVE"
             }
             setUser(dispatch, parsedUser);
         }
