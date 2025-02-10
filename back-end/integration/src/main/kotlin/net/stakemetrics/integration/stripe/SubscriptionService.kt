@@ -82,7 +82,10 @@ class SubscriptionService(
     fun getStatus(integrationId: String): SubscriptionStatus {
         val subscriptions = getSubscriptions(integrationId)
         val isActive = subscriptions.any { it.status == SubscriptionStatus.ACTIVE.integrationValue }
-        return if (isActive) SubscriptionStatus.ACTIVE else SubscriptionStatus.INACTIVE
+        val isTrialing = subscriptions.any { it.status == SubscriptionStatus.TRIALING.integrationValue }
+        if (isActive) return SubscriptionStatus.ACTIVE
+        if (isTrialing) return SubscriptionStatus.TRIALING
+        return SubscriptionStatus.INACTIVE
     }
 
     fun getExpiresAt(integrationId: String): Date? {

@@ -108,9 +108,17 @@ const UserManagement = () => {
             <Box>
                 <Skeleton isLoaded={isLoaded}>
                     <Flex direction="column" mb={4}>
-                        <Flex gap={4} alignItems="center"><Heading size="md" mb={2}>Plano</Heading>
-                            {userContext.user.isExpired ? <Badge colorScheme='red'>Expirado</Badge> :
-                                <Badge colorScheme='green'>Ativo</Badge>}
+                        <Flex gap={4} alignItems="center">
+                            <Heading size="md" mb={2}>Plano</Heading>
+                            {userContext.user.isExpired ? (
+                                <Badge colorScheme='red'>Expirado</Badge>
+                            ) : userContext.user.subscription?.status === 'ACTIVE' ? (
+                                <Badge colorScheme='green'>Ativo</Badge>
+                            ) : userContext.user.subscription?.status === 'TRIALING' ? (
+                                <Badge colorScheme='yellow'>Testando</Badge>
+                            ) : (
+                                <Badge colorScheme='red'>Inativo</Badge>
+                            )}
                         </Flex>
                         {userContext.user.subscription?.expiresAt && (
                             <Box>
