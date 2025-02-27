@@ -7,7 +7,7 @@ import java.util.UUID
 
 data class FifaBet(
     val id: UUID = UUID.randomUUID(),
-    val isPaperBet: Boolean = false,
+    var isPaperBet: Boolean = false,
     val strategy: FifaStrategy? = null,
     val match: FifaMatch? = null,
     val line: FifaMarketBetCandidates,

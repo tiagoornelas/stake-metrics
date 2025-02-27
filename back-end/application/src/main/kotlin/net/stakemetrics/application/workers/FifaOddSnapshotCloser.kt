@@ -44,13 +44,13 @@ class FifaOddSnapshotCloser(
             else -> null
         }
 
-        val overResult = fifaBetWinnerDeterminer.determineGoalLineWinner(
-            match, FifaMarketBetCandidates.OVER,
+        val overResult = fifaBetWinnerDeterminer.determineAsianGoalLineWinner(
+            match, FifaMarketBetCandidates.ASIAN_OVER_GOALS,
             fifaOddSnapshot.overGoalsOdd!!,
             fifaOddSnapshot.goalsHandicap!!
         )
-        val underResult = fifaBetWinnerDeterminer.determineGoalLineWinner(
-            match, FifaMarketBetCandidates.UNDER,
+        val underResult = fifaBetWinnerDeterminer.determineAsianGoalLineWinner(
+            match, FifaMarketBetCandidates.ASIAN_UNDER_GOALS,
             fifaOddSnapshot.underGoalsOdd!!,
             fifaOddSnapshot.goalsHandicap
         )
@@ -59,8 +59,8 @@ class FifaOddSnapshotCloser(
         fifaOddSnapshot.underProfit = underResult.profit
 
         fifaOddSnapshot.goalLineWinnerSubType = when {
-            overResult.status == BetStatusTypes.WON -> FifaMarketSubTypes.OVER
-            underResult.status == BetStatusTypes.WON -> FifaMarketSubTypes.UNDER
+            overResult.status == BetStatusTypes.WON -> FifaMarketSubTypes.ASIAN_OVER_GOALS
+            underResult.status == BetStatusTypes.WON -> FifaMarketSubTypes.ASIAN_UNDER_GOALS
             else -> null
         }
 

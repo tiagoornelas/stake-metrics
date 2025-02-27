@@ -6,7 +6,7 @@ export const APP_NAVIGATION: NavigationLinkOnHeaderValue[] = [
         path: "app/esoccer/dashboard",
         moduleText: "E-Soccer",
         moduleColor: "green",
-        type: NavigationModuleTypes.BETA
+        type: NavigationModuleTypes.REGULAR
     },
     {
         name: "Estratégias",

@@ -1,6 +1,7 @@
 package net.stakemetrics.application.entities.enums
 
 enum class EntitlementTypes(val identifier: String, val featureType: FeatureTypes, val amount: Int) {
+    EARLY_ACCESS_1("early-access-1", FeatureTypes.EARLY_ACCESS, 1),
     FIFA_STRATEGY_1("fifa-strategy-1", FeatureTypes.FIFA_STRATEGY, 1),
     FIFA_STRATEGY_3("fifa-strategy-3", FeatureTypes.FIFA_STRATEGY, 3),
     FIFA_STRATEGY_6("fifa-strategy-6", FeatureTypes.FIFA_STRATEGY, 6),

@@ -69,4 +69,20 @@ export const SUCCESS_TYPES: Record<string, SuccessDictionary> = {
         title: "Ok!",
         description: "Entrada excluída com sucesso."
     },
+    AUTO_BETTOR_INTEGRATED: {
+        title: "Ok!",
+        description: "Canal AutoBettor integrado com sucesso."
+    },
+    AUTO_BETTOR_DELETED: {
+        title: "Ok!",
+        description: "Canal AutoBettor excluído com sucesso."
+    },
+    AUTO_BETTOR_ACTIVATED: {
+        title: "Ok!",
+        description: "Canal AutoBettor ativado com sucesso."
+    },
+    AUTO_BETTOR_DEACTIVATED: {
+        title: "Ok!",
+        description: "Canal AutoBettor desativado com sucesso."
+    }
 }

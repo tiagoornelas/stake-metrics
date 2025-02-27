@@ -3,9 +3,8 @@ package net.stakemetrics.application.workers
 import net.stakemetrics.application.entities.MessengerChat
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.service.IMessengerService
-import java.time.LocalDateTime
-import java.time.ZoneId
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class BetResultsReporter(
@@ -24,6 +23,8 @@ class BetResultsReporter(
         val fifaBets = fifaBetRepository.findByMessengerChatAndDateBetween(
             messengerChat.id, user.timezoneOffset.id, startDate, endDate
         )
+
+        if (fifaBets.isEmpty()) return
 
         val reportMessage = fifaBetMessageBuilder.buildReport(fifaBets, targetDate)
         messengerService.sendToQueue(messengerChat, reportMessage, null)

@@ -10,6 +10,7 @@ import net.stakemetrics.application.service.FifaBetService
 import net.stakemetrics.application.service.FifaMatchService
 import net.stakemetrics.application.service.FifaOddSnapshotService
 import net.stakemetrics.application.service.FifaStrategyService
+import net.stakemetrics.application.service.IAutoBettorService
 import net.stakemetrics.application.service.IMessengerService
 import net.stakemetrics.application.workers.BetResultsReporter
 import org.springframework.http.ResponseEntity
@@ -25,6 +26,7 @@ class QueueController(
     private val fifaBetService: FifaBetService,
     private val fifaMatchService: FifaMatchService,
     private val messengerService: IMessengerService,
+    private val autoBettorService: IAutoBettorService,
     private val betResultsReporter: BetResultsReporter,
     private val fifaStrategyService: FifaStrategyService,
     private val fifaOddSnapshotService: FifaOddSnapshotService,
@@ -51,6 +53,12 @@ class QueueController(
     @PostMapping("/fifa/bet-queue")
     fun enqueueBetTask(@RequestBody payload: FifaBetDTO.BetRequest): ResponseEntity<QueueDTO.Response> {
         fifaBetService.bet(payload)
+        return ResponseEntity.ok(QueueDTO.Response())
+    }
+
+    @PostMapping("/fifa/auto-bet-queue")
+    fun enqueueAutoBetTask(@RequestBody payload: FifaBetDTO.AutoBetRequest): ResponseEntity<QueueDTO.Response> {
+        autoBettorService.bet(payload)
         return ResponseEntity.ok(QueueDTO.Response())
     }
 

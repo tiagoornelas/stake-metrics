@@ -49,19 +49,19 @@ class TelegramService(
             val delayInSeconds = messengerChat.delay.coerceAtMost(120)
 
             val deliveryProbability = messengerChat.deliveryProbability
-            val hasNotDeliveredMessage = messengerChat.hasNotDeliveredMessage()
+            val hasNotDeliveredMessage = messengerChat.hasNonDeliveryMessage()
 
-            if (Random.nextDouble() <= deliveryProbability) {
+            return if (Random.nextDouble() <= deliveryProbability) {
                 val finalMessage = getFinalMessage(messengerChat, message)
                 val payload = MessengerDTO.EnqueueRequest(messengerChat, finalMessage, messageId)
                 queueService.enqueueMessageTask(payload, delayInSeconds)
-                return true
+                true
             } else {
                 if (hasNotDeliveredMessage) {
                     val payload = MessengerDTO.EnqueueRequest(messengerChat, messengerChat.notDeliveredMessage, null)
                     queueService.enqueueMessageTask(payload, null)
                 }
-                return false
+                false
             }
         } catch (e: Exception) {
             logger.logError(e)
@@ -175,7 +175,7 @@ class TelegramService(
         messengerChat: MessengerChat, message: String
     ): String {
         val softwareLink = if (!messengerChat.hideSoftwareLink) {
-            "\n\n🚀 Acesse https://stakemetrics.net para criar ainda hoje o seu próprio robô"
+            "\n\n🚀 Acesse https://stakemetrics.net para criar o seu robô"
         } else {
             ""
         }
