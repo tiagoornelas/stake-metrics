@@ -78,6 +78,15 @@ class CloudTaskService(
         }
     }
 
+    override fun enqueueAutoBetTask(payload: FifaBetDTO.AutoBetRequest) {
+        createCloudTaskClient().use { client ->
+            val queueName = "auto-bet-queue"
+            val queuePath = QueueName.of(projectId, locationId, queueName).toString()
+            val fullUrl = "$baseUrl/queue/fifa/$queueName"
+            enqueueTask(fullUrl, getJsonPayload(payload), client, queuePath)
+        }
+    }
+
     override fun enqueueCloseBetTask(payload: FifaBetDTO.CloseBetRequest) {
         createCloudTaskClient().use { client ->
             val queueName = "close-bet"

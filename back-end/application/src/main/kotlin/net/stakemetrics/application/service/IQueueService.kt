@@ -11,6 +11,7 @@ interface IQueueService {
     fun enqueueRunTrendAnalysisTask(payload: FifaDataSourceDTO.FifaOddRequest)
     fun enqueueRunStrategyAgainstOddTask(payload: FifaStrategyDTO.FifaStrategyAgainstOddRequest)
     fun enqueueBetTask(payload: FifaBetDTO.BetRequest)
+    fun enqueueAutoBetTask(payload: FifaBetDTO.AutoBetRequest)
     fun enqueueCloseBetTask(payload: FifaBetDTO.CloseBetRequest)
     fun enqueueCloseOddSnapshotTask(payload: FifaOddSnapshot)
     fun enqueueMessageTask(payload: MessengerDTO.EnqueueRequest, delay: Int?)

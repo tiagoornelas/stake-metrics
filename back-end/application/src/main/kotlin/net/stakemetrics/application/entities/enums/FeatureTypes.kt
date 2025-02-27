@@ -1,6 +1,7 @@
 package net.stakemetrics.application.entities.enums
 
 enum class FeatureTypes(val identifier: String) {
+    EARLY_ACCESS("early-access"),
     FIFA_STRATEGY("fifa-strategy"),
     MESSENGER_CHAT("messenger-chat"),
     SIMPLE_REPORT("simple-report"),

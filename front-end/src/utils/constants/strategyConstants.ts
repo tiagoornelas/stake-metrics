@@ -27,14 +27,14 @@ export const strategyStatusDict = {
 
 export const FifaMarketTypesDict: { [key in FifaMarketTypes]: string } = {
     [FifaMarketTypes.MATCH_ODDS]: "Match Odds",
-    [FifaMarketTypes.GOAL_LINE]: "Linha de Gols"
+    [FifaMarketTypes.ASIAN_GOAL_LINE]: "Gols Asiáticos"
 };
 
 export const FifaMarketSubTypesDict: { [key in FifaMarketSubTypes]: string } = {
     [FifaMarketSubTypes.WINNER]: "Vencedor",
     [FifaMarketSubTypes.DRAW]: "Empate",
-    [FifaMarketSubTypes.OVER]: "Over",
-    [FifaMarketSubTypes.UNDER]: "Under"
+    [FifaMarketSubTypes.ASIAN_OVER_GOALS]: "Over",
+    [FifaMarketSubTypes.ASIAN_UNDER_GOALS]: "Under"
 };
 
 export const FifaRuleTypesDict: { [key in FifaRuleTypes]: string } = {
