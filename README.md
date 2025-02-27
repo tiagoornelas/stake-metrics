@@ -32,6 +32,7 @@ application-{{dev | prod}}.properties:
 - telegram.api.hash=5d6c78524953731cd978db89c7eb6230
 - telegram.bot.token=6875098813:AAEmMj7BWA8gfEjXPpSvflcWpYXoiEO5RSE
 - bets.api.token=176456-TFL5dSmiPoyS8M
+- tippy.bet.tolen=mYb4oE3E20FlWeEon99qj3V5jG7OZ53W1URcJPuqpt2iLQ1yTOgnIIBjrDvZZoCbZhDa9PZrIZ3b9q43sBSmZGXZKBLdOeS0fGLPEg0oH6Z5sm8TtflEfiB37L1ASfp
 - logging.level.org.springframework.security=DEBUG
 
 ### .env (Frontend Env)
@@ -46,5 +47,5 @@ Variáveis:
 ### Cloud-Task-Emulator
 - Clone o repositório [cloud-task-emulator](https://github.com/aertje/cloud-tasks-emulator)
 - No repositório, faça o build do docker com o comando docker build ./ -t tasks_emulator
-- Rode o container com docker run -p 8123:8123 tasks_emulator -host 0.0.0.0 -port 8123 -queue projects/stake-metrics-433620/locations/us-central1/queues/run-strategy-against-odds -queue projects/stake-metrics-433620/locations/us-central1/queues/run-trend-analysis -queue projects/stake-metrics-433620/locations/us-central1/queues/message-queue -queue projects/stake-metrics-433620/locations/us-central1/queues/save-match-result -queue projects/stake-metrics-433620/locations/us-central1/queues/bet-queue -queue projects/stake-metrics-433620/locations/us-central1/queues/close-bet -queue projects/stake-metrics-433620/locations/us-central1/queues/close-odd-snapshot -queue projects/stake-metrics-433620/locations/us-central1/queues/bet-report-queue -queue projects/stake-metrics-433620/locations/us-central1/queues/discard-hanging-bet
+- Rode o container com docker run -p 8123:8123 tasks_emulator -host 0.0.0.0 -port 8123 -queue projects/stake-metrics-433620/locations/us-central1/queues/run-strategy-against-odds -queue projects/stake-metrics-433620/locations/us-central1/queues/run-trend-analysis -queue projects/stake-metrics-433620/locations/us-central1/queues/message-queue -queue projects/stake-metrics-433620/locations/us-central1/queues/save-match-result -queue projects/stake-metrics-433620/locations/us-central1/queues/bet-queue -queue projects/stake-metrics-433620/locations/us-central1/queues/close-bet -queue projects/stake-metrics-433620/locations/us-central1/queues/close-odd-snapshot -queue projects/stake-metrics-433620/locations/us-central1/queues/bet-report-queue -queue projects/stake-metrics-433620/locations/us-central1/queues/discard-hanging-bet queue projects/stake-metrics-433620/locations/us-central1/queues/auto-bet-queue
 - Verifique os nomes das filas padrões criadas para identificar se precisam ser criadas novas filas.
