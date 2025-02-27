@@ -84,7 +84,7 @@ class FifaUpcomingMatchesMiner(
             }.toMap()
 
             val matchOdds = latestOdds[FifaMarketTypes.MATCH_ODDS]
-            val goalLineOdds = latestOdds[FifaMarketTypes.GOAL_LINE]
+            val goalLineOdds = latestOdds[FifaMarketTypes.ASIAN_GOAL_LINE]
 
             if (matchOdds != null && goalLineOdds != null) {
                 val home = matchOdds.home_od?.toDouble()
