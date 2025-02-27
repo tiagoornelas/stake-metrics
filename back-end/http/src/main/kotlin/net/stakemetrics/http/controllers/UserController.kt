@@ -1,14 +1,20 @@
 package net.stakemetrics.http.controllers
 
-import java.security.Principal
-import java.util.UUID
 import net.stakemetrics.application.entities.dtos.UserDTO
 import net.stakemetrics.application.entities.dtos.toUserResponse
 import net.stakemetrics.application.service.ISubscriptionService
 import net.stakemetrics.application.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.security.Principal
+import java.util.UUID
 
 @RestController
 @RequestMapping("/user")
@@ -45,4 +51,5 @@ class UserController(private val userService: UserService, private val subscript
         userService.changePassword(userId, request)
         return ResponseEntity.status(HttpStatus.OK).body(UserDTO.ChangePasswordResponse())
     }
+
 }

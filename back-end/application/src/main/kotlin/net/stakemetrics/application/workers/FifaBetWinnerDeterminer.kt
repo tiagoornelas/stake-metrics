@@ -32,7 +32,7 @@ class FifaBetWinnerDeterminer {
         )
     }
 
-    fun determineGoalLineWinner(
+    fun determineAsianGoalLineWinner(
         fifaMatch: FifaMatch,
         candidate: FifaMarketBetCandidates,
         odds: Double,
@@ -42,8 +42,8 @@ class FifaBetWinnerDeterminer {
             fifaMatch.totalGoalsAtFullTime?.toDouble() ?: throw IllegalArgumentException("Total goals cannot be null")
 
         val statusProfitPair = when (candidate) {
-            FifaMarketBetCandidates.OVER -> determineGoalLineStatusAndProfit(totalGoals, handicap, odds, true)
-            FifaMarketBetCandidates.UNDER -> determineGoalLineStatusAndProfit(totalGoals, handicap, odds, false)
+            FifaMarketBetCandidates.ASIAN_OVER_GOALS -> determineGoalLineStatusAndProfit(totalGoals, handicap, odds, true)
+            FifaMarketBetCandidates.ASIAN_UNDER_GOALS -> determineGoalLineStatusAndProfit(totalGoals, handicap, odds, false)
             else -> throw IllegalArgumentException("Invalid candidate for goal line bet: $candidate")
         }
 
@@ -151,8 +151,8 @@ class FifaBetWinnerDeterminer {
         val subTypeMap = mapOf(
             BetStatusTypes.WON to candidate,
             BetStatusTypes.HALF_WON to candidate,
-            BetStatusTypes.LOST to if (candidate == FifaMarketBetCandidates.OVER) FifaMarketBetCandidates.UNDER else FifaMarketBetCandidates.OVER,
-            BetStatusTypes.HALF_LOST to if (candidate == FifaMarketBetCandidates.OVER) FifaMarketBetCandidates.UNDER else FifaMarketBetCandidates.OVER
+            BetStatusTypes.LOST to if (candidate == FifaMarketBetCandidates.ASIAN_OVER_GOALS) FifaMarketBetCandidates.ASIAN_UNDER_GOALS else FifaMarketBetCandidates.ASIAN_OVER_GOALS,
+            BetStatusTypes.HALF_LOST to if (candidate == FifaMarketBetCandidates.ASIAN_OVER_GOALS) FifaMarketBetCandidates.ASIAN_UNDER_GOALS else FifaMarketBetCandidates.ASIAN_OVER_GOALS
         )
 
         return subTypeMap[status]?.let { getWinnerSubType(it) }

@@ -152,21 +152,21 @@ export interface FifaPlayerResponse {
 
 export enum FifaMarketTypes {
     MATCH_ODDS = "MATCH_ODDS",
-    GOAL_LINE = "GOAL_LINE"
+    ASIAN_GOAL_LINE = "ASIAN_GOAL_LINE"
 }
 
 export enum FifaMarketSubTypes {
     WINNER = "WINNER",
     DRAW = "DRAW",
-    OVER = "OVER",
-    UNDER = "UNDER"
+    ASIAN_OVER_GOALS = "ASIAN_OVER_GOALS",
+    ASIAN_UNDER_GOALS = "ASIAN_UNDER_GOALS"
 }
 
 export const FifaMarketSubTypesParent: { [key in FifaMarketSubTypes]: FifaMarketTypes } = {
     [FifaMarketSubTypes.WINNER]: FifaMarketTypes.MATCH_ODDS,
     [FifaMarketSubTypes.DRAW]: FifaMarketTypes.MATCH_ODDS,
-    [FifaMarketSubTypes.OVER]: FifaMarketTypes.GOAL_LINE,
-    [FifaMarketSubTypes.UNDER]: FifaMarketTypes.GOAL_LINE
+    [FifaMarketSubTypes.ASIAN_OVER_GOALS]: FifaMarketTypes.ASIAN_GOAL_LINE,
+    [FifaMarketSubTypes.ASIAN_UNDER_GOALS]: FifaMarketTypes.ASIAN_GOAL_LINE
 };
 
 export enum FifaRuleTypes {
@@ -324,4 +324,12 @@ export interface BetStatistics {
         endDate: string;
         profit: number;
     }>;
+}
+
+export interface AutoBettor {
+    id: string;
+    user: User;
+    integrationId: string;
+    status: string;
+    createdAt: string;
 }

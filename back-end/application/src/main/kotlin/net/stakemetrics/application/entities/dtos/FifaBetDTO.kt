@@ -1,5 +1,6 @@
 package net.stakemetrics.application.entities.dtos
 
+import net.stakemetrics.application.entities.AutoBettor
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaStrategy
@@ -17,6 +18,11 @@ class FifaBetDTO {
         val fifaMatchId: UUID,
         val candidate: FifaMarketBetCandidates,
         val oddSnapshot: FifaOddSnapshot
+    )
+
+    data class AutoBetRequest(
+        val fifaBet: FifaBet,
+        val autoBettor: AutoBettor
     )
 
     data class BetResponse(

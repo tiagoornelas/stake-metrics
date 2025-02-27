@@ -18,7 +18,9 @@ export const TranslationContext = createContext<TranslationContextType>({
 const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [language, setLanguage] = useState<Language>(() => {
         const browserLang = navigator.language.split('-')[0] as Language;
-        return browserLang === 'en' ? 'en' : 'pt';
+        // TODO: Temporarily set portuguese as default
+        // return browserLang === 'en' ? 'en' : 'pt';
+        return 'pt';
     });
 
     const t = (key: string, params?: Record<string, any>) => {

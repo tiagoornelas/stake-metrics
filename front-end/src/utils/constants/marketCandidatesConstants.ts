@@ -2,6 +2,6 @@ export const MARKET_CANDIDATES_DICT = {
     "HOME": "Casa",
     "DRAW": "Empate",
     "AWAY": "Visitante",
-    "UNDER": "Under",
-    "OVER": "Over",
+    "ASIAN_UNDER_GOALS": "Under Gols",
+    "ASIAN_OVER_GOALS": "Over Gols",
 }

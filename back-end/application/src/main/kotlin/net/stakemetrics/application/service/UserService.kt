@@ -1,25 +1,30 @@
 package net.stakemetrics.application.service
 
-import java.util.UUID
-import java.util.regex.Pattern
+import jakarta.transaction.Transactional
+import net.stakemetrics.application.entities.AutoBettor
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.UserDTO
+import net.stakemetrics.application.entities.enums.AutoBettorIntegrationStatus
 import net.stakemetrics.application.entities.exceptions.AlreadyExistsException
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
+import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.entities.exceptions.PasswordConfirmationException
 import net.stakemetrics.application.entities.exceptions.PasswordDoesNotMatchException
-import net.stakemetrics.application.entities.exceptions.InvalidFieldException
+import net.stakemetrics.application.repositories.IAutoBettorRepository
 import net.stakemetrics.application.repositories.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.UUID
+import java.util.regex.Pattern
 
 @Service
 class UserService @Autowired constructor(
     private val userRepository: IUserRepository,
     private val passwordEncoder: PasswordEncoder,
-    @Lazy private val subscriptionService: ISubscriptionService
+    private val autoBettorRepository: IAutoBettorRepository,
+    @Lazy private val subscriptionService: ISubscriptionService,
 ) {
 
     private val emailPattern = Pattern.compile(
@@ -47,9 +52,9 @@ class UserService @Autowired constructor(
     }
 
     private fun validateCreateRequest(dto: UserDTO.CreateRequest) {
-        if (dto.name.length < 2) throw IllegalArgumentException("Name must be at least 2 characters long")
-        if (dto.password.length < 8) throw IllegalArgumentException("Password must be at least 8 characters long")
-        if (!emailPattern.matcher(dto.email).matches()) throw IllegalArgumentException("Email is not valid")
+        require(dto.name.length >= 2) { "Name must be at least 2 characters long" }
+        require(dto.password.length >= 8) { "Password must be at least 8 characters long" }
+        require(emailPattern.matcher(dto.email).matches()) { "Email is not valid" }
     }
 
     private fun checkUserExistence(email: String): Boolean {
@@ -90,4 +95,33 @@ class UserService @Autowired constructor(
     fun findByEmail(email: String): User {
         return userRepository.findByEmail(email)
     }
+
+    fun getUserAutoBettor(user: User): AutoBettor? {
+        return autoBettorRepository.findByUser(user)
+    }
+
+    fun getUserAutoBettor(userEmail: String): AutoBettor? {
+        val user = findByEmail(userEmail)
+        return getUserAutoBettor(user)
+    }
+
+    fun saveAutoBettorForUser(userEmail: String, integrationId: String) {
+        val user = findByEmail(userEmail)
+        val autoBettor = AutoBettor(user = user, integrationId = integrationId)
+        autoBettorRepository.save(autoBettor)
+    }
+
+    @Transactional
+    fun deleteAutoBettorForUser(userEmail: String) {
+        val user = findByEmail(userEmail)
+        autoBettorRepository.deleteByUser(user)
+    }
+
+    fun changeAutoBettorStatus(userEmail: String, status: AutoBettorIntegrationStatus) {
+        val user = findByEmail(userEmail)
+        val autoBettor = getUserAutoBettor(user) ?: throw NotFoundException("AutoBettor", "user", user.email)
+        autoBettor.status = status
+        autoBettorRepository.save(autoBettor)
+    }
+
 }

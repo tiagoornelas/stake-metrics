@@ -1,4 +1,4 @@
-package net.stakemetrics.integration.betsapi.service
+package net.stakemetrics.integration.betsapi
 
 import java.util.Calendar
 import java.util.Date

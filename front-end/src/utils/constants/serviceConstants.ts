@@ -45,5 +45,9 @@ export const ENDPOINTS = {
             SIMPLE: "/simple",
             DETAILED: "/detailed"
         }
+    },
+    INTEGRATION: {
+        AUTO_BETTOR: "/auto-bettor",
+        STATUS: "/status",
     }
 }

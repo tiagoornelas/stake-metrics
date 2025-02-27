@@ -7,7 +7,7 @@ import net.stakemetrics.application.workers.tipsters.factory.FifaBetCloser
 import org.springframework.stereotype.Service
 
 @Service
-class FifaGoalLineBetCloser(
+class FifaAsianGoalLineBetCloser(
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaBetWinnerDeterminer: FifaBetWinnerDeterminer
 ) : FifaBetCloser {
@@ -16,7 +16,7 @@ class FifaGoalLineBetCloser(
         val candidate = fifaBet.line
         val match = fifaBet.match!!
         val handicap = fifaBet.handicap!!
-        val result = fifaBetWinnerDeterminer.determineGoalLineWinner(match, candidate, fifaBet.odds, handicap)
+        val result = fifaBetWinnerDeterminer.determineAsianGoalLineWinner(match, candidate, fifaBet.odds, handicap)
 
         fifaBet.status = result.status
         fifaBet.profit = result.profit
