@@ -3,8 +3,6 @@ package net.stakemetrics.application.service
 import net.stakemetrics.application.entities.FifaBet
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategy
-import net.stakemetrics.application.entities.Message
-import net.stakemetrics.application.entities.MessengerChat
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.MessengerDTO
@@ -16,6 +14,7 @@ import net.stakemetrics.application.entities.exceptions.FifaBetOnStartedMatchExc
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.application.utils.Logger
+import net.stakemetrics.application.workers.FifaActiveBetWorker
 import net.stakemetrics.application.workers.FifaBetClosingWorker
 import net.stakemetrics.application.workers.FifaBetMessageBuilder
 import net.stakemetrics.application.workers.tipsters.FifaTipsterHelper
@@ -31,14 +30,13 @@ class FifaBetService(
     private val logger: Logger,
     private val userService: UserService,
     private val queueService: IQueueService,
-    private val messageService: MessageService,
-    private val messengerService: IMessengerService,
     private val fifaTipsterHelper: FifaTipsterHelper,
     private val fifaBetRepository: IFifaBetRepository,
     private val fifaStrategyService: FifaStrategyService,
+    private val fifaActiveBetWorker: FifaActiveBetWorker,
     private val fifaMatchRepository: IFifaMatchRepository,
     private val fifaBetClosingWorker: FifaBetClosingWorker,
-    private val fifaBetMessageBuilder: FifaBetMessageBuilder
+    private val fifaBetMessageBuilder: FifaBetMessageBuilder,
 ) {
 
     fun bet(payload: FifaBetDTO.BetRequest) {
@@ -68,7 +66,7 @@ class FifaBetService(
             oddSnapshotId = payload.oddSnapshot.id,
         )
 
-        if (!fifaBet.isPaperBet) sendBetMessagesToUserChats(fifaBet)
+        if (!fifaBet.isPaperBet) fifaActiveBetWorker.workOnBet(fifaBet)
         fifaBetRepository.save(fifaBet)
     }
 
@@ -77,25 +75,8 @@ class FifaBetService(
     }
 
     private fun isGoalLineMarket(candidate: FifaMarketBetCandidates): Boolean {
-        return FifaMarketTypes.GOAL_LINE.subTypes.any { subtype ->
+        return FifaMarketTypes.ASIAN_GOAL_LINE.subTypes.any { subtype ->
             subtype.betCandidates.contains(candidate)
-        }
-    }
-
-    fun sendBetMessagesToUserChats(fifaBet: FifaBet) {
-        val activeUserChats = messengerService.listActiveUserChats(fifaBet.strategy?.user!!)
-        val integratedActiveUserChats = activeUserChats.filter { it.chatId != null }
-        val betMessage = fifaBetMessageBuilder.build(fifaBet)
-        val successfulChats = mutableSetOf<MessengerChat>()
-
-        integratedActiveUserChats.forEach { chat ->
-            val message = Message(messengerChat = chat, text = betMessage)
-            val messageSent = messengerService.sendToQueue(chat, betMessage, message.id)
-            if (messageSent) {
-                successfulChats.add(chat)
-                messageService.save(message)
-                fifaBet.messages.add(message)
-            }
         }
     }
 

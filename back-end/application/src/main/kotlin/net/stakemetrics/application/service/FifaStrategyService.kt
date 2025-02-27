@@ -120,6 +120,11 @@ class FifaStrategyService @Autowired constructor(
         fifaStrategyRepository.save(strategy)
     }
 
+    fun forcePaperBetStatus(strategy: FifaStrategy) {
+        strategy.status = FifaStrategyStatus.PAPER_BET
+        fifaStrategyRepository.save(strategy)
+    }
+
     @Transactional
     fun restartStrategy(userEmail: String, strategyId: UUID) {
         val strategy = findById(strategyId)

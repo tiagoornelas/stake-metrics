@@ -26,8 +26,8 @@ class FifaTipsterHelper {
             FifaMarketBetCandidates.HOME -> line.homeOdd!!
             FifaMarketBetCandidates.AWAY -> line.awayOdd!!
             FifaMarketBetCandidates.DRAW -> line.drawOdd!!
-            FifaMarketBetCandidates.OVER -> line.overGoalsOdd!!
-            FifaMarketBetCandidates.UNDER -> line.underGoalsOdd!!
+            FifaMarketBetCandidates.ASIAN_OVER_GOALS -> line.overGoalsOdd!!
+            FifaMarketBetCandidates.ASIAN_UNDER_GOALS -> line.underGoalsOdd!!
         }
     }
 

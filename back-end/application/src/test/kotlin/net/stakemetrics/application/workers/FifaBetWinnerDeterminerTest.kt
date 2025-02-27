@@ -18,31 +18,31 @@ class FifaBetWinnerDeterminerTest {
     companion object {
         @JvmStatic
         fun goalLineTestCases(): Stream<Arguments> = Stream.of(
-            Arguments.of(4.5, 4, FifaMarketBetCandidates.UNDER, BetStatusTypes.WON),
-            Arguments.of(4.5, 5, FifaMarketBetCandidates.UNDER, BetStatusTypes.LOST),
-            Arguments.of(4.5, 4, FifaMarketBetCandidates.OVER, BetStatusTypes.LOST),
-            Arguments.of(4.5, 5, FifaMarketBetCandidates.OVER, BetStatusTypes.WON),
+            Arguments.of(4.5, 4, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.WON),
+            Arguments.of(4.5, 5, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.LOST),
+            Arguments.of(4.5, 4, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.LOST),
+            Arguments.of(4.5, 5, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.WON),
 
-            Arguments.of(4.0, 4, FifaMarketBetCandidates.UNDER, BetStatusTypes.VOID),
-            Arguments.of(4.0, 3, FifaMarketBetCandidates.UNDER, BetStatusTypes.WON),
-            Arguments.of(4.0, 5, FifaMarketBetCandidates.UNDER, BetStatusTypes.LOST),
-            Arguments.of(4.0, 4, FifaMarketBetCandidates.OVER, BetStatusTypes.VOID),
-            Arguments.of(4.0, 5, FifaMarketBetCandidates.OVER, BetStatusTypes.WON),
-            Arguments.of(4.0, 3, FifaMarketBetCandidates.OVER, BetStatusTypes.LOST),
+            Arguments.of(4.0, 4, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.VOID),
+            Arguments.of(4.0, 3, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.WON),
+            Arguments.of(4.0, 5, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.LOST),
+            Arguments.of(4.0, 4, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.VOID),
+            Arguments.of(4.0, 5, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.WON),
+            Arguments.of(4.0, 3, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.LOST),
 
-            Arguments.of(4.25, 4, FifaMarketBetCandidates.UNDER, BetStatusTypes.HALF_WON),
-            Arguments.of(4.25, 5, FifaMarketBetCandidates.UNDER, BetStatusTypes.LOST),
-            Arguments.of(4.25, 3, FifaMarketBetCandidates.UNDER, BetStatusTypes.WON),
-            Arguments.of(4.25, 4, FifaMarketBetCandidates.OVER, BetStatusTypes.HALF_LOST),
-            Arguments.of(4.25, 5, FifaMarketBetCandidates.OVER, BetStatusTypes.WON),
-            Arguments.of(4.25, 3, FifaMarketBetCandidates.OVER, BetStatusTypes.LOST),
+            Arguments.of(4.25, 4, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.HALF_WON),
+            Arguments.of(4.25, 5, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.LOST),
+            Arguments.of(4.25, 3, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.WON),
+            Arguments.of(4.25, 4, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.HALF_LOST),
+            Arguments.of(4.25, 5, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.WON),
+            Arguments.of(4.25, 3, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.LOST),
 
-            Arguments.of(4.75, 5, FifaMarketBetCandidates.UNDER, BetStatusTypes.HALF_LOST),
-            Arguments.of(4.75, 4, FifaMarketBetCandidates.UNDER, BetStatusTypes.WON),
-            Arguments.of(4.75, 6, FifaMarketBetCandidates.UNDER, BetStatusTypes.LOST),
-            Arguments.of(4.75, 5, FifaMarketBetCandidates.OVER, BetStatusTypes.HALF_WON),
-            Arguments.of(4.75, 6, FifaMarketBetCandidates.OVER, BetStatusTypes.WON),
-            Arguments.of(4.75, 4, FifaMarketBetCandidates.OVER, BetStatusTypes.LOST)
+            Arguments.of(4.75, 5, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.HALF_LOST),
+            Arguments.of(4.75, 4, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.WON),
+            Arguments.of(4.75, 6, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, BetStatusTypes.LOST),
+            Arguments.of(4.75, 5, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.HALF_WON),
+            Arguments.of(4.75, 6, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.WON),
+            Arguments.of(4.75, 4, FifaMarketBetCandidates.ASIAN_OVER_GOALS, BetStatusTypes.LOST)
         )
     }
 
@@ -59,7 +59,7 @@ class FifaBetWinnerDeterminerTest {
             time = Date(),
             totalGoalsAtFullTime = totalGoals
         )
-        val result = determiner.determineGoalLineWinner(match, candidate, 2.0, handicap)
+        val result = determiner.determineAsianGoalLineWinner(match, candidate, 2.0, handicap)
         assertEquals(expectedStatus, result.status)
     }
 
@@ -70,7 +70,7 @@ class FifaBetWinnerDeterminerTest {
             time = Date(),
             totalGoalsAtFullTime = 5
         )
-        val result = determiner.determineGoalLineWinner(match, FifaMarketBetCandidates.OVER, 2.0, 4.5)
+        val result = determiner.determineAsianGoalLineWinner(match, FifaMarketBetCandidates.ASIAN_OVER_GOALS, 2.0, 4.5)
         assertEquals(1.0, result.profit)
     }
 
@@ -81,7 +81,7 @@ class FifaBetWinnerDeterminerTest {
             time = Date(),
             totalGoalsAtFullTime = 4
         )
-        val result = determiner.determineGoalLineWinner(match, FifaMarketBetCandidates.OVER, 2.0, 4.5)
+        val result = determiner.determineAsianGoalLineWinner(match, FifaMarketBetCandidates.ASIAN_OVER_GOALS, 2.0, 4.5)
         assertEquals(-1.0, result.profit)
     }
 
@@ -92,7 +92,7 @@ class FifaBetWinnerDeterminerTest {
             time = Date(),
             totalGoalsAtFullTime = 4
         )
-        val result = determiner.determineGoalLineWinner(match, FifaMarketBetCandidates.UNDER, 2.0, 4.25)
+        val result = determiner.determineAsianGoalLineWinner(match, FifaMarketBetCandidates.ASIAN_UNDER_GOALS, 2.0, 4.25)
         assertEquals(0.5, result.profit)
     }
 
@@ -103,7 +103,7 @@ class FifaBetWinnerDeterminerTest {
             time = Date(),
             totalGoalsAtFullTime = 4
         )
-        val result = determiner.determineGoalLineWinner(match, FifaMarketBetCandidates.OVER, 2.0, 4.25)
+        val result = determiner.determineAsianGoalLineWinner(match, FifaMarketBetCandidates.ASIAN_OVER_GOALS, 2.0, 4.25)
         assertEquals(-0.5, result.profit)
     }
 
@@ -114,7 +114,7 @@ class FifaBetWinnerDeterminerTest {
             time = Date(),
             totalGoalsAtFullTime = 4
         )
-        val result = determiner.determineGoalLineWinner(match, FifaMarketBetCandidates.OVER, 2.0, 4.0)
+        val result = determiner.determineAsianGoalLineWinner(match, FifaMarketBetCandidates.ASIAN_OVER_GOALS, 2.0, 4.0)
         assertEquals(0.0, result.profit)
     }
 }
