@@ -5,7 +5,6 @@ import Modal from "components/Modal";
 import { saveAutoBettor } from "services/integrationService";
 import { useErrorToast } from "hooks/useErrorToast";
 import { SUCCESS_TYPES } from "utils/constants/successConstants";
-import { set } from "date-fns";
 
 interface TippyIntegrationModalProps {
     onCloseCallback?: () => void;
