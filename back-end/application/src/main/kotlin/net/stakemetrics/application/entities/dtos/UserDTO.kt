@@ -1,8 +1,11 @@
 package net.stakemetrics.application.entities.dtos
 
-import java.util.UUID
+import net.stakemetrics.application.entities.AutoBettor
 import net.stakemetrics.application.entities.User
+import net.stakemetrics.application.entities.enums.AutoBettorIntegrationStatus
 import net.stakemetrics.application.entities.enums.UserTypes
+import java.util.Date
+import java.util.UUID
 
 class UserDTO {
 
@@ -49,10 +52,47 @@ class UserDTO {
     data class ChangePasswordResponse(
         val success: Boolean = true
     )
+
+    data class SaveAutoBettorRequest(
+        val integrationId: String
+    )
+
+    data class AutoBettorResponse(
+        val autoBettor: AutoBettorWithoutUser?
+    )
+
+    data class AutoBettorWithoutUser(
+        val id: UUID,
+        val integrationId: String? = null,
+        val status: AutoBettorIntegrationStatus,
+        val createdAt: Date
+    )
+
+    data class ChangeAutoBettorStatusRequest(
+        val status: AutoBettorIntegrationStatus
+    )
+
+    data class SaveAutoBettorResponse(
+        val success: Boolean = true
+    )
+
+    data class DeleteAutoBettorResponse(
+        val success: Boolean = true
+    )
+
+    data class ChangeAutoBettorResponse(
+        val success: Boolean = true
+    )
+
 }
 
 fun User.toUserResponse(subscription: SubscriptionDTO.SubscriptionResponse): UserDTO.UserResponse {
     return UserDTO.UserResponse(
         this.id, this.email, this.name, this.type, subscription
     )
+}
+
+fun AutoBettor.toAutoBettorResponse(): UserDTO.AutoBettorResponse {
+    val autoBettorWithoutUser = UserDTO.AutoBettorWithoutUser(this.id, this.integrationId, this.status, this.createdAt)
+    return UserDTO.AutoBettorResponse(autoBettorWithoutUser)
 }

@@ -52,10 +52,6 @@ class FifaBetMessageBuilder {
         val formattedDate = targetDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         val title = "🏆 Relatório de Entradas - $formattedDate 🏆\n\n"
 
-        if (fifaBets.isEmpty()) {
-            return title + "Sem entradas no dia de hoje."
-        }
-
         val totalProfit = fifaBets.sumOf { it.profit ?: 0.0 }
         val totalBetsCount = fifaBets.size
         val totalROI = if (totalBetsCount > 0) (totalProfit / totalBetsCount * 100) else 0.0
@@ -153,8 +149,8 @@ class FifaBetMessageBuilder {
             FifaMarketBetCandidates.HOME -> fifaBet.match?.home?.name ?: "Time da casa"
             FifaMarketBetCandidates.DRAW -> "Empate"
             FifaMarketBetCandidates.AWAY -> fifaBet.match?.away?.name ?: "Time visitante"
-            FifaMarketBetCandidates.OVER -> "Mais de ${parseHandicap(fifaBet.handicap!!)} gols"
-            FifaMarketBetCandidates.UNDER -> "Menos de ${parseHandicap(fifaBet.handicap!!)} gols"
+            FifaMarketBetCandidates.ASIAN_OVER_GOALS -> "Mais de ${parseHandicap(fifaBet.handicap!!)} gols"
+            FifaMarketBetCandidates.ASIAN_UNDER_GOALS -> "Menos de ${parseHandicap(fifaBet.handicap!!)} gols"
         }
     }
 
@@ -180,8 +176,8 @@ class FifaBetMessageBuilder {
             FifaMarketBetCandidates.DRAW,
             FifaMarketBetCandidates.AWAY -> "Mercado de Vencedor"
 
-            FifaMarketBetCandidates.OVER,
-            FifaMarketBetCandidates.UNDER -> "Mercado de Gols"
+            FifaMarketBetCandidates.ASIAN_OVER_GOALS,
+            FifaMarketBetCandidates.ASIAN_UNDER_GOALS -> "Mercado de Gols"
         }
     }
 

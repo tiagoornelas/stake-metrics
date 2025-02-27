@@ -325,3 +325,11 @@ export interface BetStatistics {
         profit: number;
     }>;
 }
+
+export interface AutoBettor {
+    id: string;
+    user: User;
+    integrationId: string;
+    status: string;
+    createdAt: string;
+}

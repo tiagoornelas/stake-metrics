@@ -5,6 +5,7 @@ import jakarta.persistence.*
 import java.time.ZoneOffset
 import java.util.UUID
 import net.stakemetrics.application.entities.User
+import net.stakemetrics.application.entities.enums.Languages
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -27,7 +28,8 @@ data class UserModel(
     val telegramChats: MutableSet<MessengerChatModel> = mutableSetOf(),
     @OneToMany(orphanRemoval = true, mappedBy = "user")
     val strategies: MutableSet<FifaStrategyModel> = mutableSetOf(),
-    val timezoneOffset: ZoneOffset = ZoneOffset.of("-03:00")
+    val timezoneOffset: ZoneOffset = ZoneOffset.of("-03:00"),
+    val language: Languages = Languages.PORTUGUESE
 ) : UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
@@ -49,7 +51,14 @@ data class UserModel(
     override fun isEnabled(): Boolean = true
 
     fun toDomain(): User {
-        return User(id, email, name, password, type)
+        return User(
+            id = id,
+            email = email,
+            name = name,
+            password = password,
+            timezoneOffset = timezoneOffset,
+            language = language
+        )
     }
 }
 
@@ -60,6 +69,7 @@ fun User.toModel(): UserModel {
         name = name,
         passwordHash = password,
         type = type,
-        timezoneOffset = timezoneOffset
+        timezoneOffset = timezoneOffset,
+        language = language
     )
 }
