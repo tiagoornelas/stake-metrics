@@ -18,6 +18,11 @@ export const getFeaturesWithLabels = (user: UserInfo): Array<{ label: string, am
     for (const featureKey in FEATURES) {
         if (FEATURES.hasOwnProperty(featureKey)) {
             const featureName = FEATURES[featureKey as keyof typeof FEATURES];
+            
+            if (featureName === FEATURES.EARLY_ACCESS && !user.subscription.features[FEATURES.EARLY_ACCESS]) {
+                continue;
+            }
+
             const featureLabel = FEATURE_LABELS[featureName];
             const featureAmount = getFeatureAmount(user, featureName);
             result.push({label: featureLabel, amount: featureAmount});
