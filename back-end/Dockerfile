@@ -3,6 +3,8 @@ FROM gradle:7.6-jdk17 AS build
 WORKDIR /app
 COPY . /app
 
+USER root
+RUN chown -R gradle /app
 USER gradle
 RUN gradle bootJar
 
