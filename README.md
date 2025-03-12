@@ -22,6 +22,7 @@ application-{{dev | prod}}.properties:
 - spring.jpa.hibernate.ddl-auto=update
 - spring.datasource.password=UIBmIuZ_BvwA
 - api.security.token.secret=UIBmIuZ_BvwA
+- admin.master.key=UIBmIuZ_BvwA
 - stripe.pricing.table=prctbl_1PWjTiEvrQ7zPy18hlKtUjPW
 - stripe.dark.mode.pricing.table=prctbl_1PjX2nEvrQ7zPy180Gh6wYLz
 - stripe.api.key=sk_test_51PVffeEvrQ7zPy18P0Y5XYNFChQjZxe7iIz5kXSvl4ni8OMNNk95KMb7EmR9WE17pH6Z6aOxPgrGFkPnThiDPcW700q4GU4Jnm
