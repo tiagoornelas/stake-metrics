@@ -20,7 +20,8 @@ class ApiKeyAuthFilter : OncePerRequestFilter() {
         if (
             (request.requestURI.startsWith("/queue")
                     || request.requestURI.startsWith("/cron")
-                    || request.requestURI.startsWith("/dev")) && (apiKey == null || apiKey != serviceApiKey)
+                    || request.requestURI.startsWith("/dev")
+                    || request.requestURI.startsWith("/data")) && (apiKey == null || apiKey != serviceApiKey)
         ) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
             return

@@ -1,6 +1,5 @@
 package net.stakemetrics.application.service
 
-import java.util.UUID
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaPlayer
@@ -9,7 +8,7 @@ import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.entities.exceptions.FifaBetOnStartedMatchException
 import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
-import net.stakemetrics.application.utils.Logger
+import net.stakemetrics.application.utils.DateHelper
 import net.stakemetrics.application.utils.MathHelper
 import net.stakemetrics.application.workers.FIfaIntegrationHomeAndAwayMismatchFinder
 import net.stakemetrics.application.workers.FifaOddSnapshotCloser
@@ -17,11 +16,12 @@ import net.stakemetrics.application.workers.FifaPastResultsSearcher
 import net.stakemetrics.application.workers.OddAndLineCalculator
 import net.stakemetrics.application.workers.enqueuers.FifaStrategyAgainstOddsEnqueuer
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class FifaOddSnapshotService(
-    private val logger: Logger,
     private val mathHelper: MathHelper,
+    private val dateHelper: DateHelper,
     private val fifaMatchService: FifaMatchService,
     private val oddAndLineCalculator: OddAndLineCalculator,
     private val fifaOddSnapshotCloser: FifaOddSnapshotCloser,
@@ -253,6 +253,11 @@ class FifaOddSnapshotService(
 
     private fun getMatchesUnderThreshold(results: MutableSet<FifaMatch>, threshold: Double): Int {
         return results.count { it.totalGoalsAtFullTime != null && it.totalGoalsAtFullTime < threshold }
+    }
+
+    fun getAllOddSnapshotsForDate(date: String): List<FifaOddSnapshot> {
+        val (dateStart, dateEnd) = dateHelper.getDateRangeByString(date)
+        return fifaOddSnapshotRepository.findAllClosedByCreatedAtBetween(dateStart, dateEnd)
     }
 
 }
