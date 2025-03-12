@@ -8,6 +8,7 @@ import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
 import net.stakemetrics.persistence.jpa.FifaOddSnapshotJpaRepository
 import net.stakemetrics.persistence.models.toModel
 import org.springframework.stereotype.Repository
+import java.util.Date
 
 @Repository
 class FifaOddSnapshotRepository(
@@ -33,5 +34,13 @@ class FifaOddSnapshotRepository(
 
     override fun deleteAllByFifaMatchId(fifaMatchId: UUID) {
         return fifaOddSnapshotJpaRepository.deleteAllByFifaMatchId(fifaMatchId)
+    }
+
+    override fun findAllClosedByCreatedAtBetween(dateStart: Date, dateEnd: Date): List<FifaOddSnapshot> {
+        return fifaOddSnapshotJpaRepository.findAllByStatusAndCreatedAtBetween(
+            OddSnapshotTypes.CLOSED,
+            dateStart,
+            dateEnd
+        ).map { it.toDomain() }
     }
 }

@@ -2,6 +2,7 @@ package net.stakemetrics.application.repositories
 
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaOddSnapshot
+import java.util.Date
 
 interface IFifaOddSnapshotRepository {
     fun save(fifaOddSnapshot: FifaOddSnapshot)
@@ -9,4 +10,5 @@ interface IFifaOddSnapshotRepository {
     fun findAllPending(): List<FifaOddSnapshot>
     fun findAllByFifaMatchId(fifaMatchId: UUID): List<FifaOddSnapshot>
     fun deleteAllByFifaMatchId(fifaMatchId: UUID)
+    fun findAllClosedByCreatedAtBetween(dateStart: Date, dateEnd: Date): List<FifaOddSnapshot>
 }
