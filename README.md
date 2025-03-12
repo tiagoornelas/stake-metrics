@@ -22,6 +22,7 @@ application-{{dev | prod}}.properties:
 - spring.jpa.hibernate.ddl-auto=update
 - spring.datasource.password=dev_secret_token_placeholder
 - api.security.token.secret=dev_secret_token_placeholder
+- admin.master.key=dev_secret_token_placeholder
 - stripe.pricing.table=prctbl_placeholder_1
 - stripe.dark.mode.pricing.table=prctbl_placeholder_2
 - stripe.api.key=sk_test_placeholder
