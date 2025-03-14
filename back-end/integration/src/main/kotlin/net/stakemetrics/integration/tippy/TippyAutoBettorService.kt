@@ -16,7 +16,7 @@ class TippyAutoBettorService(private val tippyApiRequester: TippyApiRequester, p
         tippyApiRequester.autoBet(request)
     }
 
-    private fun buildRequest(payload: FifaBetDTO.AutoBetRequest): TippyDTO.AutoBetRequest {
+    private fun buildRequest(payload: FifaBetDTO.AutoBetRequest): TippyDTO.AutoBetRequestWithIntegrationInfo {
         val fifaBet = payload.fifaBet
         val autoBettor = payload.autoBettor
         val marketType = tippyHelper.getMarketFromLine(fifaBet.line)
@@ -31,13 +31,9 @@ class TippyAutoBettorService(private val tippyApiRequester: TippyApiRequester, p
 
         val selection = tippyHelper.getSelectionForBet(match, fifaBet)
 
-        return TippyDTO.AutoBetRequest(
+        return TippyDTO.AutoBetRequestWithIntegrationInfo(
             integrationId = autoBettor.integrationId!!,
-            selectionId = selection.id,
-            fixtureId = fifaBet.match?.bet365Id!!.toString(),
-            participantId = selection.participantId,
-            odds = selection.odds,
-            oddsFraction = selection.oddsFraction,
+            selectionId = selection.id
         )
     }
 
