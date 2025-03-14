@@ -6,6 +6,7 @@ import com.google.gson.JsonParser
 import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.exceptions.IntegrationException
+import net.stakemetrics.application.utils.Logger
 import net.stakemetrics.integration.tippy.deserializer.TippyDeserializer
 import net.stakemetrics.integration.tippy.dto.TippyDTO
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -16,12 +17,17 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-class TippyApiRequester(private val tippyHelper: TippyHelper, private val deserializer: TippyDeserializer) {
+class TippyApiRequester(
+    private val tippyHelper: TippyHelper,
+    private val deserializer: TippyDeserializer,
+    private val logger: Logger
+) {
 
     @Value("\${tippy.bet.token}")
     private val token: String? = null
 
     private val bet365TippyAPI: String = "bet365-api.tippy.club"
+    private val tippyApi: String = "api.tippy.club"
     private val client = OkHttpClient()
 
     fun getMatchesForLeagueAndMarket(fifaLeague: FifaLeague, market: FifaMarketTypes): TippyDTO.Response {
@@ -33,22 +39,30 @@ class TippyApiRequester(private val tippyHelper: TippyHelper, private val deseri
         return deserializer.parseJsonToResponse(jsonResponse)
     }
 
-    fun autoBet(payload: TippyDTO.AutoBetRequest) {
-        // TODO: Implement autoBet - Temporary Webhook call
-        val webhookEndpoint = "https://webhook.site/cefc83a2-544a-45b1-9c17-4306df8b6ee7"
-
-        val gson = Gson()
-        val jsonPayload = gson.toJson(payload)
-
+    fun autoBet(payload: TippyDTO.AutoBetRequestWithIntegrationInfo) {
+        val endpoint = "https://$tippyApi/v1/send-tip"
         val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+
+        val body = TippyDTO.AutoBetRequest(payload.selectionId)
+        val jsonPayload = Gson().toJson(body)
         val requestBody = jsonPayload.toRequestBody(mediaType)
 
         val request = Request.Builder()
-            .url(webhookEndpoint)
+            .url(endpoint)
             .post(requestBody)
+            .addHeader("Authorization", "Bearer ${payload.integrationId}")
             .build()
 
-        client.newCall(request).execute()
+        try {
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+                logger.log("AutoBet request successful: ${response.body?.string()}")
+            } else {
+                throw IntegrationException("Failed to send AutoBet request: ${response.body?.string()}")
+            }
+        } catch (e: Exception) {
+            logger.logError(e)
+        }
     }
 
     private fun fetchBet365TippyApi(endpoint: String): JsonObject {
@@ -71,4 +85,5 @@ class TippyApiRequester(private val tippyHelper: TippyHelper, private val deseri
             throw IntegrationException("Failed to fetch TippyAPI - Bet 365: ${e.message}")
         }
     }
+
 }

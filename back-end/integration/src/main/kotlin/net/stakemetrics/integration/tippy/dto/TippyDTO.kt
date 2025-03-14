@@ -5,18 +5,14 @@ import java.util.UUID
 
 
 class TippyDTO {
-    data class AutoBetRequest(
-        @SerializedName("integration_id")
+    data class AutoBetRequestWithIntegrationInfo(
         val integrationId: String,
+        val selectionId: UUID
+    )
+
+    data class AutoBetRequest(
         @SerializedName("selection_id")
-        val selectionId: UUID,
-        @SerializedName("fixture_id")
-        val fixtureId: String,
-        @SerializedName("participant_id")
-        val participantId: String,
-        val odds: Double,
-        @SerializedName("odds_fraction")
-        val oddsFraction: String
+        val selectionId: UUID
     )
 
     data class Response(
