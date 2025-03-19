@@ -26,19 +26,10 @@ data class FifaOddSnapshot(
     var goalLineWinnerSubType: FifaMarketSubTypes? = null,
     val createdAt: Date = Date()
 ) {
-    init {
+    fun validate() {
         val maxOdd = 10.0
-
-        listOf(
-            homeOdd to "Home",
-            drawOdd to "Draw",
-            awayOdd to "Away",
-            overGoalsOdd to "Over",
-            underGoalsOdd to "Under"
-        ).forEach { (odd, name) ->
-            if (odd != null && odd > maxOdd) {
-                throw OddTooBigException(name, maxOdd, this.fifaMatch)
-            }
+        listOf(homeOdd to "Home", drawOdd to "Draw", awayOdd to "Away", overGoalsOdd to "Over", underGoalsOdd to "Under")
+            .forEach { (odd, type) -> if (odd != null && odd > maxOdd) throw OddTooBigException(type, maxOdd, fifaMatch)
         }
     }
 }
