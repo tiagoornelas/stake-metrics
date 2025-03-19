@@ -183,9 +183,10 @@ class FifaStrategyService @Autowired constructor(
         val strategies = fifaStrategyRepository.getStrategiesStatisticsByUser(user.id, user.timezoneOffset.id)
 
         val sortedStrategies = strategies.sortedWith(
-            compareBy({ it.status == FifaStrategyStatus.INACTIVE },
+            compareBy<FifaStrategyDTO.FifaStrategyStatisticSingleResponse>({ it.status == FifaStrategyStatus.INACTIVE },
                 { it.status == FifaStrategyStatus.PAPER_BET },
                 { it.status == FifaStrategyStatus.ACTIVE })
+                .thenByDescending { it.result }
         )
 
         return sortedStrategies.map { strategy ->
@@ -197,8 +198,6 @@ class FifaStrategyService @Autowired constructor(
                 strategy.bets,
                 strategy.result,
                 strategy.roi,
-                strategy.activeResult,
-                strategy.activeRoi,
                 strategy.todaysResult,
                 strategy.averageDailyBets
             )
