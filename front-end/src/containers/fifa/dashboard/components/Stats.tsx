@@ -1,4 +1,4 @@
-import { Box, Grid, Skeleton, Stat, StatLabel, StatNumber, StatHelpText, Tag } from "@chakra-ui/react";
+import { Box, Grid, Skeleton, Stat, StatLabel, StatNumber, StatHelpText } from "@chakra-ui/react";
 import useThemeColors from "hooks/useThemeColors";
 import useTranslation from "hooks/useTranslation";
 import { formatPercentage, formatProfit } from "utils/helpers/formatHelpers";
