@@ -7,6 +7,7 @@ import net.stakemetrics.application.entities.dtos.UserDTO
 import net.stakemetrics.application.entities.enums.AutoBettorIntegrationStatus
 import net.stakemetrics.application.entities.exceptions.AlreadyExistsException
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
+import net.stakemetrics.application.entities.exceptions.IntegrationException
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.entities.exceptions.PasswordConfirmationException
 import net.stakemetrics.application.entities.exceptions.PasswordDoesNotMatchException
@@ -23,6 +24,7 @@ import java.util.regex.Pattern
 class UserService @Autowired constructor(
     private val userRepository: IUserRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val autoBettorService: IAutoBettorService,
     private val autoBettorRepository: IAutoBettorRepository,
     @Lazy private val subscriptionService: ISubscriptionService,
 ) {
@@ -108,6 +110,9 @@ class UserService @Autowired constructor(
     fun saveAutoBettorForUser(userEmail: String, integrationId: String) {
         val user = findByEmail(userEmail)
         val autoBettor = AutoBettor(user = user, integrationId = integrationId)
+        val (success, channelName) = autoBettorService.checkIntegration(autoBettor)
+        if (!success) throw IntegrationException("AutoBettor integration failed for integration Id: $integrationId")
+        autoBettor.name = channelName
         autoBettorRepository.save(autoBettor)
     }
 

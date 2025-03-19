@@ -25,6 +25,11 @@ class FifaBetDTO {
         val autoBettor: AutoBettor
     )
 
+    data class AutoBettorIntegrationResponse(
+        val success: Boolean,
+        val channelName: String?
+    )
+
     data class BetResponse(
         val id: UUID,
         val isPaperBet: Boolean,
