@@ -11,7 +11,7 @@ export const calculateMovingAverage = (data: number[], minimumBets: number = 10)
         return Array(data.length).fill(null);
     }
     
-    const period = Math.min(Math.max(Math.floor(data.length / 3), minimumBets), 90);
+    const period = Math.min(Math.max(Math.floor(data.length / 3), minimumBets), 180);
     
     for (let i = 0; i < period - 1; i++) {
         result.push(null);
