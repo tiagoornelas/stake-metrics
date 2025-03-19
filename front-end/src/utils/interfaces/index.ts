@@ -131,8 +131,6 @@ export type StrategyListItem = {
     bets: number;
     result: number;
     roi: number;
-    activeResult: number;
-    activeRoi: number;
     todaysResult: number;
     averageDailyBets: number;
 }

@@ -22,11 +22,10 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
                 COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END) AS bets,
                 COALESCE(SUM(b.profit), 0) AS result,
                 COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,
-                COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)), 0) AS activeResult,
-                COALESCE(SUM(IF(b.profit IS NOT NULL AND b.is_paper_bet = false, b.profit, 0)) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL AND b.is_paper_bet = false THEN 1 END), 0), 0) AS activeRoi,
-                COALESCE(SUM(IF(b.profit IS NOT NULL AND DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) = DATE(CONVERT_TZ(NOW(), '+00:00', :timezone)), b.profit, 0)), 0) AS todaysResult,
+                COALESCE(SUM(IF(b.profit IS NOT NULL
+                    AND DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) = CURDATE(), b.profit, 0)), 0) AS todaysResult,
                 FLOOR(
-                    COALESCE(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0) / 
+                    COALESCE(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0) /
                     NULLIF(COUNT(DISTINCT DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone))), 0)
                 ) AS averageDailyBets
             FROM fifa_strategies s
@@ -34,17 +33,15 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             WHERE s.user_id = :userId
             GROUP BY s.id, s.name, s.status
         )
-        SELECT 
-            id, 
-            name, 
-            status, 
-            COALESCE(openBets, 0) AS openBets, 
-            COALESCE(bets, 0) AS bets, 
-            COALESCE(result, 0) AS result, 
-            COALESCE(roi, 0) AS roi, 
-            COALESCE(activeResult, 0) AS activeResult, 
-            COALESCE(activeRoi, 0) AS activeRoi, 
-            COALESCE(todaysResult, 0) AS todaysResult, 
+        SELECT
+            id,
+            name,
+            status,
+            COALESCE(openBets, 0) AS openBets,
+            COALESCE(bets, 0) AS bets,
+            COALESCE(result, 0) AS result,
+            COALESCE(roi, 0) AS roi,
+            COALESCE(todaysResult, 0) AS todaysResult,
             COALESCE(averageDailyBets, 0) AS averageDailyBets
         FROM strategy_stats
         """,
@@ -62,8 +59,6 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             ColumnResult(name = "bets", type = Int::class),
             ColumnResult(name = "result", type = Double::class),
             ColumnResult(name = "roi", type = Double::class),
-            ColumnResult(name = "activeResult", type = Double::class),
-            ColumnResult(name = "activeRoi", type = Double::class),
             ColumnResult(name = "todaysResult", type = Double::class),
             ColumnResult(name = "averageDailyBets", type = Int::class)
         ]
