@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import java.lang.reflect.Type
 
 @Component
-class TippyDeserializer : JsonDeserializer<TippyDTO.Response> {
+class TippyEventsDeserializer : JsonDeserializer<TippyDTO.Response> {
 
     override fun deserialize(
         json: JsonElement,
@@ -30,7 +30,7 @@ class TippyDeserializer : JsonDeserializer<TippyDTO.Response> {
 
     fun parseJsonToResponse(response: JsonObject): TippyDTO.Response {
         val gson = GsonBuilder()
-            .registerTypeAdapter(TippyDTO.Response::class.java, TippyDeserializer())
+            .registerTypeAdapter(TippyDTO.Response::class.java, TippyEventsDeserializer())
             .create()
         return gson.fromJson(response, TippyDTO.Response::class.java)
     }

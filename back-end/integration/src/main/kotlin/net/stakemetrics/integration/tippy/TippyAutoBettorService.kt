@@ -1,6 +1,8 @@
 package net.stakemetrics.integration.tippy
 
+import net.stakemetrics.application.entities.AutoBettor
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
+import net.stakemetrics.application.entities.exceptions.IntegrationException
 import net.stakemetrics.application.service.IAutoBettorService
 import net.stakemetrics.integration.tippy.dto.TippyDTO
 import net.stakemetrics.integration.tippy.workers.TippyApiRequester
@@ -37,4 +39,19 @@ class TippyAutoBettorService(private val tippyApiRequester: TippyApiRequester, p
         )
     }
 
+    override fun checkIntegration(autoBettor: AutoBettor): FifaBetDTO.AutoBettorIntegrationResponse {
+        return try {
+            val response = tippyApiRequester.checkIntegration(autoBettor.integrationId!!)
+            if (!response.channel.isAdmin) throw IntegrationException("Token does not belong to an admin for channel ${response.channel.name}")
+            FifaBetDTO.AutoBettorIntegrationResponse(
+                success = true,
+                channelName = response.channel.name
+            )
+        } catch (e: Exception) {
+            FifaBetDTO.AutoBettorIntegrationResponse(
+                success = false,
+                channelName = null
+            )
+        }
+    }
 }

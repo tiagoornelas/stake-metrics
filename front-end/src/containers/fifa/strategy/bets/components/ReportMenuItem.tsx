@@ -1,7 +1,7 @@
 import React from "react";
 import { MenuItem, MenuGroup, Tag } from "@chakra-ui/react";
 import useTranslation from "hooks/useTranslation";
-import { getFeatureAmount } from "utils/helpers/featureHelper";
+import { hasFeature } from "utils/helpers/featureHelper";
 import { FEATURES } from "utils/constants/featureConstants";
 import { useUserState } from "context/UserContext";
 
@@ -23,8 +23,7 @@ export const ReportMenuItem: React.FC<ReportMenuItemProps> = ({
   const featureKey =
     reportType === "simple" ? FEATURES.SIMPLE_REPORT : FEATURES.DETAILED_REPORT;
 
-  const featureAmount = user ? getFeatureAmount(user, featureKey) : 0;
-  const hasFeature = featureAmount > 0;
+  const canAccess = hasFeature(user, featureKey);
 
   const reportPeriods = [
     { days: 7, label: t("strategy.actions.downloadReport.period.week") },
@@ -42,11 +41,11 @@ export const ReportMenuItem: React.FC<ReportMenuItemProps> = ({
         {reportPeriods.map(({ days, label }) => (
           <MenuItem
             key={days}
-            onClick={hasFeature ? () => handleDownloadReport(days) : undefined}
-            isDisabled={!hasFeature}
+            onClick={canAccess ? () => handleDownloadReport(days) : undefined}
+            isDisabled={!canAccess}
           >
             {label}
-            {!hasFeature && (
+            {!canAccess && (
               <Tag ml={2} colorScheme="red">
                 {t("common.notHired")}
               </Tag>

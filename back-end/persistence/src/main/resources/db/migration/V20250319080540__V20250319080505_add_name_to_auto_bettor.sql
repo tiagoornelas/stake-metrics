@@ -1,0 +1,2 @@
+ALTER TABLE auto_bettor
+ADD COLUMN name VARCHAR(255);

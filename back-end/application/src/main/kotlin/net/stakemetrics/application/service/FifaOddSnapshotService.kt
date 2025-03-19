@@ -170,6 +170,7 @@ class FifaOddSnapshotService(
             trendScopeAnalysis = scopesWithAnalysis
         )
 
+        fifaOddSnapshot.validate()
         save(fifaOddSnapshot)
         fifaStrategyAgainstOddsEnqueuer.enqueue(fifaOddSnapshot)
     }
@@ -190,6 +191,7 @@ class FifaOddSnapshotService(
             trendScopeAnalysis = similarSnapshot.trendScopeAnalysis
         )
 
+        fifaOddSnapshot.validate()
         save(fifaOddSnapshot)
         fifaStrategyAgainstOddsEnqueuer.enqueue(fifaOddSnapshot)
     }

@@ -1,10 +1,25 @@
 package net.stakemetrics.integration.tippy.dto
 import com.google.gson.annotations.SerializedName
+import java.util.Date
 
 import java.util.UUID
 
 
 class TippyDTO {
+
+    data class TippyChannelResponse(
+        val id: UUID,
+        val name: String,
+        @SerializedName("is_admin")
+        val isAdmin: Boolean,
+    )
+
+    data class IntegrationResponse(
+        val channel: TippyChannelResponse,
+        @SerializedName("expires_at")
+        val expiresAt: Date
+    )
+
     data class AutoBetRequestWithIntegrationInfo(
         val integrationId: String,
         val selectionId: UUID
