@@ -4,7 +4,8 @@ export enum FEATURES {
     MESSENGER_CHAT = "messenger-chat",
     SIMPLE_REPORT = "simple-report",
     DETAILED_REPORT = "detailed-report",
-    NO_ADS_MESSAGES = "no-ads-messages"
+    NO_ADS_MESSAGES = "no-ads-messages",
+    AUTO_BETTOR = "auto-bettor",
 }
 
 export const FEATURE_LABELS = {
@@ -13,5 +14,6 @@ export const FEATURE_LABELS = {
     [FEATURES.MESSENGER_CHAT]: "Chat do Telegram",
     [FEATURES.SIMPLE_REPORT]: "Relatório simples",
     [FEATURES.DETAILED_REPORT]: "Relatório detalhado",
-    [FEATURES.NO_ADS_MESSAGES]: "Mensagens sem identificação da plataforma"
+    [FEATURES.NO_ADS_MESSAGES]: "Mensagens sem identificação da plataforma",
+    [FEATURES.AUTO_BETTOR]: "Integração com automação de apostas",
 };

@@ -19,16 +19,18 @@ data class AutoBettorModel(
     @JoinColumn(name = "user_id")
     val user: UserModel? = null,
     val integrationId: String? = null,
+    val name: String? = null,
     val status: AutoBettorIntegrationStatus = AutoBettorIntegrationStatus.ACTIVE,
     val createdAt: Date = Date()
 ) {
     fun toDomain(): AutoBettor {
         return AutoBettor(
-            id,
-            user?.toDomain(),
-            integrationId,
-            status,
-            createdAt
+            id = id,
+            user = user?.toDomain(),
+            integrationId = integrationId,
+            name= name,
+            status= status,
+            createdAt = createdAt
         )
     }
 }
@@ -38,6 +40,7 @@ fun AutoBettor.toModel(): AutoBettorModel {
         id,
         user?.toModel(),
         integrationId,
+        name,
         status,
         createdAt
     )

@@ -27,8 +27,8 @@
     },
     "dashboard": {
         "emptyCharts": {
-            "pt": "Quando você tiver apostas fechadas, aqui serão exibidos gráficos com seus resultados",
-            "en": "When you have closed bets, charts with your results will be displayed here"
+            "pt": "Quando você tiver apostas ativas fechadas, aqui serão exibidos gráficos com seus resultados",
+            "en": "When you have active closed bets, charts with your results will be displayed here"
         },
         "createStrategy": {
             "pt": "Comece criando uma estratégia 🔭",
@@ -43,7 +43,7 @@
             "en": "Last 12 months"
         },
         "openBets": {
-            "pt": "Apostas abertas",
+            "pt": "Entradas abertas",
             "en": "Open bets"
         },
         "dailyProfit": {
