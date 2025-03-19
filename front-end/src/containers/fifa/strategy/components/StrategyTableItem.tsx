@@ -1,4 +1,4 @@
-import {Td, Tr, useBreakpointValue, useColorModeValue, useDisclosure} from "@chakra-ui/react";
+import {Td, Tr, useColorModeValue, useDisclosure} from "@chakra-ui/react";
 import StrategyBetsDrawer from "containers/fifa/strategy/components/StrategyBetsDrawer";
 import StrategyNameAndStatus from "containers/fifa/strategy/components/StrategyNameAndStatus";
 import StrategyTableActions from "containers/fifa/strategy/components/StrategyTableActions";
