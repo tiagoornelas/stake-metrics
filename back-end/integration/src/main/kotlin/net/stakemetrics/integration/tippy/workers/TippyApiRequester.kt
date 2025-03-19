@@ -7,7 +7,8 @@ import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.exceptions.IntegrationException
 import net.stakemetrics.application.utils.Logger
-import net.stakemetrics.integration.tippy.deserializer.TippyDeserializer
+import net.stakemetrics.integration.tippy.deserializer.TippyEventsDeserializer
+import net.stakemetrics.integration.tippy.deserializer.TippyIntegrationDeserializer
 import net.stakemetrics.integration.tippy.dto.TippyDTO
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -18,9 +19,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class TippyApiRequester(
+    private val logger: Logger,
     private val tippyHelper: TippyHelper,
-    private val deserializer: TippyDeserializer,
-    private val logger: Logger
+    private val eventsDeserializer: TippyEventsDeserializer,
+    private val integrationDeserializer: TippyIntegrationDeserializer
 ) {
 
     @Value("\${tippy.bet.token}")
@@ -30,13 +32,35 @@ class TippyApiRequester(
     private val tippyApi: String = "api.tippy.club"
     private val client = OkHttpClient()
 
+    fun checkIntegration(integrationId: String): TippyDTO.IntegrationResponse {
+        val endpoint = "https://$tippyApi/v1/check-channel-authorization"
+        val request = Request.Builder()
+            .url(endpoint)
+            .addHeader("Authorization", "Bearer $integrationId")
+            .build()
+
+        try {
+            client.newCall(request).execute().use { response ->
+                val responseBody = response.body?.string()
+                if (responseBody != null) {
+                    val jsonObject = JsonParser.parseString(responseBody).asJsonObject
+                    return integrationDeserializer.parseJsonToIntegrationResponse(jsonObject)
+                } else {
+                    throw IntegrationException("Empty response body from TippyAPI")
+                }
+            }
+        } catch (e: Exception) {
+            throw IntegrationException("Failed to fetch TippyAPI: ${e.message}")
+        }
+    }
+
     fun getMatchesForLeagueAndMarket(fifaLeague: FifaLeague, market: FifaMarketTypes): TippyDTO.Response {
         val tippyLeague = tippyHelper.getTippyLeagueFromStakeMetricsLeague(fifaLeague)
         val tippyMarket = tippyHelper.getTippyMarketFromStakeMetricsMarket(market)
 
         val endpoint = "/v2/sport-categories/${tippyLeague.integrationId}?market_name=${tippyMarket.integrationName}"
         val jsonResponse = fetchBet365TippyApi(endpoint)
-        return deserializer.parseJsonToResponse(jsonResponse)
+        return eventsDeserializer.parseJsonToResponse(jsonResponse)
     }
 
     fun autoBet(payload: TippyDTO.AutoBetRequestWithIntegrationInfo) {

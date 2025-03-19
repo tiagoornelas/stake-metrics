@@ -328,6 +328,7 @@ export interface AutoBettor {
     id: string;
     user: User;
     integrationId: string;
+    name: String;
     status: string;
     createdAt: string;
 }

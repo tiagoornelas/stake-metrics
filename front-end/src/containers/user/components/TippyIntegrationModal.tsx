@@ -32,10 +32,23 @@ const TippyIntegrationModal: React.FC<TippyIntegrationModalProps> = ({ onCloseCa
             colorScheme="blue"
         >
             <Stack spacing="5">
-                <Text><b>Para integrar à sua conta Tippy.bet:</b></Text>
-                <Text><b>1. </b>Insira a chave do canal.</Text>
+                <Text>
+                    Tippy é uma plataforma de automação de apostas que sincroniza com suas estratégias do Stake Metrics
+                    e realiza apostas automaticamente. Para conhecer mais,{" "}
+                    <Text as="a" color="blue.500" href="https://tippy.bet" target="_blank" textDecoration="underline">
+                        visite o site da plataforma parceira
+                    </Text>
+                    .
+                </Text>
+                <Text><b>Para integrar a sua conta:</b></Text>
+                <Text><b>1. </b>Na sua conta Tippy, acesse o menu principal.</Text>
+                <Text><b>2. </b>Selecione a aba apostas e crie um novo canal com o nome que desejar.</Text>
+                <Text><b>2. </b>Após criado, selecione o canal e depois clique no nome do canal (Menu de opções) no canto superior esquerdo.</Text>
+                <Text><b>2. </b>Clique em "Integrações".</Text>
+                <Text><b>2. </b>Clique em "Gerar" para gerar o token.</Text>
+                <Text><b>1. </b>No Stake Metrics, insira o token no campo abaixo e clique Integrar.</Text>
                 <Input
-                    placeholder="Chave do canal"
+                    placeholder="Token do canal"
                     value={integrationId}
                     onChange={(e) => setIntegrationId(e.target.value)}
                 />

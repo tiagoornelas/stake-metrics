@@ -64,6 +64,7 @@ class UserDTO {
     data class AutoBettorWithoutUser(
         val id: UUID,
         val integrationId: String? = null,
+        val name: String? = null,
         val status: AutoBettorIntegrationStatus,
         val createdAt: Date
     )
@@ -93,6 +94,6 @@ fun User.toUserResponse(subscription: SubscriptionDTO.SubscriptionResponse): Use
 }
 
 fun AutoBettor.toAutoBettorResponse(): UserDTO.AutoBettorResponse {
-    val autoBettorWithoutUser = UserDTO.AutoBettorWithoutUser(this.id, this.integrationId, this.status, this.createdAt)
+    val autoBettorWithoutUser = UserDTO.AutoBettorWithoutUser(this.id, this.integrationId, this.name, this.status, this.createdAt)
     return UserDTO.AutoBettorResponse(autoBettorWithoutUser)
 }

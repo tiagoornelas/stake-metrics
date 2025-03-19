@@ -7,6 +7,7 @@ import java.util.UUID
 data class AutoBettor(
     val id: UUID = UUID.randomUUID(),
     val user: User? = null,
+    var name: String? = null,
     val integrationId: String? = null,
     var status: AutoBettorIntegrationStatus = AutoBettorIntegrationStatus.ACTIVE,
     val createdAt: Date = Date()
