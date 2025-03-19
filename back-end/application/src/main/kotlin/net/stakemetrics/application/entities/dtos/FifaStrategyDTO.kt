@@ -79,8 +79,6 @@ class FifaStrategyDTO {
         val bets: Int,
         val result: Double,
         val roi: Double,
-        val activeResult: Double,
-        val activeRoi: Double,
         val todaysResult: Double,
         val averageDailyBets: Int
     )

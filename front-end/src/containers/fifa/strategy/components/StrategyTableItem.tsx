@@ -1,4 +1,4 @@
-import {Td, Tr, useBreakpointValue, useColorModeValue, useDisclosure} from "@chakra-ui/react";
+import {Td, Tr, useColorModeValue, useDisclosure} from "@chakra-ui/react";
 import StrategyBetsDrawer from "containers/fifa/strategy/components/StrategyBetsDrawer";
 import StrategyNameAndStatus from "containers/fifa/strategy/components/StrategyNameAndStatus";
 import StrategyTableActions from "containers/fifa/strategy/components/StrategyTableActions";
@@ -31,7 +31,6 @@ const ROIData = ({value}: { value: number }) => {
 
 const StrategyTableItem = ({strategy}: { strategy: StrategyListItem }) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
-    const isLargerThanLg = useBreakpointValue({base: false, lg: true});
     const hoverBgColor = useColorModeValue("gray.100", "gray.700");
 
     return (
@@ -41,14 +40,9 @@ const StrategyTableItem = ({strategy}: { strategy: StrategyListItem }) => {
                 <Td><StrategyNameAndStatus status={strategy.status} name={strategy.name}/></Td>
                 <Td textAlign={"center"}>{strategy.openBets}</Td>
                 <Td textAlign={"center"}>{strategy.bets}</Td>
-                <ResultData value={Number(strategy.result.toFixed(1))}/>
+                <ResultData value={Number(strategy.todaysResult.toFixed(2))}/>
+                <ResultData value={Number(strategy.result.toFixed(2))}/>
                 <ROIData value={Number(strategy.roi)}/>
-                {isLargerThanLg && (
-                    <>
-                        <ResultData value={Number(strategy.activeResult.toFixed(1))}/>
-                        <ROIData value={Number(strategy.activeRoi)}/>
-                    </>
-                )}
                 <Td><StrategyTableActions strategy={strategy}/></Td>
             </Tr>
 

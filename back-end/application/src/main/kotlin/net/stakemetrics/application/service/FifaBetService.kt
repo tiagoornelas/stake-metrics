@@ -123,7 +123,8 @@ class FifaBetService(
         val openBets = fifaBetRepository.countOpenBetsByUser(user.id)
 
         val tz = user.timezoneOffset.id
-        val now = LocalDateTime.now()
+        val zoneId = java.time.ZoneId.of(tz)
+        val now = LocalDateTime.now(zoneId)
 
         val startOfTheDay = now.withHour(0).withMinute(0).withSecond(0).withNano(0)
         val startOfTheMonth = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0)
