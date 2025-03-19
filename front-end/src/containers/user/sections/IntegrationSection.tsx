@@ -14,14 +14,25 @@ import {
 import TippyIntegrationModal from "../components/TippyIntegrationModal";
 import { AutoBettor } from "utils/interfaces";
 import { useCallback, useEffect, useState } from "react";
-import { activateAutoBettor, deactivateAutoBettor, deleteAutoBettor, fetchAutoBettor } from "services/integrationService";
+import {
+  activateAutoBettor,
+  deactivateAutoBettor,
+  deleteAutoBettor,
+  fetchAutoBettor,
+} from "services/integrationService";
 import { MdSettings } from "react-icons/md";
 import { useErrorToast } from "hooks/useErrorToast";
 import { SUCCESS_TYPES } from "utils/constants/successConstants";
+import { useUserState } from "context/UserContext";
+import { hasFeature } from "utils/helpers/featureHelper";
+import { FEATURES } from "utils/constants/featureConstants";
 
 const IntegrationSection = () => {
   const [autoBettor, setAutoBettor] = useState<AutoBettor>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  const userState = useUserState();
+  const hasAutoBettorAccess = hasFeature(userState.user, FEATURES.AUTO_BETTOR);
 
   const fetch = useCallback(async () => {
     setIsLoaded(false);
@@ -58,9 +69,11 @@ const IntegrationSection = () => {
   };
 
   const IntegratedChannel = () => {
+    const channelName = `Tippy: ${autoBettor?.name}` || "Automação com Tippy";
+
     return (
       <Flex alignItems={"center"} gap={4}>
-        <Text>Automação com Tippy</Text>
+        <Text>{channelName}</Text>
         <Badge colorScheme={autoBettor?.status === "ACTIVE" ? "green" : "red"}>
           {autoBettor?.status === "ACTIVE" ? "Ativo" : "Inativo"}
         </Badge>
@@ -89,8 +102,12 @@ const IntegrationSection = () => {
             </Heading>
             <IntegratedBadge />
           </Flex>
-          <Text>{`Seu plano dá direito a automação com Tippy.bet`}</Text>
-          <Flex direction="column" gap={4} alignItems="self-start" mt={4}>
+          {hasAutoBettorAccess ? (
+            <Text>{`Seu plano dá direito a integração com plataforma de automação de apostas.`}</Text>
+          ) : (
+            <Text>{`Seu plano não inclui integrações, faça o upgrade de plano para usufruir de benefícios como integração com plataforma de automação de apostas.`}</Text>
+          )}
+          {hasAutoBettorAccess && <Flex direction="column" gap={4} alignItems="self-start" mt={4}>
             <Skeleton isLoaded>
               {autoBettor ? (
                 <IntegratedChannel />
@@ -98,7 +115,7 @@ const IntegrationSection = () => {
                 <TippyIntegrationModal onCloseCallback={fetch} />
               )}
             </Skeleton>
-          </Flex>
+          </Flex>}
         </Flex>
       </Skeleton>
     </Box>

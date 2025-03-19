@@ -73,6 +73,10 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
         title: "Ops! Falha na autenticação.",
         description: "Não conseguimos recuperar os tokens de autenticação. Tente novamente."
     },
+    "User cannot save auto bettor because it does not have this feature": {
+        title: "Ops! Integração não disponível.",
+        description: "Você precisa alterar o plano para utilizar a automação de apostas."
+    }
 }
 
 export const ERROR_TYPES = {

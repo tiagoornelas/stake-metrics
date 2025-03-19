@@ -30,7 +30,7 @@ import { FEATURES } from "utils/constants/featureConstants";
 import { APP_NAVIGATION } from "utils/constants/navigationConstants";
 import { SUCCESS_TYPES } from "utils/constants/successConstants";
 import { cleanUser } from "utils/helpers/contextHelper";
-import { getFeatureAmount } from "utils/helpers/featureHelper";
+import { hasFeature } from "utils/helpers/featureHelper";
 import {
   NavigationLinkOnHeaderValue,
   NavigationModuleTypes,
@@ -46,7 +46,7 @@ const NavLink = (props: Props & { feature?: FEATURES }) => {
   const { children, path, feature } = props;
   const navigate = useNavigate();
   const { user } = useUserState();
-  const canAccess = feature ? getFeatureAmount(user, feature) >= 1 : true;
+  const canAccess = feature ? hasFeature(user, feature) : true;
   const canAccessColor = useColorModeValue("gray.200", "gray.700");
 
   return (
@@ -144,9 +144,8 @@ const Header = () => {
                 type,
                 feature,
               }: NavigationLinkOnHeaderValue) => {
-                const canAccess = feature
-                  ? getFeatureAmount(user, feature) >= 1
-                  : true;
+                const canAccess = feature ? hasFeature(user, feature) : true;
+
                 return (
                   <Skeleton isLoaded={!!user.subscription?.features} key={path}>
                     <NavLink
@@ -208,9 +207,8 @@ const Header = () => {
                           type,
                           feature,
                         }: NavigationLinkOnHeaderValue) => {
-                          const canAccess = feature
-                            ? getFeatureAmount(user, feature) >= 1
-                            : true;
+                          const canAccess = feature ? hasFeature(user, feature) : true;
+                          
                           return (
                             <Skeleton
                               key={path}

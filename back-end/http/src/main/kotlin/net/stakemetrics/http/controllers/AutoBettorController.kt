@@ -2,6 +2,9 @@ package net.stakemetrics.http.controllers
 
 import net.stakemetrics.application.entities.dtos.UserDTO
 import net.stakemetrics.application.entities.dtos.toAutoBettorResponse
+import net.stakemetrics.application.entities.enums.FeatureTypes
+import net.stakemetrics.application.entities.exceptions.NotAllowedException
+import net.stakemetrics.application.service.ISubscriptionService
 import net.stakemetrics.application.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,11 +19,16 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/auto-bettor")
-class AutoBettorController(private val userService: UserService) {
+class AutoBettorController(private val userService: UserService, private val subscriptionService: ISubscriptionService) {
 
     @PostMapping
     fun saveAutoBettor(@RequestBody request: UserDTO.SaveAutoBettorRequest): ResponseEntity<UserDTO.SaveAutoBettorResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
+
+        val user = userService.findByEmail(userEmail)
+        val canSave = subscriptionService.hasFeature(user, FeatureTypes.AUTO_BETTOR)
+        if (!canSave) throw NotAllowedException("User cannot save auto bettor because it does not have this feature")
+
         userService.saveAutoBettorForUser(userEmail, request.integrationId)
         return ResponseEntity.status(HttpStatus.CREATED).body(UserDTO.SaveAutoBettorResponse())
     }
