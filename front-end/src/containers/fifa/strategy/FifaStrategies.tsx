@@ -9,8 +9,7 @@ import {
   Text,
   Th,
   Thead,
-  Tr,
-  useBreakpointValue,
+  Tr
 } from "@chakra-ui/react";
 import Modal from "components/Modal";
 import StrategyEmptyState from "containers/fifa/strategy/components/StrategyEmptyState";
