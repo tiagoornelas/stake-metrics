@@ -23,7 +23,7 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
                 COALESCE(SUM(b.profit), 0) AS result,
                 COALESCE(SUM(b.profit) / NULLIF(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0), 0) AS roi,
                 COALESCE(SUM(IF(b.profit IS NOT NULL
-                    AND DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) = CURDATE(), b.profit, 0)), 0) AS todaysResult,
+                    AND DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone)) = DATE(CONVERT_TZ(NOW(), '+00:00', :timezone)), b.profit, 0)), 0) AS todaysResult,
                 FLOOR(
                     COALESCE(COUNT(CASE WHEN b.profit IS NOT NULL THEN 1 END), 0) /
                     NULLIF(COUNT(DISTINCT DATE(CONVERT_TZ(b.bet_time, '+00:00', :timezone))), 0)
