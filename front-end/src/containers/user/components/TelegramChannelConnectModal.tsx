@@ -31,11 +31,26 @@ const TelegramChannelConnectModal = ({onCloseCallback}: Props) => {
     }, SUCCESS_TYPES.TELEGRAM_CHAT_CONNECTED);
 
     const validateUrl = (url: string) => {
-        const regex = /^https:\/\/(?:web|desktop|macos|windows)\.telegram\.org\/[a-z]\/#@?[a-zA-Z0-9_-]+$/
-        const isValid = regex.test(url);
-        const id = url.split("#")[1];
-        setChannelId(id);
-        setIsValidUrl(isValid);
+        const regex = /^https:\/\/(?:web|desktop|macos|windows)\.telegram\.org\/[a-z]\/#@?([a-zA-Z0-9_-]+)$/;
+        const match = url.match(regex);
+
+        if (match) {
+            let id = match[1];
+
+            if (/^-\d+$/.test(id)) {
+                if (!id.startsWith('-100')) {
+                    const numericPart = id.startsWith('-') ? id.substring(1) : id;
+                    id = `-100${numericPart}`;
+                }
+            }
+
+            setChannelId(id);
+            setIsValidUrl(true);
+            return;
+        }
+
+        setChannelId("");
+        setIsValidUrl(false);
     }
 
     useEffect(() => {
