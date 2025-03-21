@@ -17,7 +17,6 @@ export const ReportMenuItem: React.FC<ReportMenuItemProps> = ({
   downloadReport,
 }) => {
   const { t } = useTranslation();
-
   const { user } = useUserState();
 
   const featureKey =
