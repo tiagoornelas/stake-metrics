@@ -60,7 +60,6 @@ const baseColumns: ExcelColumn[] = [
   {header: 'Home Score', key: 'homeScore', width: 12},
   {header: 'Away Score', key: 'awayScore', width: 12},
   {header: 'Line', key: 'line', width: 20},
-  {header: 'Handicap', key: 'handicap', width: 12},
   {header: 'Odds', key: 'odds', width: 10},
   {header: 'Status', key: 'status', width: 12},
   {header: 'Profit', key: 'profit', width: 12}
