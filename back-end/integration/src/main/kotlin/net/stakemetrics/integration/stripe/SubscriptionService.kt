@@ -5,10 +5,12 @@ import com.stripe.model.Customer
 import com.stripe.model.CustomerSession
 import com.stripe.model.Invoice
 import com.stripe.model.entitlements.ActiveEntitlement
-import com.stripe.param.*
+import com.stripe.param.CustomerCreateParams
+import com.stripe.param.CustomerSessionCreateParams
+import com.stripe.param.CustomerUpdateParams
+import com.stripe.param.InvoiceListParams
+import com.stripe.param.SubscriptionListParams
 import com.stripe.param.entitlements.ActiveEntitlementListParams
-import java.util.Date
-import javax.annotation.PostConstruct
 import net.stakemetrics.application.entities.Subscription
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.SubscriptionDTO
@@ -20,6 +22,8 @@ import net.stakemetrics.application.service.ISubscriptionService
 import net.stakemetrics.application.service.UserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.util.Date
+import javax.annotation.PostConstruct
 import com.stripe.model.Subscription as StripeSubscription
 import com.stripe.model.billingportal.Session as BillingPortalSession
 import com.stripe.model.checkout.Session as CheckoutSession
@@ -143,22 +147,11 @@ class SubscriptionService(
     ): SubscriptionDTO.CreateSessionResponse {
         val integrationId = getIntegrationIdByUserEmail(userEmail)
 
-        return CheckoutSessionCreateParams.Builder()
-            .setSuccessUrl(appBaseUrl)
-            .setCancelUrl(appBaseUrl)
-            .setCustomer(integrationId)
-            .setCustomerEmail(userEmail)
-            .setMode(CheckoutSessionCreateParams.Mode.SUBSCRIPTION)
-            .setAllowPromotionCodes(true)
-            .addLineItem(
-                CheckoutSessionCreateParams.LineItem.Builder()
-                    .setQuantity(1L)
-                    .setPrice(priceId)
-                    .build()
-            )
-            .build()
-            .let { CheckoutSession.create(it) }
-            .let { SubscriptionDTO.CreateSessionResponse(it.url) }
+        return CheckoutSessionCreateParams.Builder().setSuccessUrl(appBaseUrl).setCancelUrl(appBaseUrl)
+            .setCustomer(integrationId).setCustomerEmail(userEmail)
+            .setMode(CheckoutSessionCreateParams.Mode.SUBSCRIPTION).setAllowPromotionCodes(true).addLineItem(
+                CheckoutSessionCreateParams.LineItem.Builder().setQuantity(1L).setPrice(priceId).build()
+            ).build().let { CheckoutSession.create(it) }.let { SubscriptionDTO.CreateSessionResponse(it.url) }
     }
 
     override fun createPortalSession(userEmail: String): SubscriptionDTO.CreateSessionResponse {
@@ -187,7 +180,7 @@ class SubscriptionService(
     override fun checkUserSubscriptionStatus(user: User): SubscriptionStatus {
         val integrationId = getIntegrationIdByUserEmail(user.email)
         val subscriptions = getSubscriptions(integrationId)
-        val activeSubscriptions = subscriptions.filter { it.status == SubscriptionStatus.ACTIVE.integrationValue }
+        val activeSubscriptions = subscriptions.filter { it.isActive() }
         return if (activeSubscriptions.isNotEmpty()) SubscriptionStatus.ACTIVE else SubscriptionStatus.INACTIVE
     }
 
@@ -196,4 +189,8 @@ class SubscriptionService(
         val features = listUserFeatures(subscription.integrationId)
         return features[featureType.identifier]?.let { it > 0 } ?: false
     }
+}
+
+fun StripeSubscription.isActive(): Boolean {
+    return status == SubscriptionStatus.ACTIVE.integrationValue || status == SubscriptionStatus.TRIALING.integrationValue
 }
