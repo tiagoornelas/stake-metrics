@@ -215,6 +215,80 @@ const extractAnalysisColumns = (flattenedBets: Record<string, any>[]): ExcelColu
   }));
 };
 
+const createProfitByLineSheet = (bets: Bet[]) => {
+  const profitByLine = bets.reduce((acc, bet) => {
+    const line = bet.line;
+    if (!acc[line]) {
+      acc[line] = 0;
+    }
+    acc[line] += bet.profit || 0;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const profitByLeague = bets.reduce((acc, bet) => {
+    const league = bet.leagueName;
+    if (!acc[league]) {
+      acc[league] = 0;
+    }
+    acc[league] += bet.profit || 0;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const profitByPlayer = bets.reduce((acc, bet) => {
+    if (!acc[bet.homeName]) {
+      acc[bet.homeName] = 0;
+    }
+    acc[bet.homeName] += bet.profit || 0;
+
+    if (!acc[bet.awayName]) {
+      acc[bet.awayName] = 0;
+    }
+    acc[bet.awayName] += bet.profit || 0;
+
+    return acc;
+  }, {} as Record<string, number>);
+
+  const lineEntries = Object.entries(profitByLine)
+    .sort((a, b) => b[1] - a[1])
+    .map(([line, profit]) => ({Line: line, Profit: profit}));
+
+  const leagueEntries = Object.entries(profitByLeague)
+    .sort((a, b) => b[1] - a[1])
+    .map(([league, profit]) => ({League: league, Profit: profit}));
+
+  const playerEntries = Object.entries(profitByPlayer)
+    .sort((a, b) => b[1] - a[1])
+    .map(([player, profit]) => ({Player: player, Profit: profit}));
+
+  const maxLength = Math.max(
+    lineEntries.length,
+    leagueEntries.length,
+    playerEntries.length
+  );
+
+  const data = Array.from({length: maxLength}, (_, i) => ({
+    Line: lineEntries[i]?.Line || '',
+    'Profit By Line': lineEntries[i]?.Profit || '',
+    League: leagueEntries[i]?.League || '',
+    'Profit By League': leagueEntries[i]?.Profit || '',
+    Player: playerEntries[i]?.Player || '',
+    'Profit By Player': playerEntries[i]?.Profit || ''
+  }));
+
+  return {
+    name: 'Profit Breakdown',
+    data,
+    columns: [
+      {header: 'Line', key: 'Line', width: 20},
+      {header: 'Profit By Line', key: 'Profit By Line', width: 15},
+      {header: 'League', key: 'League', width: 20},
+      {header: 'Profit By League', key: 'Profit By League', width: 15},
+      {header: 'Player', key: 'Player', width: 20},
+      {header: 'Profit By Player', key: 'Profit By Player', width: 15}
+    ]
+  };
+};
+
 export const useStrategyReportDownload = () => {
   const {t} = useTranslation();
 
@@ -240,11 +314,13 @@ export const useStrategyReportDownload = () => {
       const {bets} = await getStrategyDetailedReport(strategyId, days);
       const flattenedBets = bets.map(flattenBetWithAnalysis);
       const analysisColumns = extractAnalysisColumns(flattenedBets);
+      const profitByLineSheet = createProfitByLineSheet(bets);
 
       generateExcel(
         flattenedBets,
         [...baseColumns, ...analysisColumns],
-        `stake_metrics_strategy_${strategyId}_detailed`
+        `stake_metrics_strategy_${strategyId}_detailed`,
+        [profitByLineSheet]
       );
       return true;
     },
