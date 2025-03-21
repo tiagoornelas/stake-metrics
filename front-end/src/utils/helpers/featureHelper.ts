@@ -3,7 +3,7 @@ import { UserInfo } from "utils/interfaces";
 
 export const hasFeature = (user: UserInfo, feature: FEATURES): boolean => {
   const featureAmount = user
-    ? getFeatureAmount(user, FEATURES.EARLY_ACCESS)
+    ? getFeatureAmount(user, feature)
     : 0;
   return featureAmount > 0;
 };
