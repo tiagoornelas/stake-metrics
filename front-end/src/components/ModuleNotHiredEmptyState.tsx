@@ -5,7 +5,7 @@ import {
   Heading,
   Icon,
   Skeleton,
-  Text,
+  Text, useColorModeValue,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { FiLock } from "react-icons/fi";
@@ -39,6 +39,8 @@ const ModuleNotHiredEmptyState = ({
     getManagementLink();
   }, [getManagementLink]);
 
+  const bgColor = useColorModeValue("gray.50", "gray.900");
+
   return (
     <Center h="full" w="full" py={10}>
       <Flex 
@@ -46,20 +48,20 @@ const ModuleNotHiredEmptyState = ({
         align="center" 
         maxW="md" 
         textAlign="center"
-        bg="gray.50" 
+        bg={bgColor}
         p={8} 
         borderRadius="md"
         boxShadow="sm"
       >
         <Icon as={FiLock} boxSize={12} color="gray.500" mb={4} />
-        <Heading size="md" mb={2} color="gray.800">
+        <Heading size="md" mb={2}>
           Acesso ao Módulo de {moduleName} não incluído no plano
         </Heading>
-        <Text color="gray.600">
+        <Text>
           {description}
         </Text>
-        <Text mb={6} color="gray.600">
-          Caso você já tenha um plano com acesso ao módulo e mesmo assim não consegue acessá-lo, entre em contato com o suporte usando o ícone de conversa no canto direito inferior da sua tela.
+        <Text mb={6}>
+          Caso você já tenha um plano com acesso ao módulo e mesmo assim não consegue acessá-lo, entre em contato com o suporte no módulo de "Minha conta" e usando o ícone de conversa no canto direito inferior da sua tela.
         </Text>
         <Flex direction="column" gap={4} align="center">
           <Skeleton isLoaded={isManagementLinkLoaded}>
