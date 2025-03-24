@@ -8,4 +8,5 @@ enum class FeatureTypes(val identifier: String) {
     DETAILED_REPORT("detailed-report"),
     NO_ADS_MESSAGES("no-ads-messages"),
     AUTO_BETTOR("auto-bettor"),
+    TREND_MODULE("trend-module"),
 }
