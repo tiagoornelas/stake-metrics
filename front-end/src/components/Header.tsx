@@ -22,11 +22,10 @@ import BetaTag from "components/BetaTag";
 import ProductOnHeader from "components/ProductOnHeader";
 import { useUserDispatch, useUserState } from "context/UserContext";
 import { useErrorToast } from "hooks/useErrorToast";
-import { Dispatch, Fragment, ReactNode } from "react";
+import { Dispatch, ReactNode } from "react";
 import { useCookies } from "react-cookie";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { FEATURES } from "utils/constants/featureConstants";
 import { APP_NAVIGATION } from "utils/constants/navigationConstants";
 import { SUCCESS_TYPES } from "utils/constants/successConstants";
 import { cleanUser } from "utils/helpers/contextHelper";
@@ -42,32 +41,26 @@ interface Props {
   path: string;
 }
 
-const NavLink = (props: Props & { feature?: FEATURES }) => {
-  const { children, path, feature } = props;
+const NavLink = (props: Props) => {
+  const { children, path } = props;
   const navigate = useNavigate();
-  const { user } = useUserState();
-  const canAccess = feature ? hasFeature(user, feature) : true;
-  const canAccessColor = useColorModeValue("gray.200", "gray.700");
+  const bgColor = useColorModeValue("gray.300", "gray.700");
 
   return (
-    <Skeleton isLoaded={!!user.subscription?.features}>
-      <Box
-        as="a"
-        px={2}
-        py={1}
-        rounded={"md"}
-        _hover={{
-          textDecoration: "none",
-          bg: canAccess ? canAccessColor : "gray.400",
-        }}
-        cursor={canAccess ? "pointer" : "not-allowed"}
-        onClick={() =>
-          canAccess && navigate(`/${path.toLowerCase()}`, { replace: true })
-        }
-      >
-        {children}
-      </Box>
-    </Skeleton>
+    <Box
+      as="a"
+      px={2}
+      py={1}
+      rounded={"md"}
+      _hover={{
+        textDecoration: "none",
+        bg: bgColor,
+      }}
+      cursor={"pointer"}
+      onClick={() => navigate(`/${path.toLowerCase()}`, { replace: true })}
+    >
+      {children}
+    </Box>
   );
 };
 
@@ -75,21 +68,11 @@ const NavigationTag = ({
   type,
   moduleText,
   moduleColor,
-  canAccess,
 }: {
   type: NavigationModuleTypes;
   moduleText: string;
   moduleColor: string;
-  canAccess: boolean;
 }) => {
-  if (!canAccess) {
-    return (
-      <Tag ml={2} colorScheme={"gray"}>
-        Não contratado
-      </Tag>
-    );
-  }
-
   switch (type) {
     case NavigationModuleTypes.BETA:
       return <BetaTag ml={2} />;
@@ -142,26 +125,16 @@ const Header = () => {
                 moduleText,
                 moduleColor,
                 type,
-                feature,
               }: NavigationLinkOnHeaderValue) => {
-                const canAccess = feature ? hasFeature(user, feature) : true;
-
                 return (
-                  <Skeleton isLoaded={!!user.subscription?.features} key={path}>
-                    <NavLink
-                      key={path}
-                      path={path.toLowerCase()}
-                      feature={feature}
-                    >
-                      {name}
-                      <NavigationTag
-                        type={type}
-                        moduleColor={moduleColor}
-                        moduleText={moduleText}
-                        canAccess={canAccess}
-                      />
-                    </NavLink>
-                  </Skeleton>
+                  <NavLink key={path} path={path.toLowerCase()}>
+                    {name}
+                    <NavigationTag
+                      type={type}
+                      moduleColor={moduleColor}
+                      moduleText={moduleText}
+                    />
+                  </NavLink>
                 );
               }
             )}
@@ -207,8 +180,10 @@ const Header = () => {
                           type,
                           feature,
                         }: NavigationLinkOnHeaderValue) => {
-                          const canAccess = feature ? hasFeature(user, feature) : true;
-                          
+                          const canAccess = feature
+                            ? hasFeature(user, feature)
+                            : true;
+
                           return (
                             <Skeleton
                               key={path}
@@ -229,7 +204,6 @@ const Header = () => {
                                   type={type}
                                   moduleColor={moduleColor}
                                   moduleText={moduleText}
-                                  canAccess={canAccess}
                                 />
                               </MenuItem>
                             </Skeleton>

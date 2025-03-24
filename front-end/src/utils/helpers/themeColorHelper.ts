@@ -8,6 +8,7 @@ interface CustomColorArrays {
 
 const themeColors: CustomColorArrays = {
     product: ["#f5cb5c", "#BFD7ED"],
+    productAlternative: ["#3185FC", "#BFD7ED"],
     productContrast: ["#3B3C3D", "#3B3C3D"],
     textContrast: ["#3B3C3D", "#FFFFFF"],
     error: ["red", "red"]

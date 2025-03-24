@@ -1,10 +1,13 @@
 package net.stakemetrics.application.service
 
+import net.stakemetrics.application.entities.FifaLeague
 import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.dtos.TrendDTO
+import net.stakemetrics.application.entities.enums.DateIntervalTypes
 import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.entities.exceptions.FifaBetOnStartedMatchException
 import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
@@ -22,6 +25,7 @@ import java.util.UUID
 class FifaOddSnapshotService(
     private val mathHelper: MathHelper,
     private val dateHelper: DateHelper,
+    private val leagueService: FifaLeagueService,
     private val fifaMatchService: FifaMatchService,
     private val oddAndLineCalculator: OddAndLineCalculator,
     private val fifaOddSnapshotCloser: FifaOddSnapshotCloser,
@@ -260,6 +264,22 @@ class FifaOddSnapshotService(
     fun getAllOddSnapshotsForDate(date: String): List<FifaOddSnapshot> {
         val (dateStart, dateEnd) = dateHelper.getDateRangeByString(date)
         return fifaOddSnapshotRepository.findAllClosedByCreatedAtBetween(dateStart, dateEnd)
+    }
+
+    fun getAllLeaguesGoalsTrend(dateInterval: DateIntervalTypes): List<TrendDTO.FifaGoalsLeagueTrendResponse> {
+        val daysOffset = dateInterval.daysValue
+        val leagues = leagueService.listActiveLeagues()
+
+        val leagueTrends = mutableListOf<TrendDTO.FifaGoalsLeagueTrendResponse>()
+        leagues.forEach { league ->
+            val leagueTrend = getLeagueGoalsTrend(daysOffset, league)
+            leagueTrends.add(TrendDTO.FifaGoalsLeagueTrendResponse(league, leagueTrend))
+        }
+        return leagueTrends
+    }
+
+    fun getLeagueGoalsTrend(daysOffset: Int, league: FifaLeague): List<Int> {
+        return fifaOddSnapshotRepository.getLeagueGoalsTrendForLeagueAtInterval(league, daysOffset)
     }
 
 }
