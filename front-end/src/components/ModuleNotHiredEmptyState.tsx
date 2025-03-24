@@ -52,13 +52,13 @@ const ModuleNotHiredEmptyState = ({
         boxShadow="sm"
       >
         <Icon as={FiLock} boxSize={12} color="gray.500" mb={4} />
-        <Heading size="md" mb={2}>
+        <Heading size="md" mb={2} color="gray.800">
           Acesso ao Módulo de {moduleName} não incluído no plano
         </Heading>
-        <Text>
+        <Text color="gray.600">
           {description}
         </Text>
-        <Text mb={6}>
+        <Text mb={6} color="gray.600">
           Caso você já tenha um plano com acesso ao módulo e mesmo assim não consegue acessá-lo, entre em contato com o suporte usando o ícone de conversa no canto direito inferior da sua tela.
         </Text>
         <Flex direction="column" gap={4} align="center">
