@@ -332,3 +332,8 @@ export interface AutoBettor {
     status: string;
     createdAt: string;
 }
+
+export interface LeagueTrend {
+    league: FifaLeagueResponse;
+    trend: number[];
+}

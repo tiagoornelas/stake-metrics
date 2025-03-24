@@ -16,7 +16,9 @@ class BetResultsReporter(
     fun reportChat(messengerChat: MessengerChat) {
         val user = messengerChat.user ?: throw IllegalStateException("MessengerChat must have an user")
 
-        val targetDate = LocalDateTime.now().minusDays(1)
+        val zoneOffset = user.timezoneOffset
+        val userNow = LocalDateTime.now(zoneOffset)
+        val targetDate = userNow.minusDays(1)
         val startDate = targetDate.withHour(0).withMinute(0).withSecond(0)
         val endDate = targetDate.withHour(23).withMinute(59).withSecond(59)
 

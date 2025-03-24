@@ -1,5 +1,6 @@
 package net.stakemetrics.persistence.repositories
 
+import net.stakemetrics.application.entities.FifaLeague
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaOddSnapshot
 import net.stakemetrics.application.entities.enums.OddSnapshotTypes
@@ -42,5 +43,9 @@ class FifaOddSnapshotRepository(
             dateStart,
             dateEnd
         ).map { it.toDomain() }
+    }
+
+    override fun getLeagueGoalsTrendForLeagueAtInterval(league: FifaLeague, daysOffset: Int): List<Int> {
+        return fifaOddSnapshotJpaRepository.findCumulativeGoalsTrendForLeagueAtInterval(league.id, daysOffset)
     }
 }
