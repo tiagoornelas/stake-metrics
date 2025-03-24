@@ -21,107 +21,113 @@ import {UserContext, UserReducerAction} from "utils/interfaces";
 import UserManagement from "./containers/user/UserManagement";
 import TranslationProvider from "providers/TranslationProvider";
 import FifaDashboard from "containers/fifa/dashboard/FifaDashboard";
+import FifaTrends from "./containers/fifa/trends/FifaTrends";
 
 const publicRouter = createBrowserRouter([
-    {
-        path: "/create-account",
-        element: <PublicAreaLayout><CreateAccount/></PublicAreaLayout>,
-    },
-    {
-        path: "/recover-account",
-        element: <PublicAreaLayout><AccountRecovery/></PublicAreaLayout>,
-    },
-    {
-        path: "/login",
-        element: <PublicAreaLayout><Login/></PublicAreaLayout>,
-    },
-    {
-        path: "/*",
-        element: <PublicPage/>,
-    }
+  {
+    path: "/create-account",
+    element: <PublicAreaLayout><CreateAccount /></PublicAreaLayout>,
+  },
+  {
+    path: "/recover-account",
+    element: <PublicAreaLayout><AccountRecovery /></PublicAreaLayout>,
+  },
+  {
+    path: "/login",
+    element: <PublicAreaLayout><Login /></PublicAreaLayout>,
+  },
+  {
+    path: "/*",
+    element: <PublicPage />,
+  }
 ]);
 
 const unsubscribedRouter = createBrowserRouter([
-    {
-        path: "/*",
-        element: <Subscription/>,
-    }
+  {
+    path: "/*",
+    element: <Subscription />,
+  }
 ]);
 
 const appRouter = createBrowserRouter([
-    {
-        path: "/app/user-management",
-        element: <PrivateRouterLayout><UserManagement/></PrivateRouterLayout>
-    },
-    {
-        path: "/app/esoccer/dashboard",
-        element: <PrivateRouterLayout><FifaDashboard/></PrivateRouterLayout>
+  {
+    path: "/app/user-management",
+    element: <PrivateRouterLayout><UserManagement /></PrivateRouterLayout>
+  },
+  {
+    path: "/app/esoccer/strategies",
+    element: <PrivateRouterLayout><FifaStrategies /></PrivateRouterLayout>
+  },
+  {
+    path: "/app/esoccer/dashboard",
+    element: <PrivateRouterLayout><FifaDashboard /></PrivateRouterLayout>
 
-    },
-    {
-        path: "/app/esoccer/strategies",
-        element: <PrivateRouterLayout><FifaStrategies/></PrivateRouterLayout>
-    },
-    {
-        path: "/app/*",
-        element: <PrivateRouterLayout><FifaDashboard/></PrivateRouterLayout>
-    },
-    {
-        path: "/*",
-        element: <PublicPage/>,
-    }
+  },
+  {
+    path: "/app/esoccer/trends",
+    element: <PrivateRouterLayout><FifaTrends /></PrivateRouterLayout>
+
+  },
+  {
+    path: "/app/*",
+    element: <PrivateRouterLayout><FifaDashboard /></PrivateRouterLayout>
+  },
+  {
+    path: "/*",
+    element: <PublicPage />,
+  }
 ]);
 
 const AppContent = () => {
-    const [cookies] = useCookies(["userId"]);
-    const isLoggedIn = useMemo(() => cookies.userId, [cookies]);
+  const [cookies] = useCookies(["userId"]);
+  const isLoggedIn = useMemo(() => cookies.userId, [cookies]);
 
-    const dispatch: Dispatch<UserReducerAction> = useUserDispatch();
-    const userContext: UserContext = useUserState();
+  const dispatch: Dispatch<UserReducerAction> = useUserDispatch();
+  const userContext: UserContext = useUserState();
 
-    useEffect(() => {
-        const {userId} = cookies;
+  useEffect(() => {
+    const {userId} = cookies;
 
-        const saveUserDetailsToContext = async () => {
-            const {user} = await getUserDetails(userId);
-            const parsedUser = {
-                ...user,
-                isExpired: user.subscription?.status === "INACTIVE"
-            }
-            setUser(dispatch, parsedUser);
-        }
+    const saveUserDetailsToContext = async () => {
+      const {user} = await getUserDetails(userId);
+      const parsedUser = {
+        ...user,
+        isExpired: user.subscription?.status === "INACTIVE"
+      }
+      setUser(dispatch, parsedUser);
+    }
 
-        if (isLoggedIn) saveUserDetailsToContext();
-    }, [cookies, dispatch, isLoggedIn]);
+    if (isLoggedIn) saveUserDetailsToContext();
+  }, [cookies, dispatch, isLoggedIn]);
 
-    if (!isLoggedIn) return <RouterProvider router={publicRouter}/>;
+  if (!isLoggedIn) return <RouterProvider router={publicRouter} />;
 
-    if (userContext.user.isExpired) return (
-        <PrivateAreaWrapper>
-            <RouterProvider router={unsubscribedRouter}/>
-        </PrivateAreaWrapper>
-    )
+  if (userContext.user.isExpired) return (
+    <PrivateAreaWrapper>
+      <RouterProvider router={unsubscribedRouter} />
+    </PrivateAreaWrapper>
+  )
 
-    return (<PrivateAreaWrapper>
-        <RouterProvider router={appRouter}/>
-    </PrivateAreaWrapper>);
+  return (<PrivateAreaWrapper>
+    <RouterProvider router={appRouter} />
+  </PrivateAreaWrapper>);
 
 }
 
 export const App = () => {
-    const extendedTheme = extendTheme({
-        colors: getCustomThemeColors()
-    });
+  const extendedTheme = extendTheme({
+    colors: getCustomThemeColors()
+  });
 
-    return (
-        <ChakraProvider theme={extendedTheme}>
-            <UserProvider>
-                <ErrorBoundary>
-                    <TranslationProvider>
-                        <AppContent/>
-                    </TranslationProvider>
-                </ErrorBoundary>
-            </UserProvider>
-        </ChakraProvider>
-    );
+  return (
+    <ChakraProvider theme={extendedTheme}>
+      <UserProvider>
+        <ErrorBoundary>
+          <TranslationProvider>
+            <AppContent />
+          </TranslationProvider>
+        </ErrorBoundary>
+      </UserProvider>
+    </ChakraProvider>
+  );
 }

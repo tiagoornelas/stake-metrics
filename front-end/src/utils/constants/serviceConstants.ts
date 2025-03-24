@@ -1,53 +1,60 @@
 export const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const ENDPOINTS = {
-    LOGIN: {
-        BASE: "/login"
-    },
-    USER: {
-        BASE: "/user",
-        CHANGE_PASSWORD: "/password",
-        RECOVER_RECEIVE: "/recover-receive",
-        RECOVER_APPLY: "/recover-apply",
-    },
-    RECOVER: {
-        BASE: "/recover"
-    },
-    SUBSCRIPTION: {
-        BASE: "/subscription",
-        PRICING_TABLE: "/plan/pricing-table",
-        CREATE_PORTAL_SESSION: "/create-portal-session",
-    },
-    TELEGRAM: {
-        BASE: "/messenger",
-        BEGIN_PRIVATE_CHAT_INTEGRATION: "/private-chat/begin-integration",
-        INTEGRATE_PRIVATE_CHAT: "/private-chat/integrate",
-        INTEGRATE_CHANNEL: "/channel/integrate",
-        TEST_MESSAGE: "/test-message"
-    },
-    FIFA: {
-        BASE: "/fifa"
-    },
-    BET: {
-        BASE: "/bet",
-        STRATEGY: "/strategy",
-        STATISTICS: "/statistics",
-    },
-    STRATEGY: {
-        BASE: "/strategy",
-        PARAMS: "/params",
-        STATUS: "/status",
-        STATISTICS: "/statistics",
-        RESTART: "/restart",
-        PROFITS: "/profits",
-        REPORT: {
-            BASE: "/report",
-            SIMPLE: "/simple",
-            DETAILED: "/detailed"
-        }
-    },
-    INTEGRATION: {
-        AUTO_BETTOR: "/auto-bettor",
-        STATUS: "/status",
+  LOGIN: {
+    BASE: "/login"
+  },
+  USER: {
+    BASE: "/user",
+    CHANGE_PASSWORD: "/password",
+    RECOVER_RECEIVE: "/recover-receive",
+    RECOVER_APPLY: "/recover-apply",
+  },
+  RECOVER: {
+    BASE: "/recover"
+  },
+  SUBSCRIPTION: {
+    BASE: "/subscription",
+    PRICING_TABLE: "/plan/pricing-table",
+    CREATE_PORTAL_SESSION: "/create-portal-session",
+  },
+  TELEGRAM: {
+    BASE: "/messenger",
+    BEGIN_PRIVATE_CHAT_INTEGRATION: "/private-chat/begin-integration",
+    INTEGRATE_PRIVATE_CHAT: "/private-chat/integrate",
+    INTEGRATE_CHANNEL: "/channel/integrate",
+    TEST_MESSAGE: "/test-message"
+  },
+  FIFA: {
+    BASE: "/fifa"
+  },
+  BET: {
+    BASE: "/bet",
+    STRATEGY: "/strategy",
+    STATISTICS: "/statistics",
+  },
+  STRATEGY: {
+    BASE: "/strategy",
+    PARAMS: "/params",
+    STATUS: "/status",
+    STATISTICS: "/statistics",
+    RESTART: "/restart",
+    PROFITS: "/profits",
+    REPORT: {
+      BASE: "/report",
+      SIMPLE: "/simple",
+      DETAILED: "/detailed"
     }
+  },
+  INTEGRATION: {
+    AUTO_BETTOR: "/auto-bettor",
+    STATUS: "/status",
+  },
+  TREND: {
+    BASE: "/trend",
+    FIFA: {
+      BASE: "/fifa",
+      GOALS: "/goals",
+    }
+  }
 }

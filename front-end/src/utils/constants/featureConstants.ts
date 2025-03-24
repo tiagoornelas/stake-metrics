@@ -6,6 +6,7 @@ export enum FEATURES {
     DETAILED_REPORT = "detailed-report",
     NO_ADS_MESSAGES = "no-ads-messages",
     AUTO_BETTOR = "auto-bettor",
+    TREND_MODULE = "trend-module"
 }
 
 export const FEATURE_LABELS = {
@@ -16,4 +17,5 @@ export const FEATURE_LABELS = {
     [FEATURES.DETAILED_REPORT]: "Relatório detalhado",
     [FEATURES.NO_ADS_MESSAGES]: "Mensagens sem identificação da plataforma",
     [FEATURES.AUTO_BETTOR]: "Integração com automação de apostas",
+    [FEATURES.TREND_MODULE]: "Análise de tendências do mercado"
 };

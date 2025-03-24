@@ -13,4 +13,5 @@ enum class EntitlementTypes(val identifier: String, val featureType: FeatureType
     DETAILED_REPORT_1("detailed-report-1", FeatureTypes.DETAILED_REPORT, 1),
     NO_ADS_MESSAGES_1("no-ads-messages-1", FeatureTypes.NO_ADS_MESSAGES, 1),
     AUTO_BETTOR_1("auto-bettor-1", FeatureTypes.AUTO_BETTOR, 1),
+    TREND_MODULE_1("trend-module-1", FeatureTypes.TREND_MODULE, 1),
 }
