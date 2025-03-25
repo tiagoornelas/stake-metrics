@@ -22,6 +22,6 @@ data class FifaMatch(
     val winner: FifaPlayer? = null
 ) {
     fun hasMatchAlreadyBegun(): Boolean {
-        return status != FifaMatchStatusTypes.NOT_STARTED || time.before(Date())
+        return time.before(Date())
     }
 }
