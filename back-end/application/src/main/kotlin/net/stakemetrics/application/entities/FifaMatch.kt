@@ -20,4 +20,8 @@ data class FifaMatch(
     val totalGoalsAtHalfTime: Int? = null,
     val totalGoalsAtFullTime: Int? = null,
     val winner: FifaPlayer? = null
-)
+) {
+    fun hasMatchAlreadyBegun(): Boolean {
+        return status != FifaMatchStatusTypes.NOT_STARTED || time.before(Date())
+    }
+}
