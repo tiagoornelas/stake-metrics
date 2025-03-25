@@ -1,7 +1,6 @@
 package net.stakemetrics.application.service
 
 import net.stakemetrics.application.entities.FifaBet
-import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
@@ -43,10 +42,9 @@ class FifaBetService(
         val fifaMatch = fifaMatchRepository.findById(payload.fifaMatchId)
             ?: throw InternalError("Match not found when trying to bet on it")
 
-        val matchAlreadyStarted = hasMatchAlreadyBegun(fifaMatch)
         val alreadyBet = fifaBetRepository.existsByStrategyAndMatch(payload.strategy, fifaMatch)
 
-        if (matchAlreadyStarted) throw FifaBetOnStartedMatchException(fifaMatch)
+        if (fifaMatch.hasMatchAlreadyBegun()) throw FifaBetOnStartedMatchException(fifaMatch)
 
         if (alreadyBet) {
             logger.log("Already bet on the match ${fifaMatch.integrationId} with the strategy ${payload.strategy.id}")
@@ -68,10 +66,6 @@ class FifaBetService(
 
         if (!fifaBet.isPaperBet) fifaActiveBetWorker.workOnBet(fifaBet)
         fifaBetRepository.save(fifaBet)
-    }
-
-    private fun hasMatchAlreadyBegun(fifaMatch: FifaMatch): Boolean {
-        return fifaMatch.time < Date()
     }
 
     private fun isGoalLineMarket(candidate: FifaMarketBetCandidates): Boolean {
