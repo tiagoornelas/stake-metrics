@@ -11,15 +11,15 @@ import {
   Select,
   Skeleton,
   Stack,
-  Tag,
+  Tag, Text,
   useColorModeValue,
 } from "@chakra-ui/react";
 import MultiSelect from "components/MultiSelect";
 import StrategyRuleValueInput from "containers/fifa/strategy/components/StrategyRuleValueInput";
 import useInvalidateStrategyQuery from "containers/fifa/strategy/hooks/useInvalidateStrategyQuery";
-import { useErrorToast } from "hooks/useErrorToast";
+import {useErrorToast} from "hooks/useErrorToast";
 import useThemeColors from "hooks/useThemeColors";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import {
   FaRegHourglass,
   MdAdd,
@@ -39,8 +39,8 @@ import {
   FifaStrategyScopeTypesDict,
   FifleRuleTypesFormatDict,
 } from "utils/constants/strategyConstants";
-import { SUCCESS_TYPES } from "utils/constants/successConstants";
-import { isFormValid, validateForm } from "utils/helpers/strategyHelper";
+import {SUCCESS_TYPES} from "utils/constants/successConstants";
+import {isFormValid, validateForm} from "utils/helpers/strategyHelper";
 import {
   FifaLeagueResponse,
   FifaPlayerResponse,
@@ -51,9 +51,9 @@ import {
 } from "utils/interfaces";
 
 const StrategyForm = ({
-  strategyId,
-  onClose,
-}: {
+                        strategyId,
+                        onClose,
+                      }: {
   strategyId?: string;
   onClose?: () => void;
 }) => {
@@ -163,7 +163,7 @@ const StrategyForm = ({
           (player) => player.leagueId && form.leagues.includes(player.leagueId)
         );
         setDynamicPlayers(
-          players.map((player) => ({ value: player.id, label: player.name }))
+          players.map((player) => ({value: player.id, label: player.name}))
         );
       }
     };
@@ -202,7 +202,7 @@ const StrategyForm = ({
   const handleInput = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { id, value } = e.target;
+    const {id, value} = e.target;
     setForm({
       ...form,
       [id]: value,
@@ -268,7 +268,7 @@ const StrategyForm = ({
 
   const duplicateScope = (index: number) => {
     const scopeToDuplicate = form.scopes[index];
-    const newScopes = [...form.scopes, { ...scopeToDuplicate }];
+    const newScopes = [...form.scopes, {...scopeToDuplicate}];
     setScopes(newScopes);
   };
 
@@ -329,8 +329,24 @@ const StrategyForm = ({
     }
   }, SUCCESS_TYPES.STRATEGY_SAVED);
 
+  const HelpDeskShortcut = () => {
+    const HELP_DESK_STRATEGY_LINK = "https://pyrite-seaplane-54b.notion.site/Como-criar-uma-estrat-gia-1a4532044a3980f28957fd53096fdacb?pvs=74";
+    const linkColor = useColorModeValue("blue.500", "blue.200");
+
+    return (<Text>
+      Entenda melhor como configurar sua estratégia acessando nossa{" "}
+      <Text as="a" color={linkColor} href={HELP_DESK_STRATEGY_LINK} target="_blank" textDecoration="underline">
+        central de ajuda
+      </Text>
+      .
+    </Text>);
+  }
+
   return (
     <Stack spacing="5">
+
+      <HelpDeskShortcut/>
+
       <FormControl>
         <FormLabel htmlFor="name">Nome</FormLabel>
         <Input
@@ -511,7 +527,7 @@ const StrategyForm = ({
                           isInvalid={
                             validationErrors[
                               `scope-${index}-rule-${ruleIndex}-type`
-                            ]
+                              ]
                           }
                         >
                           {availableRuleTypes.map((ruleType) => (
@@ -552,7 +568,7 @@ const StrategyForm = ({
                               isInvalid={
                                 validationErrors[
                                   `scope-${index}-rule-${ruleIndex}-value`
-                                ]
+                                  ]
                               }
                             />
                           </GridItem>
@@ -562,7 +578,7 @@ const StrategyForm = ({
                                 {
                                   FifleRuleTypesFormatDict[
                                     currentRuleDetail?.format
-                                  ]
+                                    ]
                                 }
                               </Badge>
                             )}
