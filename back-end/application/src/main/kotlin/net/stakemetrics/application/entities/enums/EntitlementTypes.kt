@@ -6,6 +6,7 @@ enum class EntitlementTypes(val identifier: String, val featureType: FeatureType
     FIFA_STRATEGY_3("fifa-strategy-3", FeatureTypes.FIFA_STRATEGY, 3),
     FIFA_STRATEGY_6("fifa-strategy-6", FeatureTypes.FIFA_STRATEGY, 6),
     FIFA_STRATEGY_9("fifa-strategy-9", FeatureTypes.FIFA_STRATEGY, 9),
+    FIFA_STRATEGY_30("fifa-strategy-30", FeatureTypes.FIFA_STRATEGY, 30),
     MESSENGER_CHAT_1("messenger-chat-1", FeatureTypes.MESSENGER_CHAT, 1),
     MESSENGER_CHAT_2("messenger-chat-2", FeatureTypes.MESSENGER_CHAT, 2),
     MESSENGER_CHAT_3("messenger-chat-3", FeatureTypes.MESSENGER_CHAT, 3),
