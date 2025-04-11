@@ -16,7 +16,7 @@ class FifaStrategyResourceValidator(
     private val subscriptionService: ISubscriptionService,
     private val fifaStrategyService: FifaStrategyService
 ) {
-    private val globalMaxStrategies = 20
+    private val globalMaxStrategies = 50
 
     fun validate(dto: FifaStrategyDTO.FifaStrategyRequest) {
         if (dto.name.isBlank() || dto.marketSubTypes.isEmpty() || dto.leagues.isEmpty()) {

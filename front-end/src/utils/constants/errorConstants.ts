@@ -39,7 +39,7 @@ export const TRANSLATED_ERRORS: Record<string, ErrorDictionary> = {
     },
     "User has reached the maximum number of strategies": {
         title: "Limite de estratégias atingido!",
-        description: "Você não pode ter mais do que 20 estratégias criadas."
+        description: "Você chegou ao limite de estratégias criadas."
     },
     "User has reached the maximum number of running strategies": {
         title: "Limite de estratégias atingido!",
