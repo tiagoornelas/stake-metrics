@@ -20,6 +20,6 @@ export const APP_NAVIGATION: NavigationLinkOnHeaderValue[] = [
         path: "app/esoccer/trends",
         moduleText: "E-Soccer",
         moduleColor: "green",
-        type: NavigationModuleTypes.BETA
+        type: NavigationModuleTypes.REGULAR
     }
 ]
