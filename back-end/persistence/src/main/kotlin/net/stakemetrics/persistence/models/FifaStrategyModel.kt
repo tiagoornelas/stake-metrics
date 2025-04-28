@@ -71,6 +71,7 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
         SELECT
             fs.id AS strategyId,
             fl.name AS leagueName,
+            fl.id AS leagueId,
             u.email AS userLogin,
             SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 2 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwoHours,
             SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 4 HOUR) THEN fb.profit ELSE 0 END) AS profitLastFourHours,
@@ -104,6 +105,7 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
         columns = [
             ColumnResult(name = "strategyId", type = UUID::class),
             ColumnResult(name = "leagueName", type = String::class),
+            ColumnResult(name = "leagueId", type = UUID::class),
             ColumnResult(name = "userLogin", type = String::class),
             ColumnResult(name = "profitLastTwoHours", type = Double::class),
             ColumnResult(name = "profitLastFourHours", type = Double::class),
