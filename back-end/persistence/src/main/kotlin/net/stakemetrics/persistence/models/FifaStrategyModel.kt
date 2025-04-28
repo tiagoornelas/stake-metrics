@@ -3,6 +3,7 @@ package net.stakemetrics.persistence.models
 import jakarta.persistence.*
 import java.util.UUID
 import net.stakemetrics.application.entities.FifaStrategy
+import net.stakemetrics.application.entities.dtos.DataDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
 import net.stakemetrics.application.entities.enums.FifaMarketTypes
@@ -61,6 +62,55 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             ColumnResult(name = "roi", type = Double::class),
             ColumnResult(name = "todaysResult", type = Double::class),
             ColumnResult(name = "averageDailyBets", type = Int::class)
+        ]
+    )]
+)
+@NamedNativeQuery(
+    name = "find_strategies_by_league_performance",
+    query = """
+        SELECT
+            fs.id AS strategyId,
+            fl.name AS leagueName,
+            u.email AS userLogin,
+            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 2 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwoHours,
+            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 4 HOUR) THEN fb.profit ELSE 0 END) AS profitLastFourHours,
+            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 6 HOUR) THEN fb.profit ELSE 0 END) AS profitLastSixHours,
+            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 12 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwelveHours,
+            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwentyFourHours,
+            SUM(fb.profit) AS profitLastWeek
+        FROM
+            fifa_bets fb
+        INNER JOIN
+            fifa_strategies fs ON fb.strategy_id = fs.id
+        INNER JOIN
+            users u ON fs.user_id = u.id
+        INNER JOIN
+            fifa_matches fm ON fb.match_id = fm.id
+        INNER JOIN
+            fifa_leagues fl ON fl.id = fm.league_id
+        WHERE
+            fb.bet_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        GROUP BY
+            fs.id, fl.name, u.email
+        ORDER BY
+            profitLastTwoHours DESC
+    """,
+    resultSetMapping = "fifa_strategy_league_performance_result"
+)
+@SqlResultSetMapping(
+    name = "fifa_strategy_league_performance_result",
+    classes = [ConstructorResult(
+        targetClass = DataDTO.FifaStrategiesByLeaguePerformanceSingleResponse::class,
+        columns = [
+            ColumnResult(name = "strategyId", type = UUID::class),
+            ColumnResult(name = "leagueName", type = String::class),
+            ColumnResult(name = "userLogin", type = String::class),
+            ColumnResult(name = "profitLastTwoHours", type = Double::class),
+            ColumnResult(name = "profitLastFourHours", type = Double::class),
+            ColumnResult(name = "profitLastSixHours", type = Double::class),
+            ColumnResult(name = "profitLastTwelveHours", type = Double::class),
+            ColumnResult(name = "profitLastTwentyFourHours", type = Double::class),
+            ColumnResult(name = "profitLastWeek", type = Double::class)
         ]
     )]
 )
