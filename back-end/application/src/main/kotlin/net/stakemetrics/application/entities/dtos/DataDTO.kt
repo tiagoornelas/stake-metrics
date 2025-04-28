@@ -12,6 +12,7 @@ class DataDTO {
     data class FifaStrategiesByLeaguePerformanceSingleResponse(
         val strategyId: UUID,
         val leagueName: String,
+        val leagueId: UUID,
         val userLogin: String,
         val profitLastTwoHours: Double,
         val profitLastFourHours: Double,
