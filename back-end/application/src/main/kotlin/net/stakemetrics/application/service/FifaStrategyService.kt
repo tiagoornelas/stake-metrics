@@ -8,6 +8,7 @@ import net.stakemetrics.application.entities.FifaStrategyRule
 import net.stakemetrics.application.entities.FifaStrategyScope
 import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.User
+import net.stakemetrics.application.entities.dtos.DataDTO
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
@@ -169,13 +170,24 @@ class FifaStrategyService @Autowired constructor(
         val user = userService.findByEmail(userEmail)
         fifaStrategyResourceValidator.assureStrategyBelongsToUser(strategy, user)
 
-        return FifaStrategyDTO.FifaStrategyReadResponse(strategy.id,
+        return mapStrategyToResponse(strategy)
+    }
+
+    fun getStrategyWithoutValidation(strategyId: UUID): FifaStrategyDTO.FifaStrategyReadResponse {
+        val strategy = findById(strategyId)
+        return mapStrategyToResponse(strategy)
+    }
+
+    private fun mapStrategyToResponse(strategy: FifaStrategy): FifaStrategyDTO.FifaStrategyReadResponse {
+        return FifaStrategyDTO.FifaStrategyReadResponse(
+            strategy.id,
             strategy.name,
             strategy.marketType,
             strategy.marketSubTypes.toList(),
             strategy.leagues.map { it.toResponse() },
             strategy.excludedPlayers.map { it.toResponse() },
-            strategy.scopes.map { it.toResponse() })
+            strategy.scopes.map { it.toResponse() }
+        )
     }
 
     fun listAllStrategiesStatistics(userEmail: String): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse> {
@@ -285,6 +297,10 @@ class FifaStrategyService @Autowired constructor(
             fifaBetRepository.findDetailedBetsByStrategyIdAndBetTimeAfter(strategyId, cutoffDate)
 
         return FifaStrategyDTO.DetailedReportResponse(bets)
+    }
+
+    fun getAllStrategiesByLeaguePerformance(): List<DataDTO.FifaStrategiesByLeaguePerformanceSingleResponse> {
+        return fifaStrategyRepository.getAllStrategiesByLeaguePerformance()
     }
 
 }
