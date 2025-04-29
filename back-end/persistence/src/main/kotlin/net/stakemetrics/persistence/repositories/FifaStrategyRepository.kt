@@ -24,6 +24,11 @@ class FifaStrategyRepository(
         fifaStrategyJpaRepository.save(strategy.toModel())
     }
 
+    @CacheEvict(value = ["strategies"], allEntries = true)
+    override fun saveAll(strategies: List<FifaStrategy>) {
+        fifaStrategyJpaRepository.saveAll(strategies.map { it.toModel() })
+    }
+
     @Cacheable("strategies")
     override fun getAllProneToBetStrategies(): List<FifaStrategy> {
         val proneToBetStatuses = listOf(FifaStrategyStatus.ACTIVE, FifaStrategyStatus.PAPER_BET)
@@ -53,6 +58,10 @@ class FifaStrategyRepository(
         return fifaStrategyJpaRepository.findAllByUserIdAndStatusIn(
             user.id, listOf(FifaStrategyStatus.ACTIVE, FifaStrategyStatus.PAPER_BET)
         ).map { it.toDomain() }
+    }
+
+    override fun findAllByUserId(userId: UUID): List<FifaStrategy> {
+        return fifaStrategyJpaRepository.findAllByUserId(userId).map { it.toDomain() }
     }
 
     @CacheEvict(value = ["strategies"], allEntries = true)

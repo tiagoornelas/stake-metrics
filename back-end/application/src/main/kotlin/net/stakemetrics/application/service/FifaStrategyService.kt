@@ -121,6 +121,13 @@ class FifaStrategyService @Autowired constructor(
         fifaStrategyRepository.save(strategy)
     }
 
+    fun inactivateAllByUserEmail(userEmail: String) {
+        val user = userService.findByEmail(userEmail)
+        val strategies = fifaStrategyRepository.findAllByUserId(user.id)
+        strategies.forEach { it.status = FifaStrategyStatus.INACTIVE }
+        fifaStrategyRepository.saveAll(strategies)
+    }
+
     fun forcePaperBetStatus(strategy: FifaStrategy) {
         strategy.status = FifaStrategyStatus.PAPER_BET
         fifaStrategyRepository.save(strategy)

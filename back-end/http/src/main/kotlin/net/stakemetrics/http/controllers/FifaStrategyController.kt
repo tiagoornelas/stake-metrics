@@ -31,6 +31,13 @@ class FifaStrategyController(
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyWriteResponse())
     }
 
+    @PutMapping("/status/inactivate/all")
+    fun updateStrategyStatus(): ResponseEntity<FifaStrategyDTO.FifaStrategyWriteResponse> {
+        val userEmail = SecurityContextHolder.getContext().authentication.principal as String
+        fifaStrategyService.inactivateAllByUserEmail(userEmail)
+        return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyWriteResponse())
+    }
+
     @PostMapping("/restart/{strategyId}")
     fun restartStrategy(@PathVariable strategyId: UUID): ResponseEntity<FifaStrategyDTO.FifaStrategyWriteResponse> {
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
