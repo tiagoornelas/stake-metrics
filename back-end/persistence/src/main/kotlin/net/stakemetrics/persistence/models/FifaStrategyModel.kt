@@ -84,17 +84,25 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
         FROM
             fifa_bets fb
         INNER JOIN
-            fifa_strategies fs ON fb.strategy_id = fs.id
+                    fifa_strategies fs ON
+            fb.strategy_id = fs.id
         INNER JOIN
-            users u ON fs.user_id = u.id
+                    users u ON
+            fs.user_id = u.id
         INNER JOIN
-            fifa_matches fm ON fb.match_id = fm.id
+                    fifa_matches fm ON
+            fb.match_id = fm.id
         INNER JOIN
-            fifa_leagues fl ON fl.id = fm.league_id
+                    fifa_leagues fl ON
+            fl.id = fm.league_id
         WHERE
             fb.bet_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        AND
+            fb.profit IS NOT NULL
         GROUP BY
-            fs.id, fl.name, u.email
+            fs.id,
+            fl.name,
+            u.email
         ORDER BY
             profitLastTwoHours DESC
     """,
