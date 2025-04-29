@@ -1,12 +1,20 @@
 package net.stakemetrics.http.controllers
 
-import java.util.UUID
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.service.FifaStrategyService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/fifa/strategy")
@@ -19,6 +27,13 @@ class FifaStrategyController(
         val userEmail = SecurityContextHolder.getContext().authentication.principal as String
         fifaStrategyService.save(userEmail, request)
         return ResponseEntity.status(HttpStatus.OK).body(FifaStrategyDTO.FifaStrategyWriteResponse())
+    }
+
+    @PostMapping("/exists")
+    fun checkStrategyExistence(@RequestBody request: FifaStrategyDTO.FifaStrategyRequest): ResponseEntity<FifaStrategyDTO.FifaStrategyExistsResponse> {
+        val userEmail = SecurityContextHolder.getContext().authentication.principal as String
+        val exists = fifaStrategyService.checkStrategyExistenceForUser(userEmail, request)
+        return ResponseEntity.status(HttpStatus.OK).body(exists)
     }
 
     @PutMapping("/status/{strategyId}")
