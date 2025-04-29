@@ -72,6 +72,11 @@ class FifaStrategyDTO {
         val scopes: List<FifaStrategyScopeResponse>
     )
 
+    data class FifaStrategyExistsResponse(
+        val exists: Boolean,
+        val strategy: FifaStrategy?
+    )
+
     data class FifaStrategyStatisticSingleResponse(
         val id: UUID,
         val name: String,

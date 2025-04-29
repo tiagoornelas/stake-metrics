@@ -70,6 +70,8 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
     query = """
         SELECT
             fs.id AS strategyId,
+            fs.name AS strategyName,
+            fs.market_type AS marketType,
             fl.name AS leagueName,
             fl.id AS leagueId,
             u.email AS userLogin,
@@ -104,6 +106,8 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
         targetClass = DataDTO.FifaStrategiesByLeaguePerformanceSingleResponse::class,
         columns = [
             ColumnResult(name = "strategyId", type = UUID::class),
+            ColumnResult(name = "strategyName", type = String::class),
+            ColumnResult(name = "marketType", type = FifaMarketTypes::class),
             ColumnResult(name = "leagueName", type = String::class),
             ColumnResult(name = "leagueId", type = UUID::class),
             ColumnResult(name = "userLogin", type = String::class),

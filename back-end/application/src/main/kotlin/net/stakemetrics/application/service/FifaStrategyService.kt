@@ -25,6 +25,7 @@ import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.repositories.IFifaStrategyRepository
 import net.stakemetrics.application.workers.FifaStrategyOpportunityIterator
 import net.stakemetrics.application.workers.FifaStrategyResourceValidator
+import net.stakemetrics.application.workers.FifaStrategySimilarityChecker
 import net.stakemetrics.application.workers.tipsters.factory.FifaTipsterFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -44,14 +45,19 @@ class FifaStrategyService @Autowired constructor(
     private val fifaTipsterFactory: FifaTipsterFactory,
     private val subscriptionService: ISubscriptionService,
     private val fifaStrategyRepository: IFifaStrategyRepository,
+    private val fifaStrategySimilarityChecker: FifaStrategySimilarityChecker,
     private val fifaStrategyOpportunityIterator: FifaStrategyOpportunityIterator,
     @Lazy private val fifaStrategyResourceValidator: FifaStrategyResourceValidator,
 ) {
 
     fun save(userEmail: String, dto: FifaStrategyDTO.FifaStrategyRequest) {
-        fifaStrategyResourceValidator.validate(dto)
-
         val user = userService.findByEmail(userEmail)
+        val strategy = createStrategy(user, dto)
+        fifaStrategyRepository.save(strategy)
+    }
+
+    private fun createStrategy(user: User, dto: FifaStrategyDTO.FifaStrategyRequest): FifaStrategy {
+        fifaStrategyResourceValidator.validate(dto)
         fifaStrategyResourceValidator.checkIfUserCanCreate(user)
 
         val leagues = getLeagues(dto.leagues)
@@ -72,7 +78,7 @@ class FifaStrategyService @Autowired constructor(
             )
         }.toMutableSet()
 
-        val strategy = FifaStrategy(
+        return FifaStrategy(
             id = dto.id ?: UUID.randomUUID(),
             status = getStrategyStatusOrDefault(dto.id, dto.status),
             name = dto.name,
@@ -83,8 +89,17 @@ class FifaStrategyService @Autowired constructor(
             scopes = scopes,
             user = user
         )
+    }
 
-        fifaStrategyRepository.save(strategy)
+    fun checkStrategyExistenceForUser(
+        userEmail: String,
+        dto: FifaStrategyDTO.FifaStrategyRequest
+    ): FifaStrategyDTO.FifaStrategyExistsResponse {
+        val user = userService.findByEmail(userEmail)
+        val strategy = createStrategy(user, dto)
+        val userStrategies = findAllByUserId(user.id)
+        val existingStrategy = fifaStrategySimilarityChecker.check(userStrategies, strategy)
+        return FifaStrategyDTO.FifaStrategyExistsResponse(existingStrategy != null, existingStrategy)
     }
 
     private fun getStrategyStatusOrDefault(strategyId: UUID?, status: FifaStrategyStatus?): FifaStrategyStatus {
