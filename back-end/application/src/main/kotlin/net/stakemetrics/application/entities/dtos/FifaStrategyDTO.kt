@@ -54,7 +54,8 @@ class FifaStrategyDTO {
         val marketSubTypes: List<FifaMarketSubTypes>,
         val leagues: List<UUID>,
         val excludedPlayers: List<UUID>,
-        val scopes: List<FifaStrategyScopeRequest>
+        val scopes: List<FifaStrategyScopeRequest>,
+        val status: FifaStrategyStatus? = FifaStrategyStatus.INACTIVE
     )
 
     data class FifaStrategyWriteResponse(

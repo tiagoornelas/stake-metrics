@@ -74,7 +74,7 @@ class FifaStrategyService @Autowired constructor(
 
         val strategy = FifaStrategy(
             id = dto.id ?: UUID.randomUUID(),
-            status = getStrategyStatusOrDefault(dto.id),
+            status = getStrategyStatusOrDefault(dto.id, dto.status),
             name = dto.name,
             marketType = dto.marketType,
             marketSubTypes = dto.marketSubTypes.toMutableSet(),
@@ -87,8 +87,8 @@ class FifaStrategyService @Autowired constructor(
         fifaStrategyRepository.save(strategy)
     }
 
-    private fun getStrategyStatusOrDefault(strategyId: UUID?): FifaStrategyStatus {
-        return strategyId?.let { findById(it).status } ?: FifaStrategyStatus.INACTIVE
+    private fun getStrategyStatusOrDefault(strategyId: UUID?, status: FifaStrategyStatus?): FifaStrategyStatus {
+        return strategyId?.let { findById(it).status } ?: status ?: FifaStrategyStatus.INACTIVE
     }
 
     private fun getLeagues(leagues: List<UUID>): MutableSet<FifaLeague> {
