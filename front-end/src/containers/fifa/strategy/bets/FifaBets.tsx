@@ -42,6 +42,7 @@ const FifaBets = ({strategyId}: Props) => {
                             <Th>Confronto</Th>
                             <Th textAlign="center">Linha</Th>
                             <Th textAlign="center">Resultado</Th>
+                            <Th textAlign="center">Tipo</Th>
                             <Th/>
                         </Tr>
                     </Thead>
