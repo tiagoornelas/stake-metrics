@@ -5,6 +5,7 @@ import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
+import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.time.LocalDate
@@ -59,5 +60,5 @@ interface IFifaBetRepository {
     fun getPossibleProfitFromOpenBets(userId: UUID): Double
     fun findByStrategyIdAndBetTimeAfter(strategyId: UUID, betTime: Date): List<FifaStrategyDTO.SimpleReportBet>
     fun findDetailedBetsByStrategyIdAndBetTimeAfter(strategyId: UUID, date: Date): List<FifaStrategyDTO.DetailedReportBet>
-    fun existsByUserAndMatchAndLine(userId: UUID, matchId: UUID, line: String): Boolean
+    fun existsNonPaperBetByUserAndMatchAndLine(userId: UUID, matchId: UUID, line: FifaMarketBetCandidates): Boolean
 }
