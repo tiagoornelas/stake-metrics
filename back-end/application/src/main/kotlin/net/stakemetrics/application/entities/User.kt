@@ -12,5 +12,6 @@ data class User(
     val password: String,
     val type: UserTypes = UserTypes.USER,
     val timezoneOffset: ZoneOffset = ZoneOffset.of("-03:00"),
-    val language: Languages = Languages.PORTUGUESE
+    val language: Languages = Languages.PORTUGUESE,
+    val avoidRepeatedBets: Boolean = false
 )

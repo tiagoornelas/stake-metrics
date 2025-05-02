@@ -29,7 +29,8 @@ data class UserModel(
     @OneToMany(orphanRemoval = true, mappedBy = "user")
     val strategies: MutableSet<FifaStrategyModel> = mutableSetOf(),
     val timezoneOffset: ZoneOffset = ZoneOffset.of("-03:00"),
-    val language: Languages = Languages.PORTUGUESE
+    val language: Languages = Languages.PORTUGUESE,
+    val avoidRepeatedBets: Boolean = false
 ) : UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
@@ -57,7 +58,8 @@ data class UserModel(
             name = name,
             password = password,
             timezoneOffset = timezoneOffset,
-            language = language
+            language = language,
+            avoidRepeatedBets = avoidRepeatedBets
         )
     }
 }
@@ -70,6 +72,7 @@ fun User.toModel(): UserModel {
         passwordHash = password,
         type = type,
         timezoneOffset = timezoneOffset,
-        language = language
+        language = language,
+        avoidRepeatedBets = avoidRepeatedBets
     )
 }
