@@ -31,11 +31,14 @@ class FifaActiveBetWorker(
         val integratedActiveUserChats = getIntegratedActiveUserChats(fifaBet.strategy?.user!!)
         val autoBettor = userService.getUserAutoBettor(fifaBet.strategy.user)
 
+        val shouldForceStrategyToPaperBet = integratedActiveUserChats.isEmpty() && autoBettor == null
+        if (shouldForceStrategyToPaperBet) {
+            forceStrategyToPaperBet(fifaBet)
+            return
+        }
+
         sendBetMessagesToUserChats(fifaBet, integratedActiveUserChats)
         autoBet(fifaBet, autoBettor)
-
-        val shouldForcePaperBet = integratedActiveUserChats.isEmpty() && autoBettor == null
-        if (shouldForcePaperBet) forcePaperBet(fifaBet)
     }
 
     private fun getIntegratedActiveUserChats(user: User): List<MessengerChat> {
@@ -63,9 +66,9 @@ class FifaActiveBetWorker(
         }
     }
 
-    private fun forcePaperBet(fifaBet: FifaBet) {
-        fifaBet.isPaperBet = true
+    private fun forceStrategyToPaperBet(fifaBet: FifaBet) {
         logger.log("Forcing paper bet for strategy ${fifaBet.strategy?.name}, user ${fifaBet.strategy?.user?.name}")
         fifaStrategyService.forcePaperBetStatus(fifaBet.strategy!!)
     }
+
 }

@@ -22,6 +22,7 @@ class UserDTO {
         val email: String,
         val name: String,
         val type: UserTypes,
+        val avoidRepeatedBets: Boolean,
         val subscription: SubscriptionDTO.SubscriptionResponse
     )
 
@@ -89,7 +90,7 @@ class UserDTO {
 
 fun User.toUserResponse(subscription: SubscriptionDTO.SubscriptionResponse): UserDTO.UserResponse {
     return UserDTO.UserResponse(
-        this.id, this.email, this.name, this.type, subscription
+        this.id, this.email, this.name, this.type, this.avoidRepeatedBets, subscription
     )
 }
 
