@@ -2,6 +2,7 @@ package net.stakemetrics.persistence.jpa
 
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.enums.BetStatusTypes
+import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.MatchupTypes
 import net.stakemetrics.application.entities.enums.StrategyScopeTypes
 import net.stakemetrics.persistence.models.FifaBetModel
@@ -296,10 +297,11 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         WHERE b.strategy.user.id = :userId
         AND b.match.id = :matchId
         AND b.line = :line
+        AND b.isPaperBet = false
     """)
-    fun existsByUserAndMatchAndLine(
+    fun existsNonPaperBetByUserAndMatchAndLine(
         @Param("userId") userId: UUID,
         @Param("matchId") matchId: UUID,
-        @Param("line") line: String
+        @Param("line") line: FifaMarketBetCandidates
     ): Boolean
 }

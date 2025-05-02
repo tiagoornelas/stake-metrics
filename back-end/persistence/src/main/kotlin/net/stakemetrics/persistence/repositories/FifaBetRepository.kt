@@ -6,6 +6,7 @@ import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.BetStatusTypes
+import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.persistence.jpa.FifaBetJpaRepository
@@ -119,8 +120,8 @@ class FifaBetRepository(
             .map { it.toSimpleReportBet() }
     }
 
-    override fun existsByUserAndMatchAndLine(userId: UUID, matchId: UUID, line: String): Boolean {
-        return fifaBetJpaRepository.existsByUserAndMatchAndLine(userId, matchId, line)
+    override fun existsNonPaperBetByUserAndMatchAndLine(userId: UUID, matchId: UUID, line: FifaMarketBetCandidates): Boolean {
+        return fifaBetJpaRepository.existsNonPaperBetByUserAndMatchAndLine(userId, matchId, line)
     }
 }
 

@@ -9,7 +9,7 @@ import java.util.Date
 import java.util.UUID
 
 @Entity
-@Table(indexes = [Index(name = "idx_strategy_match_line", columnList = "strategy_id, match_id, line")])
+@Table(indexes = [Index(name = "idx_strategy_match_line_paper", columnList = "strategy_id, match_id, line, is_paper_bet")])
 data class FifaBet(
     val id: UUID = UUID.randomUUID(),
     var isPaperBet: Boolean = false,
