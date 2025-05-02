@@ -21,7 +21,7 @@ data class FifaMatch(
     val totalGoalsAtFullTime: Int? = null,
     val winner: FifaPlayer? = null
 ) {
-    fun hasMatchAlreadyBegun(): Boolean {
+    fun hasAlreadyStarted(): Boolean {
         return time.before(Date())
     }
 }
