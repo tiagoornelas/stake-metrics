@@ -289,4 +289,17 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
         @Param("strategyId") strategyId: UUID,
         @Param("betTime") betTime: Date
     ): List<DetailedReportRawProjection>
+
+    @Query("""
+        SELECT COUNT(b) > 0
+        FROM FifaBetModel b
+        WHERE b.strategy.user.id = :userId
+        AND b.match.id = :matchId
+        AND b.line = :line
+    """)
+    fun existsByUserAndMatchAndLine(
+        @Param("userId") userId: UUID,
+        @Param("matchId") matchId: UUID,
+        @Param("line") line: String
+    ): Boolean
 }

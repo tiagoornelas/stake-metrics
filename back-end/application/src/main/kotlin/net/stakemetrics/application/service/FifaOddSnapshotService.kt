@@ -8,7 +8,6 @@ import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
 import net.stakemetrics.application.entities.dtos.TrendDTO
 import net.stakemetrics.application.entities.enums.DateIntervalTypes
-import net.stakemetrics.application.entities.exceptions.FifaBetOnStartedMatchException
 import net.stakemetrics.application.repositories.IFifaOddSnapshotRepository
 import net.stakemetrics.application.utils.DateHelper
 import net.stakemetrics.application.utils.MathHelper
@@ -53,7 +52,7 @@ class FifaOddSnapshotService(
     fun runTrendAnalysis(payload: FifaDataSourceDTO.FifaOddRequest) {
         val fifaMatch = fifaMatchService.getOrCreateMatchByOdd(payload)
 
-        if (fifaMatch.hasMatchAlreadyBegun()) throw FifaBetOnStartedMatchException(fifaMatch)
+        if (fifaMatch.hasAlreadyStarted()) return
 
         val matchHomeAndAwayWasSwappedByIntegration =
             fIfaIntegrationHomeAndAwayMismatchFinder.checkForHomeAndAwaySwappedByIntegration(fifaMatch, payload)
