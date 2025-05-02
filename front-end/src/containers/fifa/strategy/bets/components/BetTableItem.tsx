@@ -41,6 +41,12 @@ const BetTableItem = ({bet}: Props) => {
         return <Tag colorScheme={statusColors[fifaBetStatus]}>{statusLabels[fifaBetStatus]}</Tag>;
     };
 
+    const getPaperBetTag = (isPaperBet: boolean) => {
+        return isPaperBet 
+            ? <Tag colorScheme="yellow">Paper Bet</Tag>
+            : <Tag colorScheme="green">Ativa</Tag>;
+    };
+
     const candidate = MARKET_CANDIDATES_DICT[bet.candidate as keyof typeof MARKET_CANDIDATES_DICT];
 
     return (
@@ -58,6 +64,7 @@ const BetTableItem = ({bet}: Props) => {
             </Td>
             <Td textAlign="center">{bet.handicap ? `${candidate} ${bet.handicap}` : candidate} @{bet.odds}</Td>
             <Td textAlign="center">{getStatusTag(bet.status)}</Td>
+            <Td textAlign="center">{getPaperBetTag(bet.isPaperBet)}</Td>
             <Td><DeleteButton bet={bet}/></Td>
         </Tr>
     );

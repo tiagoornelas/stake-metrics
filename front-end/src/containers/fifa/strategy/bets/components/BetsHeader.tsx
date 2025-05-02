@@ -119,7 +119,7 @@ const BetsHeader = ({showingBets, betsLength, isLoaded, filters, setFilters, str
         <MultiSelect
           title="Tipo"
           options={[
-            {value: 'realBets', label: 'Reais'},
+            {value: 'realBets', label: 'Ativas'},
             {value: 'paperBets', label: 'Paper Bets'}
           ]}
           onChange={(value) => setFilters({
