@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.Date
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class FifaBetService(
@@ -37,6 +38,7 @@ class FifaBetService(
     private val fifaBetClosingWorker: FifaBetClosingWorker,
     private val fifaBetMessageBuilder: FifaBetMessageBuilder,
 ) {
+    private val userLocks = ConcurrentHashMap<UUID, Any>()
 
     fun bet(payload: FifaBetDTO.BetRequest) {
         requireNotNull(payload.strategy.user)
@@ -46,33 +48,50 @@ class FifaBetService(
         if (hasStrategyAlreadyBetOnMatch(payload.strategy, fifaMatch)) return
         if (fifaMatch.hasAlreadyStarted()) return
 
-        val handicap = if (isGoalLineMarket(payload.candidate)) payload.oddSnapshot.goalsHandicap else null
-
-        val fifaBet = FifaBet(
-            isPaperBet = payload.strategy.isPaperBetting,
-            strategy = payload.strategy,
-            match = fifaMatch,
-            line = payload.candidate,
-            handicap = handicap,
-            odds = fifaTipsterHelper.getOddForCandidate(payload.candidate, payload.oddSnapshot),
-            betTime = Date(),
-            oddSnapshotId = payload.oddSnapshot.id,
-        )
-
         val user = payload.strategy.user
-        val shouldForcePaperBet = hasUserAlreadyBetOnMatch(user, payload.candidate, fifaMatch) && user.avoidRepeatedBets
-        if (shouldForcePaperBet) fifaBet.isPaperBet = true
+        val userLock = userLocks.computeIfAbsent(user.id) { Any() }
 
-        if (!fifaBet.isPaperBet) fifaActiveBetWorker.workOnBet(fifaBet)
-        fifaBetRepository.save(fifaBet)
+        synchronized(userLock) {
+            val handicap = if (isGoalLineMarket(payload.candidate)) payload.oddSnapshot.goalsHandicap else null
+
+            val fifaBet = FifaBet(
+                isPaperBet = payload.strategy.isPaperBetting,
+                strategy = payload.strategy,
+                match = fifaMatch,
+                line = payload.candidate,
+                handicap = handicap,
+                odds = fifaTipsterHelper.getOddForCandidate(payload.candidate, payload.oddSnapshot),
+                betTime = Date(),
+                oddSnapshotId = payload.oddSnapshot.id,
+            )
+
+            if (fifaBet.isPaperBet) {
+                fifaBetRepository.save(fifaBet)
+                return
+            }
+
+            val shouldForcePaperBet = hasUserAlreadyBetOnMatch(user, payload.candidate, fifaMatch) && user.avoidRepeatedBets
+            if (shouldForcePaperBet) {
+                fifaBet.isPaperBet = true
+                fifaBetRepository.save(fifaBet)
+                return
+            }
+
+            fifaActiveBetWorker.workOnBet(fifaBet)
+            fifaBetRepository.save(fifaBet)
+        }
     }
 
     private fun hasStrategyAlreadyBetOnMatch(strategy: FifaStrategy, match: FifaMatch): Boolean {
         return fifaBetRepository.existsByStrategyAndMatch(strategy, match)
     }
 
-    private fun hasUserAlreadyBetOnMatch(user: User, candidate: FifaMarketBetCandidates, match: FifaMatch): Boolean {
-        return fifaBetRepository.existsByUserAndMatchAndLine(user.id, match.id, candidate.name)
+    private fun hasUserAlreadyBetOnMatch(
+        user: User,
+        candidate: FifaMarketBetCandidates,
+        match: FifaMatch
+    ): Boolean {
+        return fifaBetRepository.existsNonPaperBetByUserAndMatchAndLine(user.id, match.id, candidate)
     }
 
     private fun isGoalLineMarket(candidate: FifaMarketBetCandidates): Boolean {
