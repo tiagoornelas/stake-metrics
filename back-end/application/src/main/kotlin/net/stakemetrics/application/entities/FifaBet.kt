@@ -1,10 +1,15 @@
 package net.stakemetrics.application.entities
 
+import jakarta.persistence.Entity
+import jakarta.persistence.Index
+import jakarta.persistence.Table
 import net.stakemetrics.application.entities.enums.BetStatusTypes
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import java.util.Date
 import java.util.UUID
 
+@Entity
+@Table(indexes = [Index(name = "idx_strategy_match_line", columnList = "strategy_id, match_id, line")])
 data class FifaBet(
     val id: UUID = UUID.randomUUID(),
     var isPaperBet: Boolean = false,
