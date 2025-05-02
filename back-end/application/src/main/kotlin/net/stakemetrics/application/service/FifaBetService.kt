@@ -1,6 +1,7 @@
 package net.stakemetrics.application.service
 
 import net.stakemetrics.application.entities.FifaBet
+import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.User
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
@@ -9,7 +10,6 @@ import net.stakemetrics.application.entities.dtos.toResponse
 import net.stakemetrics.application.entities.enums.FifaMarketBetCandidates
 import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.exceptions.EntityDoesntBelongToUserException
-import net.stakemetrics.application.entities.exceptions.FifaBetOnStartedMatchException
 import net.stakemetrics.application.repositories.IFifaBetRepository
 import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.application.utils.Logger
@@ -39,17 +39,12 @@ class FifaBetService(
 ) {
 
     fun bet(payload: FifaBetDTO.BetRequest) {
+        requireNotNull(payload.strategy.user)
         val fifaMatch = fifaMatchRepository.findById(payload.fifaMatchId)
             ?: throw InternalError("Match not found when trying to bet on it")
 
-        val alreadyBet = fifaBetRepository.existsByStrategyAndMatch(payload.strategy, fifaMatch)
-
-        if (fifaMatch.hasMatchAlreadyBegun()) throw FifaBetOnStartedMatchException(fifaMatch)
-
-        if (alreadyBet) {
-            logger.log("Already bet on the match ${fifaMatch.integrationId} with the strategy ${payload.strategy.id}")
-            return
-        }
+        if (hasStrategyAlreadyBetOnMatch(payload.strategy, fifaMatch)) return
+        if (fifaMatch.hasAlreadyStarted()) return
 
         val handicap = if (isGoalLineMarket(payload.candidate)) payload.oddSnapshot.goalsHandicap else null
 
@@ -64,8 +59,20 @@ class FifaBetService(
             oddSnapshotId = payload.oddSnapshot.id,
         )
 
+        val user = payload.strategy.user
+        val shouldForcePaperBet = hasUserAlreadyBetOnMatch(user, payload.candidate, fifaMatch) && user.avoidRepeatedBets
+        if (shouldForcePaperBet) fifaBet.isPaperBet = true
+
         if (!fifaBet.isPaperBet) fifaActiveBetWorker.workOnBet(fifaBet)
         fifaBetRepository.save(fifaBet)
+    }
+
+    private fun hasStrategyAlreadyBetOnMatch(strategy: FifaStrategy, match: FifaMatch): Boolean {
+        return fifaBetRepository.existsByStrategyAndMatch(strategy, match)
+    }
+
+    private fun hasUserAlreadyBetOnMatch(user: User, candidate: FifaMarketBetCandidates, match: FifaMatch): Boolean {
+        return fifaBetRepository.existsByUserAndMatchAndLine(user.id, match.id, candidate.name)
     }
 
     private fun isGoalLineMarket(candidate: FifaMarketBetCandidates): Boolean {

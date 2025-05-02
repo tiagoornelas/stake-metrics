@@ -59,4 +59,5 @@ interface IFifaBetRepository {
     fun getPossibleProfitFromOpenBets(userId: UUID): Double
     fun findByStrategyIdAndBetTimeAfter(strategyId: UUID, betTime: Date): List<FifaStrategyDTO.SimpleReportBet>
     fun findDetailedBetsByStrategyIdAndBetTimeAfter(strategyId: UUID, date: Date): List<FifaStrategyDTO.DetailedReportBet>
+    fun existsByUserAndMatchAndLine(userId: UUID, matchId: UUID, line: String): Boolean
 }

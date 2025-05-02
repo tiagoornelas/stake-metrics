@@ -118,6 +118,10 @@ class FifaBetRepository(
         return fifaBetJpaRepository.findSimpleReportBets(strategyId, betTime)
             .map { it.toSimpleReportBet() }
     }
+
+    override fun existsByUserAndMatchAndLine(userId: UUID, matchId: UUID, line: String): Boolean {
+        return fifaBetJpaRepository.existsByUserAndMatchAndLine(userId, matchId, line)
+    }
 }
 
 fun FifaBetJpaRepository.SimpleReportProjection.toSimpleReportBet(): FifaStrategyDTO.SimpleReportBet {
