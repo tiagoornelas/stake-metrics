@@ -69,11 +69,11 @@ const EditUserModal = () => {
                             isChecked={form.avoidRepeatedBets}
                             onChange={handleSwitchChange}
                         />
-                        <Text>Evitar apostas repetidas</Text>s
+                        <Text>Evitar apostas repetidas</Text>
                         <Tag colorScheme="yellow">Beta</Tag>
                     </Flex>
                     <Text fontSize="sm" color={explanatoryTextColor} mt={2}>
-                        Esta funcionalidade evita apostas repetidas quando várias estratégias estão apostando na mesma partida e linha. Ao ativar, apenas uma estratégia (a primeira a apostar) fará a aposta ativa, as demais farão apostas em Paper Bet mesmo que estejam ativas.
+                        Esta funcionalidade evita apostas repetidas quando várias estratégias tentam apostar na mesma linha de uma partida. Ao ativar, apenas uma estratégia (a primeira a apostar) fará a aposta ativa, as demais farão apostas em Paper Bet para evitar apostas iguais.
                     </Text>
                 </Box>
             </Box>
