@@ -39,7 +39,7 @@ class UserDTO {
     )
 
     data class EditRequest(
-        val name: String, val email: String
+        val name: String, val email: String, val avoidRepeatedBets: Boolean
     )
 
     data class EditResponse(

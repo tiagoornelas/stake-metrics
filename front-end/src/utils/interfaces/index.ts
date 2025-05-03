@@ -32,6 +32,7 @@ export interface User {
     id?: string;
     name?: string;
     email?: string;
+    avoidRepeatedBets?: boolean;
 }
 
 export interface Plan {
@@ -65,6 +66,7 @@ export interface UserInfo extends User {
 export interface UserCreationBody extends User {
     password?: string;
     passwordConfirmation?: string;
+    avoidRepeatedBets?: boolean;
 }
 
 export interface PasswordChangeBody {
