@@ -69,7 +69,7 @@ class UserService @Autowired constructor(
         checkEmailExistenceIfDifferent(dto.email, user)
         if (user.email != authenticatedEmail) throw EntityDoesntBelongToUserException()
 
-        val updatedUser = user.copy(name = dto.name, email = dto.email)
+        val updatedUser = user.copy(name = dto.name, email = dto.email, avoidRepeatedBets = dto.avoidRepeatedBets)
         userRepository.save(updatedUser)
     }
 

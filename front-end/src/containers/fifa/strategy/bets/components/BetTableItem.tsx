@@ -27,10 +27,11 @@ const DeleteButton = ({bet}: { bet: Bet }) => {
 }
 
 type Props = {
-    bet: Bet
+    bet: Bet,
+    showStrategyName?: boolean
 }
 
-const BetTableItem = ({bet}: Props) => {
+const BetTableItem = ({bet, showStrategyName = false}: Props) => {
     const formatDate = (dateString: string, formatString: string) => {
         const date = new Date(dateString);
         return format(date, formatString);
@@ -52,7 +53,8 @@ const BetTableItem = ({bet}: Props) => {
     return (
         <Tr key={bet.id}>
             <Td>{formatDate(bet.matchTime, "d/M HH:mm")}</Td>
-            <Td>{abbreviateLeagueName(bet.leagueName)}</Td>
+          {showStrategyName && <Td>{bet.leagueName}</Td>}
+            <Td>{abbreviateLeagueName(bet.strategyName)}</Td>
             <Td>
                 {bet.score ? (
                     <>

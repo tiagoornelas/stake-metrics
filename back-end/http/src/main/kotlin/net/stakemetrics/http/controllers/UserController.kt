@@ -44,7 +44,7 @@ class UserController(private val userService: UserService, private val subscript
     }
 
     @PutMapping("/password/{userId}")
-    fun editUser(
+    fun changePassword(
         @PathVariable userId: UUID,
         @RequestBody request: UserDTO.ChangePasswordRequest,
     ): ResponseEntity<UserDTO.ChangePasswordResponse> {

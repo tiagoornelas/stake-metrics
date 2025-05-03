@@ -21,8 +21,8 @@ const UserSection = () => {
           <Text>{userContext.user.email}</Text>
         </Flex>
         <Flex direction="column" gap={4} alignItems="self-start">
-          <EditUserModal />
           <ChangePasswordModal />
+          <EditUserModal />
         </Flex>
       </Skeleton>
     </Box>
