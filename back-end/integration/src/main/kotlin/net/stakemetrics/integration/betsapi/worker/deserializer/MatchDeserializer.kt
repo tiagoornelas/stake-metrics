@@ -20,7 +20,13 @@ class MatchDeserializer : JsonDeserializer<BetsApiDTO.MatchResponse> {
         resultsArray.forEach { resultElement ->
             val resultObject = resultElement.asJsonObject
             val timeStatusOrdinal = resultObject.get("time_status").asInt
-            val timeStatus = BetsApiSoccerMatchStatus.entries[timeStatusOrdinal]
+
+            val timeStatus = when (timeStatusOrdinal) {
+                99 -> BetsApiSoccerMatchStatus.REMOVED
+                in 0 until BetsApiSoccerMatchStatus.entries.size -> BetsApiSoccerMatchStatus.entries[timeStatusOrdinal]
+                else -> BetsApiSoccerMatchStatus.NOT_STARTED
+            }
+            
             resultObject.addProperty("time_status", timeStatus.name)
             modifiedResultsArray.add(resultObject)
         }
