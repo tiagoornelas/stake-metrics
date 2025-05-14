@@ -75,11 +75,11 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             fl.name AS leagueName,
             fl.id AS leagueId,
             u.email AS userLogin,
-            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 2 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwoHours,
-            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 4 HOUR) THEN fb.profit ELSE 0 END) AS profitLastFourHours,
-            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 6 HOUR) THEN fb.profit ELSE 0 END) AS profitLastSixHours,
-            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 12 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwelveHours,
-            SUM(CASE WHEN fb.bet_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwentyFourHours,
+            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 2 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwoHours,
+            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 4 HOUR) THEN fb.profit ELSE 0 END) AS profitLastFourHours,
+            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 6 HOUR) THEN fb.profit ELSE 0 END) AS profitLastSixHours,
+            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 12 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwelveHours,
+            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwentyFourHours,
             SUM(fb.profit) AS profitLastWeek
         FROM
             fifa_bets fb
@@ -96,7 +96,7 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
                     fifa_leagues fl ON
             fl.id = fm.league_id
         WHERE
-            fb.bet_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+            fm.`time` >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
         AND
             fb.profit IS NOT NULL
         GROUP BY
