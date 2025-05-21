@@ -1,13 +1,12 @@
 package net.stakemetrics.persistence.jpa
 
-import net.stakemetrics.application.entities.dtos.DataDTO
-import java.util.UUID
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.FifaStrategyStatus
 import net.stakemetrics.persistence.models.FifaStrategyModel
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.util.UUID
 
 interface FifaStrategyJpaRepository : JpaRepository<FifaStrategyModel, UUID> {
     fun findAllByStatusIn(statuses: List<FifaStrategyStatus>): List<FifaStrategyModel>
@@ -20,6 +19,4 @@ interface FifaStrategyJpaRepository : JpaRepository<FifaStrategyModel, UUID> {
         @Param("userId") userId: UUID,
         @Param("timezone") timezone: String
     ): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse>
-    @Query(name = "find_strategies_by_league_performance", nativeQuery = true)
-    fun findStrategiesByLeaguePerformance(): List<DataDTO.FifaStrategiesByLeaguePerformanceSingleResponse>
 }

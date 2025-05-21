@@ -8,7 +8,6 @@ import net.stakemetrics.application.entities.FifaStrategyRule
 import net.stakemetrics.application.entities.FifaStrategyScope
 import net.stakemetrics.application.entities.FifaTrendScopeAnalysis
 import net.stakemetrics.application.entities.User
-import net.stakemetrics.application.entities.dtos.DataDTO
 import net.stakemetrics.application.entities.dtos.FifaBetDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.dtos.toResponse
@@ -319,10 +318,6 @@ class FifaStrategyService @Autowired constructor(
             fifaBetRepository.findDetailedBetsByStrategyIdAndBetTimeAfter(strategyId, cutoffDate)
 
         return FifaStrategyDTO.DetailedReportResponse(bets)
-    }
-
-    fun getAllStrategiesByLeaguePerformance(): List<DataDTO.FifaStrategiesByLeaguePerformanceSingleResponse> {
-        return fifaStrategyRepository.getAllStrategiesByLeaguePerformance()
     }
 
 }

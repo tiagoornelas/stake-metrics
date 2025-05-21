@@ -1,13 +1,28 @@
 package net.stakemetrics.persistence.models
 
-import jakarta.persistence.*
-import java.util.UUID
+import jakarta.persistence.CascadeType
+import jakarta.persistence.CollectionTable
+import jakarta.persistence.Column
+import jakarta.persistence.ColumnResult
+import jakarta.persistence.ConstructorResult
+import jakarta.persistence.ElementCollection
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedNativeQuery
+import jakarta.persistence.OneToMany
+import jakarta.persistence.SqlResultSetMapping
+import jakarta.persistence.Table
 import net.stakemetrics.application.entities.FifaStrategy
-import net.stakemetrics.application.entities.dtos.DataDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.FifaMarketSubTypes
 import net.stakemetrics.application.entities.enums.FifaMarketTypes
 import net.stakemetrics.application.entities.enums.FifaStrategyStatus
+import java.util.UUID
 
 @Entity
 @Table(name = "fifa_strategies")
@@ -62,69 +77,6 @@ import net.stakemetrics.application.entities.enums.FifaStrategyStatus
             ColumnResult(name = "roi", type = Double::class),
             ColumnResult(name = "todaysResult", type = Double::class),
             ColumnResult(name = "averageDailyBets", type = Int::class)
-        ]
-    )]
-)
-@NamedNativeQuery(
-    name = "find_strategies_by_league_performance",
-    query = """
-        SELECT
-            fs.id AS strategyId,
-            fs.name AS strategyName,
-            fs.market_type AS marketType,
-            fl.name AS leagueName,
-            fl.id AS leagueId,
-            u.email AS userLogin,
-            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 2 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwoHours,
-            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 4 HOUR) THEN fb.profit ELSE 0 END) AS profitLastFourHours,
-            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 6 HOUR) THEN fb.profit ELSE 0 END) AS profitLastSixHours,
-            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 12 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwelveHours,
-            SUM(CASE WHEN fm.`time` >= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN fb.profit ELSE 0 END) AS profitLastTwentyFourHours,
-            SUM(fb.profit) AS profitLastWeek
-        FROM
-            fifa_bets fb
-        INNER JOIN
-                    fifa_strategies fs ON
-            fb.strategy_id = fs.id
-        INNER JOIN
-                    users u ON
-            fs.user_id = u.id
-        INNER JOIN
-                    fifa_matches fm ON
-            fb.match_id = fm.id
-        INNER JOIN
-                    fifa_leagues fl ON
-            fl.id = fm.league_id
-        WHERE
-            fm.`time` >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
-        AND
-            fb.profit IS NOT NULL
-        GROUP BY
-            fs.id,
-            fl.name,
-            u.email
-        ORDER BY
-            profitLastTwoHours DESC
-    """,
-    resultSetMapping = "fifa_strategy_league_performance_result"
-)
-@SqlResultSetMapping(
-    name = "fifa_strategy_league_performance_result",
-    classes = [ConstructorResult(
-        targetClass = DataDTO.FifaStrategiesByLeaguePerformanceSingleResponse::class,
-        columns = [
-            ColumnResult(name = "strategyId", type = UUID::class),
-            ColumnResult(name = "strategyName", type = String::class),
-            ColumnResult(name = "marketType", type = FifaMarketTypes::class),
-            ColumnResult(name = "leagueName", type = String::class),
-            ColumnResult(name = "leagueId", type = UUID::class),
-            ColumnResult(name = "userLogin", type = String::class),
-            ColumnResult(name = "profitLastTwoHours", type = Double::class),
-            ColumnResult(name = "profitLastFourHours", type = Double::class),
-            ColumnResult(name = "profitLastSixHours", type = Double::class),
-            ColumnResult(name = "profitLastTwelveHours", type = Double::class),
-            ColumnResult(name = "profitLastTwentyFourHours", type = Double::class),
-            ColumnResult(name = "profitLastWeek", type = Double::class)
         ]
     )]
 )
