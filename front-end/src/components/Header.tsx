@@ -64,15 +64,7 @@ const NavLink = (props: Props) => {
   );
 };
 
-const NavigationTag = ({
-  type,
-  moduleText,
-  moduleColor,
-}: {
-  type: NavigationModuleTypes;
-  moduleText: string;
-  moduleColor: string;
-}) => {
+const NavigationTag = ({ type }: { type: NavigationModuleTypes }) => {
   switch (type) {
     case NavigationModuleTypes.BETA:
       return <BetaTag ml={2} />;
@@ -83,11 +75,7 @@ const NavigationTag = ({
         </Tag>
       );
     default:
-      return (
-        <Tag ml={2} colorScheme={moduleColor}>
-          {moduleText}
-        </Tag>
-      );
+      return null;
   }
 };
 
@@ -119,20 +107,12 @@ const Header = () => {
           <ProductOnHeader path={"/app"} />
           <HStack as={"nav"} spacing={4} display={{ base: "none", lg: "flex" }}>
             {APP_NAVIGATION.map(
-              ({
-                name,
-                path,
-                moduleText,
-                moduleColor,
-                type,
-              }: NavigationLinkOnHeaderValue) => {
+              ({ name, path, type }: NavigationLinkOnHeaderValue) => {
                 return (
                   <NavLink key={path} path={path.toLowerCase()}>
                     {name}
                     <NavigationTag
                       type={type}
-                      moduleColor={moduleColor}
-                      moduleText={moduleText}
                     />
                   </NavLink>
                 );
@@ -175,8 +155,6 @@ const Header = () => {
                         ({
                           name,
                           path,
-                          moduleText,
-                          moduleColor,
                           type,
                           feature,
                         }: NavigationLinkOnHeaderValue) => {
@@ -202,8 +180,6 @@ const Header = () => {
                                 {name}
                                 <NavigationTag
                                   type={type}
-                                  moduleColor={moduleColor}
-                                  moduleText={moduleText}
                                 />
                               </MenuItem>
                             </Skeleton>
