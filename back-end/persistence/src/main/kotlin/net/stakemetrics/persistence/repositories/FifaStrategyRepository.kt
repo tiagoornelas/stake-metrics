@@ -2,7 +2,6 @@ package net.stakemetrics.persistence.repositories
 
 import net.stakemetrics.application.entities.FifaStrategy
 import net.stakemetrics.application.entities.User
-import net.stakemetrics.application.entities.dtos.DataDTO
 import net.stakemetrics.application.entities.dtos.FifaStrategyDTO
 import net.stakemetrics.application.entities.enums.FifaStrategyStatus
 import net.stakemetrics.application.repositories.IFifaStrategyRepository
@@ -44,10 +43,6 @@ class FifaStrategyRepository(
         timezone: String
     ): List<FifaStrategyDTO.FifaStrategyStatisticSingleResponse> {
         return fifaStrategyJpaRepository.findStrategyStatisticsByUserId(userId, timezone)
-    }
-
-    override fun getAllStrategiesByLeaguePerformance(): List<DataDTO.FifaStrategiesByLeaguePerformanceSingleResponse> {
-        return fifaStrategyJpaRepository.findStrategiesByLeaguePerformance()
     }
 
     override fun findById(id: UUID): FifaStrategy? {

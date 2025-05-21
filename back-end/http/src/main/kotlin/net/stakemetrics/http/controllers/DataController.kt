@@ -24,12 +24,6 @@ class DataController(
         return ResponseEntity.ok(DataDTO.OddSnapshotResponse(oddSnapshots))
     }
 
-    @GetMapping("/fifa/performance/strategies/leagues")
-    fun getFifaStrategiesByLeaguePerformance(): ResponseEntity<DataDTO.FifaStrategiesByLeaguePerformanceResponse> {
-        val strategies = fifaStrategyService.getAllStrategiesByLeaguePerformance()
-        return ResponseEntity.ok(DataDTO.FifaStrategiesByLeaguePerformanceResponse(strategies))
-    }
-
     @GetMapping("/fifa/strategy/{strategyId}")
     fun getPrivilegedFifaStrategy(@PathVariable strategyId: UUID): ResponseEntity<FifaStrategyDTO.FifaStrategyReadResponse> {
         val strategy = fifaStrategyService.getStrategyWithoutValidation(strategyId)
