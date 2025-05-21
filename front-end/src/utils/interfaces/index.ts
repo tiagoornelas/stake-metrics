@@ -17,8 +17,6 @@ export enum NavigationModuleTypes {
 export interface NavigationLinkOnHeaderValue {
     name: string
     path: string
-    moduleText: string
-    moduleColor: string
     type: NavigationModuleTypes
     feature?: FEATURES
 }
