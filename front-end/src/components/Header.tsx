@@ -35,6 +35,7 @@ import {
   NavigationModuleTypes,
   UserReducerAction,
 } from "utils/interfaces";
+import HeadwayWidget from "./HeadwayWidget";
 
 interface Props {
   children: ReactNode;
@@ -121,7 +122,9 @@ const Header = () => {
           </HStack>
 
           <Flex alignItems={"center"}>
-            <Stack direction={"row"} spacing={7}>
+            <Stack direction={"row"} spacing={3}>
+              <HeadwayWidget />
+
               <Button onClick={toggleColorMode}>
                 {colorMode === "light" ? <FaMoon /> : <FaSun />}
               </Button>
