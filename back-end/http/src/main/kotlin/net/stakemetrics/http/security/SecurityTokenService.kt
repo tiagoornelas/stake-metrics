@@ -18,11 +18,11 @@ class SecurityTokenService {
     @Value("\${api.security.token.secret}")
     private val secretKey: String = "secretKey"
     private val issuer: String = "back-end"
-    private val expirationTime = Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(3))
     private val algorithm = Algorithm.HMAC256(secretKey)
 
     fun generateToken(user: User): String {
         try {
+            val expirationTime = Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(3))
             val jwtCreator = JWT.create()
                 .withIssuer(issuer)
                 .withSubject(user.email)
