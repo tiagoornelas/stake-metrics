@@ -22,9 +22,11 @@ class FifaEndedMatchesEnqueuer(
 
         activeLeagues.forEach { league ->
             val sinceDate = getLastMinedDate(league)
-            val pastResults =
-                fifaIntegratedDataSourceService.getFifaMatchResultsForLeagueSinceDate(league, sinceDate)
-            pastResults.forEach(queueService::enqueueSaveMatchResultTask)
+            val pastResults = fifaIntegratedDataSourceService.getFifaMatchResultsForLeagueSinceDate(league, sinceDate)
+
+            pastResults
+                .filter { !fifaMatchService.hasMatchSavedWithResult(it.integrationId) }
+                .forEach(queueService::enqueueSaveMatchResultTask)
         }
     }
 
@@ -32,7 +34,9 @@ class FifaEndedMatchesEnqueuer(
         val fetchSince = fifaMatchService.getLastMatchResultTimeForLeague(league)
         val calendar = Calendar.getInstance().apply { time = fetchSince }
         val isBeforeSixAM = calendar.get(Calendar.HOUR_OF_DAY) < 6
-        if (isBeforeSixAM) { calendar.add(Calendar.DAY_OF_YEAR, -1) }
+        if (isBeforeSixAM) {
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+        }
         return calendar.time
     }
 }

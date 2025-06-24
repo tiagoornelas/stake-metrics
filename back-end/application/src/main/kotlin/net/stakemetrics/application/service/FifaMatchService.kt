@@ -7,6 +7,7 @@ import net.stakemetrics.application.entities.FifaMatch
 import net.stakemetrics.application.entities.FifaPlayer
 import net.stakemetrics.application.entities.annotations.EnvironmentSensitive
 import net.stakemetrics.application.entities.dtos.FifaDataSourceDTO
+import net.stakemetrics.application.entities.enums.FifaMatchStatusTypes
 import net.stakemetrics.application.entities.exceptions.NotFoundException
 import net.stakemetrics.application.repositories.IFifaMatchRepository
 import net.stakemetrics.application.utils.EnvironmentVerifier
@@ -25,18 +26,6 @@ class FifaMatchService @Autowired constructor(
     private val fifaMatchRepository: IFifaMatchRepository,
     private val fIfaIntegrationHomeAndAwayMismatchFinder: FIfaIntegrationHomeAndAwayMismatchFinder
 ) {
-    @EnvironmentSensitive
-    fun getLastMatchResultTime(): Date {
-        val latestMatch = fifaMatchRepository.findLatestMatch()
-        return if (latestMatch != null) {
-            latestMatch.time
-        } else {
-            val populateDatabaseDays = if (environmentVerifier.isProd()) 60 else 1
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DAY_OF_YEAR, -populateDatabaseDays)
-            calendar.time
-        }
-    }
 
     @EnvironmentSensitive
     fun getLastMatchResultTimeForLeague(league: FifaLeague): Date {
@@ -136,6 +125,13 @@ class FifaMatchService @Autowired constructor(
 
     fun findByIntegrationId(integrationId: Long): FifaMatch? {
         return fifaMatchRepository.findByIntegrationId(integrationId)
+    }
+
+    fun hasMatchSavedWithResult(integrationId: Long): Boolean {
+        val savedMatch = findByIntegrationId(integrationId) ?: return false
+        val statusIsEnded = savedMatch.status == FifaMatchStatusTypes.ENDED
+        val hasFullTimeScore = savedMatch.totalGoalsAtFullTime != null
+        return statusIsEnded && hasFullTimeScore
     }
 
     private fun findOrCreatePlayer(name: String, league: FifaLeague): FifaPlayer {
