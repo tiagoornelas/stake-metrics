@@ -117,10 +117,41 @@ interface FifaBetJpaRepository : JpaRepository<FifaBetModel, UUID> {
 
     @Query(
         """
-        SELECT ROUND(SUM(b.profit) OVER (ORDER BY b.bet_time ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 2) AS cumulativeProfit
-        FROM fifa_bets b
-        WHERE b.strategy_id = :strategyId AND b.profit IS NOT NULL
-        ORDER BY b.bet_time
+        WITH total_count AS (
+            SELECT COUNT(*) as total_records
+            FROM fifa_bets b
+            WHERE b.strategy_id = :strategyId AND b.profit IS NOT NULL
+        ),
+        downsampling_params AS (
+            SELECT 
+                total_records,
+                CASE 
+                    WHEN total_records <= 1000 THEN 1
+                    ELSE CEIL(total_records / 1000.0)
+                END as step_size
+            FROM total_count
+        ),
+        cumulative_data AS (
+            SELECT 
+                ROUND(SUM(b.profit) OVER (ORDER BY b.bet_time ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 2) AS cumulativeProfit,
+                b.bet_time,
+                ROW_NUMBER() OVER (ORDER BY b.bet_time) as rn
+            FROM fifa_bets b
+            WHERE b.strategy_id = :strategyId AND b.profit IS NOT NULL
+        ),
+        sampled_data AS (
+            SELECT cd.*, dp.step_size
+            FROM cumulative_data cd
+            CROSS JOIN downsampling_params dp
+            WHERE (cd.rn - 1) % dp.step_size = 0
+               OR cd.rn = (SELECT total_records FROM total_count)
+        )
+        SELECT 
+            cumulativeProfit,
+            bet_time,
+            step_size
+        FROM sampled_data
+        ORDER BY bet_time;
     """, nativeQuery = true
     )
     fun findCumulativeProfitsByStrategyId(@Param("strategyId") strategyId: UUID): List<Double>
