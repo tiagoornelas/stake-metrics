@@ -218,6 +218,10 @@
             "pt": "Comece já!",
             "en": "Start now!"
         },
+        "offLineModeButtonText": {
+            "pt": "Entrar para lista de espera",
+            "en": "Register on waiting list"
+        },
         "firstSectionFeatures": {
             "0": {
                 "pt": "Estratégias para E-Soccer Bet365",

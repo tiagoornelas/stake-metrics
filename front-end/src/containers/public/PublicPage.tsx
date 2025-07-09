@@ -19,6 +19,7 @@ import React, { Fragment } from "react";
 import { GoTelescope } from "react-icons/all";
 import { useNavigate } from "react-router-dom";
 import useTranslation from "../../hooks/useTranslation";
+import { useEnvironmentSettings } from "hooks/useEnvironmentSettings";
 
 const daysValidatingDataBase = differenceInDays(
   new Date(),
@@ -69,11 +70,29 @@ const FeatureList = ({
   );
 };
 
-const PublicPage = () => {
+const CTA = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const goToAccountCreation = () =>
     navigate("/create-account", { replace: true });
+
+  const { offLineMode } = useEnvironmentSettings();
+
+  return (
+    <Button
+      colorScheme={"yellow"}
+      rightIcon={<GoTelescope />}
+      onClick={goToAccountCreation}
+    >
+      {offLineMode
+        ? t("publicPage.offLineModeButtonText")
+        : t("publicPage.buttonText")}
+    </Button>
+  );
+};
+
+const PublicPage = () => {
+  const { t } = useTranslation();
 
   const firstSectionFeatures = [
     {
@@ -116,7 +135,7 @@ const PublicPage = () => {
         days: daysValidatingDataBase,
       }),
       emoji: "🐘",
-    }
+    },
   ];
 
   return (
@@ -135,13 +154,7 @@ const PublicPage = () => {
           <Text fontSize={"xl"} textAlign={"center"} width={"85%"}>
             {t("publicPage.description")}
           </Text>
-          <Button
-            colorScheme={"yellow"}
-            rightIcon={<GoTelescope />}
-            onClick={goToAccountCreation}
-          >
-            {t("publicPage.buttonText")}
-          </Button>
+          <CTA />
           <Box width={{ base: "xs", md: "md", lg: "xl" }} mt={4}>
             <Image src={PublicBanner} alt="App screen" />
           </Box>
