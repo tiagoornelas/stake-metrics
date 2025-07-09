@@ -1,6 +1,7 @@
 import {Button, Flex, FormControl, FormLabel, Heading, HStack, Input, Stack, Text} from '@chakra-ui/react'
 import PasswordField from "components/PasswordField";
 import UseTerms from "components/UseTerms";
+import { useEnvironmentSettings } from 'hooks/useEnvironmentSettings';
 import {useErrorToast} from "hooks/useErrorToast";
 import useThemeColors from "hooks/useThemeColors";
 import * as React from "react";
@@ -18,9 +19,9 @@ const WaitingListComponent = () => {
 
     return (<Flex direction="column" gap={4} mb={4}>
         <Heading>Calma aí! ✋</Heading>
-        <Text fontSize="md">Não estamos aceitando novos clientes no momento! Por enquanto estamos trabalhando com uma
-            seleção de clientes que estão testando o produto.</Text>
-        <Text fontSize="md">Caso tenha interesse de participar dos testes, envie e-mail para
+        <Text fontSize="md">Não estamos aceitando novos clientes no momento! Por enquanto estamos focando em atender com exclusividade
+            nossa carteira de investidores.</Text>
+        <Text fontSize="md">Caso tenha interesse entrar para a lista de espera, envie e-mail para
             <b> stakemetrics@gmail.com</b> que avaliaremos a sua solicitação.</Text>
         <Button bgColor={colors.product} color={colors.productContrast} onClick={goToHome} rightIcon={<HiHome/>}>Voltar
             para página Inicial</Button>
@@ -29,7 +30,8 @@ const WaitingListComponent = () => {
 
 const CreateAccount = () => {
     const navigate = useNavigate();
-    const acceptingNewCustomers = process.env.REACT_APP_DISABLE_NEW_USERS !== "true";
+    const { acceptingNewCustomers, offLineMode } = useEnvironmentSettings();
+    const shouldAllowNewRegistrations = acceptingNewCustomers && !offLineMode;
 
     const [form, setForm] = useState<UserCreationBody>({
         name: "",
@@ -54,7 +56,7 @@ const CreateAccount = () => {
     const handleGoToRecoverPassword = () => navigate('/recover-account', {replace: true});
 
     return (<Stack spacing="6">
-            {acceptingNewCustomers ? <Fragment><Stack spacing="5">
+            {shouldAllowNewRegistrations ? <Fragment><Stack spacing="5">
                 <FormControl>
                     <FormLabel htmlFor="name">Nome</FormLabel>
                     <Input id="name" type="text" onChange={handleInput}/>
