@@ -1,57 +1,30 @@
-# Created by https://www.toptal.com/developers/gitignore/api/intellij
-# Edit at https://www.toptal.com/developers/gitignore?templates=intellij
-
-### Intellij ###
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+### IDEs & Editors ###
 .idea/
-
-# CMake
-cmake-build-*/
-
-# File-based project format
 *.iws
+.idea_modules/
+*.iml
+.vscode/
+.DS_Store
 
-# IntelliJ
+### Build & Artifacts ###
+back-end/.gradle/
+back-end/**/.gradle/
+back-end/build/
+back-end/**/build/
+back-end/bin/
+back-end/**/bin/
+**/bin/
 out/
 
-# mpeltonen/sbt-idea plugin
-.idea_modules/
-
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
-package-lock.json
-
-#.env
-back-end/src/main/resources/application.properties
-
-# Ignorar diretórios e arquivos do Gradle
-back-end/.gradle/
-back-end/application/.gradle/
-back-end/application/build/
-back-end/application/gradle/
-back-end/build/
-back-end/http/.gradle/
-back-end/http/build/
-back-end/http/gradle/
-back-end/integration/.gradle/
-back-end/integration/build/
-back-end/integration/gradle/
-back-end/persistence/build/
-back-end/persistence/gradle/
-back-end/persistence/persistence.iml
-
-# Ignorar diretório node_modules
+### Frontend Dependencies & Builds ###
 front-end/node_modules/
+front-end/build/
+.npm
+.eslintcache
 
-# Ignorar diretórios bin
-back-end/bin/
-back-end/*/bin/
-**/bin/
+### Environment & Secrets ###
+.env.local
+.env.*.local
+*.secret
+*.pem
+*.key

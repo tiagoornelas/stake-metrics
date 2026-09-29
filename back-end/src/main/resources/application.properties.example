@@ -1,0 +1,38 @@
+# Stake Metrics Backend Configuration Example
+# Copy this file to application-dev.properties or set respective environment variables
+
+# Base & Security
+API_SECURITY_TOKEN_SECRET=your-secret-token-key
+APP_FRONTEND_BASE_URL=http://localhost:3000
+APP_BACKEND_QUEUE_BASE_URL=http://localhost:8080
+SERVICE_API_KEY=your-service-api-key
+ADMIN_MASTER_KEY=your-admin-master-key
+
+# Google Cloud Platform (Cloud Tasks / Cloud Run)
+GCP_LOCATION_ID=us-central1
+GCP_PROJECT_ID=your-gcp-project-id
+
+# Database (MySQL)
+DB_USERNAME=root
+DB_PASSWORD=root
+DB_URL=jdbc:mysql://localhost:3306/stakemetrics
+
+# External Integrations
+BETS_API_TOKEN=your-betsapi-token
+AUTOBETTOR_WEBHOOK_URL=https://your-webhook-partner.example.com/api/v1/bet
+AUTOBETTOR_WEBHOOK_TOKEN=your-webhook-token
+
+# Stripe
+STRIPE_PRICING_TABLE=prctbl_example_light
+STRIPE_DARK_MODE_PRICING_TABLE=prctbl_example_dark
+STRIPE_API_KEY=sk_test_example
+STRIPE_PUBLIC_KEY=pk_test_example
+
+# Email (Brevo)
+BREVO_API_KEY=your-brevo-api-key
+APP_MAIL_SENDER=support@stakemetrics.net
+
+# Telegram Bot
+TELEGRAM_API_ID=0
+TELEGRAM_API_HASH=your-telegram-hash
+TELEGRAM_BOT_TOKEN=your-bot-token

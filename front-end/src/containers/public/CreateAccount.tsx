@@ -22,7 +22,7 @@ const WaitingListComponent = () => {
         <Text fontSize="md">Não estamos aceitando novos clientes no momento! Por enquanto estamos focando em atender com exclusividade
             nossa carteira de investidores.</Text>
         <Text fontSize="md">Caso tenha interesse entrar para a lista de espera, envie e-mail para
-            <b> support@stakemetrics.net</b> que avaliaremos a sua solicitação.</Text>
+            <b> contato@stakemetrics.net</b> que avaliaremos a sua solicitação.</Text>
         <Button bgColor={colors.product} color={colors.productContrast} onClick={goToHome} rightIcon={<HiHome/>}>Voltar
             para página Inicial</Button>
     </Flex>)

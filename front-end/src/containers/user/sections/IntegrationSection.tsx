@@ -69,7 +69,7 @@ const IntegrationSection = () => {
   };
 
   const IntegratedChannel = () => {
-    const channelName = `AutoBettor: ${autoBettor?.name}` || "Automação com AutoBettor";
+    const channelName = autoBettor?.name ? `Canal: ${autoBettor.name}` : "Automação de Apostas";
 
     return (
       <Flex alignItems={"center"} gap={4}>

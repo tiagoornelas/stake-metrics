@@ -17,7 +17,9 @@ class BrevoService(private val logger: Logger) : IEmailService {
 
     @Value("\${brevo.api.key}")
     private val brevoApiKey: String = ""
-    private val stakeMetricsEmail = "support@stakemetrics.net"
+
+    @Value("\${app.mail.sender:support@stakemetrics.net}")
+    private val stakeMetricsEmail: String = "support@stakemetrics.net"
 
     override fun sendRecoveryCodeEmail(username: String, userEmail: String, code: String) {
         val defaultClient = ApiClient()
