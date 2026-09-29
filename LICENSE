@@ -1,18 +1,22 @@
-Source-Available & Portfolio View-Only License
+Source-Available & Non-Commercial Personal Use License
 
 Copyright (c) 2024-2026 Tiago Ornelas. All rights reserved.
 
-This source code is made publicly available solely for portfolio showcase, inspection, and educational evaluation purposes.
+This source code is made publicly available for portfolio inspection, educational purposes, and non-commercial personal use.
 
 TERMS AND CONDITIONS
 
-1. Permitted Use:
-   You are permitted to view, browse, and evaluate the source code contained in this repository for personal inspection, academic research, and engineering evaluation.
+1. Permitted Uses:
+   - Personal & Local Execution: You are permitted to run, test, and use this software locally for your own personal, private, and educational purposes.
+   - Personal Modifications: You are permitted to modify, adapt, and build upon this source code solely for personal, private, non-commercial use on your own local environment.
+   - Inspection & Evaluation: You are permitted to inspect, view, and analyze the codebase and its architecture for educational, academic, and technical evaluation purposes.
 
 2. Prohibited Uses:
-   - Modification & Derivative Works: You may NOT modify, adapt, translate, reverse engineer, decompile, or create derivative works based upon this software or any part thereof.
-   - Commercial Exploitation & Resale: You may NOT use, copy, reproduce, distribute, sublicense, sell, rent, lease, or commercially exploit this software, in whole or in part, as a service, product, or base for selling any commercial software or SaaS.
-   - Redistribution: You may NOT redistribute, publish, mirror, or make this source code available in any third-party repository, package registry, or distribution channel without prior written authorization from the copyright holder.
+   - Commercial Exploitation: You may NOT use, copy, run, distribute, sublicense, sell, rent, lease, monetize, or commercially exploit this software (or any modified version thereof), in whole or in part, as a commercial product, hosted service, SaaS, or paid platform.
+   - Public Redistribution & Derivative Distribution: You may NOT redistribute, publish, mirror, or make modified or unmodified versions of this source code publicly available in third-party repositories, package registries, or public distribution channels without prior written authorization from the copyright holder.
 
-3. Disclaimer of Warranty:
+3. Non-Endorsement of Real-Money Gambling & Financial Risk Disclaimer:
+   While personal and educational use is permitted, the author explicitly does not recommend, encourage, or endorse using this software, its algorithms, or any derived works for real-money gambling, sports betting, or financial speculation. Gambling involves substantial financial risk, including the potential loss of all staked capital, and can lead to severe personal and social harm. Any decision to deploy or connect this software to real funds or live betting accounts is undertaken entirely at your own risk. The author assumes no responsibility or liability for any financial losses, damages, legal liabilities, or adverse consequences arising directly or indirectly from such use.
+
+4. Disclaimer of Warranty:
    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
