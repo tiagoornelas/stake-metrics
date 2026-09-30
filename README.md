@@ -7,8 +7,8 @@
 
 [![Status: Inactive](https://img.shields.io/badge/Status-Inactive%20%2F%20Archived-lightgrey.svg)](#-note-on-project-origin--discontinuation)
 [![Active Period](https://img.shields.io/badge/Active%20Period-2024--06--29%20to%202025--07--08-blue.svg)](#-note-on-project-origin--discontinuation)
-[![Initial Commit](https://img.shields.io/badge/Started-June%2029%2C%202024-informational.svg)](#-note-on-project-origin--discontinuation)
-[![Shutdown Commit](https://img.shields.io/badge/Shutdown-July%208%2C%202025-orange.svg)](#-note-on-project-origin--discontinuation)
+[![License: Non-Commercial](https://img.shields.io/badge/License-Source--Available%20%2F%20Non--Commercial-blue.svg)](LICENSE)
+
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.24-blue.svg?logo=kotlin)](https://kotlinlang.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3.2-green.svg?logo=springboot)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg?logo=openjdk)](https://openjdk.org/)
@@ -16,7 +16,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![GCP](https://img.shields.io/badge/GCP-Cloud_Run_%7C_Cloud_Tasks-4285F4.svg?logo=googlecloud)](https://cloud.google.com/)
 [![AWS](https://img.shields.io/badge/AWS-RDS_MySQL-232F3E.svg?logo=amazon-aws)](https://aws.amazon.com/rds/)
-[![License: Non-Commercial](https://img.shields.io/badge/License-Source--Available%20%2F%20Non--Commercial-blue.svg)](LICENSE)
 
 ---
 
